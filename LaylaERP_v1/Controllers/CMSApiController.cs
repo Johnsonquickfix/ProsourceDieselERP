@@ -172,7 +172,7 @@
                             {
                                 PagesModel Review = new PagesModel();
                                 var jsonArray = JArray.Parse(balResult.Rows[i]["bannerimg"].ToString());
-                               
+
                                 if (jsonArray.Count == 1)
                                 {
                                     var jsonObject = jsonArray[0] as JObject;
@@ -194,12 +194,12 @@
                                         if (bannerImages.Count > 0)
                                             Review._bannerimage = bannerImages;
                                         else
-                                            Review._bannerimage = new object[0];  
+                                            Review._bannerimage = new object[0];
                                         // Now, bannerImages should contain your data
                                     }
                                     else
                                     {
-                                        Review._bannerimage = new object[0];  
+                                        Review._bannerimage = new object[0];
                                     }
                                 }
                                 else
@@ -255,8 +255,8 @@
                             //}
                             //else
                             //{
-                                // return Json(ReviewList, JsonRequestBehavior.AllowGet);
-                                return Ok(ReviewList);
+                            // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            return Ok(ReviewList);
                             //}
 
                         }
@@ -379,7 +379,7 @@
                             //}
                             //else
                             //{
-                                return Ok(ReviewList);
+                            return Ok(ReviewList);
                             //}
 
                         }
@@ -993,8 +993,8 @@
                         row.Add("ID", dr["ID"]);
                         row.Add("post_name", dr["post_name"]);
                         row.Add("post_title", dr["post_title"]);
-                        //Postmeta
-                        row.Add("product_type", dr["product_type"]);
+                        //Postmeta 
+                        row.Add("product_type", (dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple"));
                         row.Add("yoast_title", dr["yoast_title"]);
                         row.Add("yoast_description", dr["yoast_description"]);
                         row.Add("sku", dr["sku"]);
@@ -1536,7 +1536,7 @@
                 else if (model == null)
                 {
                     return Ok(new { message = "Required param 'name'", status = 500, code = "SUCCESS", data = new List<string>() });
-                }              
+                }
                 else
                 {
                     string json = JsonConvert.SerializeObject(model);
@@ -1547,7 +1547,7 @@
                     string name = dynamicData.name;
                     string email = dynamicData.email;
                     string subject = dynamicData.subject;
-                    string suggestions = dynamicData.suggestions; 
+                    string suggestions = dynamicData.suggestions;
                     DataTable dt = CMSRepository.cmscontactus(name, email, subject, suggestions, entity_id);
 
                     if (dt.Rows.Count > 0)
@@ -1563,7 +1563,7 @@
         }
 
         [HttpGet, Route("get-post-slug/{app_key}/{entity_id}")]
-        public IHttpActionResult Getpostslug(string app_key, string entity_id,  string post_name = "")
+        public IHttpActionResult Getpostslug(string app_key, string entity_id, string post_name = "")
         {
             try
             {
@@ -1580,7 +1580,7 @@
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getpageslugapi(entity_id, app_key,  "PST", post_name);
+                        var balResult = CMSRepository.Getpageslugapi(entity_id, app_key, "PST", post_name);
                         List<Category> categoryList = new List<Category>();
 
                         // First pass: Create a dictionary to hold category ID and index mapping
@@ -1685,7 +1685,7 @@
         }
 
         [HttpGet, Route("get-pages-slug/{app_key}/{entity_id}")]
-        public IHttpActionResult Getpagesslug(string app_key, string entity_id,  string post_name = "")
+        public IHttpActionResult Getpagesslug(string app_key, string entity_id, string post_name = "")
         {
             try
             {
@@ -1834,11 +1834,11 @@
                     {
                         string msg = string.Empty;
                         var balResult = CMSRepository.Getpostcategory(entity_id, app_key, post_status, per_page.ToString(), page.ToString(), sort, direction, "PST", post_name);
-                        
+
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {
-                             List<dynamic> ReviewList = new List<dynamic>();
+                            List<dynamic> ReviewList = new List<dynamic>();
                             for (int i = 0; i < balResult.Rows.Count; i++)
                             {
                                 dynamic Review = new ExpandoObject();
@@ -1846,9 +1846,9 @@
                                 Review.id = balResult.Rows[i]["ID"].ToString();
                                 Review.name = balResult.Rows[i]["name"].ToString();
                                 Review.slug = balResult.Rows[i]["slug"].ToString();
-                                ReviewList.Add(Review); 
-                            } 
-                            return Ok(ReviewList); 
+                                ReviewList.Add(Review);
+                            }
+                            return Ok(ReviewList);
                         }
                         else
                         {
@@ -1922,12 +1922,12 @@
                                 };
 
                                 Review.single_image_url = image;
-                                Review.featured_image_url = OtherImageModel; 
+                                Review.featured_image_url = OtherImageModel;
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
                                 Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
                                 Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();
                                 Review._yoast_wpseo_keywordsynonyms = balResult.Rows[i]["_yoast_wpseo_keywordsynonyms"].ToString();
-                                Review._yoast_wpseo_focuskeywords = balResult.Rows[i]["_yoast_wpseo_focuskeywords"].ToString(); 
+                                Review._yoast_wpseo_focuskeywords = balResult.Rows[i]["_yoast_wpseo_focuskeywords"].ToString();
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
                                 var balcategory = CMSRepository.Getcategory(balResult.Rows[i]["ID"].ToString());
@@ -1938,8 +1938,8 @@
                                 // Review.categories = categoryHierarchy;
                                 if (categoryHierarchy.Count == 1)
                                 {
-                                     Review.categories = new List<Category> { categoryHierarchy[0] };
-                                 }
+                                    Review.categories = new List<Category> { categoryHierarchy[0] };
+                                }
                                 else
                                 {
                                     Review.categories = categoryHierarchy;
@@ -1947,7 +1947,7 @@
 
                                 ReviewList.Add(Review);
 
-                            } 
+                            }
                             return Ok(ReviewList);
 
                         }

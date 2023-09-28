@@ -250,8 +250,8 @@
                     else line_total = line_subtotal;
 
                     item.line_total = line_total;
-                    item.line_subtotal_tax = (line_subtotal * _tax.rate / 100);
-                    item.line_total_tax = (line_total * _tax.rate / 100);
+                    item.line_subtotal_tax = Math.Round((line_subtotal * _tax.rate / 100), 2);
+                    item.line_total_tax = Math.Round((line_total * _tax.rate / 100), 2);
                     f_subtotal = f_subtotal + line_subtotal;
                     f_subtotal_tax = f_subtotal_tax + (item.line_subtotal_tax ?? 0);
                     f_line_total = f_line_total + line_total;
@@ -506,7 +506,8 @@
             }
             catch (Exception ex) { }
             _shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
-            if (_shipping_methods.Count > 0 && order.data.shipping_rate == null) {
+            if (_shipping_methods.Count > 0 && order.data.shipping_rate == null)
+            {
                 _shipping_methods[0].isactive = true;
                 order.data.shipping_rate = _shipping_methods[0];
             }

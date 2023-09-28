@@ -506,7 +506,10 @@
             }
             catch (Exception ex) { }
             _shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
-            if(_shipping_methods.Count>0 && order.data.shipping_rate == null) _shipping_methods[0].isactive = true; 
+            if (_shipping_methods.Count > 0 && order.data.shipping_rate == null) {
+                _shipping_methods[0].isactive = true;
+                order.data.shipping_rate = _shipping_methods[0];
+            }
             order.data.shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
         }
         #endregion

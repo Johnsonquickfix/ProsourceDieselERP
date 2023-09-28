@@ -146,6 +146,27 @@
             }
         }
 
+        [HttpGet, Route("removeCart/{app_key}/{entity_id}")]
+        public IHttpActionResult RemoveCart(string app_key, long entity_id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                long user_id = 0; string session_id = string.Empty;
+                if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(CartRepository.UpdateShippingAddress("remove-cart", entity_id, user_id, session_id, string.Empty));
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         public static dynamic CalculateTotals(CartResponse obj)
         {
             try
@@ -248,6 +269,17 @@
                     }
                 }
                 cart_contents_total = f_line_total; cart_contents_tax = f_line_tax;
+                // Calculate cart_total
+                obj.data.cart_totals.subtotal = f_subtotal;
+                obj.data.cart_totals.subtotal_tax = f_subtotal_tax;
+                obj.data.cart_totals.discount_total = discount_total;
+                obj.data.cart_totals.discount_tax = discount_tax;
+                obj.data.cart_totals.cart_contents_total = f_line_total;
+                obj.data.cart_totals.cart_contents_tax = f_line_tax;
+                //obj.data.cart_totals.cart_contents_taxes = new List<dynamic>();
+                obj.data.cart_totals.fee_total = fee_total;
+                obj.data.cart_totals.fee_tax = fee_tax;
+
                 // calculate shipping
                 if (obj.data.shipping_address != null)
                 {
@@ -263,20 +295,9 @@
                         if (_shipping != null) shipping_total = _shipping.amount;
                     }
                 }
-
-                //obj.cart_totals = new ExpandoObject();
-                obj.data.cart_totals.subtotal = f_subtotal;
-                obj.data.cart_totals.subtotal_tax = f_subtotal_tax;
+                //obj.data.cart_totals.shipping_taxes = new List<dynamic>();
                 obj.data.cart_totals.shipping_total = shipping_total;
                 obj.data.cart_totals.shipping_tax = shipping_tax;
-                //obj.data.cart_totals.shipping_taxes = new List<dynamic>();
-                obj.data.cart_totals.discount_total = discount_total;
-                obj.data.cart_totals.discount_tax = discount_tax;
-                obj.data.cart_totals.cart_contents_total = f_line_total;
-                obj.data.cart_totals.cart_contents_tax = f_line_tax;
-                //obj.data.cart_totals.cart_contents_taxes = new List<dynamic>();
-                obj.data.cart_totals.fee_total = fee_total;
-                obj.data.cart_totals.fee_tax = fee_tax;
                 //obj.data.cart_totals.fee_taxes = new List<dynamic>();
                 //obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total);
                 obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total + f_line_tax + shipping_tax + fee_tax);
@@ -372,13 +393,14 @@
         public static void get_fedex_shipping_methods(CartResponse order, List<WC_Boxpack_Package> packages)
         {
             dynamic _frdex = new ExpandoObject();
+            List<CartDataResponse.ShippingMethods> _shipping_methods = new List<CartDataResponse.ShippingMethods>();
             try
-            {
+            {                
                 List<string> _shipping_services = new List<string>() { "PRIORITY_OVERNIGHT", "STANDARD_OVERNIGHT", "FEDEX_2_DAY", "GROUND_HOME_DELIVERY", "FEDEX_GROUND", "INTERNATIONAL_ECONOMY", "INTERNATIONAL_PRIORITY", "INTERNATIONAL_GROUND", "FEDEX_INTERNATIONAL_CONNECT_PLUS", "INTERNATIONAL_DISTRIBUTION_FREIGHT", "INTERNATIONAL_ECONOMY_DISTRIBUTION", "INTERNATIONAL_PRIORITY_DISTRIBUTION", "FEDEX_INTERNATIONAL_PRIORITY_EXPRESS", "FEDEX_INTERNATIONAL_PRIORITY", "FEDEX_REGIONAL_ECONOMY", "FEDEX_REGIONAL_ECONOMY_FREIGHT" };
                 if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                 if ((order.data.cart_totals.subtotal - order.data.cart_totals.discount_total) >= 90)
                 {
-                    order.data.shipping_methods.Add(new CartDataResponse.ShippingMethods() { method_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0 });
+                    _shipping_methods.Add(new CartDataResponse.ShippingMethods() { method_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0 });
                 }
 
                 string accountNumber = "740561073", client_id = "l7e40e1dfda4e04c958f688ad2b071535f", client_secret = "b1d2efec8b344ac3a205ef2b2f1301be";
@@ -450,7 +472,6 @@
                 var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, JsonConvert.SerializeObject(_frdex)));
                 if (result != null)
                 {
-                    List<CartDataResponse.ShippingMethods> list = new List<CartDataResponse.ShippingMethods>();
                     if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                     CartDataResponse.ShippingMethods methods;
                     foreach (JToken rat in result.output.rateReplyDetails)
@@ -466,7 +487,7 @@
                                     methods.method_title = methods.method_id.Replace("_", " ");
                                     methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
                                     if (order.data.shipping_rate != null) if (order.data.shipping_rate.method_id.Equals(methods.method_id)) methods.isactive = true;
-                                    list.Add(methods);
+                                    _shipping_methods.Add(methods);
                                 }
                             }
                             else
@@ -476,16 +497,15 @@
                                 methods.method_title = methods.method_id.Replace("_", " ");
                                 methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) : 0;
                                 if (order.data.shipping_rate != null) if (order.data.shipping_rate.method_id.Equals(methods.method_id)) methods.isactive = true;
-                                list.Add(methods);
+                                _shipping_methods.Add(methods);
                             }
                         }
-                    }
-
-                    order.data.shipping_methods = list.OrderBy(s => s.amount).ToList();
+                    }                    
                 }
+                
             }
             catch (Exception ex) { }
-            //return Json(new { status = _status, message = JSONresult }, 0);
+            order.data.shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
         }
         #endregion
     }

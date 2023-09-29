@@ -1189,7 +1189,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@slug", slug),
                     new SqlParameter("@pagesize", limit),
                     new SqlParameter("@pageno", page),
-                    user_id > 0 ? new SqlParameter("@user_id", user_id) : new SqlParameter("@pageno", DBNull.Value),
+                    user_id > 0 ? new SqlParameter("@user_id", user_id) : new SqlParameter("@user_id", DBNull.Value),
                     new SqlParameter("@flag", flag)
                 };
 

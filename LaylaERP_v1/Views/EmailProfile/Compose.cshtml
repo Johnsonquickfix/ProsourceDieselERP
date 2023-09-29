@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "Compose";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .input_mail {
+        width: 80%;
+    }
+</style>
+<script src='~/js/tinymce/tinymce.min.js'></script>
+<script>
+    // Create a custom shortcode plugin
+    tinymce.PluginManager.add('shortcode', function (editor) {
+        // Register a command to insert the shortcode
+        editor.addCommand('insertShortcode', function (ui, value) {
+            // Parse the shortcode options
+            var options = value.split(',');
+            var shortcode = '[' + options.shift() + ' ';
+
+            // Add the options as attributes to the shortcode
+            for (var i = 0; i < options.length; i++) {
+                var parts = options[i].split('=');
+                if (parts.length === 2) {
+                    var attr = parts[0].trim();
+                    var val = parts[1].trim();
+                    shortcode += attr + '="' + val + '" ';
+                }
+            }
+            shortcode += ']';
+
+            // Insert the shortcode at the current cursor position
+            editor.execCommand('mceInsertContent', false, shortcode);
+        });
+
+        // Add a menu item to the context menu for inserting the shortcode
+        editor.addMenuItem('shortcode', {
+            text: 'Insert Shortcode',
+            icon: false,
+            context: 'insert',
+            onclick: function () {
+                // Prompt the user to enter the shortcode with options
+                var shortcodeWithOpts = prompt('Enter the shortcode with options:');
+                if (shortcodeWithOpts) {
+                    // Execute the insertShortcode command with the provided shortcode and options
+                    editor.execCommand('insertShortcode', false, shortcodeWithOpts);
+                }
+            }
+        });
+    });
+    tinyMCE.init({
+        selector: '#editorcontent',
+        extended_valid_elements: 'a[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],animate[*],animateMotion[*],animateTransform[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],foreignObject[*],g[*],glyph[*],glyphRef[*],hkern[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],stop[*],style[*],svg[*],switch[*],symbol[*],text[*],textPath[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*],a[*],animate[*],animateMotion[*],animateTransform[*],circle[*],clipPath[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],foreignObject[*],g[*],hatch[*],hatchpath[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],stop[*],style[*],svg[*],switch[*],symbol[*],text[*],textPath[*],title[*],tspan[*],use[*],view[*],g[*],animate[*],animateColor[*],animateMotion[*],animateTransform[*],discard[*],mpath[*],set[*],circle[*],ellipse[*],line[*],polygon[*],polyline[*],rect[*],a[*],defs[*],g[*],marker[*],mask[*],missing-glyph[*],pattern[*],svg[*],switch[*],symbol[*],desc[*],metadata[*],title[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],feSpecularLighting[*],feTile[*],feTurbulence[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],hkern[*],vkern[*],linearGradient[*],radialGradient[*],stop[*],circle[*],ellipse[*],image[*],line[*],path[*],polygon[*],polyline[*],rect[*],text[*],use[*],use[*],feDistantLight[*],fePointLight[*],feSpotLight[*],clipPath[*],defs[*],hatch[*],linearGradient[*],marker[*],mask[*],metadata[*],pattern[*],radialGradient[*],script[*],style[*],symbol[*],title[*],hatch[*],linearGradient[*],pattern[*],radialGradient[*],solidcolor[*],a[*],circle[*],ellipse[*],foreignObject[*],g[*],image[*],line[*],path[*],polygon[*],polyline[*],rect[*],svg[*],switch[*],symbol[*],text[*],textPath[*],tspan[*],use[*],g[*],circle[*],ellipse[*],line[*],path[*],polygon[*],polyline[*],rect[*],defs[*],g[*],svg[*],symbol[*],use[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],glyph[*],glyphRef[*],textPath[*],text[*],tref[*],tspan[*],altGlyph[*],textPath[*],tref[*],tspan[*],clipPath[*],cursor[*],filter[*],foreignObject[*],hatchpath[*],script[*],style[*],view[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],animateColor[*],cursor[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],glyph[*],glyphRef[*],hkern[*],missing-glyph[*],tref[*],vkern[*]',
+        plugins: [
+            'image',
+            'autolink link lists charmap hr anchor',
+            'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
+            'table contextmenu directionality template paste textcolor shortcode'
+        ],
+        toolbar: 'shortcode | insert | ...',
+        menubar: "edit insert view format table tools",
+        file_picker_types: 'image',
+        file_picker_callback: function (callback, value, meta) {
+            if (meta.filetype === 'image') {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        var imageDataUrl = reader.result;
+                        callback(imageDataUrl, { alt: '' }); //Pass the selected image data URL to the editor
+
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        },
+        paste_data_images: true,
+        setup: function (ed) {
+            ed.on('init', function (e) {
+                ed.execCommand('mceScreen');
+                ed.theme.resizeTo('100%', 300); // Set the desired width and height
+            });
+        }
+    });</script>
+<div class="page-title">
+    <h2>Compose</h2>
+</div>
+<section class="content section-content table-design customer-section">
+    <div class="box-body add-new-box">
+        <div class="row">
+            <label for="recipient">To:</label>
+            <input class="form-control input_mail" type="text" id="recipient" name="recipient" required />
+        </div>
+
+        <div class="row">
+            <label for="subject">Subject:</label>
+            <input class="form-control input_mail" type="text" id="subject" name="subject" required />
+        </div>
+
+        <div class="row">
+            <label for="message">Message:</label>
+            <textarea id="editorcontent"></textarea>
+        </div>
+
+        <div class="row">
+            @*<button type="submit">Send</button>*@
+        </div>
+    </div>
+</section>
+<script src="~/js/common.js"></script>
+@*<script src="@Url.Content("~/js/EmailProfile/Index.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>*@
+

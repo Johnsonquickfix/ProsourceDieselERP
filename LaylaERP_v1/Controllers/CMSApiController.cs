@@ -1128,7 +1128,7 @@
             }
         }
         [HttpGet, Route("product/{app_key}/{entity_id}")]
-        public IHttpActionResult ProductDetails(string app_key, long entity_id, string slug = "")
+        public IHttpActionResult ProductDetails(string app_key, long entity_id, long user_id = 0, string slug = "")
         {
             try
             {
@@ -1151,7 +1151,7 @@
                     LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                     dynamic obj = new ExpandoObject();
                     //term_main
-                    DataSet ds = CMSRepository.GetPageItems("products-detail", entity_id, string.Empty, slug, 0, 0);
+                    DataSet ds = CMSRepository.GetPageItems("products-detail", entity_id, string.Empty, slug, 0, 0, user_id);
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1198,7 +1198,46 @@
                                 obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
                                 obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
                             }
-                            else { obj.price = dr["price"]; }
+                            else
+                            {
+                                decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                                obj.price = _price;
+                                // Get wholesale details by product_id, user_id
+                                decimal _wholesale_discount = dr["wholesale_price"] != DBNull.Value ? Convert.ToDecimal(dr["wholesale_price"]) : 0;
+                                List<dynamic> _wholesale_range = new List<dynamic>();
+                                if (_wholesale_discount > 0)
+                                {
+                                    System.Collections.IEnumerable _att = serializer.Deserialize(dr["wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                    foreach (System.Collections.Hashtable _r in _att)
+                                    {
+                                        if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                        {
+                                            int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                            decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                            _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                        }
+                                    }
+                                    obj.wholesale = new { price = _wholesale_discount, range = _wholesale_range };
+                                }
+                                else
+                                {
+                                    _wholesale_discount = dr["cat_wholesale_discount"] != DBNull.Value ? Convert.ToDecimal(dr["cat_wholesale_discount"]) : 0;
+                                    if (_wholesale_discount > 0 && _price > 0)
+                                    {
+                                        System.Collections.IEnumerable _att = serializer.Deserialize(dr["cat_wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                        foreach (System.Collections.Hashtable _r in _att)
+                                        {
+                                            if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                            {
+                                                int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                                decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                                _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                            }
+                                        }
+                                        obj.wholesale = new { price = _price - (_price * _wholesale_discount) / 100, range = _wholesale_range };
+                                    }
+                                }
+                            }
                             obj.wholesale_details = "";
                             Dictionary<String, Object> img = new Dictionary<String, Object>();
                             string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
@@ -1261,6 +1300,43 @@
                                 obj.variations = new List<dynamic>();
                                 foreach (DataRow dr in ds.Tables[1].Rows)
                                 {
+                                    decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                                    // Get wholesale details by product_id, user_id
+                                    decimal _wholesale_discount = dr["wholesale_price"] != DBNull.Value ? Convert.ToDecimal(dr["wholesale_price"]) : 0;
+                                    List<dynamic> _wholesale_range = new List<dynamic>();
+                                    if (_wholesale_discount > 0)
+                                    {
+                                        System.Collections.IEnumerable _att = serializer.Deserialize(dr["wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                        foreach (System.Collections.Hashtable _r in _att)
+                                        {
+                                            if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                            {
+                                                int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                                decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                                _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                            }
+                                        }
+                                        obj.wholesale = new { price = _wholesale_discount, range = _wholesale_range };
+                                    }
+                                    else
+                                    {
+                                        _wholesale_discount = dr["cat_wholesale_discount"] != DBNull.Value ? Convert.ToDecimal(dr["cat_wholesale_discount"]) : 0;
+                                        if (_wholesale_discount > 0 && _price > 0)
+                                        {
+                                            System.Collections.IEnumerable _att = serializer.Deserialize(dr["cat_wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                            foreach (System.Collections.Hashtable _r in _att)
+                                            {
+                                                if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                                {
+                                                    int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                                    decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                                    _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                                }
+                                            }
+                                            obj.wholesale = new { price = _price - (_price * _wholesale_discount) / 100, range = _wholesale_range };
+                                        }
+                                    }
+
                                     var vr = new
                                     {
                                         ID = dr["ID"],
@@ -1270,6 +1346,7 @@
                                         //Postmeta
                                         sku = dr["sku"],
                                         price = dr["price"],
+                                        wholesale = new { price = _wholesale_discount },
                                         regular_price = dr["regular_price"],
                                         sale_price = dr["sale_price"],
                                         manage_stock = dr["manage_stock"],

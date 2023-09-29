@@ -242,6 +242,7 @@
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\DonationHaulRepository.cs" />
     <Compile Include="BAL\EmailNotificationsRepository.cs" />
+    <Compile Include="BAL\EmailProfileRepository.cs" />
     <Compile Include="BAL\EntityRepositry.cs" />
     <Compile Include="BAL\EventsRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
@@ -988,6 +989,7 @@
     <Content Include="js\CustomSearch\QuoteSearch.js" />
     <Content Include="js\DonationHaul\DonationHaulList.js" />
     <Content Include="js\DonationHaul\UploadedList.js" />
+    <Content Include="js\EmailProfile\Index.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\Entity\CreateEntity.js" />
@@ -1925,6 +1927,7 @@
     <Content Include="Views\Audience\ProfilebyidView.cshtml" />
     <Content Include="Views\DataImport\ProductImport.cshtml" />
     <Content Include="Views\CMS\ContactUs.cshtml" />
+    <Content Include="Views\EmailProfile\Compose.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

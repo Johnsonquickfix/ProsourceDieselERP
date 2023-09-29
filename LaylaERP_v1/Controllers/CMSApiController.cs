@@ -937,6 +937,10 @@
                 }
                 else
                 {
+                    System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                    long user_id = 0;
+                    if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+
                     JObject original_o = JObject.FromObject(new { _sku = "", _price = "", _regular_price = "", _sale_price = "", _core_price = "", _manage_stock = "", _stock_status = "", _stock = "", _backorders = "", _weight = "", _height = "", _width = "", _length = "", _tax_status = "" });
                     dynamic obj = new ExpandoObject(); int overall_count = 0;
                     dynamic obj_filter = new ExpandoObject();
@@ -962,7 +966,7 @@
                     }
                     if (flter.sort_by != null) obj_filter.sort_by = flter.sort_by;
                     obj.page_type = "product_filter";
-                    DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, JsonConvert.SerializeObject(obj_filter), flter.limit, flter.page);
+                    DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, JsonConvert.SerializeObject(obj_filter), flter.limit, flter.page, user_id);
                     foreach (DataRow item in ds.Tables[0].Rows)
                     {
                         obj.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;
@@ -1037,7 +1041,25 @@
                             else
                             { row.Add("price_range", new { min = 0, max = 0 }); row.Add("price", string.Format("${0:0.00} - ${1:0.00}", 0, 0)); }
                         }
-                        else { row.Add("price", dr["price"]); }
+                        else { 
+                            decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                            row.Add("price", _price);
+                            // Get wholesale details by product_id, user_id
+                            decimal _wholesale_discount = dr["wholesale_price"] != DBNull.Value ? Convert.ToDecimal(dr["wholesale_price"]) : 0;
+                            List<dynamic> _wholesale_range = new List<dynamic>();
+                            if (_wholesale_discount > 0)
+                            {
+                                row.Add("wholesale", new { price = _wholesale_discount });
+                            }
+                            else
+                            {
+                                _wholesale_discount = dr["cat_wholesale_discount"] != DBNull.Value ? Convert.ToDecimal(dr["cat_wholesale_discount"]) : 0;
+                                if (_wholesale_discount > 0 && _price > 0)
+                                {
+                                    row.Add("wholesale", new { price = _price - (_price * _wholesale_discount) / 100 });
+                                }
+                            }
+                        }
                         row.Add("wholesale_details", "");
 
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
@@ -1096,10 +1118,14 @@
                 }
                 else
                 {
+                    System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                    long user_id = 0;
+                    if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+
                     LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                     dynamic obj = new List<dynamic>();
                     //term_main
-                    DataSet ds = CMSRepository.GetPageItems("filter-schema", entity_id, string.Empty, slug, 0, 0);
+                    DataSet ds = CMSRepository.GetPageItems("filter-schema", entity_id, string.Empty, slug, 0, 0, user_id);
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         foreach (DataRow dr in ds.Tables[0].Rows)

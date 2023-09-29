@@ -1128,7 +1128,7 @@
             }
         }
         [HttpGet, Route("product/{app_key}/{entity_id}")]
-        public IHttpActionResult ProductDetails(string app_key, long entity_id, long user_id = 0, string slug = "")
+        public IHttpActionResult ProductDetails(string app_key, long entity_id, string slug = "")
         {
             try
             {
@@ -1148,6 +1148,10 @@
                 }
                 else
                 {
+                    System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                    long user_id = 0;
+                    if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+
                     LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                     dynamic obj = new ExpandoObject();
                     //term_main
@@ -1569,6 +1573,35 @@
                 {
                     string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("topsell_{0}", entity_id));
                     JArray records = JArray.Parse(json);
+                    foreach (JToken pitem in records)
+                    {
+                        foreach (JToken item in pitem["products"])
+                        {
+                            var _type = item.SelectToken("product_type").Value<string>();
+                            if (_type.Equals("variable"))
+                            {
+                                double[] parsed = Array.ConvertAll(item["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                                item["price"] = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                            }
+                        }
+                    }
+                    //if (dr["product_type"].ToString().Equals("variable"))
+                    //{
+                    //    double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                    //    obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                    //    obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                    //}
+                    //else if (dr["product_type"].ToString().Equals("grouped"))
+                    //{
+                    //    double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                    //    obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                    //    obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                    //}
+                    //else
+                    //{
+                    //    decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                    //    obj.price = _price;
+                    //}
                     if (records.Count > 0) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = records });
                     else return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
                 }

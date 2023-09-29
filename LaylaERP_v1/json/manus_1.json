@@ -616,6 +616,31 @@
         }
       },
       {
+        "term_id": 400370,
+        "name": "NISSAN TITAN",
+        "slug": "nissan-titan",
+        "subcat": [
+          {
+            "term_id": 400369,
+            "name": "2016-2019 NISSAN TITAN XD 5.0L PARTS",
+            "slug": "2016-2019-nissan-titan-xd-5.0l-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
         "term_id": 237177,
         "name": "OTHER MODELS",
         "slug": "other-models-cummins",
@@ -818,7 +843,7 @@
     "image": {
       "width": 0,
       "height": 0,
-      "file": "",
+      "file": "https://new.prosourcediesel.com/wp-content/uploads/2023/09/Cummins.jpg",
       "filesize": 0.0
     }
   },

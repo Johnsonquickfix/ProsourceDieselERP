@@ -205,7 +205,7 @@
     "length": 17.5,
     "width": 12.365,
     "height": 3,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® Large Box",
@@ -216,7 +216,7 @@
     "length": 11.25,
     "width": 8.75,
     "height": 7.75,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® Extra Large Box",
@@ -227,7 +227,7 @@
     "length": 11.875,
     "width": 11,
     "height": 10.75,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® Extra Large Box",
@@ -238,7 +238,7 @@
     "length": 15.75,
     "width": 14.125,
     "height": 6,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® Pak",
@@ -298,7 +298,7 @@
     "width": 9.5,
     "height": 0.25,
     "type": "envelope",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® 10kg Box",
@@ -308,7 +308,7 @@
     "length": 15.81,
     "width": 12.94,
     "height": 10.19,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® 25kg Box",
@@ -318,7 +318,7 @@
     "length": 21.56,
     "width": 16.56,
     "height": 13.19,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FedEx® Tube",

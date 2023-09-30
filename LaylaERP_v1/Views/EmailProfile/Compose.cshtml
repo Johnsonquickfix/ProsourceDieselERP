@@ -88,9 +88,12 @@
     });</script>
 <div class="page-title">
     <h2>Compose</h2>
+    <span title="Click here to back to list" data-placement="right" data-toggle="tooltip">@Html.ActionLink("Back to List", "Inboxprofile", null, new { @class = "btn btn-danger" })</span>
+
 </div>
 <section class="content section-content table-design customer-section">
     <div class="box-body add-new-box">
+        <input type="hidden" id="hfid" />
         <div class="row">
             <label for="recipient">To:</label>
             <input class="form-control input_mail" type="text" id="recipient" name="recipient" required />
@@ -105,6 +108,7 @@
             <label for="message">Message:</label>
             <textarea id="editorcontent"></textarea>
         </div>
+        <div class="row" id="fileList"></div>
 
         <div class="row">
             @*<button type="submit">Send</button>*@
@@ -112,5 +116,5 @@
     </div>
 </section>
 <script src="~/js/common.js"></script>
-@*<script src="@Url.Content("~/js/EmailProfile/Index.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>*@
+<script src="@Url.Content("~/js/EmailProfile/Compose.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

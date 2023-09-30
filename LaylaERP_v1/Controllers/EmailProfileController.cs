@@ -15,6 +15,8 @@ using LaylaERP.BAL;
 using LaylaERP.Models;
 using Newtonsoft.Json;
 
+ 
+
 namespace LaylaERP_v1.Controllers
 {
     public class EmailProfileController : Controller
@@ -24,7 +26,8 @@ namespace LaylaERP_v1.Controllers
         {
             try
             {
-                FatchMails("I");                 
+                //string saveDirectory = Path.Combine(Server.MapPath("~/inbox"));
+                //FatchMails("I", saveDirectory);                 
             }
             catch (Exception ep)
             {
@@ -37,7 +40,8 @@ namespace LaylaERP_v1.Controllers
         {
             try
             {
-                FatchMails("S");
+                string saveDirectory = Path.Combine(Server.MapPath("~/mail/sent"));
+                FatchMails("S", saveDirectory);
                 
             }
             catch (Exception ep)
@@ -50,7 +54,8 @@ namespace LaylaERP_v1.Controllers
         {
             try
             {
-                FatchMails("D");  
+                string saveDirectory = Path.Combine(Server.MapPath("~/mail/draft"));
+                FatchMails("D", saveDirectory);  
             }
             catch (Exception ep)
             {
@@ -87,12 +92,12 @@ namespace LaylaERP_v1.Controllers
         }
 
 
-        static void FatchMails(string type)
+        static void FatchMails(string type,string saveDirectory)
         {
-
+           
             DataTable dt = EmailProfileRepository.email_detils(1);
             string server_name = null, user_id = null, password = null, email_address = null;
-            int port = 0;bool is_seen = false;
+            int port = 0;bool is_seen = false, is_attached = false;
             if (dt != null && dt.Rows.Count > 0)
             {
                 server_name = dt.Rows[0]["imap4_server"].ToString();user_id = dt.Rows[0]["imapuser_name"].ToString();password = dt.Rows[0]["imapuser_password"].ToString();port = Convert.ToInt32(dt.Rows[0]["imap_port"].ToString());
@@ -118,10 +123,12 @@ namespace LaylaERP_v1.Controllers
 
                 }
                 mail.Open(FolderAccess.ReadOnly);
-                SearchQuery searchQuery = SearchQuery.SentSince(DateTime.Now);
-                //var results = mail.Search(SearchQuery.All); // No filter applied, retrieves all emails
+                 SearchQuery searchQuery = SearchQuery.SentSince(DateTime.Now);
+                 //var results = mail.Search(SearchQuery.All); // No filter applied, retrieves all emails
                 var results = mail.Search(searchQuery);
                 var items = mail.Fetch(results, MessageSummaryItems.Full | MessageSummaryItems.BodyStructure).Reverse();
+
+
                 foreach (var item in items)
                 {
                     if (item.Flags.Value.HasFlag(MessageFlags.Seen))
@@ -129,18 +136,54 @@ namespace LaylaERP_v1.Controllers
                     else
                         is_seen = false;
                     var message = mail.GetMessage(item.UniqueId);
-                     
-                    var fromAddress = message.From[0] as MailboxAddress; 
+
+                    string folderName = item.UniqueId.ToString(); // Get the MessageId as the folder name
+
+                    // Create the folder if it doesn't exist
+                    string folderPath = Path.Combine(saveDirectory, folderName);
+                    Directory.CreateDirectory(folderPath);
+
+                    foreach (var attachment in message.Attachments)
+                    {
+                        if (attachment is MimePart mimePart)
+                        {
+                            Console.WriteLine($"Attachment Name: {mimePart.FileName}");
+                            string filePath = Path.Combine(folderPath, mimePart.FileName);
+
+                            using (var memoryStream = new System.IO.MemoryStream())
+                            {
+                                mimePart.Content.DecodeTo(memoryStream);
+                                Console.WriteLine($"Attachment Size: {memoryStream.Length} bytes");
+
+                                // Save the attachment to a file if needed
+                                // using (var fileStream = System.IO.File.Create(mimePart.FileName))
+                                using (var fileStream = System.IO.File.Create(filePath))
+                                {
+                                    memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                                    memoryStream.CopyTo(fileStream);
+                                    is_attached = true;
+                                }
+                            }
+                            //Console.WriteLine($"Attachment Size: {mimePart.Content.l} bytes");
+
+                            //// Save the attachment to a file if needed
+                            //using (var stream = System.IO.File.Create(mimePart.FileName))
+                            //{
+                            //    mimePart.Content.DecodeTo(stream);
+                            //}
+                        }
+                    }
+                    var fromAddress = message.From[0] as MailboxAddress;
                     var _body = message.HtmlBody;
                     if (type == "I")
-                        email_address = fromAddress.Address;  
-                   else
-                        email_address = fromAddress.Address;  
+                        email_address = fromAddress.Address;
+                    else
+                        email_address = fromAddress.Address;
                     //bool isIncoming = IsIncomingMessage(message);
                     //if (!string.IsNullOrEmpty(_body))
                     if (_body == null)
                         _body = message.TextBody;
-                    int ID = EmailProfileRepository.AddMails(1, email_address, message.Subject, type, is_seen, false, _body, message.TextBody,message.MessageId, message.InReplyTo);
+                    int ID = EmailProfileRepository.AddMails(1, email_address, message.Subject, type, is_seen, false, _body, message.TextBody, message.MessageId, message.InReplyTo,is_attached, folderName);
 
                 }
                 client.Disconnect(true);
@@ -154,7 +197,14 @@ namespace LaylaERP_v1.Controllers
             int TotalRecord = 0;
             try
             {
-                FatchMails(model.strValue2);
+                string saveDirectory = "";
+                if (model.strValue2 == "I")
+                  saveDirectory = Path.Combine(Server.MapPath("~/mail/inbox"));
+                else if (model.strValue2 == "S")
+                    saveDirectory = Path.Combine(Server.MapPath("~/mail/sent"));
+                else
+                    saveDirectory = Path.Combine(Server.MapPath("~/mail/draft"));
+                FatchMails(model.strValue2, saveDirectory);
 
                 DataTable dt = EmailProfileRepository.GetmailList(model.strValue1,model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength,  out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
@@ -174,6 +224,19 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        public JsonResult GetMailByID(int ID)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = EmailProfileRepository.GetMailByID(ID);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

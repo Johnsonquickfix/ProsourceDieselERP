@@ -26,7 +26,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static int AddMails(int company_id,string email_address,string subject,string direction,bool is_read,bool is_deleted,string html_content,string text_content,string MessageId,string in_reply_to)
+        public static int AddMails(int company_id,string email_address,string subject,string direction,bool is_read,bool is_deleted,string html_content,string text_content,string MessageId,string in_reply_to,bool is_attached,string UniqueId)
         {
             try
             {
@@ -42,6 +42,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@text_content", text_content),
                     new SqlParameter("@message_id", MessageId),
                     new SqlParameter("@in_reply_to ", in_reply_to),
+                    new SqlParameter("@is_attached", is_attached),
+                    new SqlParameter("@unique_id", UniqueId),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_Profile_email_insert", para));
@@ -100,7 +102,30 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetMailByID(int ID)
+        {
+            DataTable dt = new DataTable();
 
+            try
+            {
+                string strWhr = string.Empty;
+
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@condition", ""),
+                    new SqlParameter("@flag", "ByID"),
+                    new SqlParameter("@id",ID),
+                };
+                DataTable ds = new DataTable();
+                dt = DAL.SQLHelper.ExecuteDataTable("cms_mailbyid", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 }

@@ -1,8 +1,7 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    GetDetails();
-    
     dataGridLoad('I');
+    GetDetails();
     $(document).on('click', "#btnsend", function () {
         dataGridLoad('S');
         GetDetails();

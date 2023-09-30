@@ -989,6 +989,7 @@
     <Content Include="js\CustomSearch\QuoteSearch.js" />
     <Content Include="js\DonationHaul\DonationHaulList.js" />
     <Content Include="js\DonationHaul\UploadedList.js" />
+    <Content Include="js\EmailProfile\Compose.js" />
     <Content Include="js\EmailProfile\Index.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
@@ -1936,6 +1937,9 @@
     <Folder Include="Content\Blog\Other\" />
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
+    <Folder Include="mail\draft\" />
+    <Folder Include="mail\inbox\" />
+    <Folder Include="mail\sent\" />
     <Folder Include="Views\CMSApi\" />
     <Folder Include="Views\CMSRepository\" />
     <Folder Include="Views\ProductReviewImport\" />

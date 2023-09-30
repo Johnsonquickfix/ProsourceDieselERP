@@ -1,0 +1,48 @@
+8.Loan Payable -
+  Kabbage
+9.Loan Payable - Paypal
+10.Medicare 
+11.Social Security Payable
+12.State Disibility Insurance Payable  
+13.State Income Tax
+   Payable
+14.Interest Payable
+
+15.Gross Receipts
+16.Refunds-Allowances
+17.Services 
+18.Shipping Income 
+19.Shipping, Delivery Income  
+20.Cost of labor - COS 
+21.Freight & delivery - COS
+22.Obsolete Inventory
+23.Other Costs - COS
+24.Purchases - COS
+25.Subcontractors - COS
+26.Supplies & Materials - COGS
+27.Advertising 
+28.Auto Repair & Maintenance 
+29.Bad Debts 
+30.Comcast 
+31.Commissions & fees
+32.Computer
+33.Credit Card Fees
+34.Disposal Fees
+35.Dues & Subscriptions
+36.Freight & Delivery
+37.Freight & Delivery
+38.Insurance - Disability
+39.Insurance - Liability
+40.Interest Expense
+41.Job Materials
+42.Legal & Professional Fees
+43.Meals and Entertainment  
+44.Miscellaneous 
+45.Office Expenses 
+46.Other General and Admin Expenses 
+47.Parking 
+48.Part
+49.Permit 
+50.Promotional 
+51.QuickBooks Payments Fees 
+ 

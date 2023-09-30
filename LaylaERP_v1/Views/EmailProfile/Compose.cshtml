@@ -8,6 +8,27 @@
         width: 80%;
     }
 </style>
+<style>
+    /* Style the attachment link as a button */
+    .attachment-link {
+        display: inline-block;
+        padding: 6px 12px; /* Slightly smaller padding for a more compact look */
+        /*background-color: #f1f3f4;  Light gray background color */
+        /*color: #333;  Dark text color 
+        text-decoration: none;*/
+        border: 1px solid #ddd; /* Light border */
+        border-radius: 4px;
+        font-size: 14px; /* Adjust the font size as needed */
+        margin-right: 10px; /* Add some spacing between attachments */
+    }
+
+        /* Add hover effect */
+        .attachment-link:hover {
+            background-color: #007bff; /* Blue background on hover */
+            color: #fff; /* White text on hover */
+            border: 1px solid #007bff; /* Blue border on hover */
+        }
+</style>
 <script src='~/js/tinymce/tinymce.min.js'></script>
 <script>
     // Create a custom shortcode plugin
@@ -108,7 +129,7 @@
             <label for="message">Message:</label>
             <textarea id="editorcontent"></textarea>
         </div>
-        <div class="row" id="fileList"></div>
+        <div class="row"  id="fileList"></div>
 
         <div class="row">
             @*<button type="submit">Send</button>*@

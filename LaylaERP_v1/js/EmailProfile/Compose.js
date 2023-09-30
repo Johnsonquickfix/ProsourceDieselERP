@@ -1,8 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    $(".select1").select2();
-    //getpage();
-    //getcompany();
+    $(".select1").select2();  
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     var searchParams = new URLSearchParams(window.location.search);
@@ -19,9 +17,7 @@
         }
         else {
             $("#hfid").val(0);
-        }
-   
-    // $("#btnbacklist").prop("href", "List")
+        } 
 
     $(document).on('click', "#btnSave", function () {
         Add();
@@ -171,16 +167,15 @@ function GetDataByID(ID) {
             var folderName = i[0].unique_id;
            var encodedFolderName = encodeURIComponent(folderName);
             // The URL where the files are located
-            //var folderUrl = '../../Content/Media/' + folderName; // Replace with your actual folder URL
             var folderUrl = '';
             if (i[0].direction == 'I') {
                 folderUrl = '/mail/inbox/' + encodedFolderName; // Replace with your actual folder URL
             }
             else if (i[0].direction == 'S') {
-                folderUrl = '/mail/sent/' + encodedFolderName; // Replace with your actual folder URL
+                folderUrl = '/mail/sent/' + encodedFolderName; 
             }
             else {
-                folderUrl = '/mail/draft/' + encodedFolderName; // Replace with your actual folder URL
+                folderUrl = '/mail/draft/' + encodedFolderName; 
             }
 
             // Get the fileList element
@@ -218,16 +213,19 @@ function GetDataByID(ID) {
 
                     // Find all 'A' (anchor) elements within the parsed HTML content
                     var anchorElements = tempDiv.querySelectorAll('a');
-
+                   
                     // Iterate through the anchor elements to extract links and file names
                     anchorElements.forEach(function (anchorElement) {
+                                          
                         var href = anchorElement.getAttribute('href');
                         var fileName = anchorElement.textContent.trim();
 
                         // Check if the href is not a parent directory link
                         if (href !== '../' && fileName !== '[To Parent Directory]') {
+                          
                             var downloadLink = document.createElement('a');
                             downloadLink.href = folderUrl + '/' + fileName; // Construct the full URL
+                            downloadLink.className = 'attachment-link';
                             downloadLink.download = fileName;
                             downloadLink.textContent = fileName;
 

@@ -203,33 +203,35 @@
                     {
                         if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
                         {
+                            decimal? _price = item.wholesale.price;
                             System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.ArrayList;
-                            if (_att.Count <= 0) item.price = item.wholesale.price;
                             foreach (System.Collections.Hashtable _r in _att)
                             {
                                 if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
                                 {
                                     int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
                                     decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
-                                    if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) item.price = _wholesale_discount_range;
+                                    if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = _wholesale_discount_range;
                                 }
                             }
+                            item.price = _price;
                         }
                         else
                         {
                             if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
                             {
+                                decimal? _price = item.price - (item.price * item.wholesale.cat_discount) / 100;
                                 System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.ArrayList;
-                                if(_att.Count <= 0) item.price = item.price - (item.price * item.wholesale.cat_discount) / 100;
                                 foreach (System.Collections.Hashtable _r in _att)
                                 {
                                     if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
                                     {
                                         int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
                                         decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
-                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) item.price = item.price - (item.price * _wholesale_discount_range) / 100 ;
+                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = item.price - (item.price * _wholesale_discount_range) / 100;
                                     }
                                 }
+                                item.price = _price;
                             }
                         }
                     }

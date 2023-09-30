@@ -1060,7 +1060,7 @@
                                 }
                             }
                         }
-                        row.Add("wholesale_details", "");
+                        //row.Add("wholesale_details", "");
 
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
                         string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";

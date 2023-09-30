@@ -49,6 +49,7 @@ namespace LaylaERP_v1.Models.Product
             public string weight_unit { get; set; }
             public Image image { get; set; }
             public Dimensions dimensions { get; set; }
+            public Wholesale wholesale { get; set; }
             public class Image
             {
                 public string name { get; set; }
@@ -62,6 +63,14 @@ namespace LaylaERP_v1.Models.Product
                 public double length { get; set; } = 0;
                 public double width { get; set; } = 0;
                 public double height { get; set; } = 0;
+            }
+            public class Wholesale
+            {
+                public string role { get; set; }
+                public decimal? price { get; set; }
+                public string rule_mapping { get; set; }
+                public decimal? cat_discount { get; set; }
+                public string cat_rule_mapping { get; set; }
             }
         }
         public class CartTotals
@@ -97,7 +106,7 @@ namespace LaylaERP_v1.Models.Product
             public string method_title { get; set; }
             public decimal amount { get; set; }
             public bool isactive { get; set; }
-        }
+        }        
     }
 
     public class CartProductRequest

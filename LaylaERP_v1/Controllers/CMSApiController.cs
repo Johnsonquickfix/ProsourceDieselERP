@@ -1325,7 +1325,7 @@
                         obj.vehicle_fitment = ds.Tables[3];
                         if (obj.product_type != null)
                         {
-                            if (obj.product_type == "variable")
+                            if (obj.product_type == "variable" || obj.product_type == "grouped")
                             {
                                 obj.variations = new List<dynamic>();
                                 foreach (DataRow dr in ds.Tables[1].Rows)

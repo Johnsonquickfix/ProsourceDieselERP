@@ -1390,6 +1390,11 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
+    <Content Include="mail\inbox\1\cpanel-logo-tiny.png" />
+    <Content Include="mail\inbox\5\prosourcediesel-logo.png" />
+    <Content Include="mail\inbox\8\chart.txt" />
+    <Content Include="mail\inbox\8\image_2023_09_26T14_49_10_680Z.png" />
+    <Content Include="mail\inbox\8\INPOST.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\color_picker_alpha.js" />
@@ -1508,6 +1513,11 @@
     <Content Include="json\manus_1.json" />
     <Content Include="json\topsell_1.json" />
     <Content Include="json\boxpacker_box.json" />
+    <Content Include="mail\inbox\1\email-info%40new.prosourcediesel.com.mobileconfig" />
+    <Content Include="mail\inbox\6\71808338237.pdf" />
+    <Content Include="mail\inbox\7\CORRECTED 2023 Composite Cants.xlsx" />
+    <Content Include="mail\inbox\8\Chart of accounts_ProSou.pdf" />
+    <Content Include="mail\inbox\8\New Additions_prosource.xlsx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -1938,8 +1948,11 @@
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
     <Folder Include="mail\draft\" />
-    <Folder Include="mail\inbox\" />
-    <Folder Include="mail\sent\" />
+    <Folder Include="mail\inbox\2\" />
+    <Folder Include="mail\inbox\3\" />
+    <Folder Include="mail\inbox\4\" />
+    <Folder Include="mail\sent\1\" />
+    <Folder Include="mail\sent\2\" />
     <Folder Include="Views\CMSApi\" />
     <Folder Include="Views\CMSRepository\" />
     <Folder Include="Views\ProductReviewImport\" />

@@ -203,8 +203,8 @@
                     {
                         if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
                         {
-                            item.price = item.wholesale.price;
-                            System.Collections.IEnumerable _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.IEnumerable;
+                            System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.ArrayList;
+                            if (_att.Count <= 0) item.price = item.wholesale.price;
                             foreach (System.Collections.Hashtable _r in _att)
                             {
                                 if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
@@ -219,8 +219,8 @@
                         {
                             if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
                             {
-                                item.price = item.price - (item.price * item.wholesale.cat_discount) / 100;
-                                System.Collections.IEnumerable _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.IEnumerable;
+                                System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.ArrayList;
+                                if(_att.Count <= 0) item.price = item.price - (item.price * item.wholesale.cat_discount) / 100;
                                 foreach (System.Collections.Hashtable _r in _att)
                                 {
                                     if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())

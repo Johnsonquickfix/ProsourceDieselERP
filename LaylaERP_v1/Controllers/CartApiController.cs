@@ -171,6 +171,7 @@
         {
             try
             {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                 //double _dimension = 2.54, _weight = 0.453592;
                 double _dimension = 1, _weight = 1;
                 //Packer packer = new Packer(true, false);
@@ -197,6 +198,42 @@
                 decimal discount_total = 0, discount_tax = 0;
                 foreach (var item in obj.data.items)
                 {
+                    // get wholesale rate 
+                    if (item.wholesale != null)
+                    {
+                        if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
+                        {
+                            item.price = item.wholesale.price;
+                            System.Collections.IEnumerable _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.IEnumerable;
+                            foreach (System.Collections.Hashtable _r in _att)
+                            {
+                                if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
+                                {
+                                    int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                    decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                    if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) item.price = _wholesale_discount_range;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
+                            {
+                                item.price = item.price - (item.price * item.wholesale.cat_discount) / 100;
+                                System.Collections.IEnumerable _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.IEnumerable;
+                                foreach (System.Collections.Hashtable _r in _att)
+                                {
+                                    if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
+                                    {
+                                        int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                        decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) item.price = item.price - (item.price * _wholesale_discount_range) / 100 ;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    item.wholesale = null;
                     decimal line_subtotal = item.quantity * (item.price.HasValue ? item.price.Value : 0), line_discount = 0, line_total = 0;
                     item.line_subtotal = line_subtotal;
                     if (obj.data.coupons != null)

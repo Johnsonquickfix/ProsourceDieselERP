@@ -693,18 +693,6 @@
           //    "filesize": 0.0
           //  }
           //},
-          {
-            "term_id": 237210,
-            "name": "2014-2018 JEEP GRAND CHEROKEE 3.0L PARTS",
-            "slug": "2014-2018-jeep-grand-cherokee-3.0l-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
           //{
           //  "term_id": 237211,
           //  "name": "2007-2008 GRAND CHEROKEE CRD PARTS",
@@ -829,6 +817,18 @@
               "height": 0,
               "file": "",
               "filesize": 0.0
+            },
+            {
+              "term_id": 237210,
+              "name": "2014-2018 JEEP GRAND CHEROKEE 3.0L PARTS",
+              "slug": "2014-2018-jeep-grand-cherokee-3.0l-parts",
+              "subcat": [],
+              "image": {
+                "width": 0,
+                "height": 0,
+                "file": "",
+                "filesize": 0.0
+              }
             }
           }
         ],

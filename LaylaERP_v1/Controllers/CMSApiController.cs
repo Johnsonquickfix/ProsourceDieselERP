@@ -1041,7 +1041,8 @@
                             else
                             { row.Add("price_range", new { min = 0, max = 0 }); row.Add("price", string.Format("${0:0.00} - ${1:0.00}", 0, 0)); }
                         }
-                        else { 
+                        else
+                        {
                             decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
                             row.Add("price", _price);
                             // Get wholesale details by product_id, user_id
@@ -1180,6 +1181,7 @@
 
                     LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                     dynamic obj = new ExpandoObject();
+                    System.Collections.ArrayList _child = new System.Collections.ArrayList();
                     //term_main
                     DataSet ds = CMSRepository.GetPageItems("products-detail", entity_id, string.Empty, slug, 0, 0, user_id);
                     if (ds.Tables[0].Rows.Count > 0)
@@ -1224,6 +1226,7 @@
                             }
                             else if (dr["product_type"].ToString().Equals("grouped"))
                             {
+                                _child = serializer.Deserialize(dr["children"].ToString()) as System.Collections.ArrayList;
                                 double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
                                 obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
                                 obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
@@ -1325,7 +1328,7 @@
                         obj.vehicle_fitment = ds.Tables[3];
                         if (obj.product_type != null)
                         {
-                            if (obj.product_type == "variable" || obj.product_type == "grouped")
+                            if (obj.product_type == "variable")
                             {
                                 obj.variations = new List<dynamic>();
                                 foreach (DataRow dr in ds.Tables[1].Rows)
@@ -1395,6 +1398,15 @@
                                     obj.variations.Add(vr);
                                 }
                             }
+                            else if (obj.product_type == "grouped")
+                            {
+                                obj.children = new List<dynamic>();
+                                foreach (var child in _child)
+                                {
+                                    dynamic _o = GetGroupProductDetails(entity_id, Convert.ToInt64(child.ToString()), user_id);
+                                    if (_o != null) obj.children.Add(_o);
+                                }
+                            }
                         }
                         //Request.Headers.Add("Content-Type", "application/json; charset=utf-8");
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
@@ -1408,6 +1420,212 @@
                 return InternalServerError(ex);
             }
         }
+        public static dynamic GetGroupProductDetails(long entity_id, long id, long user_id = 0)
+        {
+            dynamic obj = new ExpandoObject();
+            try
+            {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                DataSet ds = CMSRepository.GetProductDetails("products-detail", entity_id, id, user_id);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        //Post
+                        obj.ID = dr["ID"];
+                        obj.post_name = dr["post_name"];
+                        obj.post_title = dr["post_title"];
+                        obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
+                        obj.post_excerpt = dr["post_excerpt"];
+                        obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";
+                        //Postmeta
+                        obj.yoast_title = dr["yoast_title"];
+                        obj.yoast_description = dr["yoast_description"];
+                        obj.sku = dr["sku"];
+                        obj.regular_price = dr["regular_price"];
+                        obj.sale_price = dr["sale_price"];
+                        obj.manage_stock = dr["manage_stock"];
+                        obj.backorders = dr["backorders"];
+                        obj.stock = dr["stock"];
+                        obj.stock_status = dr["stock_status"];
+                        obj.children = dr["children"];
+                        obj.core_price = dr["core_price"];
+                        obj.weight = dr["weight"];
+                        obj.length = dr["length"];
+                        obj.width = dr["width"];
+                        obj.height = dr["height"];
+                        obj.weight_unit = dr["weight_unit"];
+                        obj.dimension_unit = dr["dimension_unit"];
+                        obj.tax_status = dr["tax_status"];
+                        obj.total_review = dr["total_review"];
+                        obj.average_score = dr["average_score"];
+                        if (dr["product_type"].ToString().Equals("variable"))
+                        {
+                            double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                            obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                            obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                        }
+                        else
+                        {
+                            decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                            obj.price = _price;
+                            // Get wholesale details by product_id, user_id
+                            decimal _wholesale_discount = dr["wholesale_price"] != DBNull.Value ? Convert.ToDecimal(dr["wholesale_price"]) : 0;
+                            List<dynamic> _wholesale_range = new List<dynamic>();
+                            if (_wholesale_discount > 0)
+                            {
+                                System.Collections.IEnumerable _att = serializer.Deserialize(dr["wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                foreach (System.Collections.Hashtable _r in _att)
+                                {
+                                    if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                    {
+                                        int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                        decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                        _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                    }
+                                }
+                                obj.wholesale = new { price = _wholesale_discount, range = _wholesale_range };
+                            }
+                            else
+                            {
+                                _wholesale_discount = dr["cat_wholesale_discount"] != DBNull.Value ? Convert.ToDecimal(dr["cat_wholesale_discount"]) : 0;
+                                if (_wholesale_discount > 0 && _price > 0)
+                                {
+                                    System.Collections.IEnumerable _att = serializer.Deserialize(dr["cat_wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                    foreach (System.Collections.Hashtable _r in _att)
+                                    {
+                                        if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                        {
+                                            int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                            decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                            _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                        }
+                                    }
+                                    obj.wholesale = new { price = _price - (_price * _wholesale_discount) / 100, range = _wholesale_range };
+                                }
+                            }
+                        }
+                        obj.wholesale_details = "";
+                        Dictionary<String, Object> img = new Dictionary<String, Object>();
+                        string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                        JObject keyValues = JObject.Parse(meta);
+                        if (keyValues.Count == 0)
+                        {
+                            obj.image = new { name = "", height = 0, width = 0, filesize = 0 };
+                        }
+                        else
+                        {
+                            obj.image = new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] };
+                        }
+
+                        obj.galData = dr["galData"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["galData"].ToString()) : new List<dynamic>();
+                        obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                        obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                        if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
+                        {
+                            List<dynamic> _attributes = new List<dynamic>();
+                            System.Collections.Hashtable _att = serializer.Deserialize(dr["attributes"].ToString()) as System.Collections.Hashtable;
+                            foreach (System.Collections.DictionaryEntry att in _att)
+                            {
+                                System.Collections.Hashtable _att_value = (System.Collections.Hashtable)att.Value;
+                                DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
+                                if (_att_value["is_taxonomy"].ToString().Equals("1"))
+                                {
+                                    if (rows.Length > 0) _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                    else _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                }
+                                else
+                                {
+                                    var _option = new List<dynamic>();
+                                    var _o = _att_value["value"].ToString().Split('|');
+                                    foreach (var s in _o) { _option.Add(new { term_id = 0, name = s.Trim(), slug = s.Trim() }); };
+                                    _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = _option });
+                                }
+                            }
+                            obj.attributes = _attributes;
+                        }
+                        obj.brand = dr["brand"];
+                    }
+                    obj.vehicle_fitment = ds.Tables[3];
+                    if (obj.product_type != null)
+                    {
+                        if (obj.product_type == "variable" || obj.product_type == "grouped")
+                        {
+                            obj.variations = new List<dynamic>();
+                            foreach (DataRow dr in ds.Tables[1].Rows)
+                            {
+                                decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                                // Get wholesale details by product_id, user_id
+                                decimal _wholesale_discount = dr["wholesale_price"] != DBNull.Value ? Convert.ToDecimal(dr["wholesale_price"]) : 0;
+                                List<dynamic> _wholesale_range = new List<dynamic>();
+                                if (_wholesale_discount > 0)
+                                {
+                                    System.Collections.IEnumerable _att = serializer.Deserialize(dr["wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                    foreach (System.Collections.Hashtable _r in _att)
+                                    {
+                                        if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                        {
+                                            int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                            decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                            _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                        }
+                                    }
+                                    obj.wholesale = new { price = _wholesale_discount, range = _wholesale_range };
+                                }
+                                else
+                                {
+                                    _wholesale_discount = dr["cat_wholesale_discount"] != DBNull.Value ? Convert.ToDecimal(dr["cat_wholesale_discount"]) : 0;
+                                    if (_wholesale_discount > 0 && _price > 0)
+                                    {
+                                        System.Collections.IEnumerable _att = serializer.Deserialize(dr["cat_wholesale_rule_mapping"].ToString()) as System.Collections.IEnumerable;
+                                        foreach (System.Collections.Hashtable _r in _att)
+                                        {
+                                            if (_r["wholesale-role"].ToString().ToLower() == dr["wholesale_role"].ToString().ToLower())
+                                            {
+                                                int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                                decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                                _wholesale_range.Add(new { start_qty = _start_qty, end_qty = _end_qty, price = _price - (_price * _wholesale_discount_range) / 100 });
+                                            }
+                                        }
+                                        obj.wholesale = new { price = _price - (_price * _wholesale_discount) / 100, range = _wholesale_range };
+                                    }
+                                }
+
+                                var vr = new
+                                {
+                                    ID = dr["ID"],
+                                    post_name = dr["post_name"],
+                                    post_title = dr["post_title"],
+                                    product_type = dr["product_type"],
+                                    //Postmeta
+                                    sku = dr["sku"],
+                                    price = dr["price"],
+                                    wholesale = new { price = _wholesale_discount },
+                                    regular_price = dr["regular_price"],
+                                    sale_price = dr["sale_price"],
+                                    manage_stock = dr["manage_stock"],
+                                    backorders = dr["backorders"],
+                                    stock = dr["stock"],
+                                    stock_status = dr["stock_status"],
+                                    core_price = dr["core_price"],
+                                    weight = dr["weight"],
+                                    length = dr["length"],
+                                    width = dr["width"],
+                                    height = dr["height"],
+                                    tax_status = dr["tax_status"],
+                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
+                                    attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
+                                };
+                                obj.variations.Add(vr);
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }//(Exception ex) { return ex; }
+            return obj;
+        }
+
         [HttpGet, Route("topsell/{app_key}/{entity_id}")]
         public IHttpActionResult ProductTopSell(string app_key, long entity_id)
         {

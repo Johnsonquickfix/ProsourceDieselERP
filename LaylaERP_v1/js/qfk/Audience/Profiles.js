@@ -2,11 +2,16 @@
     $(document).ready(function () {        
         $("#loader").hide();
         loaddata();
+        let cmail_id = localStorage.getItem('_id');
+        if (cmail_id == '') { $('#atnemail').hide() } else { $('#atnemail').show(); $("#atnemail").attr("href", "../EmailProfile/Compose/" + cmail_id + "?entiid=1"); }
     });
 
     var tb = $('#datatable'),
         loaddata = function () {
-            var search = $('#lblemail').text();
+            var search = $('#lblemail').text(); 
+            if (search == '') {
+                search = localStorage.getItem('_search');
+            }
             tb.DataTable({
                 oSearch: { "sSearch": search },
                 //dom: '<"d-flex justify-content-start"f><"d-flex justify-content-end"l>tip',
@@ -24,6 +29,8 @@
                         url: sSource, data: aoData,// dataType: 'json', type: "get", 
                         success: function (data) {
                             let _recordsTotal = data.length > 0 ? data[0].totalcount : 0; $('.profile-counts').html(_recordsTotal);
+                            localStorage.setItem('_search', '');
+                            localStorage.setItem('_id', '');
                             return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: _recordsTotal, recordsFiltered: _recordsTotal, aaData: data });
                         }
                     });

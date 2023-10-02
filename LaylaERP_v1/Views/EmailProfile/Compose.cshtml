@@ -110,7 +110,13 @@
 <div class="page-title">
     <h2>Compose</h2>
     <span title="Click here to back to list" data-placement="right" data-toggle="tooltip">@Html.ActionLink("Back to List", "Inboxprofile", null, new { @class = "btn btn-danger" })</span>
-
+    <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+        <button type="button" id="btnorder"  class="btn btn-primary btn-flat button">Orders</button>
+        <button type="button" id="btnevent" class="btn btn-primary btn-flat button">Events</button>
+        <button type="button" id="btnprofile" class="btn btn-primary btn-flat button">Profiles</button>
+    </div>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="box-body add-new-box">

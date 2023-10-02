@@ -2,8 +2,9 @@
 $(document).ready(function () {
     $("#loader").hide();
     $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
-    let searchText = localStorage.getItem('_search');    
-    if (searchText == '') { $('#atncustlist').hide() } else { $('#atncustlist').show() }
+   
+       
+    
     
     $('#txtOrderDate').daterangepicker({
         ranges: {
@@ -77,6 +78,16 @@ $(document).ready(function () {
             }
         }]);
     });
+
+    let cmail_id = localStorage.getItem('_id'); let searchText = localStorage.getItem('_search');
+    console.log(cmail_id);
+    if (cmail_id == '') {
+        $('#atnemail').hide();
+        if (searchText == '') { $('#atncustlist').hide() } else { $('#atncustlist').show() }
+    } else {
+        $('#atnemail').show(); $("#atnemail").attr("href", "../EmailProfile/Compose/" + cmail_id + "?entiid=1");
+
+    }
 });
 function UpdateOrders() {
     $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
@@ -185,6 +196,7 @@ function dataGridLoad(order_type) {
                 success: function (data) {
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     localStorage.setItem('_search', '');
+                    localStorage.setItem('_id', '');
                     return fnCallback(dtOption);
                 }
             });

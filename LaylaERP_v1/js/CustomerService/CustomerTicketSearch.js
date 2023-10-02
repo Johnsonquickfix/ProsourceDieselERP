@@ -18,7 +18,10 @@
     $(document).on("click", "[name='ticke_action']", function (t) {
         $("[name='ticke_action']").not(this).prop("checked", false)
     });
-    lightbox.option({ resizeDuration: 200, wrapAround: true, showImageNumberLabel: false,  alwaysShowNavOnTouchDevices: true });
+    lightbox.option({ resizeDuration: 200, wrapAround: true, showImageNumberLabel: false, alwaysShowNavOnTouchDevices: true });
+
+    let cmail_id = localStorage.getItem('_id');
+    if (cmail_id == '') { $('#atnemail').hide() } else { $('#atnemail').show(); $("#atnemail").attr("href", "../EmailProfile/Compose/" + cmail_id+"?entiid=1"); }
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -71,8 +74,11 @@ function SearchByControl(id) {
 }
 
 function dataGridLoad() {
-    
+    console.log(localStorage.getItem('_id'));
     var search = $('#lblemail').text();
+    if (search == '') {
+        search = localStorage.getItem('_search');
+    }
     console.log(search);
     let cus_id = (parseInt($('#ddlUser').val()) || 0), order_id = (parseInt($('#txtOrderNo').val()) || 0), ticket_id = (parseInt($('#txtTicketNo').val()) || 0);
     let table_oh = $('#dtTickets').DataTable({
@@ -98,6 +104,8 @@ function dataGridLoad() {
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    localStorage.setItem('_search', '');
+                    localStorage.setItem('_id', '');
                     return fnCallback(dtOption);
                 }
             });

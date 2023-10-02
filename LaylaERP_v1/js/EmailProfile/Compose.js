@@ -21,7 +21,22 @@
 
     $(document).on('click', "#btnSave", function () {
         Add();
-    })   
+    })
+    $(document).on('click', "#btnorder", function () {
+        localStorage.setItem('_search', $("#recipient").val());
+        localStorage.setItem('_id', id);
+        window.location.href = '../../OrdersMySQL/OrdersHistory';
+    })
+    $(document).on('click', "#btnevent", function () {
+        localStorage.setItem('_search', $("#recipient").val());
+        localStorage.setItem('_id', id);
+        window.location.href = '../../customer-service/search-ticket';
+    })
+    $(document).on('click', "#btnprofile", function () {
+        localStorage.setItem('_search', $("#recipient").val());
+        localStorage.setItem('_id', id);
+        window.location.href = '../../audience/profiles';
+    })
 })
 
 function Add() {

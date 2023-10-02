@@ -669,18 +669,18 @@
           //    "filesize": 0.0
           //  }
           //},
-          {
-            "term_id": 237208,
-            "name": "2020-2022 JEEP WRANGLER ECODIESEL PARTS",
-            "slug": "2020-2022-jeep-wrangler-ecodiesel-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
+          //{
+          //  "term_id": 237208,
+          //  "name": "2020-2022 JEEP WRANGLER ECODIESEL PARTS",
+          //  "slug": "2020-2022-jeep-wrangler-ecodiesel-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
           //{
           //  "term_id": 237209,
           //  "name": "2014-2018 RAM 1500 3.0L ECODIESEL PARTS",

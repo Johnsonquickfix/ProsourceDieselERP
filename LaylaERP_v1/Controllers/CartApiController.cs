@@ -68,8 +68,7 @@
                 // check coupon amount
                 //CartRepository.ApplyCoupon("check-coupon", entity_id, user_id, session_id, string.Empty);
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
-                if (obj.status == 200 && checkout) return Ok(CalculateTotals(obj));
-                else if (obj.status == 200 && !checkout) return Ok(obj);
+                if (obj.status == 200) return Ok(CalculateTotals(obj, checkout));
                 return Ok(obj);
 
                 //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });
@@ -167,7 +166,7 @@
             }
         }
 
-        public static dynamic CalculateTotals(CartResponse obj)
+        public static dynamic CalculateTotals(CartResponse obj, bool checkout = true)
         {
             try
             {
@@ -177,7 +176,7 @@
                 //Packer packer = new Packer(true, false);
                 WC_Boxpack packer = new WC_Boxpack();
                 TaxJarModel _tax = new TaxJarModel();
-                if (obj.data.shipping_address != null)
+                if (obj.data.shipping_address != null && checkout)
                 {
                     _tax.to_street = obj.data.shipping_address.address_1;
                     _tax.to_city = obj.data.shipping_address.city;
@@ -321,7 +320,7 @@
                 obj.data.cart_totals.fee_tax = fee_tax;
 
                 // calculate shipping
-                if (obj.data.shipping_address != null)
+                if (obj.data.shipping_address != null && checkout)
                 {
                     //packer.AddItem(9, 8, 4, 1, 67.95);
                     if (!string.IsNullOrEmpty(obj.data.shipping_address.postcode) && !string.IsNullOrEmpty(obj.data.shipping_address.country))
@@ -330,9 +329,10 @@
                         packer.Pack();
                         var packages = packer.GetPackages();
                         if (packages.Count > 0) get_fedex_shipping_methods(obj, packages);
-                        CartDataResponse.ShippingMethods _shipping = obj.data.shipping_methods.Where(s => s.isactive == true).FirstOrDefault();
-                        if (_shipping == null) _shipping = obj.data.shipping_methods.OrderBy(s => s.amount).FirstOrDefault();
-                        if (_shipping != null) shipping_total = _shipping.amount;
+                        //CartDataResponse.ShippingMethods _shipping = obj.data.shipping_methods.Where(s => s.isactive == true).FirstOrDefault();
+                        //if (_shipping == null) _shipping = obj.data.shipping_methods.OrderBy(s => s.amount).FirstOrDefault();
+                        //if (_shipping != null) shipping_total = _shipping.amount;
+                        shipping_total = obj.data.shipping_rate.amount;
                     }
                 }
                 //obj.data.cart_totals.shipping_taxes = new List<dynamic>();
@@ -432,6 +432,7 @@
         }
         public static void get_fedex_shipping_methods(CartResponse order, List<WC_Boxpack_Package> packages)
         {
+            bool is_active = false;
             dynamic _frdex = new ExpandoObject();
             List<CartDataResponse.ShippingMethods> _shipping_methods = new List<CartDataResponse.ShippingMethods>();
             try
@@ -526,7 +527,7 @@
                                     methods.method_id = rat.SelectToken("serviceType").Value<string>();
                                     methods.method_title = methods.method_id.Replace("_", " ");
                                     methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
-                                    if (order.data.shipping_rate != null) if (order.data.shipping_rate.method_id.Equals(methods.method_id)) methods.isactive = true;
+                                    if (order.data.shipping_rate != null) { if (order.data.shipping_rate.method_id.Equals(methods.method_id)) { methods.isactive = true; is_active = true; } }
                                     _shipping_methods.Add(methods);
                                 }
                             }
@@ -536,7 +537,7 @@
                                 methods.method_id = rat.SelectToken("serviceType").Value<string>();
                                 methods.method_title = methods.method_id.Replace("_", " ");
                                 methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) : 0;
-                                if (order.data.shipping_rate != null) if (order.data.shipping_rate.method_id.Equals(methods.method_id)) methods.isactive = true;
+                                if (order.data.shipping_rate != null) { if (order.data.shipping_rate.method_id.Equals(methods.method_id)) { methods.isactive = true; is_active = true; } }
                                 _shipping_methods.Add(methods);
                             }
                         }
@@ -545,7 +546,7 @@
             }
             catch (Exception ex) { }
             _shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
-            if (_shipping_methods.Count > 0 && order.data.shipping_rate == null)
+            if (_shipping_methods.Count > 0 && (order.data.shipping_rate == null || is_active != false))
             {
                 _shipping_methods[0].isactive = true;
                 order.data.shipping_rate = _shipping_methods[0];

@@ -19,7 +19,7 @@
             $("#hfid").val(0);
         } 
 
-    $(document).on('click', "#btnSave", function () {
+    $(document).on('click', "#btnsend", function () {
         Add();
     })
     $(document).on('click', "#btnorder", function () {
@@ -40,81 +40,37 @@
 })
 
 function Add() {
-    title = $("#txttitle").val();
-    entity = $("#ddlcompany").val();
-    content = $("#txtcontent").val();
-    seo = $("#txtseo").val();
-    let post_contentval = GetContent();
-    ID = $("#hfid").val();
-
-    parent_id = $("#ddlparent").val();
-    template = $("#page_template").val();
-    order = $("#menu_order").val();
-
-    srtdis = $("#txtshortdiscription").val();
-
-    gmtkeyword = $("#txtgmtakeyword").val();
-    comment = $("#txtcomment").val();
-
-    seotitle = $("#txtseotitle").val();
-    metades = $("#txtmetadescription").val();
-
-    fcsskey = $("#txtfocuskeyphras").val();
-    slug = $("#txtslug").val();
-
-    let _keylist = [];
-    let _synlist = [];
-    var firstElement = $("#txtsynonyms").val();
-    _synlist.push(firstElement);
-    $('#tbhold > tr').each(function (index, tr) {
-        _keylist.push({ keyword: $(tr).find('.input').val(), score: 'bad' });
-    });
-    $('#tbhold > tr').each(function (index, tr) {
-        //_synlist.push($("#txtsynonyms").val(), $(tr).find('.inputdes').val());
-        //if (index % 2 === 1) {
-        var value = $(tr).find('.inputdes').val();
-        _synlist.push(value);
-        //}
-    });
-    if (title == "") {
-        swal('Alert', 'Please enter page title!', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
+    recipient = $("#recipient").val();
+    subject = $("#subject").val(); 
+    let editorcontent = GetContent();
+    ID = $("#hfid").val(); 
+ 
+    if (recipient == "") {
+        swal('Alert', 'Please enter recipient mail!', 'error').then(function () { swal.close(); $('#recipient').focus(); });
     }
-    else if (entity == 0) {
-        swal('Alert', 'Please select store!', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
-    }
-    //else if (Emailuser == "") {
-    //    swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-    //}
-    //else if (Phone == "") {
-    //    swal('Alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
-    //}
+    else if (subject == "") {
+        swal('Alert', 'Please enter subject!', 'error').then(function () { swal.close(); $('#subject').focus(); });
+    } 
     else {
-        var file = document.getElementById("file").files[0];
-        var featuredfile = document.getElementById("Featuredfile").files[0];
-        var obj = new FormData();
-        obj.append("ImageFile", file);
-        obj.append("FeaturedFile", featuredfile);
-        obj.append("ID", ID);
-        obj.append("post_title", title);
-        obj.append("post_content", encodeURIComponent(post_contentval));
-        obj.append("entity_id", entity);
-        obj.append("SEO", seo);
-        obj.append("Content", content);
-        obj.append("fcsskey", fcsskey);
-        obj.append("seotitle", seotitle);
-        obj.append("metades", metades);
-        obj.append("slug", slug);
-        obj.append("keylist", JSON.stringify(_keylist));
-        obj.append("synlist", JSON.stringify(_synlist));
-        obj.append("parent_id", parent_id);
-        obj.append("template", template);
-        obj.append("order", order);
-        obj.append("gmtkeyword", gmtkeyword);
-        obj.append("comment", comment);
-        obj.append("shortdic", srtdis);
-        // console.log(srtdis);
+         var input = document.getElementById("file");
+         var obj = new FormData();
+        // Get the first selected file
+        var file = input.files[0];
+        if (input.files && input.files.length > 1) {
+            // If multiple files are selected, append all selected files
+            for (var i = 0; i < input.files.length; i++) {
+                obj.append("ImageFiles", input.files[i]);
+            }
+        } else if (file) {
+            // If only one file is selected, append the single file
+            obj.append("ImageFiles", file);
+        }
+        obj.append("recipient", encodeURIComponent(recipient));
+        obj.append("subject", encodeURIComponent(subject));
+        obj.append("editorcontent", encodeURIComponent(editorcontent));
+        console.log(encodeURIComponent(editorcontent));
         $.ajax({
-            url: '/CMS/CreatePages/', dataType: 'json', type: 'Post',
+            url: '/EmailProfile/composemail/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: obj,
             processData: false,

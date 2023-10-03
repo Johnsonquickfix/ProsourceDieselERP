@@ -46,7 +46,7 @@
         }
 
         [HttpPost, Route("items/{app_key}/{entity_id}")]
-        public IHttpActionResult CartItems(string app_key, long entity_id, CartProductRequest cart, bool checkout = false)
+        public IHttpActionResult CartItems(string app_key, long entity_id, List<CartProductRequest> cart, bool checkout = false)
         {
             try
             {
@@ -333,6 +333,7 @@
                         //if (_shipping == null) _shipping = obj.data.shipping_methods.OrderBy(s => s.amount).FirstOrDefault();
                         //if (_shipping != null) shipping_total = _shipping.amount;
                         shipping_total = obj.data.shipping_rate.amount;
+                        shipping_tax = Math.Round((shipping_total * _tax.rate / 100), 2);
                     }
                 }
                 //obj.data.cart_totals.shipping_taxes = new List<dynamic>();

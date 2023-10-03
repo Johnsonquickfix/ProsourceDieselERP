@@ -14,7 +14,7 @@
         display: inline-block;
         padding: 6px 12px; /* Slightly smaller padding for a more compact look */
         /*background-color: #f1f3f4;  Light gray background color */
-        /*color: #333;  Dark text color 
+        /*color: #333;  Dark text color
         text-decoration: none;*/
         border: 1px solid #ddd; /* Light border */
         border-radius: 4px;
@@ -112,52 +112,75 @@
     <span title="Click here to back to list" data-placement="right" data-toggle="tooltip">@Html.ActionLink("Back to List", "Inboxprofile", null, new { @class = "btn btn-danger" })</span>
     <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
     </div>
-    <div style="display: flex; justify-content: flex-end;">
-        <button type="button" id="btnorder"  class="btn btn-primary btn-flat button">Orders</button>
+    <div style="display: flex; justify-content: flex-end;" class="compose_btn_wrap">
+        <button type="button" id="btnorder" class="btn btn-primary btn-flat button">Orders</button>
         <button type="button" id="btnevent" class="btn btn-primary btn-flat button">Events</button>
         <button type="button" id="btnprofile" class="btn btn-primary btn-flat button">Profiles</button>
     </div>
 </div>
-<section class="content section-content table-design customer-section">
+<section class="content section-content table-design customer-section compose_section">
     <div class="box-body add-new-box">
         <input type="hidden" id="hfid" />
-        <div class="row">
+        <div class="row mx-0 compose_inpt">
             <label for="recipient">To:</label>
             <input class="form-control input_mail" type="text" id="recipient" name="recipient" required />
         </div>
 
-        <div class="row">
+        <div class="row mx-0 compose_inpt">
             <label for="subject">Subject:</label>
             <input class="form-control input_mail" type="text" id="subject" name="subject" required />
         </div>
 
-        <div class="row">
+        <div class="row mx-0 ">
             <label for="message">Message:</label>
             <textarea id="editorcontent"></textarea>
         </div>
-        <div class="row" id="fileList"></div>
+        <div class="row mx-0" id="fileList"></div>
 
-        <div class="image_drop_list">
-            <div id="imagePreviewContainer"></div>
-            <div id="excelContainer"></div>
-             <div id="textContainer"></div>
-            <label class="form-label d-flex list_box_edit_label">
-                Select files.<span class="edit-pic-profile">
+        <div class="image_drop_list mx-0 compose_file_wrap">
+            <div class="file_box_wrappers">
+                <div id="imagePreviewContainer"></div>
+                <div id="excelContainer"></div>
+                <div id="textContainer"></div>
+            </div>
+            <label class="form-label d-flex attach_label">
+                Attach files.<span class="edit-pic-profile">
                     @*<input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />*@
                     <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" multiple />
 
-                    <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
+                    <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit "></i></label>
                 </span>
             </label>
         </div>
 
 
 
-        <div class="row">
-            <button type="submit">Send</button>
+        <div class="row mx-0">
+            <button type="submit" class="btn btn-danger">Send</button>
         </div>
     </div>
 </section>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/EmailProfile/Compose.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+jQuery(function($){
+   
 
+    $(document).ready(function () {
+        $(".compose_inpt input").focus(function (e) {
+            $(e.target).parent().addClass('focus')
+            //return false;
+        });
+
+
+        $('.compose_inpt input').blur(function (e) {
+            if (!$(this).val()) {
+                $(e.target).parent().removeClass('focus')
+            }
+        });
+
+
+
+    });//end
+});
+</script>

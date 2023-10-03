@@ -137,7 +137,32 @@ function Add() {
         })
     }
 }
- 
+function readURL(input) {    
+    if (input.files && input.files.length > 0) {
+        var imagePreviewContainer = document.getElementById("imagePreviewContainer");
+
+        // Clear any existing content
+        imagePreviewContainer.innerHTML = "";
+
+        for (var i = 0; i < input.files.length; i++) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var tag = document.createElement("div");
+                tag.classList.add('rendered_imgs');
+                var imageURL = e.target.result;
+                // Create an image element and set its source
+                tag.innerHTML = '<img src="' + imageURL + '" />';
+                //var imageElement = document.createElement("img");
+                //imageElement.src = imageURL;
+                //var div_box =    document.createElement("div").appendChild(imageElement);
+                //imageElement.style.maxWidth = "100%";
+                // Append the image element to the container
+                imagePreviewContainer.appendChild(tag);
+            };
+            reader.readAsDataURL(input.files[i]);
+        }
+    }
+}
 function getcompany(id) {
     $.ajax({
         url: "/Setting/GetCompany",

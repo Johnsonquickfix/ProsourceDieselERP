@@ -281,14 +281,8 @@
                         NetworkCredential NetworkCred = new NetworkCredential(SenderEmailID, SenderEmailPwd);
                         smtp.UseDefaultCredentials = false;//false;
                         smtp.Credentials = NetworkCred;
-
-                        //smtp.Timeout = 5000;
-                        //GlobalVariable.strSMTPServerPortNo = "587";
                         smtp.Port = SMTPServerPortNo; //Convert.ToInt32(om.SMTPServerPortNo); 
                         smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        //byte[] inputBytes = Encoding.UTF8.GetBytes(importFile);
-                        //var stream = new System.IO.MemoryStream(inputBytes);
-                        //mm.Attachments.Add(new Attachment(stream, "invoice.html"));
                         foreach (var attachment in attachments)
                         {
                             mm.Attachments.Add(attachment);
@@ -296,6 +290,7 @@
                         //smtp.Timeout = 10000;
                         smtp.Send(mm);
 
+                        // On sent box show mail
                         //ExchangeService service = new ExchangeService();
                         //service.AutodiscoverUrl("youremailaddress@yourdomain.com");
 

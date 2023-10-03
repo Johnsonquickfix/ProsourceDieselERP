@@ -7,12 +7,14 @@
     var entiid = searchParams.get('entiid');
   
         if (id != "") {
-            if (id == 'Compose') { 
-                $("#hfid").val(0); 
+            if (id == 'Compose' || id == '0') {
+                $("#hfid").val(0);
+                $("#divactionbutton").hide();
             }
             else { 
                 GetDataByID(id);
-                $("#hfid").val(id); 
+                $("#hfid").val(id);
+                $("#divactionbutton").show();
             }
         }
         else {
@@ -80,10 +82,10 @@ function Add() {
                 if (data.status == true) {
 
                     if (data.url == "Pages") {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = '../List'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../Inboxprofile'; });
                     }
                     else {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = '../List'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../Inboxprofile'; });
                     }
                 }
                 else { swal('Alert!', data.message, 'error') }

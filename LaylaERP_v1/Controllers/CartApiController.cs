@@ -454,7 +454,7 @@
                     {
                         preferredCurrency = "USD",
                         dropoffType = "REGULAR_PICKUP",
-                        //ShipTimestamp" => date('c', strtotime('+1 Weekday')), //date('c'), //'2021-11-01T00:00:00+00:00',
+                        shipDateStamp= DateTime.Now.ToString("yyyy-MM-dd"),
                         packagingType = "YOUR_PACKAGING",
                         shippingChargesPayment = new
                         {

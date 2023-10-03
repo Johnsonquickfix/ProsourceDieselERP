@@ -516,18 +516,35 @@
                 {
                     if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                     CartDataResponse.ShippingMethods methods;
+                    // Los Angeles -- USA (UTC/GMT -07:00)
+                    DateTime date = DateTime.UtcNow.AddHours(-7);
+
                     foreach (JToken rat in result.output.rateReplyDetails)
                     {
                         if (_shipping_services.Contains(rat.SelectToken("serviceType").Value<string>()))
                         {
+                            string _new_label = string.Empty; int _rate_multiply = 1;
+                            //If thursday 15hr to up and friday 15hr before
+                            if ((((int)date.DayOfWeek) == 4 && date.Hour >= 15) || (((int)date.DayOfWeek) == 5 && date.Hour < 15))
+                            {
+                                if (rat.SelectToken("serviceType").Value<string>().Equals("PRIORITY_OVERNIGHT"))
+                                {
+                                    _new_label = "FedEx Priority Overnight with Monday Delivery";
+                                    _rate_multiply = 4;
+                                }
+                                else if (rat.SelectToken("serviceType").Value<string>().Equals("STANDARD_OVERNIGHT"))
+                                {
+                                    _new_label = "FedEx Standard Overnight with Monday Delivery";
+                                }
+                            }
                             if (rat["ratedShipmentDetails"] != null)
                             {
                                 foreach (JToken sh_rat in rat["ratedShipmentDetails"])
                                 {
                                     methods = new CartDataResponse.ShippingMethods();
                                     methods.method_id = rat.SelectToken("serviceType").Value<string>();
-                                    methods.method_title = methods.method_id.Replace("_", " ");
-                                    methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
+                                    methods.method_title = !string.IsNullOrEmpty(_new_label) ? _new_label : methods.method_id.Replace("_", " ");
+                                    methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) * _rate_multiply : 0;
                                     if (order.data.shipping_rate != null) { if (order.data.shipping_rate.method_id.Equals(methods.method_id)) { methods.isactive = true; is_active = true; } }
                                     _shipping_methods.Add(methods);
                                 }
@@ -536,8 +553,8 @@
                             {
                                 methods = new CartDataResponse.ShippingMethods();
                                 methods.method_id = rat.SelectToken("serviceType").Value<string>();
-                                methods.method_title = methods.method_id.Replace("_", " ");
-                                methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) : 0;
+                                methods.method_title = !string.IsNullOrEmpty(_new_label) ? _new_label : methods.method_id.Replace("_", " ");
+                                methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) * _rate_multiply : 0;
                                 if (order.data.shipping_rate != null) { if (order.data.shipping_rate.method_id.Equals(methods.method_id)) { methods.isactive = true; is_active = true; } }
                                 _shipping_methods.Add(methods);
                             }

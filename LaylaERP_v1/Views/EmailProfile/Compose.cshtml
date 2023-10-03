@@ -135,10 +135,26 @@
             <label for="message">Message:</label>
             <textarea id="editorcontent"></textarea>
         </div>
-        <div class="row"  id="fileList"></div>
+        <div class="row" id="fileList"></div>
+
+        <div class="image_drop_list">
+            <div id="imagePreviewContainer"></div>
+            <div id="excelContainer"></div>
+             <div id="textContainer"></div>
+            <label class="form-label d-flex list_box_edit_label">
+                Select files.<span class="edit-pic-profile">
+                    @*<input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />*@
+                    <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" multiple />
+
+                    <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
+                </span>
+            </label>
+        </div>
+
+
 
         <div class="row">
-            @*<button type="submit">Send</button>*@
+            <button type="submit">Send</button>
         </div>
     </div>
 </section>

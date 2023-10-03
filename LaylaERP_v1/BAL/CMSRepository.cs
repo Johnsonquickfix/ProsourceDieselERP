@@ -1199,6 +1199,25 @@ namespace LaylaERP.BAL
             catch { throw; }
             return ds;
         }
+        public static DataSet GetProductDetails(string flag, long entity_id,long id, long user_id = 0)
+        {
+            DataSet ds;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@entity_id", entity_id),
+                    new SqlParameter("@parent_id", id),
+                    user_id > 0 ? new SqlParameter("@user_id", user_id) : new SqlParameter("@user_id", DBNull.Value),
+                    new SqlParameter("@flag", flag)
+                };
+
+                ds = SQLHelper.ExecuteDataSet("cms_common_search", parameters);
+
+            }
+            catch { throw; }
+            return ds;
+        }
         public static DataSet GetPageItems(string flag, long entity_id, string parent_cat, string slug, string filter_json, int limit = 0, int page = 0, long user_id = 0)
         {
             DataSet ds;

@@ -1435,12 +1435,12 @@
                         obj.ID = dr["ID"];
                         obj.post_name = dr["post_name"];
                         obj.post_title = dr["post_title"];
-                        obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
-                        obj.post_excerpt = dr["post_excerpt"];
+                        //obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
+                        //obj.post_excerpt = dr["post_excerpt"];
                         obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";
                         //Postmeta
-                        obj.yoast_title = dr["yoast_title"];
-                        obj.yoast_description = dr["yoast_description"];
+                        //obj.yoast_title = dr["yoast_title"];
+                        //obj.yoast_description = dr["yoast_description"];
                         obj.sku = dr["sku"];
                         obj.regular_price = dr["regular_price"];
                         obj.sale_price = dr["sale_price"];
@@ -1448,17 +1448,17 @@
                         obj.backorders = dr["backorders"];
                         obj.stock = dr["stock"];
                         obj.stock_status = dr["stock_status"];
-                        obj.children = dr["children"];
-                        obj.core_price = dr["core_price"];
-                        obj.weight = dr["weight"];
-                        obj.length = dr["length"];
-                        obj.width = dr["width"];
-                        obj.height = dr["height"];
-                        obj.weight_unit = dr["weight_unit"];
-                        obj.dimension_unit = dr["dimension_unit"];
-                        obj.tax_status = dr["tax_status"];
-                        obj.total_review = dr["total_review"];
-                        obj.average_score = dr["average_score"];
+                        //obj.children = dr["children"];
+                        //obj.core_price = dr["core_price"];
+                        //obj.weight = dr["weight"];
+                        //obj.length = dr["length"];
+                        //obj.width = dr["width"];
+                        //obj.height = dr["height"];
+                        //obj.weight_unit = dr["weight_unit"];
+                        //obj.dimension_unit = dr["dimension_unit"];
+                        //obj.tax_status = dr["tax_status"];
+                        //obj.total_review = dr["total_review"];
+                        //obj.average_score = dr["average_score"];
                         if (dr["product_type"].ToString().Equals("variable"))
                         {
                             double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
@@ -1505,7 +1505,6 @@
                                 }
                             }
                         }
-                        obj.wholesale_details = "";
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
                         string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
                         JObject keyValues = JObject.Parse(meta);
@@ -1519,8 +1518,8 @@
                         }
 
                         obj.galData = dr["galData"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["galData"].ToString()) : new List<dynamic>();
-                        obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
-                        obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                        //obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                        //obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                         if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
                         {
                             List<dynamic> _attributes = new List<dynamic>();
@@ -1546,10 +1545,10 @@
                         }
                         obj.brand = dr["brand"];
                     }
-                    obj.vehicle_fitment = ds.Tables[3];
+                    //obj.vehicle_fitment = ds.Tables[3];
                     if (obj.product_type != null)
                     {
-                        if (obj.product_type == "variable" || obj.product_type == "grouped")
+                        if (obj.product_type == "variable")
                         {
                             obj.variations = new List<dynamic>();
                             foreach (DataRow dr in ds.Tables[1].Rows)
@@ -1594,7 +1593,7 @@
                                 var vr = new
                                 {
                                     ID = dr["ID"],
-                                    post_name = dr["post_name"],
+                                    //post_name = dr["post_name"],
                                     post_title = dr["post_title"],
                                     product_type = dr["product_type"],
                                     //Postmeta
@@ -1608,11 +1607,11 @@
                                     stock = dr["stock"],
                                     stock_status = dr["stock_status"],
                                     core_price = dr["core_price"],
-                                    weight = dr["weight"],
-                                    length = dr["length"],
-                                    width = dr["width"],
-                                    height = dr["height"],
-                                    tax_status = dr["tax_status"],
+                                    //weight = dr["weight"],
+                                    //length = dr["length"],
+                                    //width = dr["width"],
+                                    //height = dr["height"],
+                                    //tax_status = dr["tax_status"],
                                     image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
                                     attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
                                 };

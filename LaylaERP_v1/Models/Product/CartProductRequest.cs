@@ -29,6 +29,7 @@ namespace LaylaERP_v1.Models.Product
         public ShippingMethods shipping_rate { get; set; }
         public class Item
         {
+            public long group_id { get; set; }
             public long id { get; set; }
             public long variation_id { get; set; }
             public int quantity { get; set; }
@@ -111,6 +112,8 @@ namespace LaylaERP_v1.Models.Product
 
     public class CartProductRequest
     {
+        [JsonProperty("group_id")]
+        public long group_id { get; set; }
         [JsonProperty("id")]
         public long id { get; set; }
         [JsonProperty("variation_id")]

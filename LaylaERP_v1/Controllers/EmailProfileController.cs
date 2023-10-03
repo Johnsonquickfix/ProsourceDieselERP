@@ -14,8 +14,7 @@ using System.Data;
 using LaylaERP.BAL;
 using LaylaERP.Models;
 using Newtonsoft.Json;
-
- 
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP_v1.Controllers
 {
@@ -238,6 +237,40 @@ namespace LaylaERP_v1.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult composemail(IEnumerable<HttpPostedFileBase> ImageFiles, string recipient, string subject,string editorcontent)
+        {
+            recipient = HttpUtility.UrlDecode(recipient);
+            subject = HttpUtility.UrlDecode(subject);
+            editorcontent = HttpUtility.UrlDecode(editorcontent);
+            List<System.Net.Mail.Attachment> attachments = new List<System.Net.Mail.Attachment>();
+
+            foreach (var ImageFile in ImageFiles)
+            {
+                System.Net.Mail.Attachment attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
+                attachments.Add(attachment);
+            }
+
+             SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachments);
+
+
+            //System.Net.Mail.Attachment attachment;
+            //foreach (var ImageFile in ImageFiles)
+            //{
+                 
+            //    attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
+           
+            //    SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachment);
+
+            //}
+           // if (Convert.ToInt16(ID) > 0)
+               // return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+           // else
+                return Json(new { status = true, message = "successfully sent.", url = "", id = 0 }, 0);
+
+
+        }
+
 
     }
 }

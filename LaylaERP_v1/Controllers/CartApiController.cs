@@ -342,6 +342,7 @@
                     item.line_total_tax = item.children.Where(i => i.line_total_tax.HasValue).Sum(i => i.line_total_tax ?? 0);
                 }
                 obj.data.items = _newItem;
+                obj.data.item_count = _newItem.Sum(i => i.quantity);
                 cart_contents_total = f_line_total; cart_contents_tax = f_line_tax;
                 // Calculate cart_total
                 obj.data.cart_totals.subtotal = f_subtotal;

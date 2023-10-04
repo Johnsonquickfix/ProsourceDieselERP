@@ -9,12 +9,14 @@
         if (id != "") {
             if (id == 'Compose' || id == '0') {
                 $("#hfid").val(0);
-                $("#divactionbutton").hide();
+                $("#divactionbutton").hide();                 
+                $("#btnsend").text('Send');
             }
             else { 
                 GetDataByID(id);
                 $("#hfid").val(id);
-                $("#divactionbutton").show();
+                $("#divactionbutton").show();                
+                $("#btnsend").text('Reply');
             }
         }
         else {

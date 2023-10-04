@@ -41,20 +41,20 @@ namespace LaylaERP_v1.Controllers
             {
                 string saveDirectory = Path.Combine(Server.MapPath("~/mail/sent"));
                 FatchMails("S", saveDirectory);
-                
+
             }
             catch (Exception ep)
             {
                 Console.WriteLine(ep.Message);
-            } 
-            return View(); 
+            }
+            return View();
         }
         public ActionResult Draftprofile()
         {
             try
             {
                 string saveDirectory = Path.Combine(Server.MapPath("~/mail/draft"));
-                FatchMails("D", saveDirectory);  
+                FatchMails("D", saveDirectory);
             }
             catch (Exception ep)
             {
@@ -63,7 +63,7 @@ namespace LaylaERP_v1.Controllers
             return View();
         }
         public ActionResult Compose()
-        {             
+        {
             return View();
         }
         // Generate an unqiue email file name based on date time
@@ -91,15 +91,15 @@ namespace LaylaERP_v1.Controllers
         }
 
 
-        static void FatchMails(string type,string saveDirectory)
+        static void FatchMails(string type, string saveDirectory)
         {
-           
+
             DataTable dt = EmailProfileRepository.email_detils(1);
             string server_name = null, user_id = null, password = null, email_address = null;
-            int port = 0;bool is_seen = false, is_attached = false;
+            int port = 0; bool is_seen = false, is_attached = false;
             if (dt != null && dt.Rows.Count > 0)
             {
-                server_name = dt.Rows[0]["imap4_server"].ToString();user_id = dt.Rows[0]["imapuser_name"].ToString();password = dt.Rows[0]["imapuser_password"].ToString();port = Convert.ToInt32(dt.Rows[0]["imap_port"].ToString());
+                server_name = dt.Rows[0]["imap4_server"].ToString(); user_id = dt.Rows[0]["imapuser_name"].ToString(); password = dt.Rows[0]["imapuser_password"].ToString(); port = Convert.ToInt32(dt.Rows[0]["imap_port"].ToString());
             }
             using (var client = new ImapClient())
             {
@@ -122,8 +122,8 @@ namespace LaylaERP_v1.Controllers
 
                 }
                 mail.Open(FolderAccess.ReadOnly);
-                 SearchQuery searchQuery = SearchQuery.SentSince(DateTime.Now);
-                 //var results = mail.Search(SearchQuery.All); // No filter applied, retrieves all emails
+                SearchQuery searchQuery = SearchQuery.SentSince(DateTime.Now);
+                //var results = mail.Search(SearchQuery.All); // No filter applied, retrieves all emails
                 var results = mail.Search(searchQuery);
                 var items = mail.Fetch(results, MessageSummaryItems.Full | MessageSummaryItems.BodyStructure).Reverse();
 
@@ -182,7 +182,7 @@ namespace LaylaERP_v1.Controllers
                     //if (!string.IsNullOrEmpty(_body))
                     if (_body == null)
                         _body = message.TextBody;
-                    int ID = EmailProfileRepository.AddMails(1, email_address, message.Subject, type, is_seen, false, _body, message.TextBody, message.MessageId, message.InReplyTo,is_attached, folderName);
+                    int ID = EmailProfileRepository.AddMails(1, email_address, message.Subject, type, is_seen, false, _body, message.TextBody, message.MessageId, message.InReplyTo, is_attached, folderName);
 
                 }
                 client.Disconnect(true);
@@ -198,14 +198,14 @@ namespace LaylaERP_v1.Controllers
             {
                 string saveDirectory = "";
                 if (model.strValue2 == "I")
-                  saveDirectory = Path.Combine(Server.MapPath("~/mail/inbox"));
+                    saveDirectory = Path.Combine(Server.MapPath("~/mail/inbox"));
                 else if (model.strValue2 == "S")
                     saveDirectory = Path.Combine(Server.MapPath("~/mail/sent"));
                 else
                     saveDirectory = Path.Combine(Server.MapPath("~/mail/draft"));
                 FatchMails(model.strValue2, saveDirectory);
 
-                DataTable dt = EmailProfileRepository.GetmailList(model.strValue1,model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength,  out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = EmailProfileRepository.GetmailList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -238,39 +238,45 @@ namespace LaylaERP_v1.Controllers
             return Json(JSONresult, 0);
         }
 
-        public JsonResult composemail(IEnumerable<HttpPostedFileBase> ImageFiles, string recipient, string subject,string editorcontent)
+        public JsonResult composemail(IEnumerable<HttpPostedFileBase> ImageFiles, string recipient, string subject, string editorcontent)
         {
-            recipient = HttpUtility.UrlDecode(recipient);
-            subject = HttpUtility.UrlDecode(subject);
-            editorcontent = HttpUtility.UrlDecode(editorcontent);
-            List<System.Net.Mail.Attachment> attachments = new List<System.Net.Mail.Attachment>();
-
-            foreach (var ImageFile in ImageFiles)
+            try
             {
-                System.Net.Mail.Attachment attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
-                attachments.Add(attachment);
+                recipient = HttpUtility.UrlDecode(recipient);
+                subject = HttpUtility.UrlDecode(subject);
+                editorcontent = HttpUtility.UrlDecode(editorcontent);
+                List<System.Net.Mail.Attachment> attachments = new List<System.Net.Mail.Attachment>();
+                if (ImageFiles != null)
+                {
+                    foreach (var ImageFile in ImageFiles)
+                    {
+                        System.Net.Mail.Attachment attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
+                        attachments.Add(attachment);
+                    }
+                }
+
+                SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachments);
+
+
+                //System.Net.Mail.Attachment attachment;
+                //foreach (var ImageFile in ImageFiles)
+                //{
+
+                //    attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
+
+                //    SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachment);
+
+                //}
+                // if (Convert.ToInt16(ID) > 0)
+                // return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                // else
+                return Json(new { status = true, message = "successfully sent.", url = "Pages", id = 0 }, 0);
+            }
+            catch
+            {
+                return Json(new { status = true, message = "Something went wrong.", url = "", id = 0 }, 0);
             }
 
-             SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachments);
-
-
-            //System.Net.Mail.Attachment attachment;
-            //foreach (var ImageFile in ImageFiles)
-            //{
-                 
-            //    attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
-           
-            //    SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachment);
-
-            //}
-           // if (Convert.ToInt16(ID) > 0)
-               // return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
-           // else
-                return Json(new { status = true, message = "successfully sent.", url = "", id = 0 }, 0);
-
-
         }
-
-
     }
 }

@@ -85,7 +85,7 @@ function Add() {
                         swal('Success!', data.message, 'success').then((result) => { location.href = '../Inboxprofile'; });
                     }
                     else {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = '../Inboxprofile'; });
+                        swal('Alert!', data.message, 'error').then((result) => { location.href = '../Inboxprofile'; });
                     }
                 }
                 else { swal('Alert!', data.message, 'error') }

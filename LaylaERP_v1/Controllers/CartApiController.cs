@@ -332,6 +332,7 @@
                 //Group total
                 foreach (var item in _newItem.Where(x => x.group_id > 0))
                 {
+                    item.quantity = (int)item.children.Select(i => i.quantity).Average();
                     item.price = item.children.Where(i => i.price.HasValue).Sum(i => i.price.HasValue ? i.price.Value : 0);
                     item.regular_price = item.children.Where(i => i.regular_price.HasValue).Sum(i => i.regular_price.Value);
                     item.sale_price = item.children.Where(i => i.sale_price.HasValue).Sum(i => i.sale_price.Value);

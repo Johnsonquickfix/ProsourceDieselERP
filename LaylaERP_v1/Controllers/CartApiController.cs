@@ -332,13 +332,13 @@
                 //Group total
                 foreach (var item in _newItem.Where(x => x.group_id > 0))
                 {
-                    item.price = item.children.Sum(i => i.price.HasValue ? i.price.Value : 0);
-                    item.regular_price = item.children.Sum(i => i.regular_price.Value);
-                    item.sale_price = item.children.Sum(i => i.sale_price.Value);
-                    item.line_subtotal = item.children.Sum(i => i.line_subtotal ?? 0);
-                    item.line_subtotal_tax = item.children.Sum(i => i.line_subtotal_tax ?? 0);
-                    item.line_total = item.children.Sum(i => i.line_total ?? 0);
-                    item.line_total_tax = item.children.Sum(i => i.line_total_tax ?? 0);
+                    item.price = item.children.Where(i => i.price.HasValue).Sum(i => i.price.HasValue ? i.price.Value : 0);
+                    item.regular_price = item.children.Where(i => i.regular_price.HasValue).Sum(i => i.regular_price.Value);
+                    item.sale_price = item.children.Where(i => i.sale_price.HasValue).Sum(i => i.sale_price.Value);
+                    item.line_subtotal = item.children.Where(i => i.line_subtotal.HasValue).Sum(i => i.line_subtotal ?? 0);
+                    item.line_subtotal_tax = item.children.Where(i => i.line_subtotal_tax.HasValue).Sum(i => i.line_subtotal_tax ?? 0);
+                    item.line_total = item.children.Where(i => i.line_total.HasValue).Sum(i => i.line_total ?? 0);
+                    item.line_total_tax = item.children.Where(i => i.line_total_tax.HasValue).Sum(i => i.line_total_tax ?? 0);
                 }
                 obj.data.items = _newItem;
                 cart_contents_total = f_line_total; cart_contents_tax = f_line_tax;

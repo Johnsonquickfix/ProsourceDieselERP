@@ -238,6 +238,7 @@
                                 }
                             }
                         }
+                        if (item.add_core_price.HasValue) item.price = (item.price.HasValue ? item.price.Value : 0) + (item.add_core_price.Value ? item.core_price.Value : 0);
                         item.wholesale = null;
                         decimal line_subtotal = item.quantity * (item.price.HasValue ? item.price.Value : 0), line_discount = 0, line_total = 0;
                         item.line_subtotal = line_subtotal;

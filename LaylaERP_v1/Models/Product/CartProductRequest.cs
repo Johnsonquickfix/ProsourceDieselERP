@@ -43,6 +43,8 @@ namespace LaylaERP_v1.Models.Product
             public decimal? price { get; set; }
             public decimal? regular_price { get; set; }
             public decimal? sale_price { get; set; }
+            public decimal? core_price { get; set; }
+            public bool? add_core_price { get; set; } = false;
             public decimal? line_subtotal { get; set; }
             public decimal? line_subtotal_tax { get; set; }
             public decimal? line_total { get; set; }
@@ -115,7 +117,7 @@ namespace LaylaERP_v1.Models.Product
             public string method_title { get; set; }
             public decimal amount { get; set; }
             public bool isactive { get; set; }
-        }        
+        }
     }
 
     public class CartProductRequest
@@ -130,6 +132,8 @@ namespace LaylaERP_v1.Models.Product
         public long variation_id { get; set; }
         [JsonProperty("quantity")]
         public int quantity { get; set; }
+        [JsonProperty("add_core_price")]
+        public bool add_core_price { get; set; } = false;
     }
 
     public class CartShippingAddressRequest

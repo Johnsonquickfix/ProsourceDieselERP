@@ -195,59 +195,78 @@
                 decimal cart_contents_total = 0, cart_contents_tax = 0;
                 decimal f_subtotal = 0, f_subtotal_tax = 0, f_line_total = 0, f_line_tax = 0;
                 decimal discount_total = 0, discount_tax = 0;
+
+                List<CartDataResponse.Item> _newItem = new List<CartDataResponse.Item>();
                 foreach (var item in obj.data.items)
                 {
-                    // get wholesale rate 
-                    if (item.wholesale != null)
+                    if (item.id > 0)
                     {
-                        if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
+                        // get wholesale rate 
+                        if (item.wholesale != null)
                         {
-                            decimal? _price = item.wholesale.price;
-                            System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.ArrayList;
-                            foreach (System.Collections.Hashtable _r in _att)
+                            if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
                             {
-                                if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
-                                {
-                                    int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
-                                    decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
-                                    if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = _wholesale_discount_range;
-                                }
-                            }
-                            item.price = _price;
-                        }
-                        else
-                        {
-                            if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
-                            {
-                                decimal? _price = item.price - (item.price * item.wholesale.cat_discount) / 100;
-                                System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.ArrayList;
+                                decimal? _price = item.wholesale.price;
+                                System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.ArrayList;
                                 foreach (System.Collections.Hashtable _r in _att)
                                 {
                                     if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
                                     {
                                         int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
                                         decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
-                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = item.price - (item.price * _wholesale_discount_range) / 100;
+                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = _wholesale_discount_range;
                                     }
                                 }
                                 item.price = _price;
                             }
-                        }
-                    }
-                    item.wholesale = null;
-                    decimal line_subtotal = item.quantity * (item.price.HasValue ? item.price.Value : 0), line_discount = 0, line_total = 0;
-                    item.line_subtotal = line_subtotal;
-                    if (obj.data.coupons != null)
-                    {
-                        foreach (var coupon in obj.data.coupons)
-                        {
-                            decimal discount = 0;
-                            if (coupon.categories != null)
+                            else
                             {
-                                long[] _p_c = item.categories.ToArray();
-                                long[] _c_c = coupon.categories.ToArray();
-                                var intersect = _p_c.Intersect(_c_c);
-                                if (intersect.Count() > 0)
+                                if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
+                                {
+                                    decimal? _price = item.price - (item.price * item.wholesale.cat_discount) / 100;
+                                    System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.ArrayList;
+                                    foreach (System.Collections.Hashtable _r in _att)
+                                    {
+                                        if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
+                                        {
+                                            int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                            decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                            if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = item.price - (item.price * _wholesale_discount_range) / 100;
+                                        }
+                                    }
+                                    item.price = _price;
+                                }
+                            }
+                        }
+                        item.wholesale = null;
+                        decimal line_subtotal = item.quantity * (item.price.HasValue ? item.price.Value : 0), line_discount = 0, line_total = 0;
+                        item.line_subtotal = line_subtotal;
+                        if (obj.data.coupons != null)
+                        {
+                            foreach (var coupon in obj.data.coupons)
+                            {
+                                decimal discount = 0;
+                                if (coupon.categories != null)
+                                {
+                                    long[] _p_c = item.categories.ToArray();
+                                    long[] _c_c = coupon.categories.ToArray();
+                                    var intersect = _p_c.Intersect(_c_c);
+                                    if (intersect.Count() > 0)
+                                    {
+                                        if (coupon.discount_type == "percent")
+                                        {
+                                            discount = ((line_subtotal * coupon.coupon_amount) / 100M);
+                                            //line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
+                                        }
+                                        else
+                                        {
+                                            discount = ((coupon.coupon_amount / item_count) * item.quantity);
+                                            //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
+                                        }
+                                    }
+                                    else line_discount = 0;
+                                }
+                                else
                                 {
                                     if (coupon.discount_type == "percent")
                                     {
@@ -260,53 +279,68 @@
                                         //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
                                     }
                                 }
-                                else line_discount = 0;
+                                line_discount = line_discount + discount;
+                                //if (coupon.discount_amount == null) coupon.discount_amount = 0;
+                                coupon.discount_amount = coupon.discount_amount + discount;
+                                coupon.coupon_amount = coupon.coupon_amount;
+                            }
+
+                            if (line_subtotal > line_discount) line_total = line_subtotal - line_discount;
+                            else if (line_subtotal < line_discount) line_total = 0;
+                            else line_total = line_subtotal - line_discount;
+                        }
+                        else line_total = line_subtotal;
+
+                        item.line_total = line_total;
+                        item.line_subtotal_tax = Math.Round((line_subtotal * _tax.rate / 100), 2);
+                        item.line_total_tax = Math.Round((line_total * _tax.rate / 100), 2);
+                        f_subtotal = f_subtotal + line_subtotal;
+                        f_subtotal_tax = f_subtotal_tax + (item.line_subtotal_tax ?? 0);
+                        f_line_total = f_line_total + line_total;
+                        f_line_tax = f_line_tax + (item.line_total_tax ?? 0);
+
+                        discount_total = discount_total + line_discount;//(line_subtotal - line_total);
+                        // Add Item in Box
+                        if (item.dimensions != null)
+                        {
+                            for (int qty = 0; qty < item.quantity; qty++)
+                            {
+                                packer.AddItem(item.dimensions.length * _dimension, item.dimensions.width * _dimension, item.dimensions.height * _dimension, (item.weight.HasValue ? (item.weight.Value * _weight) : 0));
+                            }
+                            //packer.AddItem(new Item { Id = "", Description = "", Depth = (item.dimensions.height.ToObject<double>() ?? 0) * _mm, Length = (item.dimensions.length.ToObject<double>() ?? 0) * _mm, Width = (item.dimensions.width.ToObject<double>() ?? 0) * _mm, Weight = (item.weight.ToObject<double>() ?? 0) * _mm }, (item.quantity.ToObject<int>() ?? 0));
+                        }
+
+                        CartDataResponse.Item _o = obj.data.items.Where(o => o.kit_key == item.kit_key && o.id == 0).FirstOrDefault();
+                        if (_o != null)
+                        {
+                            if (!_newItem.Any(x => x.kit_key == _o.kit_key))
+                            {
+                                if (_o.children == null) _o.children = new List<CartDataResponse.Item>();
+                                _o.children.Add(item);
+                                _newItem.Add(_o);
                             }
                             else
                             {
-                                if (coupon.discount_type == "percent")
-                                {
-                                    discount = ((line_subtotal * coupon.coupon_amount) / 100M);
-                                    //line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
-                                }
-                                else
-                                {
-                                    discount = ((coupon.coupon_amount / item_count) * item.quantity);
-                                    //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
-                                }
-                            }
-                            line_discount = line_discount + discount;
-                            //if (coupon.discount_amount == null) coupon.discount_amount = 0;
-                            coupon.discount_amount = coupon.discount_amount + discount;
-                            coupon.coupon_amount = coupon.coupon_amount;
+                                _o = _newItem.Where(o => o.kit_key == item.kit_key).FirstOrDefault();
+                                if (_o.children == null) _o.children = new List<CartDataResponse.Item>();
+                                _o.children.Add(item);
+                            };
                         }
-
-                        if (line_subtotal > line_discount) line_total = line_subtotal - line_discount;
-                        else if (line_subtotal < line_discount) line_total = 0;
-                        else line_total = line_subtotal - line_discount;
-                    }
-                    else line_total = line_subtotal;
-
-                    item.line_total = line_total;
-                    item.line_subtotal_tax = Math.Round((line_subtotal * _tax.rate / 100), 2);
-                    item.line_total_tax = Math.Round((line_total * _tax.rate / 100), 2);
-                    f_subtotal = f_subtotal + line_subtotal;
-                    f_subtotal_tax = f_subtotal_tax + (item.line_subtotal_tax ?? 0);
-                    f_line_total = f_line_total + line_total;
-                    f_line_tax = f_line_tax + (item.line_total_tax ?? 0);
-
-                    discount_total = discount_total + line_discount;//(line_subtotal - line_total);
-                    // Add Item in Box
-                    if (item.dimensions != null)
-                    {
-                        //foreach(var dim in (item.quantity.ToObject<double>() ?? 0))
-                        for (int qty = 0; qty < item.quantity; qty++)
-                        {
-                            packer.AddItem(item.dimensions.length * _dimension, item.dimensions.width * _dimension, item.dimensions.height * _dimension, (item.weight.HasValue ? (item.weight.Value * _weight) : 0));
-                        }
-                        //packer.AddItem(new Item { Id = "", Description = "", Depth = (item.dimensions.height.ToObject<double>() ?? 0) * _mm, Length = (item.dimensions.length.ToObject<double>() ?? 0) * _mm, Width = (item.dimensions.width.ToObject<double>() ?? 0) * _mm, Weight = (item.weight.ToObject<double>() ?? 0) * _mm }, (item.quantity.ToObject<int>() ?? 0));
+                        else _newItem.Add(item);
                     }
                 }
+                //Group total
+                foreach (var item in _newItem.Where(x => x.group_id > 0))
+                {
+                    item.price = item.children.Sum(i => i.price.HasValue ? i.price.Value : 0);
+                    item.regular_price = item.children.Sum(i => i.regular_price.Value);
+                    item.sale_price = item.children.Sum(i => i.sale_price.Value);
+                    item.line_subtotal = item.children.Sum(i => i.line_subtotal ?? 0);
+                    item.line_subtotal_tax = item.children.Sum(i => i.line_subtotal_tax ?? 0);
+                    item.line_total = item.children.Sum(i => i.line_total ?? 0);
+                    item.line_total_tax = item.children.Sum(i => i.line_total_tax ?? 0);
+                }
+                obj.data.items = _newItem;
                 cart_contents_total = f_line_total; cart_contents_tax = f_line_tax;
                 // Calculate cart_total
                 obj.data.cart_totals.subtotal = f_subtotal;
@@ -454,7 +488,7 @@
                     {
                         preferredCurrency = "USD",
                         dropoffType = "REGULAR_PICKUP",
-                        shipDateStamp= DateTime.Now.ToString("yyyy-MM-dd"),
+                        shipDateStamp = DateTime.Now.ToString("yyyy-MM-dd"),
                         packagingType = "YOUR_PACKAGING",
                         shippingChargesPayment = new
                         {

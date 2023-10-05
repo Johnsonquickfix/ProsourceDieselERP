@@ -51,10 +51,7 @@
 
                 string msg = string.Empty;
                 var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserInfo(utoken, user_id));
-                if (balResult == null)
-                {
-                    return BadRequest();
-                }
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
                 return Ok(balResult);
             }
             catch (Exception ex)
@@ -63,29 +60,26 @@
             }
         }
 
-        //[HttpGet,Route("getorders")]
-        //public object GetOrders(long user_id = 0,int page=1,int page_size=10)
-        //{
-        //    try
-        //    {
-        //        System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-        //        string utoken = string.Empty;
-        //        if (headers.Contains("X-Utoken")) utoken = headers.GetValues("X-Utoken").First();
-        //        if (string.IsNullOrEmpty(utoken)) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new { } });
-        //        if (string.IsNullOrEmpty(utoken) && user_id <= 0) return Ok(new { message = "Required query param 'user_id'", status = 403, code = "Forbidden", data = new { } });
+        [HttpGet, Route("getorders")]
+        public object GetOrders(long user_id = 0, int page = 1, int page_size = 10)
+        {
+            try
+            {
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string utoken = string.Empty;
+                if (headers.Contains("X-Utoken")) utoken = headers.GetValues("X-Utoken").First();
+                if (string.IsNullOrEmpty(utoken)) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new { } });
+                if (string.IsNullOrEmpty(utoken) && user_id <= 0) return Ok(new { message = "Required query param 'user_id'", status = 403, code = "Forbidden", data = new { } });
 
-        //        //var balResult = CommonRepositry.GetOrders(model.user_id, model.offset);
-        //        //if (balResult == null)
-        //        //{
-        //        //    return BadRequest();
-        //        //}
-        //        //return Ok(balResult);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Ok(new { message = ex.Message, status = 500, code = "Internal Server Error", data = new { } });
-        //    }
-        //}
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(CartRepository.GetOrders(utoken, user_id, page, page_size));
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { message = ex.Message, status = 500, code = "Internal Server Error", data = new { } });
+            }
+        }
 
         //[HttpGet]
         //[Route("editaccountdetails")]

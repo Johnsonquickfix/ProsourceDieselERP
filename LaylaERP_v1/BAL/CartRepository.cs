@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
 using System.Text.RegularExpressions;
+using System.Dynamic;
 
 namespace LaylaERP_v1.BAL
 {
@@ -113,5 +114,91 @@ namespace LaylaERP_v1.BAL
             return result;
         }
 
+        #region [User Profile]
+        public static dynamic UserVerify(string UserName, string UserPassword)
+        {
+            dynamic obj = new ExpandoObject();
+            try
+            {
+                long id = 0;
+                //UserPassword = EncryptedPwd(UserPassword);
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "AUTH"),
+                    new SqlParameter("@user_login", UserName),
+                    new SqlParameter("@user_pass", UserPassword)
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
+                while (sdr.Read())
+                {
+                    bool success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
+                    obj.message = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
+                    obj.status = success ? 200 : 404; obj.code = success == true ? "SUCCESS" : "Not Found";
+                    id = (sdr["user_data"] != Convert.DBNull) ? Convert.ToInt64(sdr["user_data"]) : 0;
+                    //obj.data = (sdr["user_data"] != Convert.DBNull) ? Convert.ToInt64(sdr["user_data"]) : 0;
+                    if (success)
+                    {
+                        string hash = (sdr["user_pass"] != Convert.DBNull) ? sdr["user_pass"].ToString() : string.Empty;
+                        //if (!CheckPassword(UserPassword, user_pass))
+                        if (!CryptSharp.PhpassCrypter.CheckPassword(UserPassword, hash))
+                        {
+                            obj.success = false; obj.data = new { }; obj.status = 401; obj.code = "Unauthorized";
+                            obj.message = "The password you entered for the username's is incorrect.";
+                        }
+
+                        SqlParameter[] parameters1 = {
+                                    new SqlParameter("@flag", "create-utoken"),
+                                    new SqlParameter("@id", id)
+                                };
+                        SqlDataReader sdr1 = SQLHelper.ExecuteReader("api_user_auth", parameters1);
+                        while (sdr1.Read())
+                        {
+                            obj.data = new { user_id = id, utoken = (sdr["user_data"] != Convert.DBNull) ? sdr1["user_data"] : "" };
+                        }
+                    }
+                    else obj.data = new { };
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.success = false; obj.status = 500; obj.code = "internal_server_error";
+                obj.message = ex.Message;
+                obj.data = new { };
+            }
+            return obj;
+        }
+        public static string UserInfo(string utoken, long id = 0)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters = {
+                        new SqlParameter("@flag", "UINFO"),
+                        new SqlParameter("@utoken", utoken),
+                        new SqlParameter("@id", id)
+                    };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
+                //SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
+                //while (sdr.Read())
+                //{
+                //    obj.id = (sdr["id"] != Convert.DBNull) ? Convert.ToInt64(sdr["id"]) : 0;
+                //    obj.user_login = (sdr["user_login"] != Convert.DBNull) ? sdr["user_login"].ToString() : string.Empty;
+                //    obj.user_nicename = (sdr["user_nicename"] != Convert.DBNull) ? sdr["user_nicename"].ToString() : string.Empty;
+                //    obj.user_email = (sdr["user_email"] != Convert.DBNull) ? sdr["user_email"].ToString() : string.Empty;
+                //    obj.user_registered = (sdr["user_registered"] != Convert.DBNull) ? sdr["user_registered"].ToString() : string.Empty;
+                //    obj.display_name = (sdr["display_name"] != Convert.DBNull) ? sdr["display_name"].ToString() : string.Empty;
+                //    obj.first_name = (sdr["first_name"] != Convert.DBNull) ? sdr["first_name"].ToString() : string.Empty;
+                //    obj.last_name = (sdr["last_name"] != Convert.DBNull) ? sdr["last_name"].ToString() : string.Empty;
+                //    obj.billing_phone = (sdr["billing_phone"] != Convert.DBNull) ? sdr["billing_phone"].ToString() : string.Empty;
+                //    obj.nickname = (sdr["nickname"] != Convert.DBNull) ? sdr["nickname"].ToString() : string.Empty;
+                //    obj.role = (sdr["role"] != Convert.DBNull) ? sdr["role"].ToString() : string.Empty;
+                //    if (sdr["user_status"].ToString().ToString().Trim() == "0") obj.is_active = true;
+                //    else obj.is_active = false;
+                //}
+            }
+            catch { throw; }
+            return result;
+        }
+        #endregion
     }
 }

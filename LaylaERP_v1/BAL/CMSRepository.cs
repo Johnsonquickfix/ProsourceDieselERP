@@ -1199,7 +1199,7 @@ namespace LaylaERP.BAL
             catch { throw; }
             return ds;
         }
-        public static DataSet GetProductDetails(string flag, long entity_id,long id, long user_id = 0)
+        public static DataSet GetProductDetails(string flag, long entity_id, long id, long user_id = 0)
         {
             DataSet ds;
             try
@@ -1280,59 +1280,7 @@ namespace LaylaERP.BAL
             }
         }
 
-        #region [User Profile]
-        public static dynamic UserVerify(string UserName, string UserPassword)
-        {
-            dynamic obj = new ExpandoObject();
-            try
-            {
-                //UserPassword = EncryptedPwd(UserPassword);
-                SqlParameter[] parameters =
-                {
-                    new SqlParameter("@flag", "AUTH"),
-                    new SqlParameter("@user_login", UserName),
-                    new SqlParameter("@user_pass", UserPassword)
-                };
-                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
-                while (sdr.Read())
-                {
-                    obj.success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
-                    obj.message = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
-                    obj.status = obj.success ? 200 : 404; obj.code = obj.success == true ? "SUCCESS" : "Not Found";
-                    obj.data = (sdr["user_data"] != Convert.DBNull) ? Convert.ToInt64(sdr["user_data"]) : 0;
-                    if (obj.success)
-                    {
-                        string hash = (sdr["user_pass"] != Convert.DBNull) ? sdr["user_pass"].ToString() : string.Empty;
-                        //if (!CheckPassword(UserPassword, user_pass))
-                        if (!CryptSharp.PhpassCrypter.CheckPassword(UserPassword, hash))
-                        {
-                            obj.success = false; obj.data = 0; obj.status = 401; obj.code = "Unauthorized";
-                            obj.message = "The password you entered for the username's is incorrect.";
-                        }
-
-                        SqlParameter[] parameters1 = {
-                                    new SqlParameter("@flag", "create-utoken"),
-                                    new SqlParameter("@id", obj.data)
-                                };
-                        SqlDataReader sdr1 = SQLHelper.ExecuteReader("api_user_auth", parameters1);
-                        while (sdr1.Read())
-                        {
-                            obj.utoken = (sdr["user_data"] != Convert.DBNull) ? sdr1["user_data"] : "";
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                obj.success = false; obj.status = 500; obj.code = "internal_server_error";
-                obj.message = ex.Message;
-                obj.data = 0;
-            }
-            return obj;
-        }
-        #endregion
-
-        public static DataTable cmscontactus(string name, string email, string subject,string suggestions, long entity_id)
+        public static DataTable cmscontactus(string name, string email, string subject, string suggestions, long entity_id)
         {
             DataTable dt = new DataTable();
             try
@@ -1390,9 +1338,9 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] parameters =
               {
-                     
+
                     new SqlParameter("@strValue1", entity_id),
-                    new SqlParameter("@searchid", slug), 
+                    new SqlParameter("@searchid", slug),
                     new SqlParameter("@flag", flag)
                 };
 
@@ -1411,9 +1359,9 @@ namespace LaylaERP.BAL
                 SqlParameter[] parameters =
               {
 
-                   
+
                     new SqlParameter("@strValue1", entity_id),
-                    new SqlParameter("@searchid", slug), 
+                    new SqlParameter("@searchid", slug),
                     new SqlParameter("@flag", flag)
                 };
 
@@ -1486,7 +1434,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@Flag", "Add"),
                     new SqlParameter("@term_id", model.item_id ),
-                    new SqlParameter("@post_ID",model.id), 
+                    new SqlParameter("@post_ID",model.id),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
@@ -1505,7 +1453,7 @@ namespace LaylaERP.BAL
             try
             {
                 SqlParameter[] parameters =
-                {               
+                {
                     new SqlParameter("@suggestions", answer),
                     new SqlParameter("@entity_id", entity_id),
                     new SqlParameter("@flag", "U")

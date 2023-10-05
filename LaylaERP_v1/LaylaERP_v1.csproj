@@ -299,7 +299,7 @@
     <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\CartApiController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
-    <Compile Include="Controllers\CMSAccountController.cs" />
+    <Compile Include="Controllers\CMSAccountAPIController.cs" />
     <Compile Include="Controllers\CMSApiController.cs" />
     <Compile Include="Controllers\CMSController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />

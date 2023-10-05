@@ -169,6 +169,21 @@ namespace LaylaERP_v1.BAL
             }
             return obj;
         }
+        public static string Logout(string utoken)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "expire-utoken"),
+                    new SqlParameter("@utoken", utoken)
+                };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
         public static string UserInfo(string utoken, long id = 0)
         {
             string result;

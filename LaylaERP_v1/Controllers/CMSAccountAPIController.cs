@@ -37,6 +37,25 @@
                 return Ok(new { message = ex.Message, status = 500, code = "internal_server_error", data = new { } });
             }
         }
+        [HttpGet, Route("logout")]
+        public IHttpActionResult Login()
+        {
+            try
+            {
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string utoken = string.Empty;
+                if (headers.Contains("X-Utoken")) utoken = headers.GetValues("X-Utoken").First();
+                if (string.IsNullOrEmpty(utoken)) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new { } });
+
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.Logout(utoken));
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { message = ex.Message, status = 500, code = "Internal Server Error", data = new { } });
+            }
+        }
 
         [HttpGet, Route("userdetails")]
         public IHttpActionResult Userdetails(long user_id = 0)

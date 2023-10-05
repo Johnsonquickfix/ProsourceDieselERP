@@ -144,6 +144,7 @@ namespace LaylaERP_v1.BAL
                         {
                             obj.success = false; obj.data = new { }; obj.status = 401; obj.code = "Unauthorized";
                             obj.message = "The password you entered for the username's is incorrect.";
+                            return obj;
                         }
 
                         SqlParameter[] parameters1 = {
@@ -178,26 +179,52 @@ namespace LaylaERP_v1.BAL
                         new SqlParameter("@id", id)
                     };
                 result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
-                //SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
-                //while (sdr.Read())
-                //{
-                //    obj.id = (sdr["id"] != Convert.DBNull) ? Convert.ToInt64(sdr["id"]) : 0;
-                //    obj.user_login = (sdr["user_login"] != Convert.DBNull) ? sdr["user_login"].ToString() : string.Empty;
-                //    obj.user_nicename = (sdr["user_nicename"] != Convert.DBNull) ? sdr["user_nicename"].ToString() : string.Empty;
-                //    obj.user_email = (sdr["user_email"] != Convert.DBNull) ? sdr["user_email"].ToString() : string.Empty;
-                //    obj.user_registered = (sdr["user_registered"] != Convert.DBNull) ? sdr["user_registered"].ToString() : string.Empty;
-                //    obj.display_name = (sdr["display_name"] != Convert.DBNull) ? sdr["display_name"].ToString() : string.Empty;
-                //    obj.first_name = (sdr["first_name"] != Convert.DBNull) ? sdr["first_name"].ToString() : string.Empty;
-                //    obj.last_name = (sdr["last_name"] != Convert.DBNull) ? sdr["last_name"].ToString() : string.Empty;
-                //    obj.billing_phone = (sdr["billing_phone"] != Convert.DBNull) ? sdr["billing_phone"].ToString() : string.Empty;
-                //    obj.nickname = (sdr["nickname"] != Convert.DBNull) ? sdr["nickname"].ToString() : string.Empty;
-                //    obj.role = (sdr["role"] != Convert.DBNull) ? sdr["role"].ToString() : string.Empty;
-                //    if (sdr["user_status"].ToString().ToString().Trim() == "0") obj.is_active = true;
-                //    else obj.is_active = false;
-                //}
             }
             catch { throw; }
             return result;
+        }
+        public static Dictionary<string, object> GetOrders(long user_id, int pageno)
+        {
+            Dictionary<string, object> _list = new Dictionary<string, object>();
+            DataTable dt = new DataTable();
+            try
+            {
+                List<Dictionary<string, object>> parentRow = new List<Dictionary<string, object>>();
+                Dictionary<string, object> childRow;
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "ORDLS"),
+                    new SqlParameter("@customer_id", user_id),
+                    new SqlParameter("@pageno", pageno)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_details", parameters);
+                int total = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    childRow = new Dictionary<string, object>();
+                    childRow.Add("id", row["id"]);
+                    childRow.Add("post_status", row["post_status"]);
+                    childRow.Add("post_date", row["post_date"]);
+                    childRow.Add("order_total", row["order_total"]);
+                    childRow.Add("shipstation_shipped_item_count", row["shipstation_shipped_item_count"]);
+                    if (row["tracking"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["tracking"].ToString());
+                        childRow.Add("tracking", obj);
+                    }
+                    else
+                        childRow.Add("tracking", "[]");
+                    if (row["TotalCount"] != DBNull.Value) total = Convert.ToInt32(row["TotalCount"]);
+                    parentRow.Add(childRow);
+                }
+                _list.Add("orders", parentRow);
+                _list.Add("total", total);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _list;
         }
         #endregion
     }

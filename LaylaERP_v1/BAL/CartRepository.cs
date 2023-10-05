@@ -209,8 +209,8 @@ namespace LaylaERP_v1.BAL
                     childRow.Add("shipstation_shipped_item_count", row["shipstation_shipped_item_count"]);
                     if (row["tracking"] != DBNull.Value)
                     {
-                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["tracking"].ToString());
-                        childRow.Add("tracking", obj);
+                        //dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["tracking"].ToString());
+                        //childRow.Add("tracking", obj);
                     }
                     else
                         childRow.Add("tracking", "[]");

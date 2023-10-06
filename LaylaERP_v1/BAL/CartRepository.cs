@@ -169,6 +169,21 @@ namespace LaylaERP_v1.BAL
             }
             return obj;
         }
+        public static string Logout(string utoken)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "expire-utoken"),
+                    new SqlParameter("@utoken", utoken)
+                };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
         public static string UserInfo(string utoken, long id = 0)
         {
             string result;
@@ -198,28 +213,22 @@ namespace LaylaERP_v1.BAL
                     new SqlParameter("@pagesize", page_size)
                 };
                 result = SQLHelper.ExecuteReaderReturnJSON("api_user_details", parameters).ToString();
-                //dt = SQLHelper.ExecuteDataTable("api_user_details", parameters);
-                //int total = 0;
-                //foreach (DataRow row in dt.Rows)
-                //{
-                //    childRow = new Dictionary<string, object>();
-                //    childRow.Add("id", row["id"]);
-                //    childRow.Add("post_status", row["post_status"]);
-                //    childRow.Add("post_date", row["post_date"]);
-                //    childRow.Add("order_total", row["order_total"]);
-                //    childRow.Add("shipstation_shipped_item_count", row["shipstation_shipped_item_count"]);
-                //    if (row["tracking"] != DBNull.Value)
-                //    {
-                //        //dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["tracking"].ToString());
-                //        //childRow.Add("tracking", obj);
-                //    }
-                //    else
-                //        childRow.Add("tracking", "[]");
-                //    if (row["TotalCount"] != DBNull.Value) total = Convert.ToInt32(row["TotalCount"]);
-                //    parentRow.Add(childRow);
-                //}
-                //_list.Add("orders", parentRow);
-                //_list.Add("total", total);
+            }
+            catch { throw; }
+            return result;
+        }
+        public static string GetOrderDetail(string utoken, long order_id)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "ORDET"),
+                    new SqlParameter("@utoken", utoken),
+                    new SqlParameter("@order_id", order_id)
+                };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_details", parameters).ToString();
             }
             catch { throw; }
             return result;

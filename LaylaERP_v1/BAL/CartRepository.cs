@@ -220,7 +220,7 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
-        public static string UserEmailVarify(string user_email, string varify_code)
+        public static string UserEmailVarify(string user_email, string verify_code)
         {
             string result;
             try
@@ -228,7 +228,7 @@ namespace LaylaERP_v1.BAL
                 SqlParameter[] parameters = {
                         new SqlParameter("@flag", "email-varify"),
                         new SqlParameter("@user_email", user_email),
-                        new SqlParameter("@utoken", varify_code),
+                        new SqlParameter("@utoken", verify_code),
                     };
                 result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
             }

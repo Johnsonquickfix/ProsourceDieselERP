@@ -134,15 +134,15 @@
             }
         }
 
-        [HttpGet, Route("email-varify")]
-        public IHttpActionResult UserEmailVarify(string user_email, string varify_code)
+        [HttpGet, Route("email-verify")]
+        public IHttpActionResult UserEmailVarify(string user_email, string verify_code)
         {
             try
             {
                 if (string.IsNullOrEmpty(user_email)) return Ok(new { message = "Required query param 'user_email'", status = 403, code = "Forbidden", data = new { } });
-                else if (string.IsNullOrEmpty(varify_code)) return Ok(new { message = "Required query param 'varify_code'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(verify_code)) return Ok(new { message = "Required query param 'verify_code'", status = 403, code = "Forbidden", data = new { } });
 
-                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserEmailVarify(user_email, varify_code));
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserEmailVarify(user_email, verify_code));
                 if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
                 return Ok(balResult);
             }

@@ -165,8 +165,8 @@
             string result = "Your mail has been sent successfuly !";
             try
             {
-                string SenderEmailID = "sales@laylaerp.com", SenderEmailPwd = "Presto55555!", SMTPServerName = "mail.laylaerp.com";
-                int SMTPServerPortNo = 587;
+                string SenderEmailID = "info@new.prosourcediesel.com", SenderEmailPwd = "Peter@007", SMTPServerName = "new.prosourcediesel.com";
+                int SMTPServerPortNo = 465;
                 bool SSL = false;
                 DataTable dt = DAL.SQLHelper.ExecuteDataTable("Select SenderEmailID,SenderEmailPwd,SMTPServerName,SMTPServerPortNo,SSL from wp_system_settings where entity = 1;");
                 foreach (DataRow dr in dt.Rows)
@@ -211,8 +211,8 @@
             string result = "Your mail has been sent successfuly !";
             try
             {
-                string SenderEmailID = "sales@laylaerp.com", SenderEmailPwd = "Presto55555!", SMTPServerName = "mail.laylaerp.com";
-                int SMTPServerPortNo = 587;
+                string SenderEmailID = "info@new.prosourcediesel.com", SenderEmailPwd = "Peter@007", SMTPServerName = "new.prosourcediesel.com";
+                int SMTPServerPortNo = 465;
                 bool SSL = false;
                 DataTable dt = DAL.SQLHelper.ExecuteDataTable("Select SenderEmailID,SenderEmailPwd,SMTPServerName,SMTPServerPortNo,SSL from wp_system_settings where entity = 1;");
                 foreach (DataRow dr in dt.Rows)

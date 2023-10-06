@@ -125,5 +125,10 @@ namespace LaylaERP.Controllers
             DataSet ds = DonationHaulRepository.donationcusmail(model.id);
             return View(ds);
         }
+
+        public ActionResult EmailVerified(EmailSettingModel model)
+        {
+            return View(model);
+        }
     }
 }

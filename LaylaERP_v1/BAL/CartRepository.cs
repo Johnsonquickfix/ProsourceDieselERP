@@ -184,15 +184,51 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
-        public static string UserInfo(string utoken, long id = 0)
+        public static string UserInfo(string flag, string utoken, long id = 0)
         {
             string result;
             try
             {
                 SqlParameter[] parameters = {
-                        new SqlParameter("@flag", "UINFO"),
+                        new SqlParameter("@flag", flag),//"UINFO"
                         new SqlParameter("@utoken", utoken),
                         new SqlParameter("@id", id)
+                    };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
+        public static string CreateUser(string user_login, string user_email, string user_pass)
+        {
+            string result;
+            try
+            {
+                user_pass = CryptSharp.Crypter.Phpass.Crypt(user_pass);
+                SqlParameter[] parameters = {
+                        new SqlParameter("@flag", "URADD"),
+                        new SqlParameter("@user_login", user_login),
+                        new SqlParameter("@user_pass", user_pass),
+                        new SqlParameter("@user_email", user_email),
+                        new SqlParameter("@user_nicename", user_login),
+                        new SqlParameter("@display_name", user_login),
+                        new SqlParameter("@first_name", user_login),
+                        new SqlParameter("@last_name", ""),
+                    };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
+        public static string UserEmailVarify(string user_email, string varify_code)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters = {
+                        new SqlParameter("@flag", "email-varify"),
+                        new SqlParameter("@user_email", user_email),
+                        new SqlParameter("@utoken", varify_code),
                     };
                 result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
             }

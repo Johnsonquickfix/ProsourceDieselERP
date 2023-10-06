@@ -1939,6 +1939,7 @@
     <Content Include="Views\DataImport\ProductImport.cshtml" />
     <Content Include="Views\CMS\ContactUs.cshtml" />
     <Content Include="Views\EmailProfile\Compose.cshtml" />
+    <Content Include="Views\EmailNotifications\EmailVerified.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

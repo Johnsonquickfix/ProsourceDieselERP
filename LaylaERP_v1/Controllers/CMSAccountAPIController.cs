@@ -124,7 +124,7 @@
                     {
                         LaylaERP.UTILITIES.SendEmail.Sendattachmentemails(user_email, "Welcome to Prosource Diesel", renderedHTML, new List<System.Net.Mail.Attachment>());
                     });
-
+                    return Ok(new { message = "An email has been sent for verification. It may take upto 10 minutes to appear or it may land up in your spam folder.", status = 200, code = "success", data = new { } });
                 }
                 return Ok(balResult);
             }

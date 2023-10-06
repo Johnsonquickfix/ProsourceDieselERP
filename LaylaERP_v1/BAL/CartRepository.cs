@@ -220,15 +220,17 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
-        public static string UserEmailVarify(string user_email, string verify_code)
+        public static string UserEmailVarify(string flag, string user_email, string verify_code, string user_pass = "")
         {
             string result;
             try
             {
+                if (!string.IsNullOrEmpty(user_pass)) user_pass = CryptSharp.Crypter.Phpass.Crypt(user_pass);
                 SqlParameter[] parameters = {
-                        new SqlParameter("@flag", "email-varify"),
+                        new SqlParameter("@flag", flag),//"email-varify"
                         new SqlParameter("@user_email", user_email),
                         new SqlParameter("@utoken", verify_code),
+                        new SqlParameter("@user_pass", user_pass),
                     };
                 result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
             }

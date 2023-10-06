@@ -126,7 +126,7 @@
                     });
                     return Ok(new { message = "An email has been sent for verification. It may take upto 10 minutes to appear or it may land up in your spam folder.", status = 200, code = "success", data = new { } });
                 }
-                return Ok(balResult);
+                else return Ok(balResult);
             }
             catch (Exception ex)
             {
@@ -141,7 +141,57 @@
             {
                 if (string.IsNullOrEmpty(verify_code)) return Ok(new { message = "Required query param 'verify_code'", status = 403, code = "Forbidden", data = new { } });
 
-                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserEmailVarify(string.Empty, verify_code));
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserEmailVarify("email-verify", string.Empty, verify_code));
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { message = ex.Message, status = 500, code = "Internal Server Error", data = new { } });
+            }
+        }
+
+        [HttpGet, Route("forgot-password")]
+        public async Task<IHttpActionResult> ForgotPassword(string user_email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(user_email)) return Ok(new { message = "Required query param 'user_email'", status = 403, code = "Forbidden", data = new { } });
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserEmailVarify("forgot-password", user_email, string.Empty));
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
+                if (balResult.status == 200)
+                {
+                    LaylaERP.Models.EmailSettingModel obj = new LaylaERP.Models.EmailSettingModel();
+                    obj.recipients = balResult.data.user_login;
+                    obj.option_name = balResult.data.base_url;
+                    obj.email_heading = "Prosource Diesel Password Reset";
+                    obj.additional_content = balResult.data.user_activation_key;
+                    obj.filename = "ForgotPassword";
+                    string renderedHTML = LaylaERP.Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", obj.filename, obj);
+                    await Task.Run(() =>
+                    {
+                        LaylaERP.UTILITIES.SendEmail.Sendattachmentemails(user_email, obj.email_heading, renderedHTML, new List<System.Net.Mail.Attachment>());
+                    });
+                    return Ok(new { message = "An email has been sent for reset password. It may take upto 10 minutes to appear or it may land up in your spam folder.", status = 200, code = "success", data = new { } });
+                }
+                else return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { message = ex.Message, status = 500, code = "Internal Server Error", data = new { } });
+            }
+        }
+
+        [HttpGet, Route("update-password")]
+        public IHttpActionResult UpdatePassword(string user_email, string verify_code, string user_pass)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(verify_code)) return Ok(new { message = "Required query param 'verify_code'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(user_email)) return Ok(new { message = "Required query param 'user_email'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(user_pass)) return Ok(new { message = "Required query param 'user_pass'", status = 403, code = "Forbidden", data = new { } });
+
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UserEmailVarify("update-password", user_email, verify_code, user_pass));
                 if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
                 return Ok(balResult);
             }

@@ -1940,6 +1940,7 @@
     <Content Include="Views\CMS\ContactUs.cshtml" />
     <Content Include="Views\EmailProfile\Compose.cshtml" />
     <Content Include="Views\EmailNotifications\EmailVerified.cshtml" />
+    <Content Include="Views\EmailNotifications\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

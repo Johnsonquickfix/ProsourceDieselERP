@@ -130,5 +130,9 @@ namespace LaylaERP.Controllers
         {
             return View(model);
         }
+        public ActionResult ForgotPassword(EmailSettingModel model)
+        {
+            return View(model);
+        }
     }
 }

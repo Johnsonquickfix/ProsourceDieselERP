@@ -38,6 +38,7 @@ namespace LaylaERP_v1.Models.Product
             public string brand { get; set; }
             public string name { get; set; }
             public string sku { get; set; }
+            public string stock_status { get; set; }
             public bool? is_category { get; set; }
             public List<long> categories { get; set; }
             public decimal? price { get; set; }

@@ -28,8 +28,7 @@ namespace LaylaERP.Controllers
                 using (var client = new HttpClient())
                 {
                     //client.BaseAddress = new Uri("https://quickfixtest2.com/exportdata.php");
-                    //client.BaseAddress = new Uri("https://prosourcediesel.com/proexportdataorders.php");
-                    client.BaseAddress = new Uri("https://new.prosourcediesel.com/proexportdataorders.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/proexportdataorders.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -113,7 +112,7 @@ namespace LaylaERP.Controllers
                 using (var client = new HttpClient())
                 {
                     //client.BaseAddress = new Uri("https://quickfixtest2.com/erpdataimport.php");
-                    client.BaseAddress = new Uri("https://prosourcediesel.com/erpdataimport.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/erpdataimport.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -136,7 +135,9 @@ namespace LaylaERP.Controllers
                 var content = new StringContent("{}", Encoding.UTF8, "application/json");
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/shippedtrack.php");
+                    //client.BaseAddress = new Uri("https://quickfixtest2.com/shippedtrack.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/shippedtrack.php");
+
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -174,7 +175,9 @@ namespace LaylaERP.Controllers
                 var content = new StringContent(result, Encoding.UTF8, "application/json");
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");
+                    //client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/serial.php");
+
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -210,7 +213,8 @@ namespace LaylaERP.Controllers
                 var content = new StringContent(unstr, Encoding.UTF8);
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");
+                   // client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/serial.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -247,7 +251,8 @@ namespace LaylaERP.Controllers
                 var content = new StringContent(orderid, Encoding.UTF8);
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/aspsplit.php");
+                    //client.BaseAddress = new Uri("https://quickfixtest2.com/aspsplit.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/aspsplit.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -348,7 +353,8 @@ namespace LaylaERP.Controllers
                 var content = new StringContent("{}", Encoding.UTF8, "application/json");
                 using (var client = new HttpClient())
                 {                     
-                    client.BaseAddress = new Uri("https://new.prosourcediesel.com/proexportproducts.php");
+                    //client.BaseAddress = new Uri("https://new.prosourcediesel.com/proexportproducts.php");
+                    client.BaseAddress = new Uri("https://editor.prosourcediesel.com/proexportproducts.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;

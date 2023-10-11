@@ -1297,15 +1297,15 @@
                                     DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
                                     if (_att_value["is_taxonomy"].ToString().Equals("1"))
                                     {
-                                        if (rows.Length > 0) _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
-                                        else _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                        if (rows.Length > 0) _attributes.Add(new { position = _att_value["position"], is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                        else _attributes.Add(new { position = _att_value["position"], is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
                                     }
                                     else
                                     {
                                         var _option = new List<dynamic>();
                                         var _o = _att_value["value"].ToString().Split('|');
                                         foreach (var s in _o) { _option.Add(new { term_id = 0, name = s.Trim(), slug = s.Trim() }); };
-                                        _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = _option });
+                                        _attributes.Add(new { position = _att_value["position"], is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = _option });
                                     }
                                 }
                                 obj.attributes = _attributes;

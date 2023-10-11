@@ -260,6 +260,19 @@
                                     _income += _total;
                                 }
                             });
+                            let _profit = _income - _expense;
+                            if (_profit >= 0) {
+                                $("#TotalIncome").html(formatCurrency(_income));
+                                $("#lblProfit").html('Net Profit  :'); $("#Totalprofit").html(formatCurrency(_profit));
+                                $("#lblLoss,#TotalLoss").html('-');
+                                $("#TotalExpense").html(formatCurrency(_expense + _profit));
+                            }
+                            else if (_profit < 0) {
+                                $("#lblLoss").html(formatCurrency('Net Loss :')); $("#TotalLoss").html(formatCurrency((-1 * _profit)));
+                                $("#TotalIncome").html(formatCurrency(_income + (-1 * _profit)));
+                                $("#lblProfit,#Totalprofit").html('-');
+                                $("#TotalExpense").html(formatCurrency(_expense));
+                            }
                         });
                         $('#account_ass').empty().append(_exp_html);
                         $('#account_lib').empty().append(_inc_html);
@@ -269,19 +282,7 @@
                 complete: function () { $("#loader").hide(); },
                 error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: true
             });
-            let _profit = _income - _expense;
-            if (_profit >= 0) {
-                $("#TotalIncome").html(formatCurrency(_income));
-                $("#lblProfit").html('Net Profit  :'); $("#Totalprofit").html(formatCurrency(_profit));
-                $("#lblLoss,#TotalLoss").html('-');
-                $("#TotalExpense").html(formatCurrency(_expense + _profit));
-            }
-            else if (_profit < 0) {
-                $("#lblLoss").html(formatCurrency('Net Loss :')); $("#TotalLoss").html(formatCurrency((-1 * _profit)));
-                $("#TotalIncome").html(formatCurrency(_income + (-1 * _profit)));
-                $("#lblProfit,#Totalprofit").html('-');
-                $("#TotalExpense").html(formatCurrency(_expense));
-            }
+           
 
             $("#selectyear").html(_date_from.format('MMMM, DD YYYY') + ' to ' + _date_to.format('MMMM, DD YYYY'));
         }

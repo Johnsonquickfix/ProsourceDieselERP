@@ -1025,7 +1025,8 @@
                             if (parsed.Length > 0)
                             {
                                 row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
-                                row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
+                                if (parsed.Min() != parsed.Max()) row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
+                                else row.Add("price", string.Format("${0:0.00}", parsed.Min()));
                             }
                             else
                             { row.Add("price_range", new { min = 0, max = 0 }); row.Add("price", string.Format("${0:0.00} - ${1:0.00}", 0, 0)); }

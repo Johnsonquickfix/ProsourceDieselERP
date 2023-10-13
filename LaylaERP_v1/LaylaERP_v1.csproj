@@ -269,6 +269,7 @@
     <Compile Include="BAL\qfk\ImportData.cs" />
     <Compile Include="BAL\qfk\ProfilesRepository.cs" />
     <Compile Include="BAL\qfk\TrackAndIdentifyRepository.cs" />
+    <Compile Include="BAL\QuickorderRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\RMARepository.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\CartApiController.cs" />
+    <Compile Include="Controllers\CartPaymentController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
     <Compile Include="Controllers\CMSAccountAPIController.cs" />
     <Compile Include="Controllers\CMSApiController.cs" />
@@ -346,6 +348,7 @@
     <Compile Include="Controllers\qfk\FlowsController.cs" />
     <Compile Include="Controllers\qfk\FormsController.cs" />
     <Compile Include="Controllers\qfk\ListsController.cs" />
+    <Compile Include="Controllers\QuickorderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RMAApiController.cs" />
@@ -1044,6 +1047,7 @@
     <Content Include="js\OrderQuote\QuoteList.js" />
     <Content Include="js\OrdersMySQL\OrderHistoryMySQL.js" />
     <Content Include="js\OrdersMySQL\OrderRefundMySQL.js" />
+    <Content Include="js\OrdersMySQL\QuickOrder.js" />
     <Content Include="js\OrdersMySQL\QuickOrderMySQL.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderCoupons.js" />
@@ -1941,6 +1945,7 @@
     <Content Include="Views\EmailProfile\Compose.cshtml" />
     <Content Include="Views\EmailNotifications\EmailVerified.cshtml" />
     <Content Include="Views\EmailNotifications\ForgotPassword.cshtml" />
+    <Content Include="Views\Orders\quickorder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

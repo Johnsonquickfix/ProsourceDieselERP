@@ -1,0 +1,439 @@
+﻿@{
+    ViewBag.Title = "Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+}
+@*datatables CSS*@
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<link href="~/Content/css/Style.css" rel="stylesheet" />
+<link href="~/css/order_style.css?v=1.0.0" rel="stylesheet" />
+<style>
+    .input-group .select2-container, .form-group .select2-container {
+        position: relative !important;
+        z-index: 2;
+        float: left !important;
+        width: 100% !important;
+        margin-bottom: 0 !important;
+        display: table !important;
+        table-layout: fixed !important;
+    }
+
+    .pac-container {
+        z-index: 1051 !important;
+    }
+
+    .swal2-container .swal2-popup {
+        max-width: 500px;
+    }
+
+    body .swal2-popup .swal2-styled {
+        background-color: rgb(48, 133, 214) !important;
+        border-left-color: rgb(48, 133, 214) !important;
+        border-right-color: rgb(48, 133, 214) !important;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        opacity: 1;
+    }
+</style>
+<div id="loader" class="d-flex align-items-center">
+    <img src="data:image/gif;base64,R0lGODlhHgAeAIQAAAQCBISChMTCxOTi5GxqbCQmJPTy9NTS1BQSFKyqrMzKzOzq7Pz6/DQ2NNza3BwaHLy+vAwKDJyanMTGxOTm5Hx+fCwqLPT29BQWFLSytMzOzOzu7Pz+/Nze3P///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQAeACwAAAAAHgAeAAAF/qAnjiOzOJrCHUhDZAYpzx7TCRAkCIwG/ABMZUOTcSgTnVLA8QF/mASn6OE4lFie8/mrUD0LXG7Z5EIPVWPnAsaJBRprIfLEoBcd2QIyie0hCgtsIkcSBUF3OgslSQJ9YAMMRRcViTgTkh4dSwKDXyJ/SgM1YmOjnyKbpZgbWSqohAo5OxAGV1iLsCIDWBAOsm48uiIXbxAHSWMKw4QTpQoM0dLMItLW0heZzAzZ3AylgNQcssoaSxDasMVYGrdKFMy8sxAdG246E1OwDM5LG99jdOSBdevNlBtjBMSAFSbgKYA7/HTQN8MGmz04oI3AeDHjgAv6OFwY4ExhGwi5REYM8ANOgAoG5MZMuHhqxp97OhgYmHXvUREOCBPq4LCzJYSaRRYA46lzng4BRFAxIElmp7JIzDicOADtgoIDDgykkxECACH5BAkJACgALAAAAAAeAB4AhQQCBISChMTCxERCROTi5BweHKyqrPTy9NTS1BQSFGxqbDQ2NLy6vJSSlMzKzOzq7CQmJPz6/HR2dAwKDLSytNza3BwaHHx+fAQGBISGhMTGxOTm5CQiJKyurPT29BQWFLy+vJyanMzOzOzu7CwqLPz+/Hx6fNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+QJRwOIw8KiJHCZFYKCgHonSKipwEIJBAEBEBvoDPZUSVljYarVpQ8oK/H0OpjCpV1FqGtv1+X+goD1hZa3x9YQh1ZicegVgCegIidhAYbx+JBhJSDyAaUZ0gDg+NQiUPDRCIKAaWHUVpAp+BBBFlHheZlgAWZCgnebJRgEOtbxlVg4QExEMSfQUeI2uic80oHhx9DHd5IA/XQw19Eg7BXOFCJ30DaYQO6aaqYAUR9vfxQiP7/PYe+PlK3LPnLgu8eCUKejL3CIStdB4agkBwZ5CADfEIZBlUYRoeJeEiaLAI4kAJi3qYXesGSZStK5EElGoWKo9KkVpkBjphbYpbFVCDHDwMpKVRJ1kEPFgr4YHASJ2CQPgaQgAUoUdKIpgj5AmUyilHSXI5sBESFg0zp5QAtlHPHrIt13wt82Dro7Eb84y6FsFpsBJk39VCOALJpAMORBAYMXRKEAAh+QQJCQAqACwAAAAAHgAeAIUEAgSEgoTEwsREQkTk4uQcHhysqqz08vTU0tQUEhS0trSUkpRsamw0NjTMyszs6uwkJiT8+vx0dnQMCgyMjoy0srTc2twcGhy8vrx8fnwEBgSEhoTExsTk5uQkIiSsrqz09vQUFhS8urycmpzMzszs7uwsKiz8/vx8enzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCVcDiMPCwkxwmRaDAqB6J0qoqkBBiMQBAhAb6AUKZElZ46HK1acPKCvyHDqaw6WdRakbb9fmfoKg9YWWt8fWEIdWYpIIFYAnoCJHYQGm8hiQYSUg8YHFGdGA4PjUInDwsQiCoGlh9FaQKfgQQRZSAZmZYAF2QqKXmyUYBDrW8bVYOEBMRDEn0FICVronPNKiAefSJ3eRgP10MLfRIOwVzhQil9A2mEDummqmAFEfb38UIl+/z2IPj5DvAT6C4LvHgntNEz9wiDrXTr3gy4M0hAh3gUyE3DoyTcgQt9MJyoqIfZNQbQbF2JJKBUMwN9KAiJEKtloBTWpliJYgyAXodhgbQ06iSLAAhrJ0AQ4LClkTEFUgiAIvRISQRzhDzx/EOFaEUtEQ5k2SICC4dGOYmcADZWzx6xkMZqMUnnAdZHXMSuETHqWoSlwU7oNVgLYQkkkw44IEGgxEMqQQAAIfkECQkALAAsAAAAAB4AHgCFBAIEhIKExMLEREJE5OLkrKqsHB4c9PL01NLUFBIUlJKUbGpstLa0NDY0jIqMzMrM7OrsJCYk/Pr8dHZ0DAoMtLK03NrcHBocvL68fH58BAYEhIaExMbEREZE5ObkrK6sJCIk9Pb0FBYUnJqcvLq8jI6MzM7M7O7sLCos/P78fHp83N7c////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABv5AlnA4lEAspkcKkWgsKgeidMqSrAQYjEAgMQG+AFHmRJWmPBytWpDygr+iQqrMSlnUWpK2/X5n6CwQWFlrfH1hCHVmKyGBWAJ6AiZ2ERpvIokFE1IQGBxRnRgPEI1CKRAKEYgsBZYfRWkCn4EEEmUhGZmWABdkLCt5slGAQ61vG1WDhATEQxN9BiEna6JzzSwhIH0kd3kYENdDCn0TD8Fc4UIrfQNphA/ppqpgBhL29/FCJ/v89iH4+Q7wE+guC7x4KbTRM/cIg610694MuDNIgId4JchNw6Mk3IELfTCkqKiH2bUF0GxdiSSgVLMCfUoIkRCrZaAV1qYcmKDrC1iIYYG0NOoki0AIa3YcgMTEyhIDKQRAEXqkxIJCMEwL/KFCtKKWLodW5SSSAlgWSGcNHXJADIK5NVzcvDHwtJkEArFIsJELwEAJl9dSnEAyCYGBDioc0gkCACH5BAkJAC0ALAAAAAAeAB4AhQQCBISChMTCxERCROTi5BweHKyqrPTy9NTS1BQSFJSSlGxqbDQyNLS2tIyKjMzKzOzq7CQmJPz6/HR2dAwKDLSytNza3BwaHLy+vHx+fAQGBISGhMTGxERGROTm5CQiJKyurPT29BQWFJyanDQ2NLy6vIyOjMzOzOzu7CwqLPz+/Hx6fNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+wJZwOJRALKeHCpEgLSoHonTakrAEGIxAIDkBvgBRBkWVqjwcrVqg8oK/IoOq3FJZ1NqStv1+Z+gtEFhZa3x9YQh1ZiwhgVgCegIndhEabyKJBhNSEBgcUZ0YDxCNQioQChGILQaWIEVpAp+BBBJlIRmZlgAXZC0sebJRgEOtbxtVg4QExEMTfQUhKGuic80tIR99JXd5GBDXQwp9Ew/BXOFCLH0DaYQP6aaqYAUS9vfxQij7/PYh+PkO8BPoLgu8eCq00TP3CIOtdOveDLgzSICHeCbITcOjJNyBC30wqKioh9m1BdBsXYkkoFQzA31MCJEQqyWrCS6lHJig68tah2GBtDSCCaCAAhbW7DgAiYmVpQZSCEQx9oZBCAsKwTQ18IcK1TcJDrjp09SamWeHEoQY28cBMRAg31BYe6gA1GYoNhQAo5ZtARM5m4UoMWGAVQQFOqxwSCcIACH5BAkJADAALAAAAAAeAB4AhQQCBISChMTCxERCROTi5KSmpBweHPTy9JSSlNTS1LS2tCwuLBQSFGxqbIyKjMzKzOzq7KyurCQmJPz6/HR2dAwKDJyanNza3Ly+vDQ2NBwaHHx+fAQGBISGhMTGxERGROTm5KyqrCQiJPT29Ly6vDQyNBQWFIyOjMzOzOzu7LSytCwqLPz+/Hx6fJyenNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+QJhwOJxALqgHK8HINFQHonQKm7wEGIxAMEEBvgDTJkWVskAerVrA8oK/phCrDGNd1FqStv1+b+gwEFhZa3x9YQl1Zi8jgVgCegIodhIcbyaJIRRSEBgeUZ0YDxCNQiwQCBKIMAUcHBFFaQKfgQQTZSMbmZYAGmQwL3mzUYBDIbxfHVWDhATFQxR9BiMpa6JzzzAjIn0kd3kYENlDCH0UD8Jc40IvfQNphA/rpqpgBhP4+fNCKf3+/ymIzTvgjyCDNwuwjZvAzV6GNxXErXuBDMCABn0szDthTkUfCaWeHTDQB8MIE33+ZMP45h6MDZcSZWv15gQ/lKs0hZRygEJbIpoARAgssIqmAQQvsNlxoCGnJQVEWOiCcazPggkJ6oHBxCpAmap9GIxw04erwqjRDlUYkeDQFwfFIjR9I5asPajPUnQg+aVuyxM7n40gQWHAArYGPrTAcKtMEAAh+QQJCQAyACwAAAAAHgAeAIUEAgSEgoTEwsREQkSkoqTk4uQcHhy0srT08vSUkpTU0tRkZmQsLiwUEhR0dnSMiozMysysqqzs6uwkJiS8urz8+vwMCgycmpzc2tw0NjQcGhx8fnwEBgSEhoTExsRERkSkpqTk5uQkIiS0trT09vRsamw0MjQUFhR8enyMjozMzsysrqzs7uwsKiy8vrz8/vycnpzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCZcDisSDAqyEvRyJQOCKJ0KqvEBC6XQFBRAb6A04ZFlb5CHq1a8PKCv6fIqyx7YdRairb9fm/oMhJYWWt8fWEKdWYOiYJ5Wip2ExxvJ4kRDlIEiIFZEBIkQy8SCROcIBwcK0MhJ3CNBRVlJBuXlAAaZDIOlYmAQxG3Xx0yCA19Kb9DvG8GJCt9DLLKMiQGfRQLfTDUQwl9DiZvHLrdBX0DFm8M3aIizSzx8VHtQvLyCPMS9PX58yzqwDCY0+7FOzAGMryxIKFeDHQl+lyolwLcgT4TQlFDcO2NCxKu/HSL2EzWhl7dUL1JJoNFSEsyMGmcgoCRDJUARPADcYqSUYEEMQjaeaCBUzAAI4i8qBVT2BdpCkyhBBGgzNE+DUi46QOT4KJDACyQUAAWwINfK4q+yboVYVJlLDp0BMC2WYqZ1EhQcDCAwVgDH1C4mEYlCAAh+QQJCQAwACwAAAAAHgAeAIUEAgSEgoTEwsREQkQkIiSkoqTk4uT08vQUEhSUkpRkZmQ0MjS0srTU0tR0dnSMiowsKiysqqzs6uz8+vwcGhwMCgycmpw8Ojy8urzc2tx8fnwEBgSEhoTMzsxERkQkJiSkpqTk5uT09vQUFhRsamw0NjS0trR8enyMjowsLiysrqzs7uz8/vwcHhycnpzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCYcDg8qEgLgqiBKJEYB6J0CpM4RoAsQtTJZkeaFVXKKiC82QoX/Y2wxjAWia1d0wEaOAy0oW+7dCMNcWQOgxF9XhsXIhkfiV+HDlIFAIIwiAAQLhJvcRIJH5aDfBsqQyFYo3saE2MiGqQVWRRiMA5ol3pDKpAAHDAHZ2gou0O4aC0iKmwprsYwIgRsGApsLtBDCWwOC2gbttkGbAOzXinZQyzTXi0r7+9R6ULw8AfxEvLz9/Er5lkpPGVbl6wEmgoS5r0gNweNhXkouDFg80FEtgMtqIlQ5SUPtIbtXGnINQgaH2L0VF2K4MAilQOG9iQioA/EqpMtErzwxCLDSAMKqzKZIMIiFiZfAJw1EEVyT4Axmdj8uXNJIFFkbNQ0uAPgwS4VQNFMZdNiqLEVHDLWAZSlBQqX2URgcDAgxZIWHk4IgDslCAAh+QQJCQAyACwAAAAAHgAeAIUEAgSEgoTEwsREQkTk4uQkIiSkoqT08vS0srQUEhTU0tRkZmQ0MjSUkpR0dnSMiozMyszs6uwsKiysqqz8+vy8urwcGhwMCgzc2tw8Ojx8fnwEBgSEhoTExsRERkTk5uQkJiSkpqT09vS0trQUFhRsamw0NjScnpx8enyMjozMzszs7uwsLiysrqz8/vy8vrwcHhzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCZcDg8tEqMgkgkUGFWFKJ0Kos4SIBsQnR4CV6vTixKJboMiaz6wgV/v51IWegqqe9bprvifcXmMiEbd1ptXnxwBzIuUi4OCjITg2obGUsQAnxgHYoTDlIGACSQkgASJxGMQiIfEF6dgy1DH1iikCEaZFMUMSKRkxYrQg53o4BEE4QcMgdpdynHQ8R3MCIthCy6xyIwhBULhCfRRA2EDgx3G8LjQgSEAxd3LOxDLgXUK/n5ivRC+voH9kXg1y/gvhXx1LBQxc4eNRN3LsihF+OdnTvi6KUwh4AQCF/jDlgg9EJELTUa2F1UAyOKhmKQxgl65q+WMU8gpxx4FGhSWgGCIWz1BACjQQxVLjA8GHlz0AgzGkhNUkhBAQhCxkIEKFOK0BYVhLIYY2hmGiE2CsJmeXCsxUg8IsASgvE02goO3QrJzQIjRc5xIio4GMBChAIYHlC80CYlCAAh+QQJCQAxACwAAAAAHgAeAIUEAgSEgoTEwsREQkTk4uSkoqQkIiT08vS0srQUEhTU0tRkZmSUkpQ0MjR0dnSMiozMyszs6uysqqz8+vy8urwcGhwMCgwsKizc2tw8Ojx8fnwEBgSEhoTExsRERkTk5uSkpqT09vS0trQUFhRsamycnpw0NjR8enyMjozMzszs7uysrqz8/vy8vrwcHhwsLizc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/sCYcDg8rEgNQygkSGFUE6J0Gos4RoBsInRoCVqtDixKJbIKiazawgV/v51IWcgiqe9bppvibcHmMSAbd1ptXnxwBzEsUiwOCjESg2obGUsQAnxgHYoRf0QFACOQkgAXJRGMQiEfEF6dX3JCH1iikCAaZFMTMCFVXy0QZA53o4BEEW5gBDEHaXcox0MwwJkdEyuEL7rHEx2ZfSoLhCXSRB9gfTANdxsq5kMTb14pFncv8EMsEJoUECoAASrKJ2SCwYMHBEYYSDBgQHtqXqiCx8LAHRcm7liQBQ/GpCwD7Nwplw8FIQcICCmBd6ACoRYhaqnRAE+kGhdRNBSDZE4QaDQhKmoZk+DAF5UDjwJNMsAQhC2lAFwwgKGKBYYHLocOEmFGA6mPWbYpMADWGIgAZUoR2pKCUBZjE80Qc8tGgdssD46tcIknRFtCLrhKU8HBhRq2F1EYhReCgoMBL0IocOHhRAtuUoIAACH5BAkJADAALAAAAAAeAB4AhQQCBISChMTCxERGROTi5KSipCQiJPTy9LSytBQSFNTS1JSSlGRmZDQyNHR2dIyKjMzKzOzq7KyqrPz6/Ly6vBwaHAwKDCwqLNza3Dw6PHx+fAQGBISGhMTGxOTm5KSmpPT29LS2tBQWFJyenGxqbDQ2NHx6fIyOjMzOzOzu7KyurPz+/Ly+vBweHCwuLNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+QJhwODyoSA0DCCRAYVITonQKizhEgGwCdGAJWKzOK0olrgqJrNrCBX+/nUhZuCKp71umm+JlveYwHxt3Wm1efHAHMCtSKw4KMBKDAJQbGUsQAnxgHYoRf0QFACKQkgAXIxGMQiAeEF6eX3JCHlijkB8aZFMTLyBVXywQZA6UlKSARBFuYAQwB2nGACfJQy/Bmh0TKtIALrvJEx2afSkM3SPVRB5gfS8N0hsp6kMTb14oFtIu9EMrEJsoQEhBkKCifkImKFx4wGCEgwgngFAIYoU+Yy5W0fvXTlgJaRZm0dMTDIUdaen6EWj35QWCbkroievz5QAIW8Y00HtxCMxuMBgapCFTt2yPMxgpbCGT4OAXlQOPgPnc9eFWoEEtFrxYtQLDgwpWI3yZ509DqUkYJygwgDYsqCmmum1B0e0YpDKO6gJgo0AvgAfJVICVNrduixDqUnBoYaywsRYnnI6k4GCACxAKWgwwwQKclCAAIfkECQkALgAsAAAAAB4AHgCFBAIEhIKExMLEREZE5OLkJCIkpKKk9PL0FBIU1NLUtLK0ZGZkNDI0lJKUdHZ0zMrM7OrsrKqs/Pr8HBocDAoMjI6MLCos3NrcvLq8PDo8fH58BAYEhIaExMbE5ObkpKak9Pb0FBYUbGpsNDY0nJ6cfHp8zM7M7O7srK6s/P78HB4cLC4s3N7cvL68////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABv5Al3A4PKBEjAIIJDBdThKidOqCOEKALAJ0aAlarQ4rSiWmDIismsIFf78dSFmYEqnvW6Yb422x5i4fG3dabV58cAcuKVIpDgkuEYMAlBsZSw8CfGAdihB/RAYAIZCSABYkEIxCIB4PXp5fckIeWKOQHxpkUxIsIFVfLQ9kDpSUpIBEEG5gBC4HacYAFclDLMGaHRIo0gAru8kSHZp9JwvdJNVEHmB9LAzSGyfqQxJvXiYU0iv0QykPmzA8OEGQoKJ+QiQoXHjAIISDCCWAUAgihT5jK1bR+9dO2AhpFGbR0xPMhB1p6foRaPeFhYJuSuiJ6/PlAAhbxjTQY3EIzHIwFxqkIVO3bI8zFydsIYvg4BeVXr8gBPsp5MOtQINUNGCxKgUIAuMERP0yz5+GUpMwSnwVLIyno1NMdUNwoAszOE6pOOpGaUuXYBjewC2DYkI3NiDuChMJ6AQHFcb8suxAAFw1EBgcDFiBKcGFA5aJBAEAIfkECQkAKQAsAAAAAB4AHgCFBAIEhIKExMLEZGZk5OLkJCIkpKKk9PL01NLUFBIUNDI0tLK0dHZ0zMrM7OrsrKqs/Pr8DAoMnJ6cLCos3NrcHBocPDo8fH58BAYEjI6MxMbEbGps5ObkpKak9Pb0FBYUNDY0vL68fHp8zM7M7O7srK6s/P78LC4s3N7c////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABv7AlHA4PJQ2ioLHIxhRSBCidJpyMD6AbMJzCAlCIQ0qSiWaDImsOsIFf78aR1lo2qjvW6Z7j5qnOhh3Wm1eYF4CHikmUiYMCCkPgWoYFksNX4YCB1V9RAYAH4+RABMSDotCHhwNXpsOX3JCHFigjx0XZFMQBK6FGmQMd6F+RA6FXwQpB2l3GcRDKIZgvyWCJ7nEEKxvIQcDghLPRByZIRQKdxgk4kMQhV4jEXcn7EMmrIYNJPv7m/VCEAIKPNDPgb9/AgXKU3MCFTsTGqRpAHEnQix2ejAhsHMnXD0C5SgsEKSEHQQN3Lp5oKXmArto0hpEuSDskbhX75KlIEFrmGcDFA6lQECRyNgXmUM61KriRQMBD6hMeCCAUhNTARcVXXhkbI+ABia0SQtTtNMUo5jeQOhyyNfBKSZgvvNiogumPTrnkMD3RsDaPYfWPdsV8U3dmASwPTPhgMKIERA8NBhBwIFiIkEAACH5BAkJACUALAAAAAAeAB4AhQQCBISChMTCxGRmZOTi5CQiJPTy9KSipNTS1BQSFDQyNMzKzHR2dOzq7Pz6/Ly+vAwKDJyenKyqrNza3BwaHDw6PAQGBIyOjMTGxGxqbOTm5CwuLPT29BQWFDQ2NMzOzHx6fOzu7Pz+/KyurNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+wJJwODSMMooChyP4TEIOonRaajA6gGyCY3gIHg8MKUolig6JrBrCBX+/mEZZKMqo71ume0+alyQWd1ptXmBeAhwlIlIiDAh/gWoWFUsLX4YCBlV9RAcAHY+AABsRDYtCHBoLXpoNX3JCGlifoSCJVA4ErYUYZAx3oH5EDYVfBCUGaXcXwkMkhmC9I4IbZM0Oq28PBgOCEc1EGpgPEwp3FiHgQw6FXh8QdxvqQyKrhgsh+fma80IO/wAD/uvnTyAGaAsIijhoCMOHdgKsgdNzCcGEYg809CMw7smeBwtOXcOgbZsDhoU4NbvYbkEUEpe83Grmas+xEg7eZNokUopbAxK73ogkhqjKlwUEOJwSwYEAyaJEYQ3RZRSagJDYoIVppVIKMYxeHHQ5xGvmFBEwrXoR0SVmoZtzGjx1E3HsJQEC0l0jcVDoWDBIJTYT0WACApccFlg0IJhIEAAh+QQJCQAhACwAAAAAHgAeAIUEAgSEgoTEwsTk4uRkZmQkIiT08vTU0tSkoqQUEhTMyszs6uw0NjT8+vy8vrwMCgx8enzc2tysqqwEBgScnpzExsTk5uRsamwsLiz09vQUFhTMzszs7uw8Ojz8/vzc3tysrqz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/sCQcDg0gC6MQiYj2EQ4DaJ0GlpAEoBswmBwCByOyidKJXoQ2Kw20/W6K4uy0HNR2x9LsNv9kYckE3ZrXV9fXgIZIR5SHh8Gf4FqEx1LCoZgAo8LfUQLYYkSWRgUC4tCGRYKXppfcUINFV4VjxIQiVQNA5pvZB97s36dbl8DIQ2XxMFDvnphDRx7Dgqmyg2qhQ4GEZhgrspCA3pfEdeHZN8hTHsHsXoK6EMequ4N9fbwQ/b6+/iv+5fS+nloB6bChj0Czn1TZ+jAtj3evoXj9sTQFwUK/cBCCAUbmGLfHg5bxAzTLWWeLoGEVSjKpoz5HFVxg3FIyl3SBmQw5SHDSYAKAoAtaCVFVxWAAqZZa/apCsgpnoZhatBGADZgZRp5LOSBkDgvT8ssiGUxYVWaEeXkIuulazMBA2D68bAgwgGMGRQ4NEBtShAAIfkECQkAEAAsAAAAAB4AHgCEvL685OLk1NLU9PL0zMrM7Ors/Pr8xMbE3NrcxMLE5Obk9Pb0zM7M7O7s/P783N7c////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABf4gJI6jUSAM4QwHgTQGKc+Q8SQAkCTGoOeHR4xGcigOP1xilVMCDgWiyIH4WZe+pvYhhRRwuSTTqVxAHDLHw/y9MhwLArjJ5pIKz4E3RyiYSwoEOnptUSIGSAkHhAFDMzaEYARDD0kJf10ieFYBNXM5nZkiN1oHBg1XKqKHB2A4DVVWhqsQAWE6CIJKPLQiC04AAkhhBL1TgsQGysvGh8vPyguOvQbSy5/Fxg7IQAxJANOiv0kMsT8KxrZaL2QHaKuIwAMGnwl2orGuaKRNeqttYULR05GA0IN3j9bswTFpBJ5LXhgGWPAOToBWBSMCmCUiQKRbCVQY4AaETagZmyuA8ciy48ciKWrq6RgDEsBJIgV0NVmphWADeBfFZOHTSNsJAZPiCEAwT0oIADs=" align="">
+    <span>&nbsp;&nbsp;Loading......</span>
+</div>
+<div class="page-title">
+    <h2 class="page-heading">Quick Order</h2>
+</div>
+<section class="content section-content quickorder-section">
+    <div class="box box-primary create-user-primary mb-35">
+        <div class="box-header with-border">
+            <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
+            <input type="hidden" id="hfTaxRate" value="0" data-srfee="0" />
+            <input type="hidden" id="hfFreighttaxable" value="false" />
+            <input type="hidden" id="hfshippingfreight" value="0" />
+            <input type="hidden" id="hfsession_id" value="0" />
+            <h4 class="box-title" id="lblOrderNo" data-paypal_seller="@user.PaypalSellerAccount" data-pay_option="@ViewBag.pay_option" data-pay_by="" data-pay_id="">Order #000000 detail</h4>
+            <div class="radtype_span">
+                <h5 class="payment-history"></h5>
+            </div>
+            <div class="box-tools pull-right box-tools-header"></div>
+        </div>
+        <div class="box-body box-sections">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 class="sm-heading">General</h2>
+                    <div class="form-group">
+                        <label data-toggle="tooltip" title="Order created date">Create Date</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="form-control select2" id="ddlStatus" placeholder="Select Status" style="width: 100%;">
+                            <option value="wc-pending" selected="selected">Pending payment</option>
+                            <option value="wc-processing">Processing</option>
+                            <option value="wc-on-hold">On hold</option>
+                            <option value="wc-completed">Completed</option>
+                            <option value="wc-cancelled">Cancelled</option>
+                            <option value="wc-refunded">Refunded</option>
+                            <option value="wc-failed">Failed</option>
+                            <option value="wc-cancelnopay">Cancelled - No Payment</option>
+                            <option value="wc-pendingpodiuminv">Pending Podium Invoice</option>
+                            <option value="wc-podium">Order via Podium</option>
+                            <option value="wc-podiumrefund">Podium Refunded</option>
+                            <option value="wc-pendingfraud">Pending Fraud</option>
+                            <option value="wc-wc-fraud">Fraud</option>
+                            <option value="wc-retention-refund">Retention Refund</option>
+                            <option value="wc-retained">Retained</option>
+                            <option value="wc-retention">Retention</option>
+                        </select>
+                    </div>
+                    <div class="form-group releasedate">
+                    </div>
+                    <div class="form-group">
+                        <label data-toggle="tooltip" title="Select Customer for creating Order.">Customer</label>
+                        <div class="input-group">
+                            <select class="form-control select2 " id="ddlUser" placeholder="Select Customer Email" data-width="100%">
+                            </select>
+                            <span class="input-group-btn"><button type="button" id="btnSearch" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Click search customers for creating Order."><i class="fa fa-search"></i> Search</button></span>
+                        </div>
+                    </div>
+                    <div style="display:none" class="form-group">
+                        <label>Product Type</label>
+                        <select class="form-control select2" id="ddlproducttype" placeholder="Select Status" style="width: 100%;">
+                            <option value="product" selected="selected">Simple product</option>
+                            <option value="product_variation">Variable product</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="sm-heading">Billing Address</h2>
+                    <div class="row row-small">
+                        <div class="form-group col-md-6">
+                            <input type="email" class="form-control billinfo" id="txtbillfirstname" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbilllastname" placeholder="Last Name">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbillcompany" placeholder="Company">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo searchAddress" id="txtbilladdress1" data-addresstype="bill" placeholder="Enter Address Line 1">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbilladdress2" placeholder="Enter Address Line 2">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbillcity" placeholder="Enter City">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlbillstate" placeholder="State / County" style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbillzipcode" placeholder="Zip Code">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlbillcountry" placeholder="Country / Region" style="width: 100%;">
+                                <option value="">Select a country / region…</option>
+                                <option value="CA">Canada</option>
+                                <option value="US" selected>United States (US)</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbillemail" placeholder="Enter Email Address">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbillphone" placeholder="Enter Phone/Mobile">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="sm-heading">Shipping Address<button type="button" class="btn btn-danger billinfo" data-toggle="tooltip" title="" data-original-title="Copy Billing Address" onclick="copyBillingAddress();">Copy Billing Address</button></h2>
+                    <div class="row row-small">
+                        <div class="form-group col-md-6">
+                            <input type="email" class="form-control billinfo" id="txtshipfirstname" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshiplastname" placeholder="Last Name">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtshipcompany" placeholder="Company">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
+                                <input type="text" class="form-control billinfo searchAddress" id="txtshipaddress1" data-addresstype="ship" placeholder="Enter Address Line 1">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtshipaddress2" placeholder="Enter Address Line 2">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshipcity" placeholder="Enter City">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshipzipcode" placeholder="Zip Code">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;">
+                                <option value="">Select a country / region…</option>
+                                <option value="CA">Canada</option>
+                                <option value="US" selected>United States (US)</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <textarea class="form-control billinfo" id="txtCustomerNotes" placeholder="Customer notes about the order" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-35">
+        <div class="col-sm-12">
+            <div class="box box-primary mb-0">
+                <div class="box-header">
+                    <div class="table-responsive" id="divAddItemFinal">                        
+                        <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 8%">Actions</th>
+                                    <th style="width: 40%">Description</th>
+                                    <th style="width: 20%">Vendor SKU</th>
+                                    <th class="text-right" style="width: 10%">Price</th>
+                                    <th class="text-right" style="width: 10%">Quantity</th>
+                                    @*<th class="text-right" style="width: 10%">Discount(%)</th>
+                                    <th class="text-right" style="width: 8%">Tax</th>*@
+                                    @*<th class="text-right" style="width: 8%">Shipping</th>*@
+                                    <th class="text-right" style="width: 10%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="line_items"></tbody>
+                            <tbody id="product_line_items"></tbody>
+                            <tfoot class="thead-dark">
+                                <tr>
+                                    <th colspan="3" class="text-left" style="width: 58%">
+                                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+                                    </th>
+                                    <th class="text-right" style="width: 8%"></th>
+                                    <th class="text-right" style="width: 8%"></th>
+                                    <th class="text-right entry-mode-action" style="width: 37%" colspan="4">
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- order-notes -->
+            <div class="box box-primary direct-chat">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Order Notes</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="">
+                    <ul class="order_notes">
+                    </ul>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer" style="">
+                    <div class="form-group">
+                        <label>Note type</label>
+                        <div class="input-group">
+                            <select class="form-control select2" id="order_note_type" placeholder="Select Status" style="width: 100%;">
+                                <option value="0">Select</option>
+                                <option value="private">Private note</option>
+                                <option value="customer">Note to customer</option>
+                            </select>
+                            <span class="input-group-btn"></span>
+                        </div>
+                    </div>
+                    <div class="form-group div_order_note" style="display: none;">
+                        <label>Add note</label>
+                        <textarea type="text" name="order_note" id="add_order_note" class="form-control billnote" rows="3"></textarea>
+                        <button type="button" id="btnAddnote" class="btn btn-danger btn-flat billnote pull-right" data-toggle="tooltip" data-original-title="Add note" style="margin-top:5px;">Add</button>
+                    </div>
+                </div>
+                <!-- /.box-footer-->
+            </div>
+            <!-- /.order-notes -->
+        </div>
+        <div class="col-sm-6 checkout-box-total">
+            <div class="box box-primary">
+                <div class="box-header with-border">                    
+                    <button type="button" id="btnpriceorder" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Price">Order Process</button>
+                </div>
+                <div class="box-body no-padding">                    
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Coupon(s)</h3>
+                    <button type="button" id="btnApplyCoupon" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Add coupon">Apply Coupon</button>
+                </div>
+                <div>
+                    <ul  id="billCoupon">
+                    </ul>
+                </div>
+            </div>
+            <div style="display:none" class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Gift Card(s)</h3>
+                    <button type="button" id="btnApplyGiftCard" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Add Gift Card">Apply Gift Card</button>
+                </div>
+                <div class="box-body no-padding">
+                    <ul class="nav nav-pills nav-stacked" id="billGiftCard">
+                    </ul>
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div style="display:none" id="divtotal" class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Total</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body text-right">
+                    <div id="order_final_total">
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Sub-Total (<span id="totalQty">0</span>)</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="SubTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Total Discount</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="discountTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group hidden">
+                            <label class="col-sm-10 control-label">Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="feeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group hidden">
+                            <label class="col-sm-10 control-label">State Recycling Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Shipping</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="shippingTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group hidden">
+                            <label class="col-sm-10 control-label">Shipping Tax</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="shippingTaxTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Sale Tax</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="salesTaxTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group hidden">
+                            <label class="col-sm-10 control-label">Gift Card</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="giftCardTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group hidden">
+                            <label class="col-sm-10 control-label">Order Total</label>
+                            <div class="col-sm-2 controls text-right">
+                                <strong><span id="orderTotal" data-orderitemid="0">0.00</span></strong>
+                            </div>
+                        </div>
+                        <div class="form-group refund-total hidden">
+                            <label class="col-sm-10 control-label">Refunded</label>
+                            <div class="col-sm-2 controls text-right text-red text-weight-bold">
+                                <strong><span id="refundedTotal" data-orderitemid="0">0.00</span></strong>
+                            </div>
+                        </div>
+                        <div class="form-group refund-total hidden">
+                            <label class="col-sm-10 control-label">Refunded By Gift Card</label>
+                            <div class="col-sm-2 controls text-right text-red text-weight-bold">
+                                <strong><span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Net Payment</label>
+                            <div class="col-sm-2 controls text-right text-weight-bold">
+                                <strong><span id="netPaymentTotal" data-orderitemid="0">0.00</span></strong>
+                            </div>
+                        </div>
+                        <select class="form-control" id="ddlShipping" placeholder="Select Shipping" style="width: 100%;">
+                            
+                        </select>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer text-right footer-finalbutton">
+                    @*<button type="button" id="btnpay" class="btn btn-primary"> Payment</button>*@
+                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal in printable " id="billModal" role="dialog" aria-hidden="true"></div>
+
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="~/js/serializePHP.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/Content/jspdf/jspdf.debug.js"></script>
+<script type="text/javascript" src="~/Content/jspdf/html2canvas.js"></script>
+@*<script src="~/Content/jspdf/jspdf.min.js"></script>*@
+
+<script src="@Url.Content("~/js/Orders/OrderCoupons.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/OrdersMySQL/QuickOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<!--Google Place API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async defer></script>
+<script>
+    jQuery(function ($) {
+
+        //wow = new WOW(
+        //    {
+        //        boxClass: 'wow',
+        //        animateClass: 'animate__animated', // default
+        //        offset: 0,          // default
+        //        mobile: true,       // default
+        //        live: true        // default
+        //    }
+        //)
+        //wow.init();
+
+        $('.hub-accord h5').click(function () {
+            $(this).find('i').toggleClass('fa-plus fa-minus').parent().next('.hub-box-open').slideToggle(500).parent('.hub-accord').siblings().find('.fa').removeClass('fa-minus').addClass('fa-plus').parent().next('.hub-box-open').slideUp(500);
+        });
+        //$('.full-dropy').click(function () {
+        //    $(this).find('.fa').toggleClass('fa-minus fa-plus');
+        //});
+    });
+</script>

@@ -65,6 +65,26 @@ namespace LaylaERP.Models
         public string date_start { get; set; }
         public string date_end { get; set; }
         public bool is_free { get; set; }
-        public string free_itmes { get; set; }        
+        public string free_itmes { get; set; }
+        public List<ShippingMethods> ShippingMethods { get; set; }
+    }
+    public class ShippingMethods
+    {
+        public string method_id { get; set; }
+        public string method_title { get; set; }
+        public decimal amount { get; set; }
+        public bool isactive { get; set; }
+    }
+    public class Ordershipping
+    {              
+        public long id { get; set; }
+        public int quantity { get; set; }
+        public long variation_id { get; set; }
+    }
+    public class Ordershippingaddress
+    {
+        public long id { get; set; }
+        public int quantity { get; set; }
+        public long variation_id { get; set; }
     }
 }

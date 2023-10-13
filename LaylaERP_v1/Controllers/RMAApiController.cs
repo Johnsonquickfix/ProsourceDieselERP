@@ -440,6 +440,61 @@ namespace LaylaERP_v1.Controllers
             }
         }
 
+
+        //[HttpPost, Route("generate-ticketays/{app_key}/{entity_id}")]
+        //public async System.Threading.Tasks.Task<IHttpActionResult> GenerateOrderTicketays(string app_key, long entity_id, dynamic model)
+        //{
+        //    try
+        //    {
+        //        // Your existing code here...
+        //        string json_data = JsonConvert.SerializeObject(model, Formatting.Indented);
+
+        //        DataTable dt = CustomerServiceRepository.GenerateOrderTicket(json_data, 2, "GENRMATICKET");
+        //        // Send email asynchronously
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            if (dt.Rows[0]["response"].ToString() == "success")
+        //            {
+        //                dynamic datam = JsonConvert.DeserializeObject(json_data);
+        //                // Access the chat_history array
+        //                JArray chatHistorys = datam.chat_history;
+        //                string firstFrom = datam.chat_history[0].from;
+
+        //                string _body = $"Hi there {firstFrom}, we're sorry that you are having an issue with your Prosource Diesel product, and thank you for bringing it to our attention with your warranty request.<br/><br/>";
+        //                _body += "We will work diligently to get this resolved for you as soon as possible, and a Prosource Diesel warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>";
+        //                _body += "<b>Here is what happens next:</b><br/><br/>";
+        //                _body += "Warranty Claim Review: We will review your claim details, photos, and any other evidence submitted pertaining to your claim<br/><br/>";
+        //                _body += "Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or explanation of your warranty issue<br/><br/>";
+        //                _body += "Decision Rendered: We will inform you of the decision made on your warranty claim and advise you of next steps<br/><br/>";
+        //                _body += "Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include replacing the product entirely, repairing the product, or replacing a component, or components, of the product<br/><br/>";
+        //                _body += "Again, we're sorry you're having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>";
+        //                _body += "<b>Chat History</b><br/><br/>";
+        //                foreach (JObject item in chatHistorys)
+        //                {
+        //                    string from = item.Value<string>("from");
+        //                    string content = item.Value<string>("content");
+        //                    _body += $"<b>{from}:</b> {content}<br/>";
+        //                }
+        //                _body += $"<br/><b>Comment:</b> {datam.comment}<br/>";
+        //                _body += "<br/><b>Help Desk<br/>";
+
+        //                // Send the email asynchronously
+        //                // await SendEmail.SendEmails_outerAsync("david.quickfix1@gmail.com", "Prosource Diesel Warranty Information" + " (#" + dt.Rows[0]["id"].ToString() + ").", _body, string.Empty);
+        //                  await SendEmail.SendEmails_outerAsync()
+        //            }
+        //        }
+
+        //        // Rest of your code...
+
+        //        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = dt.Rows[0]["id"].ToString() });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return InternalServerError(ex);
+        //    }
+        //}
+
+
         //private static readonly string UploadDirectory = HostingEnvironment.MapPath("~/Content/tickets/");
         //[HttpPost]
         //public IHttpActionResult UploadImages(List<ImageModel> images)

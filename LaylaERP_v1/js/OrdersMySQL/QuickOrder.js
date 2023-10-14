@@ -1235,14 +1235,18 @@ $("#line_items").on("change", ".rowCalulate[name='txt_itemqty']", function (e) {
     var $row = $input.closest("tr");
     // Get the last value
     //var lastValue = lastItemQtyValues[rowId] || 0;
-    var lastValue = lastItemQtyValues[rowId] !== undefined ? lastItemQtyValues[rowId] : 1;
+    /*var lastValue = lastItemQtyValues[rowId] !== undefined ? lastItemQtyValues[rowId] : 1;*/
+
+   // var lastValue = lastItemQtyValues[rowId] || 1;
+    var lastValue = lastItemQtyValues[rowId] || 1; // Initialize to 0 if not found
+
     var parentId = $row.find('.parent-id').data('parentid');
     // Get the new value
     var newValue = parseFloat($input.val());
-
+    lastItemQtyValues[rowId] = newValue;
     // Calculate the change in quantity
     var quantityChange = newValue - lastValue;
-
+    
     let cartItems = []; // Initialize an empty array to store cart items 
             cartItems.push({
                 id: rowId,
@@ -1294,11 +1298,11 @@ $("#line_items").on("change", ".rowCalulate[name='txt_itemqty']", function (e) {
                 $("#divtotal").hide();
             }
         },
-        complete: function () { $("#loader").hide(); },
+        complete: function () { $("#loader").hide(); $("#divtotal").hide(); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         async: true
     });
-    console.log(rowId,lastValue,newValue,quantityChange);
+    console.log(rowId, lastValue, newValue, quantityChange);
     // Calculate the final total
     calculateFinal();
 });

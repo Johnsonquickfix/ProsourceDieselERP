@@ -38,13 +38,37 @@ namespace LaylaERP_v1.Controllers
             return Json(obj, 0);
         }
         [HttpPost]
-        public JsonResult getshipping(CartResponse objs, long product_id, long vendor_id)
+        public JsonResult getshipping(CartResponse objs, long product_id, long vendor_id, string session_id)
         {
             List<PurchaseOrderProductsModel> obj = new List<PurchaseOrderProductsModel>();
             try
             {
                 long pid = 0, vid = 0; 
-                obj = QuickorderRepository.getshipping(objs, product_id, vendor_id);
+                obj = QuickorderRepository.getshipping(objs, product_id, vendor_id, session_id);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+        [HttpPost]
+        public JsonResult getshippingdetails(CartResponse objs, long product_id, long vendor_id, string session_id)
+        {
+            List<PurchaseOrderProductsModel> obj = new List<PurchaseOrderProductsModel>();
+            try
+            {
+                long pid = 0, vid = 0;
+                obj = QuickorderRepository.getshippingdetails(objs, product_id, vendor_id, session_id);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+        [HttpPost]
+        public JsonResult addproduct(CartResponse objs, long product_id, long vendor_id, string session_id)
+        {
+            List<PurchaseOrderProductsModel> obj = new List<PurchaseOrderProductsModel>();
+            try
+            {
+                long pid = 0, vid = 0;
+                obj = QuickorderRepository.addproduct(objs, product_id, vendor_id, session_id);
             }
             catch { }
             return Json(obj, 0);

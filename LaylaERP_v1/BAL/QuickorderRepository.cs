@@ -128,11 +128,52 @@ namespace LaylaERP.BAL
 
             return shippingList;
         }
-        
-        public static List<PurchaseOrderProductsModel> getshipping(CartResponse obj, long product_id, long vendor_id)
+
+        public static List<PurchaseOrderProductsModel> addproduct(CartResponse obj, long product_id, long vendor_id, string session_id)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=true");
+
+            if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
+            {
+            }
+            else
+                request.Headers.Add("X-Cart-Session-Id", session_id);
+            List<Ordershipping> shippingData = getdetail(obj, 1, 1);
+            // Serialize the list to JSON
+            string json = JsonConvert.SerializeObject(shippingData);
+            // Serialize the dynamicData array to a JSON string
+            var content = new StringContent(json, null, "application/json");
+            request.Content = content;
+            HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
+            List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();  // Check if the request was successful (status code 200 OK)
+            try
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    // Handle a successful response here
+                    string responseContent = response.Content.ReadAsStringAsync().Result;
+                    PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                    dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                    productsModel.product_sku = jsonResponse.data.session_id; 
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
+        public static List<PurchaseOrderProductsModel> getshipping(CartResponse obj, long product_id, long vendor_id, string session_id)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+
+            if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
+            {
+            }
+            else 
+                request.Headers.Add("X-Cart-Session-Id", session_id);
             List<Ordershipping> shippingData = getdetail(obj, 1,1); 
             // Serialize the list to JSON
             string json = JsonConvert.SerializeObject(shippingData); 
@@ -219,7 +260,8 @@ namespace LaylaERP.BAL
                             productsModel.total_localtax1 = jsonResponsetotal.data.cart_totals.subtotal_tax;
                             productsModel.total_localtax2 = jsonResponsetotal.data.cart_totals.shipping_total;
                             productsModel.localtax1_tx = jsonResponsetotal.data.cart_totals.shipping_tax;
-                            productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total; 
+                            productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total;
+                            productsModel.discount = jsonResponsetotal.data.cart_totals.discount_total;
                         }
                     }
 
@@ -230,6 +272,81 @@ namespace LaylaERP.BAL
             { throw ex; }
             return _list;
         }
+        public static List<PurchaseOrderProductsModel> getshippingdetails(CartResponse obj, long product_id, long vendor_id, string session_id)
+        {
+            var client = new HttpClient();
+            //var request = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+
+            //if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
+            //{
+            //}
+            //else
+            //    request.Headers.Add("X-Cart-Session-Id", session_id);
+            //List<Ordershipping> shippingData = getdetail(obj, 1, 1);
+            //// Serialize the list to JSON
+            //string json = JsonConvert.SerializeObject(shippingData);
+            //// Serialize the dynamicData array to a JSON string
+            //var content = new StringContent(json, null, "application/json");
+            //request.Content = content;
+            //HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
+            List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();  // Check if the request was successful (status code 200 OK)
+            try
+            {
+                
+                    // Handle a successful response here
+                    //string responseContent = response.Content.ReadAsStringAsync().Result;
+                    PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                    //dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                    productsModel.product_sku = session_id;
+                    if (!string.IsNullOrEmpty(productsModel.product_sku))
+                    {
+                        var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+                        requesttax.Headers.Add("X-Cart-Session-Id", productsModel.product_sku);
+                        //var contenttax = new StringContent("{\n    \"first_name\": \"David\",      \n    \"last_name\": \"G\",\n    \"email\": \"david.quickfix1@gmail.com\",\n    \"company\": \"\",\n    \"phone\": \"(012) 345-6789\",\n    \"address_1\": \"street 101\",\n    \"address_2\": \"\",\n     \"city\": \"NEW YORK\",\n     \"state\": \"NY\",\n     \"postcode\": 10001,\n     \"country\": \"US\" \n}", null, "application/json");
+                        CartShippingAddressRequest shipping = new CartShippingAddressRequest
+                        {
+                            first_name = obj.data.shipping_address.first_name,
+                            last_name = obj.data.shipping_address.last_name,
+                            company = obj.data.shipping_address.company,
+                            address_1 = obj.data.shipping_address.address_1,
+                            address_2 = obj.data.shipping_address.address_2,
+                            city = obj.data.shipping_address.city,
+                            state = obj.data.shipping_address.state,
+                            postcode = obj.data.shipping_address.postcode,
+                            country = obj.data.shipping_address.country
+                        };
+                        // Serialize the CartShippingAddressRequest object to JSON
+                        string shippingJson = JsonConvert.SerializeObject(shipping);
+                        // Create a StringContent with the JSON data
+                        var contenttax = new StringContent(shippingJson, Encoding.UTF8, "application/json");
+                        requesttax.Content = contenttax;
+                        HttpResponseMessage responsetax = client.SendAsync(requesttax).Result; // Block and wait 
+                        if (responsetax.IsSuccessStatusCode)
+                        {
+                            string responseContenttax = responsetax.Content.ReadAsStringAsync().Result;
+                            //PurchaseOrderProductsModel productsModeltax = new PurchaseOrderProductsModel();
+                            dynamic jsonResponsetotal = JsonConvert.DeserializeObject(responseContenttax);
+
+                            var shippingMethodsArray = jsonResponsetotal.data.shipping_methods.ToObject<List<ShippingMethods>>();
+                            productsModel.ShippingMethods = shippingMethodsArray;
+ 
+                            productsModel.subprice = jsonResponsetotal.data.cart_totals.subtotal;
+                            productsModel.total_localtax1 = jsonResponsetotal.data.cart_totals.subtotal_tax;
+                            productsModel.total_localtax2 = jsonResponsetotal.data.cart_totals.shipping_total;
+                            productsModel.localtax1_tx = jsonResponsetotal.data.cart_totals.shipping_tax;
+                            productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total;
+                            productsModel.discount = jsonResponsetotal.data.cart_totals.discount_total;
+                        }
+                    }
+
+                    _list.Add(productsModel);
+               //}
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
         public static List<PurchaseOrderProductsModel> getshippingmethod(string method_id, string method_title, decimal amount, string session_id)
         {
             var client = new HttpClient(); 
@@ -267,7 +384,8 @@ namespace LaylaERP.BAL
                             productsModel.total_localtax2 = jsonResponsetotal.data.cart_totals.shipping_total;
                             productsModel.localtax1_tx = jsonResponsetotal.data.cart_totals.shipping_tax;
                             productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total;
-                        }
+                            productsModel.discount = jsonResponsetotal.data.cart_totals.discount_total;
+                    }
                     }
 
                     _list.Add(productsModel);
@@ -310,6 +428,7 @@ namespace LaylaERP.BAL
                             productsModel.discount = jsonResponsetotal.data.cart_totals.discount_total;
                             productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total;
                             productsModel.product_type = jsonResponsetotal.status;
+                            productsModel.total_tva = jsonResponsetotal.data.coupons[0].coupon_amount; 
                         }
                         else
                         {
@@ -382,7 +501,7 @@ namespace LaylaERP.BAL
                               + " FROM wp_posts as p"
                                + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                              // + " WHERE p.post_type = '" + strproducttype + "' and CONCAT(p.post_title,p.id,post_name, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'  ORDER BY id; ";//AND p.post_status = 'publish' 
-                             + " WHERE  CONCAT(p.post_title,p.id,post_name, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'  ORDER BY id; ";//AND p.post_status = 'publish' 
+                             + " WHERE p.post_type in ('product', 'product_variation') and CONCAT(p.post_title,p.id,post_name, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'  ORDER BY id; ";//AND p.post_status = 'publish' 
 
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }

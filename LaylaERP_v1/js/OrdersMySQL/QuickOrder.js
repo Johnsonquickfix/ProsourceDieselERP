@@ -134,7 +134,7 @@
         getItemList(product_id, parent_id); //$('#ddlProduct').val('').trigger('change');
 
         
-        setTimeout(function () { gettotaldetailsfromif(product_id); $("#divtotal").hide(); }, 1000);
+        setTimeout(function () { gettotaldetailsfromif(product_id); $("#divtotal").hide(); }, 5000);
 
         
 
@@ -1374,7 +1374,7 @@ function removeItems(id, parentid, qty) {
                     error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
                     async: true
                 });
-                console.log(rowId, lastValue, newValue, quantityChange);
+                //console.log(rowId, lastValue, newValue, quantityChange);
                 // Calculate the final total
                 calculateFinal();
                  $("#divtotal").hide();

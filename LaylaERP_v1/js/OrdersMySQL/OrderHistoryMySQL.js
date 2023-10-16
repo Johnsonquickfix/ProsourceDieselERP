@@ -209,6 +209,9 @@ function dataGridLoad(order_type) {
                 }
             },
             {
+                data: 'post_date', title: 'Date', sWidth: "12%", render: function (data, type, row) { return row.date_created; }
+            },
+            {
                 data: 'id', title: 'OrderID', sWidth: "10%",
                 render: function (id, type, full, meta) {
                     if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp') return '#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
@@ -216,6 +219,38 @@ function dataGridLoad(order_type) {
                     else return '#' + id;
                 }
 
+            },
+            {
+                data: 'imagefile', // Assuming 'imagefile' contains the JSON data
+                title: 'Images',
+                render: function (data, type, row) {
+                    // Parse the JSON data
+                    //var images = JSON.parse(data);
+                    console.log(data);
+                    // Initialize an empty HTML string
+                    /*var html = '#' + row.id;*/
+                    var html = '';
+                    var matches = data.match(/"_file_name":"(.*?)"/g);
+
+                    if (matches) {
+                        for (var i = 0; i < matches.length; i++) {
+                            // Extract the image URL from the matched string
+                            var match = matches[i];
+                            var imageUrl = match.replace(/"_file_name":"|"/g, '');
+
+                            // Define the desired height and width (adjust these values as needed)
+                            var imageHeight = '60'; // Set your desired height
+                            var imageWidth = '70'; // Set your desired width
+
+                            // Add image tags with specified height and width
+                            // html += '<img src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '"><br>';
+                            html += '<img class="image-style" src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '">';
+
+                        }
+                    }
+
+                    return html;
+                }
             },
             //{
             //    data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
@@ -230,42 +265,22 @@ function dataGridLoad(order_type) {
                     return 'Order created via : ' + row.created_via +' </br> Order Placed by:'+ row.first_name + ' ' + row.last_name;
                 }
             },
+           
+            /* { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },*/
+            { data: 'itmename', title: 'Purchase Details', sWidth: "10%" },
             {
-                data: 'imagefile', // Assuming 'imagefile' contains the JSON data
-                title: 'Images',
-                render: function (data, type, row) {
-                    // Parse the JSON data
-                    //var images = JSON.parse(data);
-                    console.log(data);
-                    // Initialize an empty HTML string
-                     var html = '';
-
-                    var matches = data.match(/"_file_name":"(.*?)"/g);
-
-                    if (matches) {
-                        for (var i = 0; i < matches.length; i++) {
-                            // Extract the image URL from the matched string
-                            var match = matches[i];
-                            var imageUrl = match.replace(/"_file_name":"|"/g, '');
-
-                            // Define the desired height and width (adjust these values as needed)
-                            var imageHeight = '60'; // Set your desired height
-                            var imageWidth = '70'; // Set your desired width
-
-                            // Add image tags with specified height and width
-                           // html += '<img src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '"><br>';
-                            html += '<img class="image-style" src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '">';
-
-                        }
-                    }
-
-                    return html;
+                data: 'billing_address_1', title: 'Billing', sWidth: "14%", render: function (id, type, row) {
+                    return row.billing_address_1 + ' ' + row.billing_postcode + ' ' + row.billing_city + ' ' + row.billing_country + ' ' + row.billing_state;
                 }
             },
-            /* { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },*/
-            { data: 'itmename', title: 'Items', sWidth: "10%" },
             {
-                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
+                data: 'shipping_address_1', title: 'Shipping', sWidth: "14%", render: function (id, type, row) {
+                    return row.shipping_address_1 + ' ' + row.shipping_postcode + ' ' + row.shipping_city + ' ' + row.shipping_country + ' ' + row.shipping_state;
+                }
+            },
+
+            {
+                data: 'total_sales', title: 'Total', sWidth: "10%", render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
                     let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
                     amt += refund_gc_amt != 0 ? '<br>Refunded by gift card : $' + refund_gc_amt.toFixed(2) : '';
@@ -295,9 +310,7 @@ function dataGridLoad(order_type) {
                     else return '-';
                 }
             },
-            {
-                data: 'post_date', title: 'Creation Date', sWidth: "12%", render: function (data, type, row) { return row.date_created; }
-            },
+            
             //{
             //    data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
             //        let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
@@ -312,16 +325,8 @@ function dataGridLoad(order_type) {
             //        else return pm_title;
             //    }
             //},
-            {
-                data: 'billing_address_1', title: 'Billing', sWidth: "14%", render: function (id, type, row) {
-                    return row.billing_address_1 + ' ' + row.billing_postcode + ' ' + row.billing_city + ' ' + row.billing_country + ' ' + row.billing_state;
-                }
-            },
-            {
-                data: 'shipping_address_1', title: 'Shipping', sWidth: "14%", render: function (id, type, row) {
-                    return row.shipping_address_1 + ' ' + row.shipping_postcode + ' ' + row.shipping_city + ' ' + row.shipping_country + ' ' + row.shipping_state;
-                }
-            },
+            { data: 'Suborder', title: 'Suborder', sWidth: "10%" },
+            { data: 'Exported', title: 'Exported', sWidth: "10%" },
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     let refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;;

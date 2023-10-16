@@ -186,7 +186,7 @@ function dataGridLoad(order_type) {
                 if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/order/order-list",
+        sAjaxSource: "/order/queckorder-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
             aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') }, { name: "strValue4", value: order_type });
@@ -194,6 +194,7 @@ function dataGridLoad(order_type) {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
+                    console.log(data);
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     localStorage.setItem('_search', '');
                     localStorage.setItem('_id', '');
@@ -216,19 +217,53 @@ function dataGridLoad(order_type) {
                 }
 
             },
+            //{
+            //    data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
+            //        if (row.post_mime_type == 'shop_order_replace_erp' || row.post_mime_type == 'shoporderreplaceerp') return row.first_name + ' ' + row.last_name + ' (#' + row.post_parent + ')';
+            //        else return row.first_name + ' ' + row.last_name;
+            //    }
+            //},
             {
-                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
-                    if (row.post_mime_type == 'shop_order_replace_erp' || row.post_mime_type == 'shoporderreplaceerp') return row.first_name + ' ' + row.last_name + ' (#' + row.post_parent + ')';
-                    else return row.first_name + ' ' + row.last_name;
+                data: 'first_name', title: 'Order Placed From', sWidth: "14%", render: function (id, type, row) {
+                    //if (row.post_mime_type == 'shop_order_replace_erp' || row.post_mime_type == 'shoporderreplaceerp') return row.first_name + ' ' + row.last_name + ' (#' + row.post_parent + ')';
+                   // else return row.first_name + ' ' + row.last_name;
+                    return 'Order created via : ' + row.created_via +' </br> Order Placed by:'+ row.first_name + ' ' + row.last_name;
                 }
             },
             {
-                data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
-                    let phone = isNullUndefAndSpace(id) ? id.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") : id;
-                    return phone;
+                data: 'imagefile', // Assuming 'imagefile' contains the JSON data
+                title: 'Images',
+                render: function (data, type, row) {
+                    // Parse the JSON data
+                    //var images = JSON.parse(data);
+                    console.log(data);
+                    // Initialize an empty HTML string
+                     var html = '';
+
+                    var matches = data.match(/"_file_name":"(.*?)"/g);
+
+                    if (matches) {
+                        for (var i = 0; i < matches.length; i++) {
+                            // Extract the image URL from the matched string
+                            var match = matches[i];
+                            var imageUrl = match.replace(/"_file_name":"|"/g, '');
+
+                            // Define the desired height and width (adjust these values as needed)
+                            var imageHeight = '60'; // Set your desired height
+                            var imageWidth = '70'; // Set your desired width
+
+                            // Add image tags with specified height and width
+                           // html += '<img src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '"><br>';
+                            html += '<img class="image-style" src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '">';
+
+                        }
+                    }
+
+                    return html;
                 }
             },
-            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
+            /* { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },*/
+            { data: 'itmename', title: 'Items', sWidth: "10%" },
             {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
@@ -263,18 +298,28 @@ function dataGridLoad(order_type) {
             {
                 data: 'post_date', title: 'Creation Date', sWidth: "12%", render: function (data, type, row) { return row.date_created; }
             },
+            //{
+            //    data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
+            //        let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
+            //        //if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
+            //        if (row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') {
+            //            if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+            //            else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+            //            //else if (row.payment_method == 'podium' ) return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+            //            //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
+            //            else return pm_title;
+            //        }
+            //        else return pm_title;
+            //    }
+            //},
             {
-                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
-                    let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
-                    //if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-                    if (row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') {
-                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        //else if (row.payment_method == 'podium' ) return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-                        else return pm_title;
-                    }
-                    else return pm_title;
+                data: 'billing_address_1', title: 'Billing', sWidth: "14%", render: function (id, type, row) {
+                    return row.billing_address_1 + ' ' + row.billing_postcode + ' ' + row.billing_city + ' ' + row.billing_country + ' ' + row.billing_state;
+                }
+            },
+            {
+                data: 'shipping_address_1', title: 'Shipping', sWidth: "14%", render: function (id, type, row) {
+                    return row.shipping_address_1 + ' ' + row.shipping_postcode + ' ' + row.shipping_city + ' ' + row.shipping_country + ' ' + row.shipping_state;
                 }
             },
             {
@@ -315,7 +360,7 @@ function dataGridLoad(order_type) {
 
 function CheckAll() {
     var isChecked = $('#checkall').prop("checked");
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked); 
 }
 function Singlecheck(chk) {
     var isChecked = $(chk).prop("checked"), isHeaderChecked = $("#checkall").prop("checked");

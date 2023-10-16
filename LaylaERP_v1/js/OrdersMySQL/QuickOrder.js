@@ -134,7 +134,7 @@
         getItemList(product_id, parent_id); //$('#ddlProduct').val('').trigger('change');
 
         
-        setTimeout(function () { gettotaldetailsfromif(product_id); $("#divtotal").hide(); }, 5000);
+        setTimeout(function () { gettotaldetailsfromif(product_id); $("#divtotal").hide(); }, 3000);
 
         
 
@@ -1188,7 +1188,9 @@ function getItemList(product_id, vender_id) {
         type: "Post", url: '/Quickorder/ProductDetails', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
         beforeSend: function () { $("#loader").show(); },
         success: function (data) { bindItems(data, vender_id); },
-        complete: function () { $("#loader").hide(); },
+        complete: function () {
+            //$("#loader").hide();
+        },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         async: true
     });

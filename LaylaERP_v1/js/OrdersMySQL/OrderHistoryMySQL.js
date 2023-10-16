@@ -180,7 +180,7 @@ function dataGridLoad(order_type) {
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
-            $('.dataTables_filter input').unbind();
+            $('.dataTables_filter input').unbind(); 
             $('.dataTables_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table_oh.search(this.value).draw(); }

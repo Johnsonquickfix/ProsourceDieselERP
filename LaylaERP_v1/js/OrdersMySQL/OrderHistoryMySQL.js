@@ -173,7 +173,7 @@ function dataGridLoad(order_type) {
     let dfa = "'" + sd + "' and '" + ed + "'";
     let _id = parseInt($('#hfOrderType').data('userid')) || 0, _editable = parseInt($('#hfOrderType').data('iseditable')) || 0;
     table_oh = $('#dtdata').DataTable({
-        oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[2, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
@@ -267,7 +267,7 @@ function dataGridLoad(order_type) {
             },
            
             /* { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },*/
-            { data: 'itmename', title: 'Purchase Details', sWidth: "10%" },
+            { data: 'itmename', title: 'Purchase Details', sWidth: "15%" },
             {
                 data: 'billing_address_1', title: 'Billing', sWidth: "14%", render: function (id, type, row) {
                     return row.billing_address_1 + ' ' + row.billing_postcode + ' ' + row.billing_city + ' ' + row.billing_country + ' ' + row.billing_state;

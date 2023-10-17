@@ -3129,11 +3129,11 @@ function saveCO() {
                 postcode: $("#txtshipzipcode").val(),
                 country: $("#ddlshipcountry").val()
             },
-            order_notes: $("#txtbillemail").val(),
+            order_notes: $("#add_order_note").val(),
             session_id: $("#hfsession_id").val(),
             //user_id: '',
-             payment_method: 'authorize_net_cim_credit_card',
-             payment_method_title: 'Credit Card',
+            //payment_method: 'authorize_net_cim_credit_card',
+           //  payment_method_title: 'Credit Card',
             //card_data: {
             //    card_number: '4111111111111111',
             //    expiry: {

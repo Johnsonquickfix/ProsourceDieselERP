@@ -513,7 +513,7 @@ namespace LaylaERP.BAL
         public static List<PurchaseOrderProductsModel> paymentorder(CartPaymentController obj, long product_id, long vendor_id)
         {
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://editor.prosourcediesel.com/api/order/createOrUpdate.php");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php");
            
             // Serialize the CartShippingAddressRequest object to JSON
             string shippingJson = JsonConvert.SerializeObject(obj.data);

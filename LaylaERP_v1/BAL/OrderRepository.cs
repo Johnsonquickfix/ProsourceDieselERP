@@ -1746,6 +1746,165 @@
         }
         #endregion
 
+        public static List<QueckOrderProductsModel> GetQueckOrderProductList(long OrderID)
+        {
+            List<QueckOrderProductsModel> _list = new List<QueckOrderProductsModel>();
+            try
+            {
+                QueckOrderProductsModel productsModel = new QueckOrderProductsModel();
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "ITEMS"),
+                    new SqlParameter("order_id", OrderID)
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("wp_posts_order_search", parameters);
+                while (sdr.Read())
+                {
+                    productsModel = new QueckOrderProductsModel();
+                    if (sdr["order_item_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["order_item_id"].ToString().Trim()))
+                        productsModel.order_item_id = Convert.ToInt64(sdr["order_item_id"]);
+                    else
+                        productsModel.order_item_id = 0;
 
+                    productsModel.product_type = (sdr["order_item_type"] != Convert.DBNull) ? sdr["order_item_type"].ToString() : "line_item";
+                    productsModel.product_name = (sdr["order_item_name"] != Convert.DBNull) ? sdr["order_item_name"].ToString() : "";
+                    productsModel.product_sku = (sdr["post_name"] != Convert.DBNull) ? sdr["post_name"].ToString() : "";
+                    if (productsModel.product_type == "line_item")
+                    {
+                        productsModel.product_img = (sdr["p_img"] != Convert.DBNull) ? sdr["p_img"].ToString() : "";
+                        if (sdr["p_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["p_id"].ToString().Trim()))
+                            productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
+                        else
+                            productsModel.product_id = 0;
+                        if (sdr["v_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["v_id"].ToString().Trim()))
+                            productsModel.variation_id = Convert.ToInt64(sdr["v_id"]);
+                        else
+                            productsModel.variation_id = 0;
+
+                        if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
+                            productsModel.price = decimal.Parse(sdr["line_subtotal"].ToString());
+                        else
+                            productsModel.price = 0;
+                        if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
+                            productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
+                        else
+                            productsModel.quantity = 0;
+                        if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
+                            productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
+                        else
+                            productsModel.sale_price = 0;
+                        if (productsModel.quantity > 0)
+                            productsModel.reg_price = productsModel.price / productsModel.quantity;
+                        else
+                            productsModel.reg_price = 0;
+                        productsModel.total = productsModel.price;
+
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
+                        productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;
+                        if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
+                            productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
+                        else
+                            productsModel.tax_amount = productsModel.price;
+
+                        productsModel.is_free = productsModel.total > 0 ? false : true; productsModel.group_id = 0;
+                        if (sdr["free_itmes"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["free_itmes"].ToString().Trim()))
+                            productsModel.free_itmes = sdr["free_itmes"].ToString().Trim();
+                        else
+                            productsModel.free_itmes = "{}";
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = string.Empty;
+
+                       
+                    }
+                    else if (productsModel.product_type == "coupon")
+                    {
+                        if (sdr["discount_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["discount_amount"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = "{}";
+                    }
+                    else if (productsModel.product_type == "fee")
+                    {
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
+                    }
+                    else if (productsModel.product_type == "gift_card")
+                    {
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = string.Empty;
+                    }
+                    else if (productsModel.product_type == "shipping")
+                    {
+                        if (sdr["shipping_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["shipping_amount"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["shipping_amount"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
+                    }
+                    else if (productsModel.product_type == "tax")
+                    {
+                        productsModel.tax_amount = (sdr["tax"] != Convert.DBNull) ? decimal.Parse(sdr["tax"].ToString()) : 0;
+                        productsModel.shipping_tax_amount = (sdr["shipping_amount"] != Convert.DBNull) ? decimal.Parse(sdr["shipping_amount"].ToString()) : 0;
+                        productsModel.staterecycle_istaxable = productsModel.shipping_tax_amount > 0 ? true : false;
+                        productsModel.total = (sdr["line_total"] != Convert.DBNull) ? decimal.Parse(sdr["line_total"].ToString()) : 0;
+                        productsModel.meta_data = (sdr["label"] != Convert.DBNull) ? sdr["label"].ToString() : "";
+                    }
+                    else if (productsModel.product_type == "refund")
+                    {
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
+                    }
+                    else if (productsModel.product_type == "refund_items")
+                    {
+                        productsModel.product_id = 0;
+                        productsModel.variation_id = 0;
+                        if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
+                            productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
+                        else
+                            productsModel.quantity = 0;
+
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString());
+                        else
+                            productsModel.total = 0;
+                        if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
+                            productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
+                        else
+                            productsModel.tax_amount = 0;
+                        if (sdr["discount_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["discount_amount"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
+                        productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;
+                        if (sdr["shipping_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["shipping_amount"].ToString().Trim()))
+                            productsModel.shipping_amount = decimal.Parse(sdr["shipping_amount"].ToString().Trim());
+                        else
+                            productsModel.shipping_amount = 0;
+                    }
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
     }
 }

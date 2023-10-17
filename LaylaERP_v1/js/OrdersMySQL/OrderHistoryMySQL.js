@@ -604,7 +604,7 @@ function cancelpayment(data) {
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }
             }]);
-        }
+        } 
     }
     else if (data.payment_method == "podium") {
         if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {

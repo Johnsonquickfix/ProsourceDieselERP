@@ -1067,7 +1067,7 @@ function getOrderItemList(oid) {
         $('#billCoupon').append(couponHtml);
         $('#divtotal').show();
         //Calculate Final
-        FinalTotalControl(_tax);
+        //FinalTotalControl(_tax);
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));

@@ -229,4 +229,35 @@
         public string quote_header { get; set; }
         public string quote_product { get; set; }
     }
+    public class QueckOrderProductsModel
+    {
+        public long order_id { get; set; }
+        public long order_item_id { get; set; }
+        public string product_type { get; set; }
+        public long product_id { get; set; }
+        public long variation_id { get; set; }
+        public string product_name { get; set; }
+        public string product_sku { get; set; }
+        public string product_img { get; set; }
+        public string meta_data { get; set; }
+        public string free_itmes { get; set; }
+        public bool is_free { get; set; }
+        public long group_id { get; set; }
+        public decimal quantity { get; set; }
+        public decimal reg_price { get; set; }
+        public decimal price { get; set; }
+        public decimal sale_price { get; set; }
+        public decimal total { get; set; }
+        public decimal discount { get; set; }
+        public decimal tax_amount { get; set; }
+        public decimal shipping_amount { get; set; }
+        public decimal shipping_tax_amount { get; set; }
+        public decimal staterecycle_fee { get; set; }
+        public bool staterecycle_istaxable { get; set; }
+        public List<OrderProductsMetaModel> order_itemmeta { get; set; }
+        public QueckOrderProductsModel()
+        {
+            order_itemmeta = new List<OrderProductsMetaModel>();
+        }
+    }
 }

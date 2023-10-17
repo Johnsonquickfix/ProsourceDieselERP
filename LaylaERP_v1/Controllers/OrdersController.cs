@@ -820,5 +820,23 @@
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult GetQueckOrderProductList(SearchModel model)
+        {
+            List<QueckOrderProductsModel> _list = new List<QueckOrderProductsModel>();
+            try
+            {
+                long oid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
+                {
+                    throw new Exception("Invalid Data");
+                }
+                _list = OrderRepository.GetQueckOrderProductList(oid);
+            }
+            catch { }
+            return Json(_list, 0);
+        }
     }
 }

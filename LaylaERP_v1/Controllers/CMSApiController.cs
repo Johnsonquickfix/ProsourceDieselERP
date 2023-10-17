@@ -1285,7 +1285,7 @@
                             {
                                 obj.image = new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] };
                             }
-
+                            
                             obj.galData = dr["galData"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["galData"].ToString()) : new List<dynamic>();
                             obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
@@ -1312,20 +1312,8 @@
                                 }
                                 obj.attributes = _attributes;
                             }
-                            //Fitment
-                            //if (!string.IsNullOrEmpty(dr["ebay_item_compatibility_names"].ToString()))
-                            //{
-                            //    System.Collections.ArrayList _hr = serializer.Deserialize(dr["ebay_item_compatibility_names"].ToString()) as System.Collections.ArrayList;
-                            //    DataTable _fitment = new DataTable(); //creating datatable  
-                            //    //DataRow _row = _fitment.NewRow(); //Creating Row  
-                            //    foreach (var h in _hr) _fitment.Columns.Add(h.ToString(), typeof(string));
-                            //    if (!string.IsNullOrEmpty(dr["_ebay_item_compatibility_list"].ToString()))
-                            //    {
-                            //        _hr = serializer.Deserialize(dr["_ebay_item_compatibility_list"].ToString()) as System.Collections.ArrayList;
-                            //    }
-                            //    obj.vehicle_fitment = _fitment;
-                            //}
                             obj.brand = dr["brand"];
+                            obj.technical_document = dr["technical_document"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["technical_document"].ToString()) : new List<dynamic>();
                         }
                         obj.vehicle_fitment = ds.Tables[3];
                         if (obj.product_type != null)

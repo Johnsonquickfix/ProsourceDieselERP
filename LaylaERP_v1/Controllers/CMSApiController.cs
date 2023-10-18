@@ -1942,7 +1942,8 @@
                             {
                                 PostModel Review = new PostModel();
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -2094,7 +2095,8 @@
                                     Review._bannerimage = "[]";
 
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -2245,7 +2247,8 @@
                             {
                                 PostModel Review = new PostModel();
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();

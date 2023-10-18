@@ -1199,8 +1199,8 @@
                             obj.ID = dr["ID"];
                             obj.post_name = dr["post_name"];
                             obj.post_title = dr["post_title"];
-                            obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
-                            //obj.post_content = dr["post_content"];
+                            //obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
+                            obj.post_content = dr["post_content"];
                             obj.post_excerpt = dr["post_excerpt"];
                             //
                             obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";

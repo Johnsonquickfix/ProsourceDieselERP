@@ -60,7 +60,8 @@
                             {
                                 row = new Dictionary<string, object>();
                                 row.Add("ID", dr["ID"]);
-                                row.Add("post_content", dr["post_content"]);
+                                //row.Add("post_content", dr["post_content"]);
+                                row.Add("post_content", !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "");
                                 row.Add("post_title", dr["post_title"]);
                                 row.Add("post_author", dr["post_author"]);
                                 row.Add("user_login", dr["user_login"]);
@@ -206,7 +207,8 @@
                                     Review._bannerimage = "[]";
 
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -307,7 +309,8 @@
                             {
                                 PostModel Review = new PostModel();
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -531,7 +534,8 @@
                             {
                                 BlogModel Review = new BlogModel();
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -977,6 +981,8 @@
                         obj.term_main.name = item["name"].ToString();
                         obj.term_main.slug = item["slug"].ToString();
                         obj.term_main.description = item["description"].ToString();
+                        //obj.term_main.description = !string.IsNullOrEmpty(item["description"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(item["description"].ToString())) : "";
+                        obj.term_main.short_description = !string.IsNullOrEmpty(item["description"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(item["description"].ToString())).Substring(0, 150) : "";
                         obj.term_main.categories = !string.IsNullOrEmpty(item["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(item["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}");
                         obj.term_main.image = new
                         {
@@ -1194,8 +1200,8 @@
                             obj.ID = dr["ID"];
                             obj.post_name = dr["post_name"];
                             obj.post_title = dr["post_title"];
-                            obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
-                            //obj.post_content = dr["post_content"];
+                            //obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
+                            obj.post_content = dr["post_content"];
                             obj.post_excerpt = dr["post_excerpt"];
                             //
                             obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";
@@ -1937,7 +1943,8 @@
                             {
                                 PostModel Review = new PostModel();
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -2089,7 +2096,8 @@
                                     Review._bannerimage = "[]";
 
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
@@ -2240,7 +2248,8 @@
                             {
                                 PostModel Review = new PostModel();
                                 Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_content = !string.IsNullOrEmpty(balResult.Rows[i]["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(balResult.Rows[i]["post_content"].ToString())) : "";
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();

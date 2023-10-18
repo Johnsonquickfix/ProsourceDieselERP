@@ -601,7 +601,7 @@
             }
             catch (Exception ex) { }
             _shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
-            if (_shipping_methods.Count > 0 && (order.data.shipping_rate == null || is_active != false))
+            if (_shipping_methods.Count > 0 && (order.data.shipping_rate == null || is_active == false))
             {
                 _shipping_methods[0].isactive = true;
                 order.data.shipping_rate = _shipping_methods[0];

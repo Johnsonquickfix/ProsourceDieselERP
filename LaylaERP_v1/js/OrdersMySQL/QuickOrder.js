@@ -2924,6 +2924,7 @@ function gettotaldetails() {
                 var shippingMethods = product.ShippingMethods;
 
                 if (shippingMethods && Array.isArray(shippingMethods)) {
+                    dropdown.empty();
                     // Loop through the shipping methods and create options for the dropdown
                     shippingMethods.forEach(function (method) {
                         // Create an option element

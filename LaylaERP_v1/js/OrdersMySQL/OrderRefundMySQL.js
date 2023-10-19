@@ -254,7 +254,7 @@ function getOrderItemList(oid) {
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
         $("#orderTotal").data('tax', zTotalTax.toFixed(2));//$("#salesTaxTotal").text(zTotalTax.toFixed(2));
-        $("#giftCardTotal").text(zGiftCardAmt.toFixed(2)); $("#giftCardTotal").data('gf_amt', zGiftCardAmt.toFixed(2)); $("#giftCardTotal").data('gf_rf_amt', zGiftCardrefundAmt.toFixed(2));
+       // $("#giftCardTotal").text(zGiftCardAmt.toFixed(2)); $("#giftCardTotal").data('gf_amt', zGiftCardAmt.toFixed(2)); $("#giftCardTotal").data('gf_rf_amt', zGiftCardrefundAmt.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
@@ -416,27 +416,30 @@ function calculateRefunOnQty() {
 }
 function FinalTotalControl(tax_list) {
     let _html = '<div class="form-group"><label class="col-sm-10 control-label">Sub-Total(<span id="totalQty">0</span>)</label><div class="col-sm-2 controls text-right">$<span id="SubTotal">0.00</span></div></div>';
-    _html += '<div class="form-group"><label class="col-sm-10 control-label">Total Savings</label><div class="col-sm-2 controls text-right">$<span id="discountTotal">0.00</span></div></div>';
-    _html += '<div class="form-group"><label class="col-sm-10 control-label">Fee</label><div class="col-sm-2 controls text-right">$<span id="feeTotal">0.00</span></div></div>';
-    _html += '<div class="form-group"><label class="col-sm-10 control-label">State Recycling Fee</label><div class="col-sm-2 controls text-right">$<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Total Discount</label><div class="col-sm-2 controls text-right">$<span id="discountTotal">0.00</span></div></div>';
+   // _html += '<div class="form-group"><label class="col-sm-10 control-label">Fee</label><div class="col-sm-2 controls text-right">$<span id="feeTotal">0.00</span></div></div>';
+   // _html += '<div class="form-group"><label class="col-sm-10 control-label">State Recycling Fee</label><div class="col-sm-2 controls text-right">$<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span></div></div>';
     _html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping</label><div class="col-sm-2 controls text-right">$<span id="shippingTotal" data-orderitemid="0">0.00</span></div></div>';
     //_html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping Tax</label<div class="col-sm-2 controls text-right">$<span id="shippingTaxTotal">0.00</span></div></div>';
     // Add Tax
-    if (tax_list.length > 0) {
-        $.each(tax_list, function (index, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
-        });
-    }
-    else {
-        $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(4) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name.replaceAll(' ', '-') + '-' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
-        });
-    }
-    _html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
-    _html += '<div class="form-group"><label class="col-sm-10 control-label">Order Total</label><div class="col-sm-2 controls text-right"><strong>$<span id="orderTotal">0.00</span></strong></div></div>';
-    // Refund 
+    //if (tax_list.length > 0) {
+    //    $.each(tax_list, function (index, value) {
+    //        _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
+    //    });
+    //}
+    //else {
+    //    $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
+    //        _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(4) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name.replaceAll(' ', '-') + '-' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
+    //    });
+    //}
+    //_html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
+    //_html += '<div class="form-group"><label class="col-sm-10 control-label">Order Total</label><div class="col-sm-2 controls text-right"><strong>$<span id="orderTotal">0.00</span></strong></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Sale Tax</label><div class="col-sm-2 controls text-right">$<span id="saletaxtotal">0.00</span></div></div>';
+    
+
+    // Refund
     _html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedTotal">0.00</span></strong></div></div>';
-    _html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
+   // _html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
     _html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
     $('#order_final_total').empty().append(_html);
 }
@@ -626,7 +629,7 @@ function saveCO() {
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
     //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
-
+    console.log(totalPay, net_total);
     if (totalPay >= net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
@@ -637,6 +640,7 @@ function saveCO() {
                 console.log(data);
                 if (data.status == true) {
                     if (pay_gift == '') {
+
                         if (pay_by == 'ppec_paypal') PaypalRefunds();
                         else if (pay_by == 'podium') PodiumPaymentRefunds();
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();

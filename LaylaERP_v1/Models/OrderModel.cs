@@ -255,6 +255,7 @@
         public decimal staterecycle_fee { get; set; }
         public bool staterecycle_istaxable { get; set; }
         public List<OrderProductsMetaModel> order_itemmeta { get; set; }
+        public long post_parent { get; set; }        
         public QueckOrderProductsModel()
         {
             order_itemmeta = new List<OrderProductsMetaModel>();

@@ -1776,10 +1776,16 @@
                             productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
                         else
                             productsModel.product_id = 0;
+
                         if (sdr["v_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["v_id"].ToString().Trim()))
                             productsModel.variation_id = Convert.ToInt64(sdr["v_id"]);
                         else
                             productsModel.variation_id = 0;
+
+                        if (sdr["post_parent"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["post_parent"].ToString().Trim()))
+                            productsModel.post_parent = Convert.ToInt64(sdr["post_parent"]);
+                        else
+                            productsModel.post_parent = 0;
 
                         if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
                             productsModel.price = decimal.Parse(sdr["line_subtotal"].ToString());

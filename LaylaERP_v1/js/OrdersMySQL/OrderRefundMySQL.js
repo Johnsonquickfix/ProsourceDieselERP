@@ -628,16 +628,20 @@ function saveCO() {
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
     //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
-    if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
-    console.log(totalPay, net_total);
-    if (totalPay >= net_total) {
+    if (net_total > bal) {
+        swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false;
+    }
+    //console.log(totalPay, net_total);
+    //if (net_total >= bal)
+    else {
+        //console.log('ok');
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
             url: "/OrdersMySQL/SaveCustomerOrderRefund",
             data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 //data = JSON.parse(data); //
-                console.log(data);
+                console.log(0,pay_gift,data);
                 if (data.status == true) {
                     if (pay_gift == '') {
 
@@ -693,8 +697,8 @@ function saveCO() {
             error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
             complete: function () { $("#loader").hide(); isEdit(false); },
         });
-    }
-    else { swal('Error!', 'Refund amount can not be greater than total order amount', "error"); return false; }
+     }
+     //else { swal('Error!', 'Refund amount can not be greater than total order amount', "error"); return false; }
     return false;
 }
 

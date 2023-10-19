@@ -105,6 +105,10 @@
         $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
         ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory');
+        // all item add to cart 
+        $('.add_order_item_meta').hide();
+        gettotaldetailsedit();
+
     });
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getOrderInfo(); isEdit(false); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory'); });
@@ -914,9 +918,9 @@ function getOrderInfo() {
                     }
                     //bind Product
                     getOrderItemList(oid);
-                    //getOrderNotesList(oid);
-                    $('.btnEditOrder').hide();
-                    $('.btnOrderUndo').hide();                    
+                     getOrderNotesList(oid);
+                   // $('.btnEditOrder').hide();
+                    //$('.btnOrderUndo').hide();                    
                     //$('.btnOrderUndo').hide();
                 }
             }
@@ -964,11 +968,20 @@ function getOrderItemList(oid) {
                     $.each(_meta, function (name, value) { itemHtml += '<b>' + name.replace('_system_', '') + '</b> : ' + value + '<br>'; });
                     itemHtml += '</div></td>';
                     itemHtml += '<td class="text-left">' + row.product_sku + '</td>';
-                    itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    //itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    itemHtml += '<td class="text-right product-price" data-price="' + row.reg_price + '">' + row.reg_price + '</td>';
+
+                    itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.product_id + '" value="' + row.quantity + '" name="txt_itemqty" placeholder="Qty."></td>';
+
+
                 }
+                itemHtml += '<td style="display:none" class="text-right parent-id" data-parentid="' + row.post_parent + '" data-productid="' + row.product_id + '"></td>';
+
                 //itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
                 //itemHtml += '<td class="text-right RowDiscount" data-disctype="' + row.discount_type + '" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
-                itemHtml += '<td class="text-right linetotal">' + (row.total - row.discount).toFixed(2) + '</td>';
+                //itemHtml += '<td class="text-right linetotal">' + (row.total - row.discount).toFixed(2) + '</td>';
+                itemHtml += '<td class="text-right row-total" data-total="' + row.total.toFixed(2) + '">' + formatCurrency(row.total) + '</td>';
+
         /*        itemHtml += '<td class="text-right RowTax">' + row.tax_amount.toFixed(4) + '</td>';*/
                 itemHtml += '</tr>';
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
@@ -1051,9 +1064,10 @@ function getOrderItemList(oid) {
                 refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 //refundHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 refundHtml += '<td></td>';
-                refundHtml += '<td colspan="3">' + row.product_name.split(/,[ ]{0,}/).join('</br>') + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
+                refundHtml += '<td colspan="2">' + row.product_name.split(/,[ ]{0,}/).join('</br>') + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
                 refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (parseFloat(row.total) || 0.00);
+                console.log(refundHtml);
             }
             else if (row.product_type == 'tax') {
                 //$("#salesTaxTotal").data("orderitemid", orderitemid);
@@ -1079,7 +1093,11 @@ function getOrderItemList(oid) {
         $("#refundedTotal").text(zRefundAmt.toFixed(2)); $("#refundedByGiftCard").text(zGiftCardRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt) + zRefundAmt).toFixed(2));
         if (zRefundAmt != 0 || zGiftCardRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
-        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
+        $("#divAddItemFinal").find(".rowCalulate").change(function () {
+            //calculateDiscountAcount();calculateFinal
+            
+        });
+        calculateFinal();
     }, completeFun, errorFun, false);
 }
 function getOrderNotesList(oid) {
@@ -1594,7 +1612,7 @@ function FinalTotalControl(tax_list) {
     _html += '<div class="form-group"><label class="col-sm-10 control-label">Order Total</label><div class="col-sm-2 controls text-right"><strong>$<span id="orderTotal">0.00</span></strong></div></div>';
     // Refund 
     _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Refunded</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedTotal">0.00</span></strong></div></div>';
-    _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
+   // _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
     _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
     $('#order_final_total').empty().append(_html);
 }
@@ -2883,7 +2901,7 @@ function gettotaldetails() {
                 const item = data[0];
                 const subprice = item.subprice;
                 const totalTtc = item.total_ttc;
-
+                let refund = parseFloat($("#refundedTotal").text()) || 0.00;
                 console.log(`Subprice: ${subprice}`);
                 console.log(`Total TTC: ${totalTtc}`);
                 $("#otherTotal").text(""); $("#otherTotal").html("");
@@ -2894,7 +2912,7 @@ function gettotaldetails() {
                 $("#discountTotal").text(formatCurrency(item.discount)); $("#discountTotal").data('total', item.discount);
                 $("#salesTaxTotal").text(formatCurrency(item.total_localtax1)); $("#salesTaxTotal").data('total', item.total_localtax1);
                 $("#shippingTotal").text(formatCurrency(item.total_localtax2)); $("#shippingTotal").data('total', item.total_localtax2);
-                $("#netPaymentTotal").text(formatCurrency(totalTtc)); $("#netPaymentTotal").data('total', totalTtc);
+                $("#netPaymentTotal").text(formatCurrency(totalTtc + refund)); $("#netPaymentTotal").data('total', totalTtc + refund);
                 $("#hfsession_id").val(item.product_sku); 
                 
                 var dropdown = $("#ddlShipping");
@@ -2906,6 +2924,7 @@ function gettotaldetails() {
                 var shippingMethods = product.ShippingMethods;
 
                 if (shippingMethods && Array.isArray(shippingMethods)) {
+                    dropdown.empty();
                     // Loop through the shipping methods and create options for the dropdown
                     shippingMethods.forEach(function (method) {
                         // Create an option element
@@ -3042,6 +3061,96 @@ function gettotaldetailsfromif(product_id) {
 }
 
 
+
+function gettotaldetailsedit() {
+    let cartItems = []; // Initialize an empty array to store cart items  
+    $('#line_items tr').each(function () {
+        const $row = $(this);
+        const parentId = $row.find('.parent-id').data('parentid');
+        const productid = $row.find('.parent-id').data('productid');
+        const itemQuantity = parseFloat($row.find('input[name="txt_itemqty"]').val()); // Get value by name 
+        console.log(parentId, productid, itemQuantity);
+        // Create a cart item object and add it to the cartItems array  
+            cartItems.push({
+                id: productid,
+                quantity: itemQuantity,
+                variation_id: parentId
+            }); 
+    }); 
+    console.log(cartItems); 
+    let cartResponse = {
+        message: "Your message",
+        status: 200, // Example status code
+        code: "ABC123",
+        data: {
+            //// Fill in the properties of the CartDataResponse object here
+            //// Example: shipping_address 
+            shipping_address: {
+                first_name: $("#txtshipfirstname").val(),
+                last_name: $("#txtshiplastname").val(),
+                email: $("#txtbillemail").val(),
+                company: $("#txtshipcompany").val(),
+                phone: $("#txtbillphone").val(),
+                address_1: $("#txtshipaddress1").val(),
+                address_2: $("#txtshipaddress2").val(),
+                city: $("#txtshipcity").val(),
+                state: $("#ddlshipstate").val(),
+                postcode: $("#txtshipzipcode").val(),
+                country: $("#ddlshipcountry").val()
+            }, 
+            items: cartItems
+        }
+    }; 
+    let option = {
+        objs: cartResponse,
+        product_id: 0,
+        vendor_id: 24,
+        session_id: $("#hfsession_id").val()
+    };
+    $.ajax({
+        type: "Post", url: '/Quickorder/addproduct', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            console.log(data);
+            var row = data[0];
+            // $("#hfsession_id").val('0');
+            if (Array.isArray(data) && data.length === 1) {
+                const item = data[0]; 
+                $("#hfsession_id").val(item.product_sku);
+                console.log($("#hfsession_id").val(), item.product_sku);
+                $("#divtotal").hide();
+                let dataCouponValue = '';
+                $("ul#billCoupon li").each(function () {
+                    dataCouponValue = $(this).data("coupon");
+                    console.log(dataCouponValue);
+                });
+
+                let option = {
+                    code: dataCouponValue,
+                    session_id: $("#hfsession_id").val()
+                };
+                $.ajax({
+                    type: "Post", url: '/Quickorder/applycoupon', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        console.log(data);
+                        var row = data[0]; 
+
+                    },
+                    complete: function () { $("#loader").hide(); },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+                    async: true
+                });
+                
+            } 
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: true
+    });
+}
+
+
 function getshippingtotaldetails(methodId, methodTitle, amount) {
     console.log(methodId, methodTitle, amount);
     let option = {
@@ -3144,12 +3253,11 @@ function saveCO() {
             //}
         }
     };
-
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
     let option = {
         objs: cartResponse,
         product_id: 0,
-        vendor_id: 24
-
+        vendor_id: oid,
     };
     console.log(option);
     $.ajax({
@@ -3159,10 +3267,22 @@ function saveCO() {
             const status = data[0];
             console.log(data, status);
             //swal('Success!', status.description, 'success');
-            $('#hfOrderNo').val(status.fk_product);
+            if (status.fk_product == 0) {                
+                $("#btnPlaceOrder").hide();
+                swal('Error', status.description, "error");
+            }
+            else {
+                $("#btnPlaceOrder").show();
+                $('#hfOrderNo').val(status.fk_product);
+                //swal('Error', status.description, "error");
+                swal('Success!', status.description, 'success');
+            }
+           
             //$("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
             $("#loader").hide();
-        }
+        },
+        error: function (xhr, status, err) {   alert(err); },
+       complete: function () { $("#loader").hide();  },
     })
 
 

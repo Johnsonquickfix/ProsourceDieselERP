@@ -513,30 +513,54 @@ namespace LaylaERP.BAL
         public static List<PurchaseOrderProductsModel> paymentorder(CartPaymentController obj, long product_id, long vendor_id)
         {
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php");
-           
-            // Serialize the CartShippingAddressRequest object to JSON
-            string shippingJson = JsonConvert.SerializeObject(obj.data);
-            // Create a StringContent with the JSON data
-            var contenttax = new StringContent(shippingJson, Encoding.UTF8, "application/json");
-            request.Content = contenttax;
-            HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
-            List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();  // Check if the request was successful (status code 200 OK)
-            try
+            List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();
+            var url = "";
+            if (vendor_id > 0)
             {
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseContenttax = response.Content.ReadAsStringAsync().Result;
-                    //PurchaseOrderProductsModel productsModeltax = new PurchaseOrderProductsModel();
-                    dynamic jsonResponsetotal = JsonConvert.DeserializeObject(responseContenttax);
-                    PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
-                    productsModel.fk_product = jsonResponsetotal.response;
-                    productsModel.description = "Order created successfully"; 
-                    _list.Add(productsModel);
-                }
+                PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                productsModel.fk_product = 0;
+                productsModel.description = "coming soon..";
+                _list.Add(productsModel);
+                //   url = "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php?order_id=" + order_id + "";
             }
-            catch (Exception ex)
-            { throw ex; }
+            else
+            {
+                url = "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php";
+
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+                // Serialize the CartShippingAddressRequest object to JSON
+                string shippingJson = JsonConvert.SerializeObject(obj.data);
+                // Create a StringContent with the JSON data
+                var contenttax = new StringContent(shippingJson, Encoding.UTF8, "application/json");
+                request.Content = contenttax;
+                HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
+                                                                                 // Check if the request was successful (status code 200 OK)
+                try
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseContenttax = response.Content.ReadAsStringAsync().Result;
+                        //PurchaseOrderProductsModel productsModeltax = new PurchaseOrderProductsModel();
+                        dynamic jsonResponsetotal = JsonConvert.DeserializeObject(responseContenttax);
+                        PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                        productsModel.fk_product = jsonResponsetotal.response;
+                        productsModel.description = "Order created successfully";
+                        _list.Add(productsModel);
+                    }
+                    else
+                    {
+                        PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                        productsModel.fk_product = 0;
+                        productsModel.description = "something went wrong";
+                        _list.Add(productsModel);
+
+                    }
+                }
+
+                catch (Exception ex)
+                { throw ex; }
+            }
             return _list;
         }
     }

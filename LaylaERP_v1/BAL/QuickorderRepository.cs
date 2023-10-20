@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using System.Dynamic;
 using System.Net.Http;
 using System.Text;
+using System.Net;
 
 namespace LaylaERP.BAL
 {
@@ -131,8 +132,9 @@ namespace LaylaERP.BAL
 
         public static List<PurchaseOrderProductsModel> addproduct(CartResponse obj, long product_id, long vendor_id, string session_id)
         {
+             
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=true");
+            var request = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=true"));
 
             if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
             {
@@ -145,6 +147,7 @@ namespace LaylaERP.BAL
             // Serialize the dynamicData array to a JSON string
             var content = new StringContent(json, null, "application/json");
             request.Content = content;
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
             List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();  // Check if the request was successful (status code 200 OK)
             try
@@ -167,7 +170,8 @@ namespace LaylaERP.BAL
         public static List<PurchaseOrderProductsModel> getshipping(CartResponse obj, long product_id, long vendor_id, string session_id)
         {
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+           // var request = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+            var request = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false"));
 
             if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
             {
@@ -193,7 +197,9 @@ namespace LaylaERP.BAL
                     productsModel.product_sku = jsonResponse.data.session_id;
                     if (!string.IsNullOrEmpty(productsModel.product_sku))
                     {
-                        var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+                        //var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+                        var requesttax = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false"));
+
                         requesttax.Headers.Add("X-Cart-Session-Id", productsModel.product_sku);
                         //var contenttax = new StringContent("{\n    \"first_name\": \"David\",      \n    \"last_name\": \"G\",\n    \"email\": \"david.quickfix1@gmail.com\",\n    \"company\": \"\",\n    \"phone\": \"(012) 345-6789\",\n    \"address_1\": \"street 101\",\n    \"address_2\": \"\",\n     \"city\": \"NEW YORK\",\n     \"state\": \"NY\",\n     \"postcode\": 10001,\n     \"country\": \"US\" \n}", null, "application/json");
                         CartShippingAddressRequest shipping = new CartShippingAddressRequest
@@ -300,7 +306,10 @@ namespace LaylaERP.BAL
                     productsModel.product_sku = session_id;
                     if (!string.IsNullOrEmpty(productsModel.product_sku))
                     {
-                        var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+
+                   
+                    var requesttax = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false"));
+                 //var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/updateshipping/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
                         requesttax.Headers.Add("X-Cart-Session-Id", productsModel.product_sku);
                         //var contenttax = new StringContent("{\n    \"first_name\": \"David\",      \n    \"last_name\": \"G\",\n    \"email\": \"david.quickfix1@gmail.com\",\n    \"company\": \"\",\n    \"phone\": \"(012) 345-6789\",\n    \"address_1\": \"street 101\",\n    \"address_2\": \"\",\n     \"city\": \"NEW YORK\",\n     \"state\": \"NY\",\n     \"postcode\": 10001,\n     \"country\": \"US\" \n}", null, "application/json");
                         CartShippingAddressRequest shipping = new CartShippingAddressRequest
@@ -320,7 +329,8 @@ namespace LaylaERP.BAL
                         // Create a StringContent with the JSON data
                         var contenttax = new StringContent(shippingJson, Encoding.UTF8, "application/json");
                         requesttax.Content = contenttax;
-                        HttpResponseMessage responsetax = client.SendAsync(requesttax).Result; // Block and wait 
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    HttpResponseMessage responsetax = client.SendAsync(requesttax).Result; // Block and wait 
                         if (responsetax.IsSuccessStatusCode)
                         {
                             string responseContenttax = responsetax.Content.ReadAsStringAsync().Result;
@@ -357,7 +367,10 @@ namespace LaylaERP.BAL
                 
                     if (!string.IsNullOrEmpty(session_id))
                     {
-                        var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/shippingmethod/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
+                    var requesttax = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/shippingmethod/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false"));
+
+
+                    //var requesttax = new HttpRequestMessage(HttpMethod.Post, "https://erp.prosourcediesel.com/cartapi/shippingmethod/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false");
                         requesttax.Headers.Add("X-Cart-Session-Id", session_id);
                     //var contenttax = new StringContent("{\n    \"first_name\": \"David\",      \n    \"last_name\": \"G\",\n    \"email\": \"david.quickfix1@gmail.com\",\n    \"company\": \"\",\n    \"phone\": \"(012) 345-6789\",\n    \"address_1\": \"street 101\",\n    \"address_2\": \"\",\n     \"city\": \"NEW YORK\",\n     \"state\": \"NY\",\n     \"postcode\": 10001,\n     \"country\": \"US\" \n}", null, "application/json");
                     ShippingMethods shipping = new ShippingMethods
@@ -404,8 +417,10 @@ namespace LaylaERP.BAL
             {
 
                 if (!string.IsNullOrEmpty(session_id))
-                { 
-                    var request = new HttpRequestMessage(HttpMethod.Get, "https://erp.prosourcediesel.com/cartapi/applyCoupon/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?code=" + code + "");
+                {
+                    var request = new HttpRequestMessage(HttpMethod.Get, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/applyCoupon/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?code=" + code + ""));
+
+                    //var request = new HttpRequestMessage(HttpMethod.Get, "https://erp.prosourcediesel.com/cartapi/applyCoupon/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?code=" + code + "");
                     request.Headers.Add("X-Cart-Session-Id", session_id);
                     request.Headers.Add("X-User-Id", "");
                     //var response = await client.SendAsync(request);
@@ -454,7 +469,9 @@ namespace LaylaERP.BAL
 
                 if (!string.IsNullOrEmpty(session_id))
                 {
-                    var request = new HttpRequestMessage(HttpMethod.Get, "https://erp.prosourcediesel.com/cartapi/removeCoupon/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?code=" + code + "");
+                    var request = new HttpRequestMessage(HttpMethod.Get, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/removeCoupon/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?code=" + code + ""));
+
+                    //var request = new HttpRequestMessage(HttpMethod.Get, "https://erp.prosourcediesel.com/cartapi/removeCoupon/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?code=" + code + "");
                     request.Headers.Add("X-Cart-Session-Id", session_id);
                     request.Headers.Add("X-User-Id", "");
                     //var response = await client.SendAsync(request);
@@ -517,15 +534,16 @@ namespace LaylaERP.BAL
             var url = "";
             if (vendor_id > 0)
             {
-                PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
-                productsModel.fk_product = 0;
-                productsModel.description = "coming soon..";
-                _list.Add(productsModel);
-                //   url = "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php?order_id=" + order_id + "";
+                // PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                // productsModel.fk_product = 0;
+                //productsModel.description = "coming soon..";
+                //_list.Add(productsModel);
+                url = "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php?order_id=" + vendor_id + "";
             }
             else
             {
                 url = "https://editor.prosourcediesel.com/api/order/createOrUpdateAdmin.php";
+            }
 
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
 
@@ -560,7 +578,7 @@ namespace LaylaERP.BAL
 
                 catch (Exception ex)
                 { throw ex; }
-            }
+            
             return _list;
         }
     }

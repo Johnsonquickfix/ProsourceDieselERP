@@ -546,12 +546,13 @@ function cancelorder(id) {
     swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
+                $("#loader").show();
                 let obj = { order_id: id }
                 $.post('/OrdersMySQL/OrderCancel', obj).done(function (data) {
                     console.log(data);
                     data = JSON.parse(data);
-                    if (data[0].response == "success") { cancelpayment(data[0]); ActivityLog('Cancel order id (' + id + ') in order history', '/OrdersMySQL/OrdersHistory'); }
-                    else { swal('Error', data[0].payment_method_title, "error"); }
+                    if (data[0].response == "success") { cancelpayment(data[0]); $("#loader").hide(); ActivityLog('Cancel order id (' + id + ') in order history', '/OrdersMySQL/OrdersHistory'); }
+                    else { swal('Error', data[0].payment_method_title, "error"); $("#loader").hide(); }
                 });
             }
         });

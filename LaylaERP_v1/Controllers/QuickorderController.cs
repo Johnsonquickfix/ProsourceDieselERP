@@ -70,7 +70,8 @@ namespace LaylaERP_v1.Controllers
                 long pid = 0, vid = 0;
                 obj = QuickorderRepository.addproduct(objs, product_id, vendor_id, session_id);
             }
-            catch { }
+            catch(Exception ex)
+            { }
             return Json(obj, 0);
         }
         [HttpPost]

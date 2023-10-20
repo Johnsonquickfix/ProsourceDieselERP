@@ -641,7 +641,7 @@
             var _properties = new Dictionary<string, object>();
             _properties.Add("$use_ip", true); _properties.Add("$is_session_activity", true);
             //_properties.Add("CurrencySymbol", "$"); _properties.Add("Currency", "USD");
-            _properties.Add("$value", order.data.cart_totals.subtotal);
+            _properties.Add("value", order.data.cart_totals.subtotal);
             if (order.data.items.Count > 0)
             {
                 _properties.Add("AddedItemCategories", new List<string>());

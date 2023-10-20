@@ -11,6 +11,7 @@
     using System.Data;
     using System.Dynamic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Http;
 
     [RoutePrefix("cartapi")]
@@ -46,7 +47,7 @@
         }
 
         [HttpPost, Route("items/{app_key}/{entity_id}")]
-        public IHttpActionResult CartItems(string app_key, long entity_id, List<CartProductRequest> cart, bool checkout = false)
+        public async Task<IHttpActionResult> CartItems(string app_key, long entity_id, List<CartProductRequest> cart, bool checkout = false)
         {
             try
             {
@@ -54,7 +55,9 @@
                 else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
 
                 System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                long user_id = 0; string session_id = string.Empty;
+                string ip = Net.Ip, browser = Net.Browser, os = Net.BrowserInfo;
+
+                long user_id = 0; string session_id = string.Empty, email = string.Empty;
                 if (headers.Contains("X-User-Id"))
                 {
                     user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
@@ -63,12 +66,20 @@
                 {
                     session_id = headers.GetValues("X-Cart-Session-Id").First();
                 }
+                if (headers.Contains("X-email"))
+                {
+                    email = headers.GetValues("X-email").First();
+                }
                 //if (cart != null) return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, JsonConvert.SerializeObject(cart))));
                 //else return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, "")));
                 // check coupon amount
                 //CartRepository.ApplyCoupon("check-coupon", entity_id, user_id, session_id, string.Empty);
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
-                if (obj.status == 200) return Ok(CalculateTotals(obj, checkout));
+                if (obj.status == 200)
+                {
+                    if (checkout && !string.IsNullOrEmpty(email)) await TrackStartedCheckout(email, obj);
+                    return Ok(CalculateTotals(obj, checkout));
+                }
                 return Ok(obj);
 
                 //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });
@@ -609,5 +620,33 @@
             order.data.shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
         }
         #endregion
+
+        public static async Task<string> TrackStartedCheckout(string profile_email, CartResponse order)
+        {
+            clsKlaviyoData klaviyoData = new clsKlaviyoData();
+            klaviyoData.data = new clsKlaviyoData.clsPodiumEvent() { type = "event", attributes = new Dictionary<string, object>() };
+            //"Started Checkout", "johnson.quickfix@gmail.com"
+            var _metric = new { data = new { type = "metric", attributes = new { name = "Started Checkout" } } };
+            var _profile = new { data = new { type = "profile", attributes = new { email = profile_email } } };
+            var _properties = new Dictionary<string, object>();
+            _properties.Add("CurrencySymbol", "$");
+            _properties.Add("Currency", "USD");
+
+            var _ItemNames = new List<string>();
+            decimal _amount = 0;
+            foreach (CartDataResponse.Item i in order.data.items)
+            {
+                _ItemNames.Add(i.name);
+                _amount += i.line_total.Value;
+            }
+            _properties.Add("$value", _amount);
+            _properties.Add("ItemNames", _ItemNames);
+            _properties.Add("$service", "erp-woocommerce");
+            var _attributes = new { properties = _properties, metric = _metric, profile = _profile };
+            klaviyoData.data.attributes.Add("properties", _properties);
+            klaviyoData.data.attributes.Add("metric", _metric);
+            klaviyoData.data.attributes.Add("profile", _profile);
+            return await LaylaERP.UTILITIES.clsKlaviyo.TrackProfileActivity(klaviyoData);
+        }
     }
 }

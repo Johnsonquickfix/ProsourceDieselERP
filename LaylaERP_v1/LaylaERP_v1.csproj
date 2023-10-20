@@ -441,6 +441,7 @@
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
     <Compile Include="UTILITIES\clsAvalara.cs" />
     <Compile Include="UTILITIES\clsFedex.cs" />
+    <Compile Include="UTILITIES\clsKlaviyo.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsPodium.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />

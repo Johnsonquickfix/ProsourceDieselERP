@@ -12,7 +12,7 @@
 
     public class clsKlaviyo
     {
-        private static string base_url = "https://a.klaviyo.com", token = "S44maZ", revision = "2023-07-15";
+        private static string base_url = "https://a.klaviyo.com", token = "S44maZ", revision = "2023-10-15";
         public static async Task<string> TrackProfileActivity(clsKlaviyoData data)
         {
             string result = string.Empty;

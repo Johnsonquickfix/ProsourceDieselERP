@@ -15,6 +15,8 @@
     using System.Text.RegularExpressions;
     using System.Web;
     using System.Text;
+    using System.Threading.Tasks;
+    using LaylaERP.UTILITIES;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -1166,7 +1168,7 @@
             }
         }
         [HttpGet, Route("product/{app_key}/{entity_id}")]
-        public IHttpActionResult ProductDetails(string app_key, long entity_id, string slug = "")
+        public async Task<IHttpActionResult> ProductDetails(string app_key, long entity_id, string slug = "")
         {
             try
             {
@@ -1187,11 +1189,14 @@
                 else
                 {
                     System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                    long user_id = 0;
+                    long user_id = 0; string session_id = string.Empty, email = string.Empty;
                     if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                    if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                    if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
 
                     LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                     dynamic obj = new ExpandoObject();
+                    List<string> _categories = new List<string>();
                     System.Collections.ArrayList _child = new System.Collections.ArrayList();
                     //term_main
                     DataSet ds = CMSRepository.GetPageItems("products-detail", entity_id, string.Empty, slug, 0, 0, user_id);
@@ -1294,9 +1299,10 @@
                             {
                                 obj.image = new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] };
                             }
-                            
+
                             obj.galData = dr["galData"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["galData"].ToString()) : new List<dynamic>();
                             obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                            _categories = !string.IsNullOrEmpty(dr["product_cat"].ToString()) ? JsonConvert.DeserializeObject<List<string>>(dr["product_cat"].ToString()) : JsonConvert.DeserializeObject<List<string>>("[]");
                             obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
                             {
@@ -1407,6 +1413,32 @@
                                 }
                             }
                         }
+                        ///Push to klavio
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            clsKlaviyoData klaviyoData = new clsKlaviyoData();
+                            klaviyoData.data = new clsKlaviyoData.clsPodiumEvent() { type = "event", attributes = new Dictionary<string, object>() };
+                            //"Started Checkout", "johnson.quickfix@gmail.com"
+                            var _metric = new { data = new { type = "metric", attributes = new { name = "Viewed Product" } } };
+                            var _profile = new { data = new { type = "profile", attributes = new { email = email } } };
+                            var _properties = new Dictionary<string, object>();
+                            _properties.Add("$use_ip", true); _properties.Add("$is_session_activity", true);
+                            _properties.Add("title", obj.post_title);
+                            _properties.Add("ItemId", obj.ID);
+                            _properties.Add("productID", obj.ID);
+                            _properties.Add("variantId", obj.ID);
+                            _properties.Add("categories", _categories);
+                            _properties.Add("imageUrl", obj.image.name);
+                            _properties.Add("url", obj.post_name);
+                            _properties.Add("metadata", new { price = obj.price });
+                            //_properties.Add("$service", "erp-woocommerce");
+                            var _attributes = new { properties = _properties, metric = _metric, profile = _profile };
+                            klaviyoData.data.attributes.Add("properties", _properties);
+                            klaviyoData.data.attributes.Add("metric", _metric);
+                            klaviyoData.data.attributes.Add("profile", _profile);
+                            await LaylaERP.UTILITIES.clsKlaviyo.TrackProfileActivity(klaviyoData);
+                        }
+                        //await TrackStartedCheckout(email, obj);
                         //Request.Headers.Add("Content-Type", "application/json; charset=utf-8");
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
                     }
@@ -1740,6 +1772,12 @@
                 //else if (slug.ToString().ToLower().Equals("shop")) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { term_id = 0, taxonomy = "shop", page_type = "product_filter" } });
                 else
                 {
+                    System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                    long user_id = 0; string session_id = string.Empty, email = string.Empty;
+                    if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                    if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                    if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
+
                     dynamic obj = new ExpandoObject();
                     string page_type = string.Empty;
                     if (slug.ToString().ToLower().Equals("shop")) page_type = "product_filter";

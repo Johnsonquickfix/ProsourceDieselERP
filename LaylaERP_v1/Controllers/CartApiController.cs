@@ -31,9 +31,10 @@
                 else if (string.IsNullOrEmpty(address.country)) return Ok(new { message = "country fields are required.", status = 404, code = "not_found", data = new List<string>() });
 
                 System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                long user_id = 0; string session_id = string.Empty;
+                long user_id = 0; string session_id = string.Empty, email = string.Empty;
                 if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
                 if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
                 // check coupon amount
                 //CartRepository.ApplyCoupon("check-coupon", entity_id, user_id, session_id, string.Empty);
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.UpdateShippingAddress("update-shipping", entity_id, user_id, session_id, JsonConvert.SerializeObject(address)));
@@ -55,21 +56,10 @@
                 else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
 
                 System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                string ip = Net.Ip, browser = Net.Browser, os = Net.BrowserInfo;
-
                 long user_id = 0; string session_id = string.Empty, email = string.Empty;
-                if (headers.Contains("X-User-Id"))
-                {
-                    user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
-                }
-                if (headers.Contains("X-Cart-Session-Id"))
-                {
-                    session_id = headers.GetValues("X-Cart-Session-Id").First();
-                }
-                if (headers.Contains("X-email"))
-                {
-                    email = headers.GetValues("X-email").First();
-                }
+                if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
                 //if (cart != null) return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, JsonConvert.SerializeObject(cart))));
                 //else return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, "")));
                 // check coupon amount
@@ -99,15 +89,10 @@
                 else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
 
                 System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                long user_id = 0; string session_id = string.Empty;
-                if (headers.Contains("X-User-Id"))
-                {
-                    user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
-                }
-                if (headers.Contains("X-Cart-Session-Id"))
-                {
-                    session_id = headers.GetValues("X-Cart-Session-Id").First();
-                }
+                long user_id = 0; string session_id = string.Empty, email = string.Empty;
+                if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
                 //apply-coupon
                 if (!string.IsNullOrEmpty(code))
                 {
@@ -132,15 +117,10 @@
                 else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
 
                 System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                long user_id = 0; string session_id = string.Empty;
-                if (headers.Contains("X-User-Id"))
-                {
-                    user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
-                }
-                if (headers.Contains("X-Cart-Session-Id"))
-                {
-                    session_id = headers.GetValues("X-Cart-Session-Id").First();
-                }
+                long user_id = 0; string session_id = string.Empty, email = string.Empty;
+                if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
                 //apply-coupon
                 if (!string.IsNullOrEmpty(code))
                 {
@@ -165,9 +145,10 @@
                 else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
 
                 System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
-                long user_id = 0; string session_id = string.Empty;
+                long user_id = 0; string session_id = string.Empty, email = string.Empty;
                 if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
                 if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+                if (headers.Contains("X-email")) email = headers.GetValues("X-email").First();
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(CartRepository.UpdateShippingAddress("remove-cart", entity_id, user_id, session_id, string.Empty));
                 return Ok(obj);
             }
@@ -629,9 +610,9 @@
             var _metric = new { data = new { type = "metric", attributes = new { name = "Started Checkout" } } };
             var _profile = new { data = new { type = "profile", attributes = new { email = profile_email } } };
             var _properties = new Dictionary<string, object>();
+            _properties.Add("$use_ip", true); _properties.Add("$is_session_activity", true);
             _properties.Add("CurrencySymbol", "$");
             _properties.Add("Currency", "USD");
-
             var _ItemNames = new List<string>();
             decimal _amount = 0;
             foreach (CartDataResponse.Item i in order.data.items)

@@ -17,6 +17,7 @@
     [RoutePrefix("cartapi")]
     public class CartApiController : ApiController
     {
+        public static string website_url = "http://newnext.prosourcediesel.com";
         [HttpPost, Route("updateshipping/{app_key}/{entity_id}")]
         public IHttpActionResult UpdateShippingAddress(string app_key, long entity_id, CartShippingAddressRequest address)
         {
@@ -67,7 +68,8 @@
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
                 if (obj.status == 200)
                 {
-                    if (checkout && !string.IsNullOrEmpty(email)) await TrackStartedCheckout(email, obj);
+                    if (checkout && !string.IsNullOrEmpty(email)) await kl_started_checkout(email, obj);
+                    else if (!checkout && !string.IsNullOrEmpty(email)) await kl_added_to_cart(email, obj);
                     return Ok(CalculateTotals(obj, checkout));
                 }
                 return Ok(obj);
@@ -602,7 +604,7 @@
         }
         #endregion
 
-        public static async Task<string> TrackStartedCheckout(string profile_email, CartResponse order)
+        public static async Task<string> kl_started_checkout(string profile_email, CartResponse order)
         {
             clsKlaviyoData klaviyoData = new clsKlaviyoData();
             klaviyoData.data = new clsKlaviyoData.clsPodiumEvent() { type = "event", attributes = new Dictionary<string, object>() };
@@ -623,6 +625,63 @@
             _properties.Add("$value", _amount);
             _properties.Add("ItemNames", _ItemNames);
             _properties.Add("$service", "erp-woocommerce");
+            var _attributes = new { properties = _properties, metric = _metric, profile = _profile };
+            klaviyoData.data.attributes.Add("properties", _properties);
+            klaviyoData.data.attributes.Add("metric", _metric);
+            klaviyoData.data.attributes.Add("profile", _profile);
+            return await LaylaERP.UTILITIES.clsKlaviyo.TrackProfileActivity(klaviyoData);
+        }
+        public static async Task<string> kl_added_to_cart(string profile_email, CartResponse order)
+        {
+            clsKlaviyoData klaviyoData = new clsKlaviyoData();
+            klaviyoData.data = new clsKlaviyoData.clsPodiumEvent() { type = "event", attributes = new Dictionary<string, object>() };
+            //"Started Checkout", "johnson.quickfix@gmail.com"
+            var _metric = new { data = new { type = "metric", attributes = new { name = "Added to Cart" } } };
+            var _profile = new { data = new { type = "profile", attributes = new { email = profile_email } } };
+            var _properties = new Dictionary<string, object>();
+            _properties.Add("$use_ip", true); _properties.Add("$is_session_activity", true);
+            //_properties.Add("CurrencySymbol", "$"); _properties.Add("Currency", "USD");
+            _properties.Add("value", order.data.cart_totals.subtotal);
+            if (order.data.items.Count > 0)
+            {
+                _properties.Add("AddedItemCategories", new List<string>());
+                _properties.Add("AddedItemImageURL", order.data.items[0].image.name);
+                _properties.Add("AddedItemPrice", order.data.items[0].price);
+                _properties.Add("AddedItemQuantity", order.data.items[0].quantity);
+                _properties.Add("AddedItemProductID", order.data.items[0].id);
+                _properties.Add("AddedItemProductName", order.data.items[0].name);
+                _properties.Add("AddedItemSKU", order.data.items[0].sku);
+                _properties.Add("AddedItemTags", new List<string>());
+                _properties.Add("AddedItemURL", string.Format("{0}/{1}/{2}", website_url, order.data.items[0].brand, order.data.items[0].slug));
+                var _ItemNames = new List<string>();
+                dynamic _items = new List<dynamic>();
+                foreach (CartDataResponse.Item i in order.data.items)
+                {
+                    _ItemNames.Add(i.name);
+                    dynamic _image = new List<dynamic>(); _image.Add(new { URL = i.image.name });
+                    _items.Add(new
+                    {
+                        productID = i.id,
+                        variantID = i.variation_id,
+                        quantity = i.quantity,
+                        name = i.name,
+                        URL = string.Format("{0}/{1}/{2}", website_url, i.brand, i.slug),
+                        Images = _image,
+                        categories = new List<string>(),
+                        variation = new List<string>(),
+                        subTotal = i.line_subtotal,
+                        total = i.line_total,
+                        lineTotal = i.line_total,
+                        tax = i.line_subtotal_tax,
+                        totalWithTax = i.line_subtotal_tax
+                    });
+                }
+                _properties.Add("ItemNames", _ItemNames);
+                _properties.Add("Categories", new List<string>());
+                _properties.Add("ItemCount", order.data.item_count);
+                _properties.Add("Tags", new List<string>());
+                _properties.Add("extra", new { items= _items, subTotal=order.data.cart_totals.subtotal, shippingTotal= order.data.cart_totals.shipping_total, taxTotal= order.data.cart_totals.total_tax, grandTotal= order.data.cart_totals.total, cartRebuildKey= order.data.session_id });
+            }
             var _attributes = new { properties = _properties, metric = _metric, profile = _profile };
             klaviyoData.data.attributes.Add("properties", _properties);
             klaviyoData.data.attributes.Add("metric", _metric);

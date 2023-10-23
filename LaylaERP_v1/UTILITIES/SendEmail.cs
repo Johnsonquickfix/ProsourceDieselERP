@@ -313,6 +313,54 @@
             return result;
         }
 
+        public static string PushEmails(string strFromName, string strFromMail, string strReplyTo, string strReceipientEmailId, string strSubject, string strBody)
+        {
+            string result = "Your mail has been sent successfuly !";
+            try
+            {
+                //IConfiguration AppSetting = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+                //string SenderEmailID = AppSetting["MailInfo:UserName"], SenderEmailPwd = AppSetting["MailInfo:Password"], SMTPServerName = AppSetting["MailInfo:Host"];
+                //int SMTPServerPortNo = !string.IsNullOrEmpty(AppSetting["MailInfo:Port"]) ? Convert.ToInt32(AppSetting["MailInfo:Port"]) : 587;
+
+                DataTable dt = LaylaERP.BAL.EmailProfileRepository.email_detils(1);
+                string SMTPServerName = null, SenderEmailID = null, SenderEmailPwd = null, email_address = null;
+                int SMTPServerPortNo = 0; bool is_seen = false, is_attached = false;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    SMTPServerName = dt.Rows[0]["imap4_server"].ToString(); SenderEmailID = dt.Rows[0]["imapuser_name"].ToString(); SenderEmailPwd = dt.Rows[0]["imapuser_password"].ToString(); SMTPServerPortNo = Convert.ToInt32(dt.Rows[0]["imap_port"].ToString());
+                }
+                
+                //string SMTPServerName = ConfigurationManager.AppSettings["Host"];
+                  SMTPServerPortNo = 587;
+
+                using (MailMessage mm = new MailMessage(SenderEmailID, strFromMail, strSubject, strBody))
+                {
+                    mm.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = SMTPServerName; // "smtp.gmail.com";
+                    smtp.EnableSsl = false;
+                    NetworkCredential NetworkCred = new NetworkCredential(SenderEmailID, SenderEmailPwd);
+                    smtp.UseDefaultCredentials = false;//false;
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = SMTPServerPortNo; //Convert.ToInt32(om.SMTPServerPortNo); 
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                   
+                    //smtp.Timeout = 10000;
+                    smtp.Send(mm);
+
+                     
+
+                }
+
+            }
+            catch
+            {
+                result = "Some problems occurred with the OTP email. Please contact your Administrator!!";
+            }
+            return result;
+        }
+
+
 
         //public async System.Threading.Tasks.Task SendEmails_outerAsync(string varReceipientEmailId, string strSubject, string strBody, string fileHtml, string filename)
         //{

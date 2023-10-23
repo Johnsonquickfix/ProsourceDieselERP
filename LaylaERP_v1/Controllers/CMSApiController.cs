@@ -17,6 +17,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using LaylaERP.UTILITIES;
+    using System.IO;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -1939,6 +1940,27 @@
                     string subject = dynamicData.subject;
                     string suggestions = dynamicData.suggestions;
                     DataTable dt = CMSRepository.cmscontactus(name, email, subject, suggestions, entity_id);
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        string fileName = "contactus.html";
+                        string FilePath = Path.Combine(HttpContext.Current.Server.MapPath("~/Templates"), fileName);
+                        //string FilePath = Directory.GetCurrentDirectory() + "\\Templates\\contactus.html";
+                        StreamReader str = new StreamReader(FilePath);
+                        string MailText = str.ReadToEnd();
+                        str.Close();
+
+                        //MailText = MailText.Replace("{email}", email);
+                        MailText = MailText.Replace("{Name}", name);
+                        //MailText = MailText.Replace("{referral_link}", obj.referral_link);
+                        if (email != null)
+                        {
+
+                            string strTemp = MailText.Replace("{upn}", "1");
+                            SendEmail.PushEmails("noreply", email, string.Empty, email, "Thanks for contacting us!", strTemp);
+                            //SendEmail.PushEmails(recipient, subject, editorcontent, attachments);
+                        }
+                    }
 
                     if (dt.Rows.Count > 0)
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = dt.Rows[0]["id"].ToString() });

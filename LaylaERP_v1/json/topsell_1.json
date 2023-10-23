@@ -17,7 +17,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "145",
+        "stock": "92",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -34,14 +34,21 @@
           "width": null,
           "size": null
         },
-        "total_review": "43",
-        "average_score": "4.86",
-        "brand": "spoologic"
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28356,
         "post_name": "6-0l-2004-5-2010-ford-diesel-glow-plug-harness-right-left-harness-tool",
-        "post_title": "Glow Plug Harness Set for 6.0L 2004.5-2010 Powerstroke",
+        "post_title": "Glow Plug Harness Set for 6.0L 2004.5-2010 Ford Powerstroke",
         "yoast_title": null,
         "yoast_description": null,
         "sku": "6.0L 04-07 GLOW PLUG HARNESS",
@@ -51,7 +58,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "477",
+        "stock": "231",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -68,14 +75,21 @@
           "width": null,
           "size": null
         },
-        "total_review": "3",
-        "average_score": "4.67",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28414,
         "post_name": "6-0l-03-10-ford-powerstroke-diesel-ipr-seal-screen-kit",
-        "post_title": "IPR Seal Screen Kit for 2003-2010 6.0L Powerstroke",
+        "post_title": "IPR Seal Screen Kit for 2003-2010 6.0L Ford Powerstroke",
         "yoast_title": "IPR Seal Screen Kit For 03-10 6.0L Powerstroke | Prosource Diesel",
         "yoast_description": "Shop IPR Seal Screen Kit For 03-10 6.0L Powerstroke engine at the best price. Quantity Based Discounts Available. Buy now.",
         "sku": "6.0L IPR SEAL",
@@ -85,7 +99,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "166",
+        "stock": "198",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -102,48 +116,62 @@
           "width": null,
           "size": null
         },
-        "total_review": "4",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 37541,
-        "post_name": "zbx-3512-73-icp-sensor-for-1994-to-2003-ford-powerstroke-obs-superduty",
-        "post_title": "Zibbix ICP Injection Control Pressure Sensor for 1994-2003 7.3L Powerstroke",
-        "yoast_title": "Zibbix ICP Injection Control Pressure Sensor for 04-10 6.0 Powerstroke",
-        "yoast_description": "Shop Zibbix ICP Injection Control Pressure Sensor For 94-03 7.3L Powerstroke Engine at the best prices. Buy Now !!",
-        "sku": "ZBX-3512",
-        "price": "99.95",
-        "regular_price": "99.95",
+        "ID": 31420,
+        "post_name": "7-3l-f4tz6769c-crankcase-breather-crankcase-vent-valve-seal-ccv",
+        "post_title": "Crankcase Vent Seal CCV for 1994-2003 7.3L Ford Powerstroke",
+        "yoast_title": "Crankcase Vent Seal CCV For 94-03 7.3L Powerstroke | Prosource Diesel",
+        "yoast_description": "Shop Crankcase Vent Seal CCV For 94-03 7.3L Powerstroke Engine at the best price. Quantity-Based Discounts Available. Buy now !!",
+        "sku": "7.3L CCV ORINGS WHITE",
+        "price": "12.99",
+        "regular_price": "12.99",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "90",
+        "stock": "352",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "2.00",
-        "length": "3",
-        "width": "2",
-        "height": "1",
+        "weight": "0.19",
+        "length": "4",
+        "width": "4",
+        "height": "4",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "imported/9/79/Zibbix-73L-94-03-Ford-Powerstroke-ICP-Injection-Control-Pressure-Sensor-303009370079.JPG",
+          "name": "imported/2/82/73L-FORD-Crankcase-Breather-Engine-Crankcase-Vent-Valve-Seal-CCV-F4TZ6769C-273562339182.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "46",
-        "average_score": "4.93",
-        "brand": "zibbix"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 58341,
         "post_name": "zibbix-zbx-3101-tk2-ebp-exhaust-back-pressure-sensor-tube-kit",
-        "post_title": "Zibbix EBP Exhaust Back Pressure Sensor Tube Kit for 1999-2003 7.3L Powerstroke",
+        "post_title": "Zibbix EBP Exhaust Back Pressure Sensor Tube Kit for 1999-2003 7.3L Ford Powerstroke",
         "yoast_title": "Zibbix EBP Exhaust Back Pressure Sensor Tube Kits - Prosource Diesel",
         "yoast_description": "Shop Zibbix EBP Exhaust Back Pressure Sensor Tube Kit For 99-03 7.3L Powerstroke on the best prices. Buy now !!",
         "sku": "ZBX-3101-TK2",
@@ -153,7 +181,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "64",
+        "stock": "86",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -170,48 +198,62 @@
           "width": null,
           "size": null
         },
-        "total_review": "14",
-        "average_score": "4.86",
-        "brand": "zibbix"
+        "total_review": null,
+        "average_score": null,
+        "brand": "zibbix",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 31420,
-        "post_name": "7-3l-f4tz6769c-crankcase-breather-crankcase-vent-valve-seal-ccv",
-        "post_title": "Crankcase Vent Seal CCV for 1994-2003 7.3L Powerstroke",
-        "yoast_title": "Crankcase Vent Seal CCV For 94-03 7.3L Powerstroke | Prosource Diesel",
-        "yoast_description": "Shop Crankcase Vent Seal CCV For 94-03 7.3L Powerstroke Engine at the best price. Quantity-Based Discounts Available. Buy now !!",
-        "sku": "7.3L CCV ORINGS WHITE",
-        "price": "12.99",
-        "regular_price": "12.99",
+        "ID": 37541,
+        "post_name": "zbx-3512-73-icp-sensor-for-1994-to-2003-ford-powerstroke-obs-superduty",
+        "post_title": "Zibbix ICP Injection Control Pressure Sensor for 1994-2003 7.3L Ford Powerstroke",
+        "yoast_title": "Zibbix ICP Injection Control Pressure Sensor for 04-10 6.0 Powerstroke",
+        "yoast_description": "Shop Zibbix ICP Injection Control Pressure Sensor For 94-03 7.3L Powerstroke Engine at the best prices. Buy Now !!",
+        "sku": "ZBX-3512",
+        "price": "99.95",
+        "regular_price": "99.95",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "0",
-        "stock_status": "outofstock",
+        "stock": "181",
+        "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "0.19",
-        "length": "4",
-        "width": "4",
-        "height": "4",
+        "weight": "2.00",
+        "length": "3",
+        "width": "2",
+        "height": "1",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "imported/2/82/73L-FORD-Crankcase-Breather-Engine-Crankcase-Vent-Valve-Seal-CCV-F4TZ6769C-273562339182.JPG",
+          "name": "imported/9/79/Zibbix-73L-94-03-Ford-Powerstroke-ICP-Injection-Control-Pressure-Sensor-303009370079.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "7",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "zibbix",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28510,
         "post_name": "6-0l-ford-2003-2007-powerstroke-diesel-fuel-injector-harness",
-        "post_title": "Fuel Injector Harness 2003-2007 6.0L Powerstroke",
+        "post_title": "Fuel Injector Harness 2003-2007 6.0L Ford Powerstroke",
         "yoast_title": "Fuel Injector Harness 03-07 6.0L Powerstroke | Prosource Diesel",
         "yoast_description": "Shop Fuel Injector Harness 03-07 6.0L Powerstroke for your engine on the best prices. Buy it now !!",
         "sku": "6.0L INJECTOR HARNESS",
@@ -221,7 +263,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "44",
+        "stock": "21",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -238,184 +280,62 @@
           "width": null,
           "size": null
         },
-        "total_review": "10",
-        "average_score": "4.80",
-        "brand": "prosource-diesel"
-      },
-      {
-        "ID": 30252,
-        "post_name": "7-3l-valve-cover-gaskets-with-harness",
-        "post_title": "Valve Cover Gaskets Harness Kit for 1999-2003 7.3L Powerstroke",
-        "yoast_title": "Valve Cover Gaskets Harness Kit For Powerstroke | Prosource Diesel",
-        "yoast_description": "Know more about Valve Cover Gaskets Harness Kit For 99-03 7.3L Powerstroke & Shop it on the best prices. Buy now !!",
-        "sku": "7.3L 99-03 VALVE COVER GASKET SET",
-        "price": "119.95",
-        "regular_price": "119.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "78",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "3.00",
-        "length": "24",
-        "width": "9",
-        "height": "6",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "imported/1/81/73l-1999-03-Ford-Powerstroke-Valve-Cover-Gaskets-With-Harness-273367511881.JPG",
-          "height": null,
-          "width": null,
-          "size": null
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "38",
-        "average_score": "4.89",
-        "brand": "prosource-diesel"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 32459,
-        "post_name": "6-0l-updated-stand-pipe-dummy-plug-kit-for-2004-2010-ford-powerstroke-diesel",
-        "post_title": "TrackTech Updated Engine Oil Stand Pipe + Dummy Plug Kit for 2004-2010 Ford Powerstroke 6.0L",
-        "yoast_title": "2004-2010 Ford Powerstroke 6.0 Dummy Plugs & Standpipes Replacement Kit",
-        "yoast_description": "Replace the dummy plugs and standpipes in your 2004-2010 Ford Powerstroke 6.0 diesel engine with this replacement kit from ProSource. Shop now.",
-        "sku": "TTP0410HP611",
-        "price": "119.95",
-        "regular_price": "119.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "33",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "2",
-        "length": "11",
-        "width": "3",
-        "height": "2",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": null,
-          "height": null,
-          "width": null,
-          "size": null
-        },
-        "total_review": "26",
-        "average_score": "5.00",
-        "brand": "tracktech"
-      },
-      {
-        "ID": 33691,
-        "post_name": "6-0l-ford-cps-camshaft-position-sensor-repair-connector-pigtail-4ft-leads",
-        "post_title": "CPS Camshaft Position Sensor Pigtail With 4ft Leads for 2003-2010 6.0L 6.4L Powerstroke",
-        "yoast_title": "Powerstroke 6.0 Cam Sensor Pigtail Wiring for 2003 to 2010 Ford Diesel",
-        "yoast_description": "This Powerstroke 6.0 wiring pigtail for the cam sensor (CPS) is for 2003 to 2010 Ford Super Duty diesel trucks and vans. Shop now.",
-        "sku": "6.0 CAM PIGTAIL 4FT LEADS",
+        "ID": 28926,
+        "post_name": "ford-f3tz-7210-c-new-transfer-case-shift-shifter-linkage",
+        "post_title": "Ford F3TZ-7210-C New Transfer Case Shift Shifter Linkage For 1992-1999 Ford 4WD 4x4",
+        "yoast_title": "Ford F3TZ-7210-C New Transfer Case Shift Shifter Linkage | Prosource",
+        "yoast_description": "Shop Ford F3TZ-7210-C New Transfer Case Shift Shifter Linkage For 92-99 Ford 4WD 4�4 at the best price. Buy it Now.",
+        "sku": "7.3L TRANSFER CASE SHIFTER LINKAGE",
         "price": "99.95",
         "regular_price": "99.95",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "213",
-        "stock_status": "instock",
+        "stock": "0",
+        "stock_status": "outofstock",
         "children": null,
         "core_price": "",
-        "weight": "0.4",
-        "length": "3",
-        "width": "3",
-        "height": "1",
+        "weight": "2.50",
+        "length": "7",
+        "width": "6",
+        "height": "3",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "imported/3/53/60L-Ford-CPS-Camshaft-Position-Sensor-Repair-Connector-Pigtail-4ft-Leads-283301400453.JPG",
+          "name": "imported/2/22/FORD-4WD-4x4-Transfer-Case-Shift-Shifter-Linkage-NEW-F-150-F-250-F-350-BRONCO-282314249722.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "30",
-        "average_score": "4.97",
-        "brand": "prosource-diesel"
-      },
-      {
-        "ID": 29084,
-        "post_name": "6-0l-upgraded-high-flow-turbocharger-up-pipes-with-gaskets-hardware",
-        "post_title": "SPOOLOGIC High Flow Turbo Up-Pipes Gaskets Hardware for 2003-2007 6.0L Powerstroke",
-        "yoast_title": "SPOOLOGIC High Flow Turbo Up-Pipes Gaskets Hardware",
-        "yoast_description": "Shop SPOOLOGIC High Flow Turbo Up-Pipes Gaskets Hardware For 03-07 6.0L Powerstroke on the best prices. Buy now !!",
-        "sku": "SL-6.0L HIGH FLOW TURBO UP PIPES",
-        "price": "145.95",
-        "regular_price": "145.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "63",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "7",
-        "length": "22",
-        "width": "14",
-        "height": "8",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "imported/0/70/60l-Upgraded-High-Flow-Turbocharger-Up-Pipes-With-Gaskets-Hardware-302311502770.JPG",
-          "height": null,
-          "width": null,
-          "size": null
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "14",
-        "average_score": "4.93",
-        "brand": "spoologic"
-      },
-      {
-        "ID": 30001,
-        "post_name": "7-3l-99-5-03-ford-powerstroke-diesel-turbo-pedestal-ebp-delete-kit",
-        "post_title": "SPOOLOGIC GTP38 Non-EBPV Turbo Pedestal Kit for 1999.5-2003 7.3L Powerstroke",
-        "yoast_title": "SPOOLOGIC GTP38 Turbo Pedestal EBP Delete Kit | Prosource Diesel",
-        "yoast_description": "Shop SPOOLOGIC GTP38 Turbo Pedestal EBP Delete Kit for Powerstroke engine on the best prices. Buy it now !!",
-        "sku": "SL-GTP38-EBPVD-9903-FKIT",
-        "price": "159.95",
-        "regular_price": "159.95",
-        "sale_price": "",
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "193",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "10",
-        "length": "10",
-        "width": "10",
-        "height": "7",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "2018/12/DSC_1018-Copy-2.jpg",
-          "height": null,
-          "width": null,
-          "size": null
-        },
-        "total_review": "32",
-        "average_score": "4.91",
-        "brand": "spoologic"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28914,
         "post_name": "6-0l-03-07-ford-powerstroke-high-pressure-fuel-rail-test-tool-adapters",
-        "post_title": "High Pressure Fuel Rail Test Tool Adapters for 2003-2010 6.0L Powerstroke",
+        "post_title": "High Pressure Fuel Rail Test Tool Adapters for 2003-2010 6.0L Ford Powerstroke",
         "yoast_title": "High Pressure Fuel Rail Test Tool Adapters For Powerstroke | Prosource",
         "yoast_description": "Shop High Pressure Fuel Rail Test Tool Adapters For 03-10 6.0L Powerstroke Engine at the Best Price. Buy it Now.",
         "sku": "6.0L RAIL TEST ADAPTERS",
@@ -425,7 +345,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "706",
+        "stock": "783",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -442,77 +362,262 @@
           "width": null,
           "size": null
         },
-        "total_review": "5",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 32455,
-        "post_name": "6-0l-updated-stand-pipe-dummy-plugs-with-ball-tubes-injector-orings",
-        "post_title": "TrackTech Updated Stand Pipe + Dummy Plugs + Ball Tubes + Injector O-Rings for 2004.5-2010 Ford Powerstroke 6.0L",
-        "yoast_title": "TrackTech Updated stand pipe | Dummy plugs | Ball tubes | Injector O-Ring",
-        "yoast_description": "Buy TrackTech updated stand pipe and Dummy plugs with Ball Tubes and Injector O-Ring for Powerstroke engine. Shop it now !!",
-        "sku": "TTP0410HP612",
-        "price": "299.95",
-        "regular_price": "299.95",
+        "ID": 28352,
+        "post_name": "7-3l-f4tz-6n653-a-f4tz-6n653-b-turbo-pedestal-yellow-o-rings",
+        "post_title": "SPOOLOGIC Turbo Pedestal Yellow O-Rings for 1994-2003 7.3L Ford Powerstroke",
+        "yoast_title": "Prosource Diesel - SPOOLOGIC Turbo Pedestal Yellow O-Rings",
+        "yoast_description": null,
+        "sku": "SL-9403-73-TYO-001",
+        "price": "13.99",
+        "regular_price": "13.99",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "39",
+        "backorders": "yes",
+        "stock": "22",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "5",
-        "length": "12",
-        "width": "4",
-        "height": "4",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": null,
-          "height": null,
-          "width": null,
-          "size": null
-        },
-        "total_review": "24",
-        "average_score": "5.00",
-        "brand": "tracktech"
-      },
-      {
-        "ID": 30313,
-        "post_name": "7-3l-injector-sleeve-cup-removal-installation-tool-kit",
-        "post_title": "Injector Sleeve Cup Removal Installation Tool Kit for 1994-2003 7.3L Powerstroke",
-        "yoast_title": "Powerstroke 7.3 Fuel Injector Cup Sleeve Removal Tool & O Ring Kit",
-        "yoast_description": "This 7.3 injector cup tool and fuel injector o ring kit is for the Powerstroke 7.3 fuel injectors in the 1994-2003 Ford diesel. Shop now.",
-        "sku": "7.3L INJECTOR SLEEVE TOOL MASTER KIT",
-        "price": "199.95,239.95,259.95,299.95,339.95,359.95,399.95,439.95,459.95,499.95",
-        "regular_price": null,
-        "sale_price": null,
-        "product_type": "variable",
-        "manage_stock": "no",
-        "backorders": "no",
-        "stock": null,
-        "stock_status": "instock",
-        "children": "a:0:{}",
-        "core_price": "",
-        "weight": "8",
-        "length": "11",
-        "width": "8",
+        "weight": "0.19",
+        "length": "8",
+        "width": "6",
         "height": "3",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": null,
+          "name": "imported/1/41/73L-945-03-Ford-Powerstroke-Diesel-Turbo-Pedestal-Yellow-O-rings-281657090741.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "19",
-        "average_score": "4.84",
-        "brand": "tracktech"
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 32459,
+        "post_name": "6-0l-updated-stand-pipe-dummy-plug-kit-for-2004-2010-ford-powerstroke-diesel",
+        "post_title": "TrackTech Updated Engine Oil Stand Pipe + Dummy Plug Kit for 2004-2010 6.0L Ford Powerstroke",
+        "yoast_title": "2004-2010 Ford Powerstroke 6.0 Dummy Plugs & Standpipes Replacement Kit",
+        "yoast_description": "Replace the dummy plugs and standpipes in your 2004-2010 Ford Powerstroke 6.0 diesel engine with this replacement kit from ProSource. Shop now.",
+        "sku": "TTP0410HP611",
+        "price": "119.95",
+        "regular_price": "119.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "152",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "2",
+        "length": "11",
+        "width": "3",
+        "height": "2",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2018/11/TrackTech-Updated-Engine-Oil-Stand-Pipe-Dummy-Plug-Kit-For-2004-2010-Ford-Powerstroke-6.0-scaled.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 30252,
+        "post_name": "7-3l-valve-cover-gaskets-with-harness",
+        "post_title": "Valve Cover Gaskets Harness Kit for 1999-2003 7.3L Ford Powerstroke",
+        "yoast_title": "Valve Cover Gaskets Harness Kit For Powerstroke | Prosource Diesel",
+        "yoast_description": "Know more about Valve Cover Gaskets Harness Kit For 99-03 7.3L Powerstroke & Shop it on the best prices. Buy now !!",
+        "sku": "7.3L 99-03 VALVE COVER GASKET SET",
+        "price": "119.95",
+        "regular_price": "119.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "44",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "3.00",
+        "length": "24",
+        "width": "9",
+        "height": "6",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/1/81/73l-1999-03-Ford-Powerstroke-Valve-Cover-Gaskets-With-Harness-273367511881.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 33691,
+        "post_name": "6-0l-ford-cps-camshaft-position-sensor-repair-connector-pigtail-4ft-leads",
+        "post_title": "CPS Camshaft Position Sensor Pigtail With 4ft Leads for 2003-2010 6.0L 6.4L Ford Powerstroke",
+        "yoast_title": "Powerstroke 6.0 Cam Sensor Pigtail Wiring for 2003 to 2010 Ford Diesel",
+        "yoast_description": "This Powerstroke 6.0 wiring pigtail for the cam sensor (CPS) is for 2003 to 2010 Ford Super Duty diesel trucks and vans. Shop now.",
+        "sku": "6.0 CAM PIGTAIL 4FT LEADS",
+        "price": "99.95",
+        "regular_price": "99.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "62",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "0.4",
+        "length": "3",
+        "width": "3",
+        "height": "1",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/3/53/60L-Ford-CPS-Camshaft-Position-Sensor-Repair-Connector-Pigtail-4ft-Leads-283301400453.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 29084,
+        "post_name": "6-0l-upgraded-high-flow-turbocharger-up-pipes-with-gaskets-hardware",
+        "post_title": "SPOOLOGIC High Flow Turbo Up-Pipes Gaskets Hardware for 2003-2007 6.0L Ford Powerstroke",
+        "yoast_title": "SPOOLOGIC High Flow Turbo Up-Pipes Gaskets Hardware",
+        "yoast_description": "Shop SPOOLOGIC High Flow Turbo Up-Pipes Gaskets Hardware For 03-07 6.0L Powerstroke on the best prices. Buy now !!",
+        "sku": "SL-6.0L HIGH FLOW TURBO UP PIPES",
+        "price": "145.95",
+        "regular_price": "145.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "46",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "7",
+        "length": "22",
+        "width": "14",
+        "height": "8",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/0/70/60l-Upgraded-High-Flow-Turbocharger-Up-Pipes-With-Gaskets-Hardware-302311502770.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 30001,
+        "post_name": "7-3l-99-5-03-ford-powerstroke-diesel-turbo-pedestal-ebp-delete-kit",
+        "post_title": "SPOOLOGIC GTP38 Non-EBPV Turbo Pedestal Kit for 1999.5-2003 7.3L Ford Powerstroke",
+        "yoast_title": "SPOOLOGIC GTP38 Turbo Pedestal EBP Delete Kit | Prosource Diesel",
+        "yoast_description": "Shop SPOOLOGIC GTP38 Turbo Pedestal EBP Delete Kit for Powerstroke engine on the best prices. Buy it now !!",
+        "sku": "SL-GTP38-EBPVD-9903-FKIT",
+        "price": "159.95",
+        "regular_price": "159.95",
+        "sale_price": "",
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "41",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "10",
+        "length": "10",
+        "width": "10",
+        "height": "7",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2018/12/DSC_1018-Copy-2.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       }
     ]
   },
@@ -524,7 +629,7 @@
       {
         "ID": 28887,
         "post_name": "bosch-pt2183-fuel-injector-pigtail",
-        "post_title": "Fuel Injector Pigtail For 2004-2007 LLY LBZ Duramax",
+        "post_title": "Fuel Injector Pigtail For 2004-2007 6.6L Chevrolet Duramax LLY LBZ",
         "yoast_title": "Duramax Injector Wiring Harness Repair Kit - Upgrade Connector Pigtail",
         "yoast_description": "Fuel Injector Pigtail For 2004-2007 LLY LBZ Duramax from Prosource Diesel. One-year warranty included with this purchase. Shop now.",
         "sku": "DMAX INJECTOR PIGTAIL",
@@ -534,7 +639,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "47",
+        "stock": "9",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -551,14 +656,21 @@
           "width": null,
           "size": null
         },
-        "total_review": "6",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28802,
         "post_name": "6-6l-heavy-duty-upgraded-304ss-up-pipes-with-gaskets",
-        "post_title": "SPOOLOGIC Heavy Duty Upgraded 32004SS Up-Pipes + Gaskets for 2001-2004 LB7 Duramax",
+        "post_title": "SPOOLOGIC Heavy Duty Upgraded 32004SS Up-Pipes + Gaskets for 2001-2004 6.6L Chevrolet Duramax LB7",
         "yoast_title": "SPOOLOGIC Heavy Duty Upgraded 304SS Up-Pipes | Prosource Diesel",
         "yoast_description": "Know more about SPOOLOGIC Heavy Duty Upgraded 304SS Up-Pipes & Gaskets and Shop it now to avail a discount on the prices. Buy it now !!",
         "sku": "SL-DURAMAX UP-PIPES",
@@ -568,7 +680,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "131",
+        "stock": "52",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -585,14 +697,21 @@
           "width": null,
           "size": null
         },
-        "total_review": "22",
-        "average_score": "4.91",
-        "brand": "spoologic"
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 35538,
         "post_name": "head-studs-kit",
-        "post_title": "TrackTech Head Studs Kit for 2001-2016 Chevrolet Duramax 6.6L LB7 LLY LBZ LMM LML",
+        "post_title": "TrackTech Head Studs Kit for 2001-2016 6.6L Chevrolet Duramax LB7 LLY LBZ LMM LML",
         "yoast_title": "TrackTech Duramax Head Studs for LB7, LLY, LMM, LBZ & LML",
         "yoast_description": "The Duramax head stud kit replaces the head studs in the LB7, LLY, LMM, LBZ & LML found in the 2001-2016 Duramax diesel engine. Shop now.",
         "sku": "TT-HS-007",
@@ -602,7 +721,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "101",
+        "stock": "187",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -619,14 +738,21 @@
           "width": null,
           "size": null
         },
-        "total_review": "19",
-        "average_score": "4.89",
-        "brand": "tracktech"
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28538,
         "post_name": "6-6l-turbo-vane-position-sensor-kit",
-        "post_title": "SPOOLOGIC Turbo Vane Position Sensor Kit for 2004.5-2016 LLY LBZ LMM LML Duramax",
+        "post_title": "SPOOLOGIC Turbo Vane Position Sensor Kit for 2004.5-2016 6.6L Chevrolet Duramax LLY LBZ LMM LML",
         "yoast_title": "SPOOLOGIC Turbo Vane Position Sensor Kit For Duramax | Prosource",
         "yoast_description": "Shop SPOOLOGIC Turbo Vane Position Sensor Kit For 04.5-16 LLY LBZ LMM LML Duramax Engine on the best price. Buy Now !!",
         "sku": "SL-04516-DTVS",
@@ -636,7 +762,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "68",
+        "stock": "75",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -653,9 +779,57 @@
           "width": null,
           "size": null
         },
-        "total_review": "4",
-        "average_score": "4.75",
-        "brand": "spoologic"
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 28291,
+        "post_name": "6-6l-88892543-maf-mass-airflow-sensor",
+        "post_title": "SPOOLOGIC (MAF) Mass Air Flow Sensor for 2001-2007 6.6L Chevrolet Duramax LB7 LLY LBZ",
+        "yoast_title": "SPOOLOGIC (MAF) Mass Air Flow Sensor For LB7 LLY LBZ Duramax",
+        "yoast_description": "Shop SPOOLOGIC (MAF) Mass Air Flow Sensor For Duramax Engine on the best prices. Quantity Based Discounts Available. Buy Now !!",
+        "sku": "SL-0107-C66-MAFS05",
+        "price": "59.95",
+        "regular_price": "59.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "19",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "0.50",
+        "length": "6",
+        "width": "4",
+        "height": "2",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/4/84/66L-DURAMAX-GM-2001-2006-MASS-AIRFLOW-SENSOR-LB7-LLY-LBZ-271606534284.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 157115,
@@ -668,9 +842,9 @@
         "regular_price": "13.95",
         "sale_price": null,
         "product_type": "simple",
-        "manage_stock": "no",
+        "manage_stock": "yes",
         "backorders": "no",
-        "stock": null,
+        "stock": "18",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -682,19 +856,26 @@
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": null,
+          "name": "2021/03/Pro-Line-Turbocharger-Additive-20g-–-Liqui-Moly-LM22074-scaled.jpg",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "25",
-        "average_score": "4.92",
-        "brand": "liqui-moly"
+        "total_review": null,
+        "average_score": null,
+        "brand": "liqui-moly",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 91968,
         "post_name": "lly-lbz-duramax-head-gasket-kit",
-        "post_title": "TrackTech Complete Top End Cylinder Head Gasket / Studs Service Kit for 2004.5-2007 Chevrolet Duramax 6.6L LLY LBZ",
+        "post_title": "TrackTech Complete Top End Cylinder Head Gasket / Studs Service Kit for 2004.5-2007 6.6L Chevrolet Duramax LLY LBZ",
         "yoast_title": "Duramax LLY or LBZ Head Gasket & Studs Kit for 2004.5-2007 6.6L Diesel",
         "yoast_description": "A complete top-end service kit for the 2004.5-2007 6.6L Duramax LLY or LBZ. Includes head gaskets, head studs & bolts, o rings and all other gaskets needed. Shop now.",
         "sku": "TTD0507TK222",
@@ -721,118 +902,23 @@
           "width": null,
           "size": null
         },
-        "total_review": "13",
-        "average_score": "4.92",
-        "brand": "tracktech"
-      },
-      {
-        "ID": 28291,
-        "post_name": "6-6l-88892543-maf-mass-airflow-sensor",
-        "post_title": "SPOOLOGIC (MAF) Mass Air Flow Sensor for 2001-2007 LB7 LLY LBZ Duramax",
-        "yoast_title": "SPOOLOGIC (MAF) Mass Air Flow Sensor For LB7 LLY LBZ Duramax",
-        "yoast_description": "Shop SPOOLOGIC (MAF) Mass Air Flow Sensor For Duramax Engine on the best prices. Quantity Based Discounts Available. Buy Now !!",
-        "sku": "SL-0107-C66-MAFS05",
-        "price": "59.95",
-        "regular_price": "59.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "74",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "0.50",
-        "length": "6",
-        "width": "4",
-        "height": "2",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "imported/4/84/66L-DURAMAX-GM-2001-2006-MASS-AIRFLOW-SENSOR-LB7-LLY-LBZ-271606534284.JPG",
-          "height": null,
-          "width": null,
-          "size": null
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "6",
-        "average_score": "5.00",
-        "brand": "spoologic"
-      },
-      {
-        "ID": 29346,
-        "post_name": "6-6l-fuel-injector-master-install-kit-and-injection-lines",
-        "post_title": "TrackTech Fuel Injector Master Install Kit And Injection Lines for 2001-2004 LB7 Duramax",
-        "yoast_title": "Fuel Injector Master Install Kit And Injection Lines | Prosource Diesel",
-        "yoast_description": "Shop Fuel Injector Master Install Kit And Injection Lines For 01-04 LB7 Duramax on the best prices. Buy it now !!",
-        "sku": "LB7 MASTER INSTALL KIT",
-        "price": "274.95",
-        "regular_price": "274.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "30",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "3.00",
-        "length": "8",
-        "width": "8",
-        "height": "8",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "imported/4/84/66L-2001-2004-LB7-Duramax-Fuel-Injector-Master-Install-Kit-Injection-Lines-272768916584.JPG",
-          "height": null,
-          "width": null,
-          "size": null
-        },
-        "total_review": "2",
-        "average_score": "5.00",
-        "brand": "tracktech"
-      },
-      {
-        "ID": 44112,
-        "post_name": "set-of-12-up-pipe-bolts-washers",
-        "post_title": "TrackTech Up-Pipe Bolts + Washers for 2001-2016 Chevrolet Duramax 6.6L LB7 LLY LBZ LMM LML",
-        "yoast_title": "TrackTech Set Of 12 Up-Pipe Bolts + Washers | Prosource Diesel",
-        "yoast_description": "Shop TrackTech Up-Pipe Bolts + Washers For 01-16 LB7 LLY LBZ LMM LML Duramax on the best price. Buy it Now.",
-        "sku": "TTD0116EB420",
-        "price": "39.95",
-        "regular_price": "39.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "yes",
-        "stock": "49",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "2",
-        "length": "6",
-        "width": "4",
-        "height": "2",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": null,
-          "height": null,
-          "width": null,
-          "size": null
-        },
-        "total_review": "5",
-        "average_score": "5.00",
-        "brand": "tracktech"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 37093,
         "post_name": "zibbix-zbx-3305-eop-engine-oil-pressure-sensor",
-        "post_title": "Zibbix EOP Engine Oil Pressure Sensor for 2011-2016 LML Duramax",
-        "yoast_title": "2011-2016 Duramax LML 6.6 Oil Pressure Sensor Replacement - Zibbix",
-        "yoast_description": "Replace the engine oil pressure sensor in your 2011-2016 Duramax LML 6.6 diesel engine with this EOP replacement from ProSource. Shop now.",
+        "post_title": "Zibbix EOP Engine Oil Pressure Sensor for 2011-2016 6.6L Chevrolet Duramax LML",
+        "yoast_title": "Zibbix Engine Oil Pressure Sensor For 11-16 LML Duramax - Prosource",
+        "yoast_description": "Shop Zibbix EOP Engine Oil Pressure Sensor For 11-16 LML Duramax Engine on the Discounted price. Buy it Now !!",
         "sku": "ZBX-3305",
         "price": "39.99",
         "regular_price": "39.99",
@@ -840,7 +926,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "13",
+        "stock": "20",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -857,48 +943,103 @@
           "width": null,
           "size": null
         },
-        "total_review": "2",
-        "average_score": "5.00",
-        "brand": "zibbix"
+        "total_review": null,
+        "average_score": null,
+        "brand": "zibbix",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 92243,
-        "post_name": "lml-duramax-head-gasket-kit-with-studs-2011-to-2016",
-        "post_title": "TrackTech Cylinder Head Gasket Set With Head Studs 2011-2016 Chevrolet Duramax 6.6L LML",
-        "yoast_title": "Duramax 6.6 LML Cylinder Head Gasket Set Kit w/ Gaskets, Studs & Bolts",
-        "yoast_description": "Shop Duramax 6.6 LML complete top end cylinder head gasket and head studs kit. Includes all gaskets, head studs, bolts, washers & more.",
-        "sku": "TTD1116TK224",
-        "price": "899.95",
-        "regular_price": "899.95",
+        "ID": 29346,
+        "post_name": "6-6l-fuel-injector-master-install-kit-and-injection-lines",
+        "post_title": "TrackTech Fuel Injector Master Install Kit And Injection Lines for 2001-2004 6.6L Chevrolet Duramax LB7",
+        "yoast_title": "Fuel Injector Master Install Kit And Injection Lines | Prosource Diesel",
+        "yoast_description": "Shop Fuel Injector Master Install Kit And Injection Lines For 01-04 LB7 Duramax on the best prices. Buy it now !!",
+        "sku": "LB7 MASTER INSTALL KIT",
+        "price": "329.95",
+        "regular_price": "329.95",
         "sale_price": null,
         "product_type": "simple",
-        "manage_stock": "no",
+        "manage_stock": "yes",
         "backorders": "no",
-        "stock": null,
+        "stock": "12",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "16",
-        "length": "24",
-        "width": "9",
-        "height": "5",
+        "weight": "3.00",
+        "length": "8",
+        "width": "8",
+        "height": "8",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "2019/10/LML-HEAD-GASKET-STUDS-KIT.jpg",
+          "name": "imported/4/84/66L-2001-2004-LB7-Duramax-Fuel-Injector-Master-Install-Kit-Injection-Lines-272768916584.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "8",
-        "average_score": "4.75",
-        "brand": "tracktech"
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 44112,
+        "post_name": "set-of-12-up-pipe-bolts-washers",
+        "post_title": "TrackTech Up-Pipe Bolts + Washers for 2001-2016 6.6L  Chevrolet Duramax LB7 LLY LBZ LMM LML",
+        "yoast_title": "TrackTech Set Of 12 Up-Pipe Bolts + Washers | Prosource Diesel",
+        "yoast_description": "Shop TrackTech Up-Pipe Bolts + Washers For 01-16 LB7 LLY LBZ LMM LML Duramax on the best price. Buy it Now.",
+        "sku": "TTD0116EB420",
+        "price": "39.95",
+        "regular_price": "39.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "yes",
+        "stock": "98",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "2",
+        "length": "6",
+        "width": "4",
+        "height": "2",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2019/01/TrackTech-Up-Pipe-Bolts-Washers-For-2001-2016-Chevrolet-Duramax-6.6L-LB7-LLY-LBZ-LMM-LML-scaled.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28963,
         "post_name": "6-6l-set-of-8-fuel-injector-lines",
-        "post_title": "TrackTech Fuel Injector Line Set Of 8 for 2001-2004 Chevrolet Duramax 6.6L LB7",
+        "post_title": "TrackTech Fuel Injector Line Set Of 8 for 2001-2004 6.6L Chevrolet Duramax LB7",
         "yoast_title": "Set Of 8 Fuel Injector Lines For 01-04 LB7 Duramax | Prosource Diesel",
         "yoast_description": "Shop Set Of 8 Fuel Injector Lines For Duramax Engine on the attractive price. Quantity Based Discounts Available. Buy now !!",
         "sku": "TTD0104FS562",
@@ -908,7 +1049,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "434",
+        "stock": "465",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -925,14 +1066,21 @@
           "width": null,
           "size": null
         },
-        "total_review": "1",
-        "average_score": "5.00",
-        "brand": "tracktech"
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28938,
         "post_name": "chevy-gmc-6-5l-turbo-diesel-fuel-injection-pump-pmd-fsd-module-cooler-kit",
-        "post_title": "Fuel Injection Pump PMD FSD Module Cooler Kit for 1994-2000 6.5L GM IDI Diesel",
+        "post_title": "Fuel Injection Pump PMD FSD Module Cooler Kit for 1994-2000 6.5L Chevrolet IDI",
         "yoast_title": "Prosource - Turbo Fuel Injection Pump PMD FSD Module Cooler Kit",
         "yoast_description": "Shop Turbo Fuel Injection Pump PMD FSD Module Cooler Kit For 6.5L IDI on the best price. Quantity Based Discounts Available. Buy Now !!",
         "sku": "PMD + G PLATE + 6 FOOT + HARNESS",
@@ -959,77 +1107,139 @@
           "width": null,
           "size": null
         },
-        "total_review": "1",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 124300,
-        "post_name": "spoologic-vgt-solenoid-for-03-07-6-0l-powerstroke-04-16-6-6l-duramax",
-        "post_title": "SPOOLOGIC VGT Solenoid for 2003-2007 6.0L Powerstroke 2004-2016 6.6L Duramax",
-        "yoast_title": "SPOOLOGIC VGT Solenoid For 03-07 6.0L Powerstroke Duramax",
-        "yoast_description": "Shop SPOOLOGIC VGT Solenoid For 03-07 6.0L Powerstroke 04-16 6.6L Duramax. Quantity Based Discounts Available. Buy Now!!",
-        "sku": "SL-GT37-VGT",
-        "price": "119.95",
-        "regular_price": "119.95",
+        "ID": 92243,
+        "post_name": "lml-duramax-head-gasket-kit-with-studs-2011-to-2016",
+        "post_title": "TrackTech Cylinder Head Gasket Set With Head Studs 2011-2016 6.6L Chevrolet Duramax LML",
+        "yoast_title": "Duramax 6.6 LML Cylinder Head Gasket Set Kit w/ Gaskets, Studs & Bolts",
+        "yoast_description": "Shop Duramax 6.6 LML complete top end cylinder head gasket and head studs kit. Includes all gaskets, head studs, bolts, washers & more.",
+        "sku": "TTD1116TK224",
+        "price": "899.95",
+        "regular_price": "899.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "no",
+        "backorders": "no",
+        "stock": null,
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "16",
+        "length": "24",
+        "width": "9",
+        "height": "5",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2019/10/LML-HEAD-GASKET-STUDS-KIT.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 29032,
+        "post_name": "6-6l-wiring-harness-repair-kit-mlps-prndl-gm-4l60e-4l80e-allison-1000",
+        "post_title": "Wiring Harness Repair Kit MLPS PRNDL 4L60E / 4L80E / Allison 1000 for 2001-2004 6.6L Chevrolet Duramax LB7",
+        "yoast_title": "Wiring Harness Repair Kit MLPS PRNDL 4L60E / 4L80E / Allison 1000",
+        "yoast_description": "Shop Wiring Harness Repair Kit MLPS PRNDL 4L60E / 4L80E / Allison 1000 For Duramax Engine at the best Price. Buy it Now !!",
+        "sku": "GM 4L60E / 4L80E / Allison 1000",
+        "price": "24.95",
+        "regular_price": "24.95",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "47",
+        "stock": "44",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "1",
-        "length": "2",
-        "width": "2",
+        "weight": "0.25",
+        "length": "4",
+        "width": "4",
+        "height": "1",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/4/64/Wiring-Harness-Repair-Kit-MLPS-PRNDL-GM-4L60E-4L80E-Allison-1000-302299138764.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 102816,
+        "post_name": "6-6l-duramax-turbo-vane-position-sensor-socket-2004-thru-2015-lly-lbz-lmm-lml-2",
+        "post_title": "6.6L Duramax Turbo Vane Position Sensor & Socket 2004-2016 6.6L Chevrolet Duramax LLY LBZ LMM LML",
+        "yoast_title": "6.6L Duramax Turbo Vane Position Sensor & Socket 2004 | Prosource",
+        "yoast_description": "Shop 6.6L Duramax Turbo Vane Position Sensor & Socket 2004 Thru 2015 LLY LBZ LMM LML at the best price. Buy now.",
+        "sku": "Sensor & Socket & Adapter",
+        "price": "159.95",
+        "regular_price": "159.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "0",
+        "stock_status": "outofstock",
+        "children": null,
+        "core_price": "",
+        "weight": "3.0",
+        "length": "5",
+        "width": "4",
         "height": "2",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "imported/9/09/Fit-2003-2007-Powerstroke-60L-Ford-VGT-Turbocharger-Actuator-Solenoid-VALVE-223962086609.JPG",
+          "name": "imported/8/08/66L-Duramax-Turbo-Vane-Position-Sensor-Socket-2004-thru-2015-LLY-LBZ-LMM-LML-303457227308.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "7",
-        "average_score": "5.00",
-        "brand": "spoologic"
-      },
-      {
-        "ID": 142744,
-        "post_name": "vgt-tune-up-kit-vane-position-sensor-vgt-solenoid-for-04-16-6-6l-chevrolet-duramax-lly-lbz-lmm-lml",
-        "post_title": "VGT Tune-Up Kit (Vane Position Sensor + VGT Solenoid) for 2004.5-2016 6.6L Chevrolet Duramax LLY LBZ LMM LML",
-        "yoast_title": "VGT Tune-Up Kit For 04-16 6.6L Chevrolet Duramax LLY LBZ LMM LML",
-        "yoast_description": "Shop VGT Tune-Up Kit (Vane Position Sensor + VGT Solenoid) For 04-16 6.6L Chevrolet Duramax LLY LBZ LMM LML at the best price. Buy now.",
-        "sku": "SL-04516-DTVS (x1) + SL-GT37-VGT (x1)",
-        "price": "219.90",
-        "regular_price": "219.90",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "34",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "5",
-        "length": "8",
-        "width": "8",
-        "height": "4",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "2020/10/VTG-KIT-e1603782776147.jpg",
-          "height": null,
-          "width": null,
-          "size": null
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "3",
-        "average_score": "5.00",
-        "brand": "spoologic"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       }
     ]
   },
@@ -1041,7 +1251,7 @@
       {
         "ID": 28694,
         "post_name": "5-9l-tps-apps-throttle-position-sensor-fits-98-5-04-dodge-cummins-diesel",
-        "post_title": "TPS APPS Throttle Position Sensor for 1998.5-2004 5.9L Cummins 24V",
+        "post_title": "TPS APPS Throttle Position Sensor for 1998.5-2004 5.9L Dodge Cummins 24V",
         "yoast_title": "TPS APPS Throttle Position Sensor 5.9L Cummins | Prosource Diesel",
         "yoast_description": "Shop Throttle Position Sensor (TPS) & Accelerator Pedal Position Sensor (APPS) For 98.5-04 5.9L Cummins 24V on the best prices. Buy it now !!",
         "sku": "5.9L APPS",
@@ -1051,7 +1261,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "94",
+        "stock": "86",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -1068,9 +1278,16 @@
           "width": null,
           "size": null
         },
-        "total_review": "58",
-        "average_score": "4.93",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 39648,
@@ -1104,80 +1321,19 @@
         },
         "total_review": null,
         "average_score": null,
-        "brand": "zibbix"
-      },
-      {
-        "ID": 157115,
-        "post_name": "pro-line-turbocharger-additive-20g-liqui-moly-lm22074",
-        "post_title": "Pro-Line Turbocharger Additive (20g) - Liqui Moly LM22074",
-        "yoast_title": "Liqui Moly Pro-Line Turbo Oil Additive for Turbocharger Engines",
-        "yoast_description": "Liqui Moly Pro-Line turbo oil additive will provide needed protection and allow proper break-in of new turbochargers. Shop now.",
-        "sku": "LM22074",
-        "price": "13.95",
-        "regular_price": "13.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "no",
-        "backorders": "no",
-        "stock": null,
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "1",
-        "length": "2",
-        "width": "2",
-        "height": "2",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": null,
-          "height": null,
-          "width": null,
-          "size": null
+        "brand": "zibbix",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "25",
-        "average_score": "4.92",
-        "brand": "liqui-moly"
-      },
-      {
-        "ID": 29802,
-        "post_name": "5-9l-6-7l-valve-rocker-arm-assembly",
-        "post_title": "TrackTech Rocker Arm Assembly for 1998.5-2018 5.9L 6.7L Cummins 24V",
-        "yoast_title": "Rocker Arm Assembly Valve for 98.5-18 5.9L 6.7L Cummins - Prosource",
-        "yoast_description": "This Cummins rocker arm assembly is for the 6.7 and 5.9 liter diesel engine in the 1998 to 2018 Dodge Ram 2500, 3500 4500 and 5500. Shop now.",
-        "sku": "5.9L 6.7L Rocker Arm Assembly",
-        "price": "59.95",
-        "regular_price": "59.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "764",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "3.00",
-        "length": "8",
-        "width": "8",
-        "height": "5",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": null,
-          "height": null,
-          "width": null,
-          "size": null
-        },
-        "total_review": "11",
-        "average_score": "5.00",
-        "brand": "tracktech"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 36860,
         "post_name": "5-9l-02-05-dodge-ram-transfer-case-shifter-control-linkage-grommet-bushings",
-        "post_title": "Transfer Case Shifter Control Linkage + Grommet Bushings for 5.9L 2002-2005 Cummins 24V",
+        "post_title": "Transfer Case Shifter Control Linkage + Grommet Bushings for 2002-2005 5.9L Dodge Cummins 24V",
         "yoast_title": "Transfer Case Shifter Control Linkage & Grommet Bushings For Cummins",
         "yoast_description": "Shop Transfer Case Shifter Control Linkage & Grommet Bushings For Cummins Engine on the best prices. Buy Now !!",
         "sku": "Dodge Ram 1500 Transfer Case Control Lever Linkag",
@@ -1206,12 +1362,60 @@
         },
         "total_review": null,
         "average_score": null,
-        "brand": "prosource-diesel"
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 28589,
+        "post_name": "2003-2009-dodge-cummins-59-67-transmission-torque-converter-oil-cooler",
+        "post_title": "TrackTech Transmission Oil Cooler for 2003-2009 5.9L 6.7L Dodge Cummins 24V",
+        "yoast_title": "TrackTech Transmission Oil Cooler For 2003-2009 Dodge Cummins",
+        "yoast_description": "Shop TrackTech Transmission Oil Cooler For 2003-2009 Dodge Cummins 5.9L 6.7L 24V at the Discounted Price. Buy It Now.",
+        "sku": "TT0309OC804",
+        "price": "179.95",
+        "regular_price": "179.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "63",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "6.00",
+        "length": "14",
+        "width": "8",
+        "height": "8",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2016/01/TrackTech-Transmission-Oil-Cooler-for-2003-2009-Dodge-Cummins-5.9L-6.7L-24V-scaled.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28668,
         "post_name": "5-9l-turbo-wastegate-control-solenoid-fits-04-5-07-dodge-cummins",
-        "post_title": "SPOOLOGIC HE351CW Wastegate Solenoid for 2004.5-2007 5.9L Cummins 24V",
+        "post_title": "SPOOLOGIC HE351CW Wastegate Solenoid for 2004.5-2007 5.9L Dodge Cummins 24V",
         "yoast_title": "SPOOLOGIC HE351CW Wastegate Solenoid For Cummins 24V",
         "yoast_description": "Shop SPOOLOGIC HE351CW Wastegate Solenoid for your Cummins engine at attractive prices. Buy now !!",
         "sku": "SL-04507-WGSOL3",
@@ -1238,14 +1442,62 @@
           "width": null,
           "size": null
         },
-        "total_review": "13",
-        "average_score": "4.92",
-        "brand": "spoologic"
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 28959,
+        "post_name": "5-9l-98-5-02-overflow-valve-dodge-cummins-vp44-ref-oe-3941156",
+        "post_title": "TrackTech VP44 Overflow Valve for 1998.5-2002 5.9L Dodge Cummins 24V",
+        "yoast_title": "TrackTech VP44 Overflow Valve For Dodge Cummins 5.9L | Prosource",
+        "yoast_description": "Shop TrackTech VP44 Overflow Valve For 1998.5-2002 Dodge Cummins 5.9L 24V at the discounted price. Buy it now.",
+        "sku": "TTC9802FS549",
+        "price": "39.95",
+        "regular_price": "39.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "yes",
+        "stock": "118",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "0.4",
+        "length": "3",
+        "width": "3",
+        "height": "3",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2017/02/TrackTech-VP44-Overflow-Valve-For-1998.5-2002-Dodge-Cummins-5.9L-24V-scaled.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 35534,
         "post_name": "67-cummins-head-studs",
-        "post_title": "TrackTech Head Studs for 1998.5-2018 Dodge Cummins 5.9L 6.7L 24V",
+        "post_title": "TrackTech Head Studs for 1998.5-2018 5.9L 6.7L Dodge Cummins 24V",
         "yoast_title": "1998.5-2018 Cummins 6.7 & 5.9 24V Head Studs & Stud Kit by TrackTech",
         "yoast_description": "Replace the head studs in your 1998.5-2018 Cummins 6.7 or 5.9 24V diesel engine with this head stud kit from TrackTech. Shop now.",
         "sku": "TT-HS-010",
@@ -1255,7 +1507,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "220",
+        "stock": "287",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -1272,82 +1524,103 @@
           "width": null,
           "size": null
         },
-        "total_review": "15",
-        "average_score": "5.00",
-        "brand": "tracktech"
-      },
-      {
-        "ID": 28959,
-        "post_name": "5-9l-98-5-02-overflow-valve-dodge-cummins-vp44-ref-oe-3941156",
-        "post_title": "TrackTech VP44 Overflow Valve for 1998.5-2002 Dodge Cummins 5.9L 24V",
-        "yoast_title": "TrackTech VP44 Overflow Valve For Dodge Cummins 5.9L | Prosource",
-        "yoast_description": "Shop TrackTech VP44 Overflow Valve For 1998.5-2002 Dodge Cummins 5.9L 24V at the discounted price. Buy it now.",
-        "sku": "TTC9802FS549",
-        "price": "39.95",
-        "regular_price": "39.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "yes",
-        "stock": "57",
-        "stock_status": "instock",
-        "children": null,
-        "core_price": "",
-        "weight": "0.4",
-        "length": "3",
-        "width": "3",
-        "height": "3",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": null,
-          "height": null,
-          "width": null,
-          "size": null
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "7",
-        "average_score": "5.00",
-        "brand": "tracktech"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 28589,
-        "post_name": "2003-2009-dodge-cummins-59-67-transmission-torque-converter-oil-cooler",
-        "post_title": "TrackTech Transmission Oil Cooler for 2003-2009 Dodge Cummins 5.9L 6.7L 24V",
-        "yoast_title": "TrackTech Transmission Oil Cooler For 2003-2009 Dodge Cummins",
-        "yoast_description": "Shop TrackTech Transmission Oil Cooler For 2003-2009 Dodge Cummins 5.9L 6.7L 24V at the Discounted Price. Buy It Now.",
-        "sku": "TT0309OC804",
-        "price": "179.95",
-        "regular_price": "179.95",
+        "ID": 157115,
+        "post_name": "pro-line-turbocharger-additive-20g-liqui-moly-lm22074",
+        "post_title": "Pro-Line Turbocharger Additive (20g) - Liqui Moly LM22074",
+        "yoast_title": "Liqui Moly Pro-Line Turbo Oil Additive for Turbocharger Engines",
+        "yoast_description": "Liqui Moly Pro-Line turbo oil additive will provide needed protection and allow proper break-in of new turbochargers. Shop now.",
+        "sku": "LM22074",
+        "price": "13.95",
+        "regular_price": "13.95",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "0",
-        "stock_status": "outofstock",
+        "stock": "18",
+        "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "6.00",
-        "length": "14",
-        "width": "8",
-        "height": "8",
+        "weight": "1",
+        "length": "2",
+        "width": "2",
+        "height": "2",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": null,
+          "name": "2021/03/Pro-Line-Turbocharger-Additive-20g-–-Liqui-Moly-LM22074-scaled.jpg",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "11",
-        "average_score": "4.91",
-        "brand": "tracktech"
+        "total_review": null,
+        "average_score": null,
+        "brand": "liqui-moly",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 29802,
+        "post_name": "5-9l-6-7l-valve-rocker-arm-assembly",
+        "post_title": "TrackTech Rocker Arm Assembly for 1998.5-2018 5.9L 6.7L Dodge Cummins 24V",
+        "yoast_title": "Rocker Arm Assembly Valve for 98.5-18 5.9L 6.7L Cummins - Prosource",
+        "yoast_description": "This Cummins rocker arm assembly is for the 6.7 and 5.9 liter diesel engine in the 1998 to 2018 Dodge Ram 2500, 3500 4500 and 5500. Shop now.",
+        "sku": "5.9L 6.7L Rocker Arm Assembly",
+        "price": "59.95",
+        "regular_price": "59.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "879",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "3.00",
+        "length": "8",
+        "width": "8",
+        "height": "5",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2017/12/Valve-Rocker-Arm-Assembly-for-98.5-18-5.9L-6.7L-Cummins-24V-scaled.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "tracktech",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28936,
         "post_name": "5-9l-6-7l-4429639-fan-pulley-hub-bearing",
-        "post_title": "Fan Pulley Hub Bearing for 1989-2012 5.9L 6.7L Cummins 12V 24V",
+        "post_title": "Fan Pulley Hub Bearing for 1989-2012 5.9L 6.7L Dodge Cummins 12V 24V",
         "yoast_title": "Dodge Cummins 6.7 & 5.9 Fan Pulley Hub Bearing Replacement - 4429639",
         "yoast_description": "This fan pulley hub bearing replacement fits the 1989-2012 5.9L or 6.7L Dodge Cummins 12V or 24V diesel engine. OE part number 4429639. Shop now.",
         "sku": "PSD-4429639",
@@ -1357,7 +1630,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "75",
+        "stock": "148",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -1374,82 +1647,62 @@
           "width": null,
           "size": null
         },
-        "total_review": "15",
-        "average_score": "4.93",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 28762,
-        "post_name": "6-7l-4306993-68210175aa-fuel-rail-pressure-sensor",
-        "post_title": "Fuel Rail Pressure Sensor for 2013-2018 Dodge Ram 6.7L Cummins 24V",
-        "yoast_title": "Fuel Rail Pressure Sensor For 13-16 Dodge Ram 24V Cummins",
-        "yoast_description": "Shop Fuel Rail Pressure Sensor For 13-16 Dodge Ram 24V Cummins on the best prices. Buy now !!",
-        "sku": "4306993",
-        "price": "99.95",
-        "regular_price": "99.95",
+        "ID": 28451,
+        "post_name": "5-9l-3931570-fuel-shut-off-solenoid",
+        "post_title": "Fuel Shut Off Solenoid For 5.9L 1994-1998 Dodge Cummins 12V",
+        "yoast_title": "ProSource Diesel Fuel Shut Off Solenoid | Prosource Diesel",
+        "yoast_description": "Shop Fuel Shut Off Solenoid For Cummins engine on the best prices. Quantity Based Discounts Available. Buy it now !!",
+        "sku": "PSD-3931570",
+        "price": "69.95",
+        "regular_price": "69.95",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "131",
-        "stock_status": "instock",
+        "backorders": "yes",
+        "stock": "0",
+        "stock_status": "onbackorder",
         "children": null,
         "core_price": "",
         "weight": "2",
-        "length": "6",
-        "width": "4",
-        "height": "2",
+        "length": "3",
+        "width": "3",
+        "height": "3",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "imported/9/09/FUEL-RAIL-PRESSURE-SENSOR-FOR-DODGE-CUMMINS-67L-2013-2016-4306993-68210175AA-301980822709.JPG",
+          "name": "imported/3/43/59L-94-98-Dodge-Diesel-Cummins-Fuel-Shut-Off-Solenoid-3931570-301725829443.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "9",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
-      },
-      {
-        "ID": 31020,
-        "post_name": "5-9l-04-5-07-dodge-ram-he351cw-turbo-with-billet-wheel-red",
-        "post_title": "SPOOLOGIC HE351CW Stage 1 Turbocharger for 2004.5-2007 Dodge Ram 5.9L Cummins 24v - Red",
-        "yoast_title": "HE351CW 5.9 Cummins Turbo Upgrade for 2004.5 to 2007 24V",
-        "yoast_description": "Upgrade the stock Holset HE351CW turbo in your Cummins 5.9 with the Spoologic high-performance turbocharger. Fits 2004.5 to 2007 24V Dodge Ram diesel trucks.",
-        "sku": "SL-HE351-DTR13",
-        "price": "899.95",
-        "regular_price": "899.95",
-        "sale_price": null,
-        "product_type": "simple",
-        "manage_stock": "yes",
-        "backorders": "no",
-        "stock": "0",
-        "stock_status": "outofstock",
-        "children": null,
-        "core_price": "",
-        "weight": "50",
-        "length": "24",
-        "width": "12",
-        "height": "12",
-        "weight_unit": "lbs",
-        "dimension_unit": "in",
-        "tax_status": "taxable",
-        "image": {
-          "name": "imported/7/07/59L-045-07-Dodge-Ram-HE351CW-Turbo-With-Billet-Wheel-Red-283228862507.JPG",
-          "height": null,
-          "width": null,
-          "size": null
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
         },
-        "total_review": "32",
-        "average_score": "4.81",
-        "brand": "spoologic"
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
         "ID": 28232,
         "post_name": "fuel-shut-off-relay",
-        "post_title": "Fuel Shut Off Relay For 1994-1998 5.9L 12V Dodge Ram Cummins Diesel",
+        "post_title": "Fuel Shut Off Relay For 1994-1998 5.9L Dodge Cummins 12V",
         "yoast_title": "Fuel Shut Off Relay For Cummins | Prosource Diesel",
         "yoast_description": "Shop Fuel Shut Off Relay For 94-98 5.9L 12V Dodge Ram Cummins Diesel on the best price. Buy it Now !!",
         "sku": "5.9L SHUT OFF RELAY",
@@ -1459,7 +1712,7 @@
         "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "15",
+        "stock": "47",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
@@ -1476,77 +1729,139 @@
           "width": null,
           "size": null
         },
-        "total_review": "3",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 28451,
-        "post_name": "5-9l-3931570-fuel-shut-off-solenoid",
-        "post_title": "Fuel Shut Off Solenoid For 5.9L 1994-1998 Cummins 12V",
-        "yoast_title": "ProSource Diesel Fuel Shut Off Solenoid | Prosource Diesel",
-        "yoast_description": "Shop Fuel Shut Off Solenoid For Cummins engine on the best prices. Quantity Based Discounts Available. Buy it now !!",
-        "sku": "3931570",
-        "price": "81.95",
-        "regular_price": "81.95",
+        "ID": 31020,
+        "post_name": "5-9l-04-5-07-dodge-ram-he351cw-turbo-with-billet-wheel-red",
+        "post_title": "SPOOLOGIC HE351CW Stage 1 Turbocharger Red for 2004.5-2007 5.9L Dodge Cummins 5.9L 24v",
+        "yoast_title": "HE351CW 5.9 Cummins Turbo Upgrade for 2004.5 to 2007 24V",
+        "yoast_description": "Upgrade the stock Holset HE351CW turbo in your Cummins 5.9 with the Spoologic high-performance turbocharger. Fits 2004.5 to 2007 24V Dodge Ram diesel trucks.",
+        "sku": "SL-HE351-DTR13",
+        "price": "1079.95",
+        "regular_price": "1079.95",
         "sale_price": null,
         "product_type": "simple",
         "manage_stock": "yes",
-        "backorders": "yes",
-        "stock": "16",
+        "backorders": "no",
+        "stock": "56",
         "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "50",
+        "length": "24",
+        "width": "12",
+        "height": "12",
+        "weight_unit": "lbs",
+        "dimension_unit": "in",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/7/07/59L-045-07-Dodge-Ram-HE351CW-Turbo-With-Billet-Wheel-Red-283228862507.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      },
+      {
+        "ID": 28762,
+        "post_name": "6-7l-4306993-68210175aa-fuel-rail-pressure-sensor",
+        "post_title": "Fuel Rail Pressure Sensor for 2013-2018 6.7L Dodge Cummins 24V",
+        "yoast_title": "Fuel Rail Pressure Sensor For 13-16 Dodge Ram 24V Cummins",
+        "yoast_description": "Shop Fuel Rail Pressure Sensor For 13-16 Dodge Ram 24V Cummins on the best prices. Buy now !!",
+        "sku": "PSD-4306993",
+        "price": "119.95",
+        "regular_price": "119.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "0",
+        "stock_status": "outofstock",
         "children": null,
         "core_price": "",
         "weight": "2",
-        "length": "3",
-        "width": "3",
-        "height": "3",
+        "length": "6",
+        "width": "4",
+        "height": "2",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "imported/3/43/59L-94-98-Dodge-Diesel-Cummins-Fuel-Shut-Off-Solenoid-3931570-301725829443.JPG",
+          "name": "imported/9/09/FUEL-RAIL-PRESSURE-SENSOR-FOR-DODGE-CUMMINS-67L-2013-2016-4306993-68210175AA-301980822709.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "2",
-        "average_score": "5.00",
-        "brand": "prosource-diesel"
+        "total_review": null,
+        "average_score": null,
+        "brand": "prosource-diesel",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       },
       {
-        "ID": 173260,
-        "post_name": "spoologic-high-flow-exhaust-manifold-for-2008-2018-6-7l-cummins-24v",
-        "post_title": "SPOOLOGIC High Flow Exhaust Manifold for 2007.5-2018 6.7L Cummins 24V",
-        "yoast_title": "SPOOLOGIC High Flow Exhaust Manifold For Cummins 24V | Prosource",
-        "yoast_description": "Shop SPOOLOGIC High Flow Exhaust Manifold For 2008-2018 6.7L Cummins 24V at the best price. Quantity Based Discounts Available. Buy now.",
-        "sku": "SPOOLOGIC High Flow Exhaust Manifold for 2008-2018 6.7L Cummins 24V",
-        "price": "459.95,559.95,659.95",
-        "regular_price": null,
+        "ID": 29505,
+        "post_name": "6-7l-turbo-oil-drain-line-for-dodge-cummins-fits-07-5-18-dodge-cummins",
+        "post_title": "SPOOLOGIC Turbo Oil Drain Line for 2007.5-2018 6.7L Dodge Cummins 24V",
+        "yoast_title": "SPOOLOGIC Turbo Oil Drain Line For Cummins 24V - Prosource",
+        "yoast_description": "Shop SPOOLOGIC Turbo Oil Drain Line For Cummins Engine on the discounted price. Quantity Based Discounts Available. Buy now !!",
+        "sku": "SL-0718-DTDL5",
+        "price": "59.95",
+        "regular_price": "59.95",
         "sale_price": null,
-        "product_type": "variable",
+        "product_type": "simple",
         "manage_stock": "yes",
         "backorders": "no",
-        "stock": "194",
+        "stock": "161",
         "stock_status": "instock",
         "children": null,
         "core_price": "",
-        "weight": "35",
-        "length": "28",
-        "width": "8",
-        "height": "8",
+        "weight": "1.00",
+        "length": "6",
+        "width": "6",
+        "height": "6",
         "weight_unit": "lbs",
         "dimension_unit": "in",
         "tax_status": "taxable",
         "image": {
-          "name": "2021/08/ck-ss.jpeg",
+          "name": "imported/5/95/67L-Turbo-Oil-Drain-Line-for-Dodge-Cummins-Fits-075-18-Dodge-Cummins-272870169495.JPG",
           "height": null,
           "width": null,
           "size": null
         },
-        "total_review": "13",
-        "average_score": "4.69",
-        "brand": "spoologic"
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
       }
     ]
   }

@@ -134,9 +134,9 @@ namespace LaylaERP.BAL
         {
              
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=true"));
+            var request = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false"));
 
-            if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
+            if (!string.IsNullOrEmpty(session_id) || session_id.Trim() != "0")
             {
             }
             else
@@ -166,6 +166,44 @@ namespace LaylaERP.BAL
             { throw ex; }
             return _list;
         }
+
+        public static List<PurchaseOrderProductsModel> addproductitem(CartResponse obj, long product_id, long vendor_id, string session_id)
+        {
+
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}://{1}{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Authority, "/cartapi/items/88B4A278-4A14-4A8E-A8C6-6A6463C46C65/1?checkout=false"));
+
+            if (string.IsNullOrEmpty(session_id) || session_id.Trim() == "0")
+            {
+            }
+            else
+                request.Headers.Add("X-Cart-Session-Id", session_id);
+            List<Ordershipping> shippingData = getdetail(obj, 1, 1);
+            // Serialize the list to JSON
+            string json = JsonConvert.SerializeObject(shippingData);
+            // Serialize the dynamicData array to a JSON string
+            var content = new StringContent(json, null, "application/json");
+            request.Content = content;
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
+            List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();  // Check if the request was successful (status code 200 OK)
+            try
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    // Handle a successful response here
+                    string responseContent = response.Content.ReadAsStringAsync().Result;
+                    PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                    dynamic jsonResponse = JsonConvert.DeserializeObject(responseContent);
+                    productsModel.product_sku = jsonResponse.data.session_id;
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
 
         public static List<PurchaseOrderProductsModel> getshipping(CartResponse obj, long product_id, long vendor_id, string session_id)
         {
@@ -552,7 +590,8 @@ namespace LaylaERP.BAL
                 // Create a StringContent with the JSON data
                 var contenttax = new StringContent(shippingJson, Encoding.UTF8, "application/json");
                 request.Content = contenttax;
-                HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            HttpResponseMessage response = client.SendAsync(request).Result; // Block and wait 
                                                                                  // Check if the request was successful (status code 200 OK)
                 try
                 {

@@ -915,6 +915,7 @@
     <Content Include="Images\linkbutton_bg.png" />
     <Content Include="Images\loading.gif" />
     <Content Include="Images\logo-mail-1.png" />
+    <Content Include="Images\logo.png" />
     <Content Include="Images\menu_arrows.png" />
     <Content Include="Images\messager_icons.png" />
     <Content Include="Images\order.png" />
@@ -1538,6 +1539,7 @@
     <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Scripts\wow.js" />
     <Content Include="Templates\Banner.html" />
+    <Content Include="Templates\contactus.html" />
     <Content Include="Templates\Prosource.html" />
     <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />

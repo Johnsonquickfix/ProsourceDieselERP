@@ -19,7 +19,7 @@
 
         // prosourcediesel ship from
         static string _from_country = "US", _from_zip = "94534", _from_state = "CA", _from_city = "Fairfield", _from_street = "4747 Central Way";
-        static string _taxjarapi = "e17a3e14098183513a2d8204d7e4c368";
+        static string _taxjarapi = "a3df6a203fdc15d18906fcd10308a208";
         public static decimal GetTaxCombinedRate(string varpostcode, string varcity, string varcountry)
         {
             //var client = new TaxjarApi("7e8b90a535209d00f4a6f78b43f4119f");

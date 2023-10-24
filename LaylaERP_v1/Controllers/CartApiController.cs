@@ -363,7 +363,7 @@
                         //CartDataResponse.ShippingMethods _shipping = obj.data.shipping_methods.Where(s => s.isactive == true).FirstOrDefault();
                         //if (_shipping == null) _shipping = obj.data.shipping_methods.OrderBy(s => s.amount).FirstOrDefault();
                         //if (_shipping != null) shipping_total = _shipping.amount;
-                        shipping_total = obj.data.shipping_rate.amount;
+                        shipping_total = obj.data.shipping_rate != null ? obj.data.shipping_rate.amount : 0;
                         shipping_tax = Math.Round((shipping_total * _tax.rate / 100), 2);
                     }
                 }
@@ -680,7 +680,7 @@
                 _properties.Add("Categories", new List<string>());
                 _properties.Add("ItemCount", order.data.item_count);
                 _properties.Add("Tags", new List<string>());
-                _properties.Add("extra", new { items= _items, subTotal=order.data.cart_totals.subtotal, shippingTotal= order.data.cart_totals.shipping_total, taxTotal= order.data.cart_totals.total_tax, grandTotal= order.data.cart_totals.total, cartRebuildKey= order.data.session_id });
+                _properties.Add("extra", new { items = _items, subTotal = order.data.cart_totals.subtotal, shippingTotal = order.data.cart_totals.shipping_total, taxTotal = order.data.cart_totals.total_tax, grandTotal = order.data.cart_totals.total, cartRebuildKey = order.data.session_id });
             }
             var _attributes = new { properties = _properties, metric = _metric, profile = _profile };
             klaviyoData.data.attributes.Add("properties", _properties);

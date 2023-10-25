@@ -80,6 +80,35 @@
             }
         }
 
+        [HttpGet, Route("updateuser")]
+        public IHttpActionResult UpdateUser(long user_id = 0, string first_name = "", string last_name = "", string display_name = "", string user_email = "", string new_password = "")
+        {
+            try
+            {
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string utoken = string.Empty;
+                if (headers.Contains("X-Utoken")) utoken = headers.GetValues("X-Utoken").First();
+                if (string.IsNullOrEmpty(utoken) && user_id <= 0) return Ok(new { message = "Required query param 'user_id'", status = 403, code = "Forbidden", data = new { } });
+
+                //if (!string.IsNullOrEmpty(model.user_new_pass) && !string.IsNullOrEmpty(model.user_conf_pass))
+                //{
+                //    if (model.user_new_pass != model.user_conf_pass)
+                //    {
+                //        result.success = false; result.error_msg = "Error! confirm password field should be match with the password field.";
+                //        return Ok(result);
+                //    }
+                //}
+                string msg = string.Empty;
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UpdateUser(utoken, user_id, first_name, last_name, display_name, user_email, new_password));
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { message = ex.Message, status = 500, code = "Internal Server Error", data = new { } });
+            }
+        }
+
         [HttpGet, Route("getaddress")]
         public IHttpActionResult GetUserAddress(long user_id = 0)
         {
@@ -243,40 +272,42 @@
             }
         }
 
+        [HttpGet, Route("updateaddress")]
+        public IHttpActionResult UpdateUserAddress(string flag = "shipping", string first_name = "", string last_name = "", string company = "", string address_1 = "", string address_2 = "", string phone = "", string email = "", string city = "", string state = "", string country = "", string postcode = "")
+        {
+            try
+            {
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string utoken = string.Empty;
+                if (headers.Contains("X-Utoken")) utoken = headers.GetValues("X-Utoken").First();
+                if (string.IsNullOrEmpty(utoken)) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new { } });
 
-        //[HttpGet]
-        //[Route("editaccountdetails")]
-        //public IHttpActionResult UserdetailsUpdate(LoginModel model)
-        //{
-        //    ResultModel result = new ResultModel();
-        //    if (model.id == 0)
-        //    {
-        //        result.success = false; result.error_msg = "Please provide valid details.";
-        //        return Ok(result);
-        //    }
-        //    if (!string.IsNullOrEmpty(model.user_new_pass) && !string.IsNullOrEmpty(model.user_conf_pass))
-        //    {
-        //        if (model.user_new_pass != model.user_conf_pass)
-        //        {
-        //            result.success = false; result.error_msg = "Error! confirm password field should be match with the password field.";
-        //            return Ok(result);
-        //        }
-        //    }
-        //    try
-        //    {
-        //        string msg = string.Empty;
-        //        var balResult = UsersRepositry.UserUpdate(model);
-        //        if (balResult == null)
-        //        {
-        //            return BadRequest();
-        //        }
-        //        return Ok(balResult);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+                //if (model.user_id == 0) result.error_msg = "Please provide user id."; return Ok(result);
+                if (string.IsNullOrEmpty(first_name)) return Ok(new { message = "Required query param 'first_name'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(last_name)) return Ok(new { message = "Required query param 'last_name'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(company)) return Ok(new { message = "Required query param 'company'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(address_1)) return Ok(new { message = "Required query param 'address_1'", status = 403, code = "Forbidden", data = new { } });
+                //else if (string.IsNullOrEmpty(address_2)) return Ok(new { message = "Required query param 'address_2'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(phone)) return Ok(new { message = "Required query param 'phone'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(email)) return Ok(new { message = "Required query param 'email'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(state)) return Ok(new { message = "Required query param 'state'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(city)) return Ok(new { message = "Required query param 'city'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(country)) return Ok(new { message = "Required query param 'country'", status = 403, code = "Forbidden", data = new { } });
+                else if (string.IsNullOrEmpty(postcode)) return Ok(new { message = "Required query param 'postcode'", status = 403, code = "Forbidden", data = new { } });
+                if (flag.ToLower().Equals("shipping")) flag = "USADU";
+                else if (flag.ToLower().Equals("billing")) flag = "UBADU";
+                else return Ok(new { message = "Invalid param 'flag'", status = 403, code = "Forbidden", data = new { } });
+
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UpdateUserAddress(flag, utoken, first_name, last_name, company, address_1, address_2, phone, email, city, state, country, postcode));
+                if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
 
         //[HttpGet]
         //[Route("createuser")]

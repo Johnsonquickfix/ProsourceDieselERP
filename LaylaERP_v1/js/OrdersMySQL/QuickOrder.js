@@ -2948,7 +2948,7 @@ function gettotaldetails() {
 
                 // Get the ShippingMethods array from the product
                 var shippingMethods = product.ShippingMethods;
-
+               
                 if (shippingMethods && Array.isArray(shippingMethods)) {
                     dropdown.empty();
                     // Loop through the shipping methods and create options for the dropdown
@@ -2973,6 +2973,13 @@ function gettotaldetails() {
 
                     // Optionally, you can select the first option by default
                     dropdown.val(shippingMethods[0].method_id);
+                }
+                else {
+                    // Handle the case where shippingMethods is undefined or not an array
+                    console.error('Shipping methods are not available.');
+                    // You can provide a default behavior, for example:
+                    dropdown.empty(); // Clear the dropdown
+                    dropdown.append('<option value="default">No shipping methods available</option>');
                 }
 
             }

@@ -220,6 +220,28 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
+        public static string UpdateUser(string utoken = "", long user_id = 0, string first_name = "", string last_name = "", string display_name = "", string user_email = "", string user_pass = "")
+        {
+            string result;
+            try
+            {
+                user_pass = CryptSharp.Crypter.Phpass.Crypt(user_pass);
+                SqlParameter[] parameters = {
+                        new SqlParameter("@flag", "URADD"),
+                        new SqlParameter("@utoken", utoken),
+                        new SqlParameter("@id", user_id),
+                        new SqlParameter("@user_pass", user_pass),
+                        new SqlParameter("@user_email", user_email),
+                        new SqlParameter("@user_nicename", display_name),
+                        new SqlParameter("@display_name", display_name),
+                        new SqlParameter("@first_name", first_name),
+                        new SqlParameter("@last_name", last_name),
+                    };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_auth", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
         public static string UserEmailVarify(string flag, string user_email, string verify_code, string user_pass = "")
         {
             string result;
@@ -267,6 +289,34 @@ namespace LaylaERP_v1.BAL
                     new SqlParameter("@order_id", order_id)
                 };
                 result = SQLHelper.ExecuteReaderReturnJSON("api_user_details", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
+        public static string UpdateUserAddress(string flag, string utoken, string first_name = "", string last_name = "", string company = "", string address_1 = "", string address_2 = "", string phone = "", string email = "", string city = "", string state = "", string country = "", string postcode = "")
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", flag),
+                    //new SqlParameter("@flag", "UBADU"),
+                    //new SqlParameter("@id", model.user_id),
+                    new SqlParameter("@utoken", utoken),
+                    new SqlParameter("@first_name", first_name),
+                    new SqlParameter("@last_name", last_name),
+                    new SqlParameter("@company", company),
+                    new SqlParameter("@address_1", address_1),
+                    new SqlParameter("@address_2", address_2),
+                    new SqlParameter("@phone", phone),
+                    new SqlParameter("@email", email),
+                    new SqlParameter("@city", city),
+                    new SqlParameter("@state", state),
+                    new SqlParameter("@country", country),
+                    new SqlParameter("@postcode", postcode)
+                };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_address", parameters).ToString();
             }
             catch { throw; }
             return result;

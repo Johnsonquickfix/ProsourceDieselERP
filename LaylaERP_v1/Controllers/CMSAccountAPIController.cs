@@ -298,7 +298,7 @@
                 else if (flag.ToLower().Equals("billing")) flag = "UBADU";
                 else return Ok(new { message = "Invalid param 'flag'", status = 403, code = "Forbidden", data = new { } });
 
-                var balResult = CartRepository.UpdateUserAddress(flag,utoken, first_name, last_name, company, address_1, address_2, phone, email, city, state, country, postcode);
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.UpdateUserAddress(flag, utoken, first_name, last_name, company, address_1, address_2, phone, email, city, state, country, postcode));
                 if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
                 return Ok(balResult);
             }

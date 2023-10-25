@@ -225,12 +225,12 @@ namespace LaylaERP_v1.BAL
             string result;
             try
             {
-                user_pass = CryptSharp.Crypter.Phpass.Crypt(user_pass);
+                user_pass = !string.IsNullOrEmpty(user_pass) ? CryptSharp.Crypter.Phpass.Crypt(user_pass) : "";
                 SqlParameter[] parameters = {
-                        new SqlParameter("@flag", "URADD"),
+                        new SqlParameter("@flag", "user-update"),
                         new SqlParameter("@utoken", utoken),
                         new SqlParameter("@id", user_id),
-                        new SqlParameter("@user_pass", user_pass),
+                        !string.IsNullOrEmpty(user_pass) ? new SqlParameter("@user_pass", user_pass):new SqlParameter("@user_pass", DBNull.Value),
                         new SqlParameter("@user_email", user_email),
                         new SqlParameter("@user_nicename", display_name),
                         new SqlParameter("@display_name", display_name),

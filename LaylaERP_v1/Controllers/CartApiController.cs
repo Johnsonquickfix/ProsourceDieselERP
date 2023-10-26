@@ -734,10 +734,13 @@
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax_data','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", "", order_id, "line_item", _item.name));
                     }
                     /// step 4 : wp_woocommerce_order_items [coupon]
-                    foreach (CartDataResponse.Coupon _item in obj.data.coupons)
+                    if (obj.data.coupons != null)
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", _item.coupon_title, "coupon", order_id));
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", _item.discount_amount, order_id, "coupon", _item.coupon_title));
+                        foreach (CartDataResponse.Coupon _item in obj.data.coupons)
+                        {
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", _item.coupon_title, "coupon", order_id));
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", _item.discount_amount, order_id, "coupon", _item.coupon_title));
+                        }
                     }
                     /// step 5 : wp_woocommerce_order_items [fee]
                     if (obj.data.cart_totals.fee_total != 0)

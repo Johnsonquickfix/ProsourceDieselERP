@@ -736,6 +736,7 @@
                     /// step 4 : wp_woocommerce_order_items [coupon]
                     foreach (CartDataResponse.Coupon _item in obj.data.coupons)
                     {
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", _item.coupon_title, "coupon", order_id));
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", _item.discount_amount, order_id, "coupon", _item.coupon_title));
                     }
                     /// step 5 : wp_woocommerce_order_items [fee]
@@ -748,6 +749,7 @@
                     /// step 6 : wp_woocommerce_order_items [shipping]
                     if (obj.data.shipping_rate!=null)
                     {
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.data.shipping_rate.method_id, "shipping", order_id));
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'cost',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.data.shipping_rate.amount, order_id, "shipping"));
                     }
                     /// step 7 : wp_woocommerce_order_items [tax]
@@ -777,13 +779,16 @@
                     strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) select id,'_used_by',{0} from wp_posts wp inner join wp_woocommerce_order_items oi on lower(oi.order_item_name) = lower(wp.post_title) and oi.order_item_type = 'coupon' and oi.order_id = {1} where post_type = 'shop_coupon'; ", customer_id, order_id));
 
                     /// step 10 : wp_posts
-                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {4}; ", order_status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_id));
+                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", order_status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_id));
 
                     result = LaylaERP.DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
                 //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });
             }
-            catch { }
+            catch (Exception ex)
+            {
+
+            }
             return result;
         }
         #endregion

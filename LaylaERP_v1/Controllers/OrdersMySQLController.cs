@@ -112,7 +112,7 @@
             }
             catch { status = false; }
             return Json(new { status }, 0);
-        }
+        } 
 
         [HttpPost]
         public JsonResult SaveCustomerOrderRefund(OrderModel model)
@@ -537,7 +537,8 @@
                 //model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
                 //model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
 
-                int result = SaveOrder(model);
+                //int result = SaveOrder(model);
+                int result = LaylaERP_v1.Controllers.CartApiController.UpdateOrder(1, model.s_address_2, model.order_id, model.OrderPostStatus.customer_id, model.OrderPostStatus.status, model.OrderPostMeta);
                 if (result > 0)
                 { status = true; JSONresult = "Order placed successfully."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);
@@ -1174,5 +1175,7 @@
 
             return Json(new { status = status, message = result }, 0);
         }
+
+         
     }
 }

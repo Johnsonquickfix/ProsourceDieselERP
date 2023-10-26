@@ -987,10 +987,11 @@ function getOrderItemList(oid) {
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
                 zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
                 zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
-                zTDiscount = zTDiscount + row.discount;
+                
             }
             else if (row.product_type == 'coupon') {
                 let cou_amt = parseFloat(row.discount) || 0.00;
+                //console.log(cou_amt);
                 let coupon_list = auto_coupon.filter(element => element.post_title == row.product_name);
                 for (var j = 0; j < coupon_list.length; j++) {
                     couponHtml += '<li id="li_' + coupon_list[j].post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title.toString().toLowerCase() + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
@@ -1010,6 +1011,9 @@ function getOrderItemList(oid) {
                     couponHtml += '</div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
+
+                    zTDiscount = zTDiscount + cou_amt;
+                    
                 }
                 if (coupon_list.length == 0) {
                     let cpn_info = JSON.parse(row.meta_data);
@@ -1020,8 +1024,9 @@ function getOrderItemList(oid) {
                     couponHtml += '<div class="pull-right">$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + row.product_name.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete coupon"><i class="fa fa-times"></i></button></div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
+                    zTDiscount = zTDiscount + cou_amt;
                 }
-                //zTDiscount = zTDiscount + cou_amt;
+              
             }
             else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
                 recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
@@ -2716,7 +2721,7 @@ function calculateStateRecyclingFee() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta (Save/Update) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function createPostMeta() {
-    let oid = $('#hfOrderNo').val(), _total = parseFloat($('#orderTotal').text()) || 0.00, _gift = parseFloat($('#giftCardTotal').text()) || 0.00;
+    let oid = $('#hfOrderNo').val(), _total = $('#netPaymentTotal').text().replace('$', ''), _gift = parseFloat($('#giftCardTotal').text()) || 0.00;
     let postMetaxml = [];
     postMetaxml.push(
         { post_id: oid, meta_key: '_customer_user', meta_value: parseInt($('#ddlUser').val()) || 0 },
@@ -2731,9 +2736,9 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_city', meta_value: $('#txtshipcity').val() }, { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() },
         { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() }, { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() },
         { post_id: oid, meta_key: '_shipping_email', meta_value: '' }, { post_id: oid, meta_key: '_shipping_phone', meta_value: '' },
-        { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: $('#discountTotal').text().replace('$', '') },
+        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: $('#shippingTotal').text().replace('$', '')  },
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: $('#salesTaxTotal').text().replace('$', '') },
         { post_id: oid, meta_key: '_gift_amount', meta_value: _gift, post_id: oid, meta_key: 'total_gcamt', meta_value: _gift }
     );
     if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
@@ -3410,7 +3415,7 @@ function updateCO() {
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     //if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
-    let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
+    let obj = { order_id: oid, OrderPostMeta: postMeta, s_address_2: $("#hfsession_id").val(), OrderPostStatus: postStatus};
      console.log(obj);
     swal.queue([{
         title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
@@ -3419,9 +3424,12 @@ function updateCO() {
             return new Promise(function (resolve) {
                 $.post('/OrdersMySQL/SaveCustomerOrder', obj).done(function (result) {
                     if (result.status) {
-                        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                        swal('Success', 'Order updated successfully.', "success");
-                        $.when(UpdateOrders()).done(function () { getOrderInfo(); $('[data-toggle="tooltip"]').tooltip(); });
+                        //$('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+                        //swal('Success', 'Order updated successfully.', "success");
+                        $.when(UpdateOrders()).done(function () {
+                            //getOrderInfo(); $('[data-toggle="tooltip"]').tooltip();
+                            swal('Success', 'Order updated successfully.').then((result) => { location.href = '../../OrdersMySQL/OrdersHistory'; });
+                        });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

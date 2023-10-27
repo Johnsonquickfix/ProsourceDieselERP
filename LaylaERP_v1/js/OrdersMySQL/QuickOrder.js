@@ -111,7 +111,13 @@
         gettotaldetailsedit();
 
     });
-    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getOrderInfo(); isEdit(false); });
+    $(document).on("click", ".btnOrderUndo", function (t) {
+        t.preventDefault(); $("#loader").show();
+        var oid = parseInt($('#hfOrderNo').val()) || 0;
+        window.location.href = "../../Orders/quickorder/" + oid +"";
+        //getOrderInfo(); i
+        sEdit(false);
+    });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory'); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -3428,7 +3434,18 @@ function updateCO() {
                         //swal('Success', 'Order updated successfully.', "success");
                         $.when(UpdateOrders()).done(function () {
                             //getOrderInfo(); $('[data-toggle="tooltip"]').tooltip();
-                            swal('Success', 'Order updated successfully.').then((result) => { location.href = '../../OrdersMySQL/OrdersHistory'; });
+                            swal('Success', 'Order updated successfully.').then((result) => {
+                                let status = $('#ddlStatus').val();
+                                console.log(status);
+                                if (status == 'wc-pending') {
+                                    PaymentModal();
+                                }
+                                else {
+                                    location.href = '../../OrdersMySQL/OrdersHistory';
+                                }
+                                
+                                //location.href = '../../OrdersMySQL/OrdersHistory';  ddlStatus wc-pending
+                            });
                         });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

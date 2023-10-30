@@ -311,20 +311,20 @@ function dataGridLoad(order_type) {
                 }
             },
             
-            //{
-            //    data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
-            //        let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
-            //        //if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-            //        if (row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') {
-            //            if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-            //            else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-            //            //else if (row.payment_method == 'podium' ) return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-            //            //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-            //            else return pm_title;
-            //        }
-            //        else return pm_title;
-            //    }
-            //},
+            {
+                data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (id, type, row) {
+                    let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
+                    //if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
+                    if (row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') {
+                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+                        //else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+                        //else if (row.payment_method == 'podium' ) return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+                        //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
+                        else return pm_title;
+                    }
+                    else return pm_title;
+                }
+            },
             { data: 'Suborder', title: 'Suborder', sWidth: "10%" },
             { data: 'Exported', title: 'Exported', sWidth: "10%" },
             {

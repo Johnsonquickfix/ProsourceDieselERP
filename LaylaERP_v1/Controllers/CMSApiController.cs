@@ -1820,6 +1820,7 @@
         {
             try
             {
+                //VehicleFitment();
                 if (entity_id == 1) menu_term_id = 61873;
                 if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
                 else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
@@ -2380,5 +2381,20 @@
             }
         }
 
+        public static void VehicleFitment()
+        {
+            try
+            {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                DataTable dt = LaylaERP.DAL.MYSQLHelper.ExecuteDataTable("SELECT p.id FROM wp_posts p WHERE id IN (98861) and p.post_type = 'product'");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    List<dynamic> _attributes = new List<dynamic>();
+                    System.Collections.Hashtable _att = serializer.Deserialize(dr["meta_value"].ToString()) as System.Collections.Hashtable;
+
+                }
+            }
+            catch (Exception ex) { }
+        }
     }
 }

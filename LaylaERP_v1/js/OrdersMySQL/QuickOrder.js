@@ -975,10 +975,10 @@ function getOrderItemList(oid) {
                     itemHtml += '</div></td>';
                     itemHtml += '<td class="text-left">' + row.product_sku + '</td>';
                     //itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    itemHtml += '<td class="text-right product-price" data-price="' + row.reg_price + '">' + row.reg_price + '</td>';
+                    itemHtml += '<td class="text-right product-price" data-price="' + row.sale_price + '">' + row.sale_price + '</td>';
 
-                    itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.product_id + '" value="' + row.quantity + '" name="txt_itemqty" placeholder="Qty."></td>';
-
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.product_id + '" value="' + row.quantity + '" name="txt_itemqty" placeholder="Qty."></td>';
+                    
 
                 }
                 itemHtml += '<td style="display:none" class="text-right parent-id" data-parentid="' + row.post_parent + '" data-productid="' + row.product_id + '"></td>';
@@ -992,7 +992,7 @@ function getOrderItemList(oid) {
                 itemHtml += '</tr>';
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
                 zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
-                zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
+               
                 
             }
             else if (row.product_type == 'coupon') {
@@ -1081,8 +1081,10 @@ function getOrderItemList(oid) {
                 console.log(refundHtml);
             }
             else if (row.product_type == 'tax') {
-                //$("#salesTaxTotal").data("orderitemid", orderitemid);
+                 //$("#salesTaxTotal").data("orderitemid", orderitemid);
                 _tax.push({ order_item_id: row.order_item_id, name: row.product_name, label: row.meta_data, rate: row.tax_amount, amount: row.total });
+                //$("#salesTaxTotal").text(row.total);
+                zTotalTax =   (parseFloat(row.total) || 0.00);
             }
             else if (row.product_name == "gift_card") { zGiftCardRefundAmt += row.total; }
         });
@@ -1097,7 +1099,7 @@ function getOrderItemList(oid) {
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
-        //$("#salesTaxTotal").text(zTotalTax.toFixed(2));
+       $("#salesTaxTotal").text(zTotalTax.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
         $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2)); $("#orderTotal").data('tax', zTotalTax.toFixed(2))
@@ -1108,7 +1110,7 @@ function getOrderItemList(oid) {
             //calculateDiscountAcount();calculateFinal
 
         });
-        calculateFinal();
+        //calculateFinal();
     }, completeFun, errorFun, false);
 }
 function getOrderNotesList(oid) {
@@ -1270,6 +1272,7 @@ var lastItemQtyValues = {};
 $("#line_items").on("change", ".rowCalulate[name='txt_itemqty']", function (e) {
     var $input = $(this);
     var rowId = $input.attr("id").replace("txt_itemqty_", "");
+    //console.log(rowId);
     var $row = $input.closest("tr");
     // Get the last value
     //var lastValue = lastItemQtyValues[rowId] || 0;
@@ -1285,7 +1288,7 @@ $("#line_items").on("change", ".rowCalulate[name='txt_itemqty']", function (e) {
     // Calculate the change in quantity
     var quantityChange = newValue - lastValue;
 
-    //console.log(rowId, parentId, quantityChange);
+    //console.log(newValue, lastValue, quantityChange);
 
     gettotaldetailsfromif(rowId, parentId, quantityChange); $("#divtotal").hide();
 
@@ -3992,7 +3995,7 @@ function successModal(paymode, id, is_mail, is_back) {
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>' + $('#SubTotal').text() + '</span></td></tr>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>' + $('#discountTotal').text() + '</span></td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#feeTotal').text() + '</td></tr>';
-    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
+    //myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#shippingTotal').text() + '</td></tr>';
     //myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
     $('#order_final_total .tax-total').each(function (index, li) {

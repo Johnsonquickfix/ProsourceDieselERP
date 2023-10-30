@@ -1803,7 +1803,11 @@
                             productsModel.reg_price = productsModel.price / productsModel.quantity;
                         else
                             productsModel.reg_price = 0;
-                        productsModel.total = productsModel.price;
+
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString());
+                        else
+                            productsModel.total = 0; 
 
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
                             productsModel.discount = decimal.Parse(sdr["line_total"].ToString().Trim());
@@ -1825,7 +1829,10 @@
                         else
                             productsModel.meta_data = string.Empty;
 
-                       
+                     
+
+
+
                     }
                     else if (productsModel.product_type == "coupon")
                     {

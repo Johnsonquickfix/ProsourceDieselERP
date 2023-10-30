@@ -70,8 +70,9 @@
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
                 if (obj.status == 200)
                 {
-                    if (checkout && !string.IsNullOrEmpty(email)) await kl_started_checkout(email, obj);
-                    else if (!checkout && !string.IsNullOrEmpty(email)) await kl_added_to_cart(email, obj);
+                    //if (checkout && !string.IsNullOrEmpty(email)) await kl_started_checkout(email, obj);
+                    //else if (!checkout && !string.IsNullOrEmpty(email)) await kl_added_to_cart(email, obj);
+                    if (cart != null && !string.IsNullOrEmpty(email)) await kl_added_to_cart(email, obj);
                     return Ok(CalculateTotals(obj, checkout));
                 }
                 return Ok(obj);
@@ -750,7 +751,7 @@
                         //strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", obj.tax_amount, model.OrderPostStatus.order_id, obj.product_type, obj.product_name));
                     }
                     /// step 6 : wp_woocommerce_order_items [shipping]
-                    if (obj.data.shipping_rate!=null)
+                    if (obj.data.shipping_rate != null)
                     {
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.data.shipping_rate.method_id, "shipping", order_id));
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'cost',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.data.shipping_rate.amount, order_id, "shipping"));

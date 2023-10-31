@@ -107,7 +107,7 @@
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
         ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory');
         // all item add to cart 
-        $('.add_order_item_meta').hide();
+        //$('.add_order_item_meta').hide();
         gettotaldetailsedit();
 
     });

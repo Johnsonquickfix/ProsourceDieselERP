@@ -50,6 +50,8 @@ namespace LaylaERP_v1.Models.Product
             public decimal? line_subtotal_tax { get; set; }
             public decimal? line_total { get; set; }
             public decimal? line_total_tax { get; set; }
+            public decimal? line_shipping_amount { get; set; }
+            public decimal? line_shipping_tax_amount { get; set; }
             public double? weight { get; set; }
             public string weight_unit { get; set; }
             public Image image { get; set; }

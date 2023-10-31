@@ -370,6 +370,12 @@
                         shipping_tax = Math.Round((shipping_total * _tax.rate / 100), 2);
                     }
                 }
+                ///set shipping item wise
+                foreach (var item in obj.data.items)
+                {
+                    item.line_shipping_amount = Math.Round(((shipping_total / item_count) * item.quantity), 4);
+                    if (item.line_shipping_amount.HasValue) item.line_shipping_tax_amount = Math.Round(((shipping_tax / item_count) * item.quantity), 4);
+                }
                 //obj.data.cart_totals.shipping_taxes = new List<dynamic>();
                 obj.data.cart_totals.shipping_total = shipping_total;
                 obj.data.cart_totals.shipping_tax = shipping_tax;

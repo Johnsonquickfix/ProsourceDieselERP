@@ -1030,7 +1030,7 @@
                 if (Payment_method.ToLower() == "podium")
                 {
                     //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
-                    strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_mime_type = (CASE WHEN TRIM(post_mime_type) = '' THEN 'shop_order_erp' ELSE post_mime_type END),post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
                     //// step 3 : Add Order Note
                     strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
                     strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.OrderPostMeta[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));

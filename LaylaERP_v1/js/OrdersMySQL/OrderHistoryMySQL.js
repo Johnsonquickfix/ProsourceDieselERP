@@ -244,7 +244,7 @@ function dataGridLoad(order_type) {
 
                             // Add image tags with specified height and width
                             // html += '<img src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '"><br>';
-                            html += '<img class="image-style" src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '">';
+                            html += '<img loading="lazy" class="image-style" src="' + imageUrl + '" alt="Image" height="' + imageHeight + '" width="' + imageWidth + '">';
 
                         }
                     }

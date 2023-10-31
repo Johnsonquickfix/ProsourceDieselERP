@@ -476,7 +476,7 @@
                 if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                 if ((order.data.cart_totals.subtotal - order.data.cart_totals.discount_total) >= 90)
                 {
-                    _shipping_methods.Add(new CartDataResponse.ShippingMethods() { method_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0 });
+                    _shipping_methods.Add(new CartDataResponse.ShippingMethods() { method_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0, isactive = false });
                 }
 
                 string accountNumber = "740561073", client_id = "l7e40e1dfda4e04c958f688ad2b071535f", client_secret = "b1d2efec8b344ac3a205ef2b2f1301be";
@@ -597,13 +597,22 @@
                 }
             }
             catch (Exception ex) { }
-            _shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
-            if (_shipping_methods.Count > 0 && (order.data.shipping_rate == null || is_active == false))
-            {
-                _shipping_methods[0].isactive = true;
-                order.data.shipping_rate = _shipping_methods[0];
-            }
             order.data.shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
+            if (is_active) order.data.shipping_rate = order.data.shipping_methods.Where(e => e.isactive == true).FirstOrDefault();
+            else
+            {
+                if (order.data.shipping_methods.Count > 0)
+                {
+                    _shipping_methods[0].isactive = true; order.data.shipping_rate = _shipping_methods[0];
+                }
+            }
+            //_shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
+            //if (_shipping_methods.Count > 0 && (order.data.shipping_rate == null || is_active == false))
+            //{
+            //    _shipping_methods[0].isactive = true;
+            //    order.data.shipping_rate = _shipping_methods[0];
+            //}
+
         }
         #endregion
 

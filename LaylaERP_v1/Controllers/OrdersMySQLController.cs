@@ -1037,7 +1037,7 @@
                 }
                 else
                 {
-                    strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pending", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_mime_type = (CASE WHEN TRIM(post_mime_type) = '' THEN 'shop_order_erp' ELSE post_mime_type END),post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pending", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
                 }
 
                 int res = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());

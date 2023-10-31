@@ -624,6 +624,18 @@
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet, Route("order/paypal-invoice-details/{invoice_id}")]
+        public object GetPaypalInvoiceDetails(string invoice_id)
+        {
+            try
+            {
+                string result = clsPayPal.InvoiceDetails(invoice_id);
+                if (!string.IsNullOrEmpty(result)) return JsonConvert.DeserializeObject<dynamic>(result);
+                else return new { };
+            }
+            catch { }
+            return new { };
+        }
         [HttpPost]
         public JsonResult UpdatePaymentInvoiceID(OrderModel model)
         {

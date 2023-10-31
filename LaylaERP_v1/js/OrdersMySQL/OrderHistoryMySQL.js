@@ -410,49 +410,39 @@ function orderStatus() {
 
 //Check PayPal Payment Status.
 function PaymentStatus(oid, pp_id, email) {
-    let option = { strValue1: 'getToken' };
-    $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
-        let access_token = result.message;
-        let create_url = paypal_baseurl + '/v1/invoicing/invoices/' + pp_id;
-        $.ajax({
-            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.setRequestHeader("Authorization", "Bearer " + access_token);
-            },
-            success: function (data) {
-                let status = data.status;
-                if (status == 'PAID') {
-                    swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
-                        preConfirm: function () {
-                            return new Promise(function (resolve) {
-                                let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
-                                let opt = { order_id: oid, b_first_name: '', payment_method: 'ppec_paypal', OrderPostMeta: _paystatus };
-                                $.post('/OrdersMySQL/UpdatePodiumPaymentAccept', opt).done(function (data) {
-                                    console.log(data);
-                                    data = JSON.parse(data);
+    let options = { method: 'GET', headers: { 'Content-Type': 'application/json', } };
+    fetch(`/order/paypal-invoice-details/${pp_id}`, options).then(response => response.json())
+        .then(response => {
+            let status = response.status ?? 'wait';
+            if (status == 'PAID') {
+                swal.queue([{
+                    title: response.status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                    preConfirm: function () {
+                        return new Promise(function (resolve) {
+                            let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
+                            response.payments.transactions.forEach(tran => {
+                                _paystatus.push({ post_id: oid, meta_key: '_transaction_id', meta_value: tran.payment_id });
+                                _paystatus.push({ post_id: oid, meta_key: '_paid_date', meta_value: tran.payment_date });
+                            });
+                            let opt = { order_id: oid, b_first_name: '', payment_method: 'ppec_paypal', OrderPostMeta: _paystatus };
+                            options = { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(opt) };
+                            fetch(`/OrdersMySQL/UpdatePodiumPaymentAccept`, options).then(response => response.json())
+                                .then(data => {
+                                    data = JSON.parse(data ?? '[{Response:"fail"}]');
                                     if (data[0].Response == "Success") {
-                                        swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
+                                        swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email);
                                         SendGiftCards(oid, email);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
-                                });
-                            });
-                        }
-                    }]);
-                }
-                else {
-                    swal(status, 'Request sent for payment.', 'info');
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-            complete: function () { $("#loader").hide(); ActivityLog('Check payment status for order id (' + oid + ') in order history', '/Orders/OrdersHistory'); }, async: false
-        });
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        swal('Alert!', 'Something went wrong, please try again.', "error");
-    });
+                                }).catch(err => console.error(err));
+                        });
+                    }
+                }]);
+            }
+            else { swal('Not Found', 'Request sent for payment.', 'info'); }
+        }).catch(err => console.error(err));
+    return;
 }
 function PaypalPaymentCancel(ppemail) {
     console.log('Start PayPal Payment Cancel.');

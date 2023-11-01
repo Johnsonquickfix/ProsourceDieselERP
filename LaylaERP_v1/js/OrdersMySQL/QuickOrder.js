@@ -991,7 +991,7 @@ function getOrderItemList(oid) {
                 /*        itemHtml += '<td class="text-right RowTax">' + row.tax_amount.toFixed(4) + '</td>';*/
                 itemHtml += '</tr>';
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
-                zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
+                zGAmt = zGAmt + (parseFloat(row.price) || 0.00);
                
                 
             }

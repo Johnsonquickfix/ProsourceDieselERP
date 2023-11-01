@@ -367,7 +367,8 @@
                         //if (_shipping == null) _shipping = obj.data.shipping_methods.OrderBy(s => s.amount).FirstOrDefault();
                         //if (_shipping != null) shipping_total = _shipping.amount;
                         shipping_total = obj.data.shipping_rate != null ? obj.data.shipping_rate.amount : 0;
-                        shipping_tax = Math.Round((shipping_total * _tax.rate / 100), 2);
+                        shipping_tax = 0;
+                        //shipping_tax = Math.Round((shipping_total * _tax.rate / 100), 2);
                     }
                 }
                 ///set shipping item wise

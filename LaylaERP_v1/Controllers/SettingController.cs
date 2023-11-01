@@ -29,6 +29,7 @@ namespace LaylaERP.Controllers
                 ViewBag.AmazonPay = DT.Tables[0].Rows[0]["AmazonPay"].ToString();
                 ViewBag.CreditCustomer = DT.Tables[0].Rows[0]["CreditCustomer"].ToString();
                 ViewBag.Podium = DT.Tables[0].Rows[0]["Podium"].ToString();
+                ViewBag.sender_name = DT.Tables[0].Rows[0]["sender_name"].ToString();
                 ViewBag.SenderEmailID = DT.Tables[0].Rows[0]["SenderEmailID"].ToString();
                 ViewBag.SenderEmailPwd = DT.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
                 ViewBag.SMTPServerName = DT.Tables[0].Rows[0]["SMTPServerName"].ToString();

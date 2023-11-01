@@ -28,6 +28,7 @@
         public bool Podium { get; set; }
         public bool CreditCustomer { get; set; }
         public string SenderEmailID { get; set; }
+        public string sender_name { get; set; }
         public string GlobalEmail { get; set; }
         public string SenderEmailPwd { get; set; }
         public string SMTPServerName { get; set; }

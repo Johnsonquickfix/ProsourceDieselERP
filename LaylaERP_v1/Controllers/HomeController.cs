@@ -495,6 +495,7 @@
                                         op.CreditCustomer = true;
                                     else
                                         op.CreditCustomer = false;
+                                    op.sender_name = ds.Tables[1].Rows[0]["sender_name"] != DBNull.Value ? ds.Tables[1].Rows[0]["sender_name"].ToString() : "";
                                     if (ds.Tables[1].Rows[0]["SenderEmailID"] != DBNull.Value)
                                         op.SenderEmailID = ds.Tables[1].Rows[0]["SenderEmailID"].ToString();
                                     else

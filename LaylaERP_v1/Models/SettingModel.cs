@@ -36,7 +36,7 @@ namespace LaylaERP.Models
         string _podium_code = string.Empty;
         string _podium_refresh_code = string.Empty;
         string _podium_locationuid = string.Empty;
-        
+
         public bool AuthorizeNet
         {
             get { return _AuthorizeNet; }
@@ -66,7 +66,7 @@ namespace LaylaERP.Models
             get { return _Podium; }
             set { _Podium = value; }
         }
-
+        public string sender_name { get; set; }
         public string SenderEmailID
         {
             get { return _SenderEmailID; }

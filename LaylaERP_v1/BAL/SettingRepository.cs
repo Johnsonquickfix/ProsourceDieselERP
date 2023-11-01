@@ -34,7 +34,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
+                string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium,sender_name =@sender_name, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
                     "SMTPServerPortNo=@SMTPServerPortNo, SSL=@SSL, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret,PaypalSellerAccount=@PaypalSellerAccount,AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
                     " TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey,podium_refresh_code=@podium_refresh_code,podium_code=@podium_code,podium_locationuid=@podium_locationuid, affirm_api_key = @affirm_api_key, affirm_private_api_key = @affirm_private_api_key, amazon_public_key = @amazon_public_key, amazon_private_key = @amazon_private_key where ID=@user_id";
@@ -46,6 +46,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@AmazonPay",model.AmazonPay),
                     new SqlParameter("@CreditCustomer",model.CreditCustomer),
                     new SqlParameter("@Podium",model.Podium),
+                    new SqlParameter("@sender_name", model.sender_name),
                     new SqlParameter("@SenderEmailID", SenderEmailID),
                     new SqlParameter("@SenderEmailPwd", model.SenderEmailPwd),
                     new SqlParameter("@SMTPServerName", model.SMTPServerName),

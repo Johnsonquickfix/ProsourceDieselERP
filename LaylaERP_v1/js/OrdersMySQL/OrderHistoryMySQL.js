@@ -2,10 +2,10 @@
 $(document).ready(function () {
     $("#loader").hide();
     $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
-   
-       
-    
-    
+
+
+
+
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -80,7 +80,6 @@ $(document).ready(function () {
     });
 
     let cmail_id = localStorage.getItem('_id'); let searchText = localStorage.getItem('_search');
-    console.log(cmail_id);
     if (cmail_id == '') {
         $('#atnemail').hide();
         if (searchText == '') { $('#atncustlist').hide() } else { $('#atncustlist').show() }
@@ -118,7 +117,6 @@ function OrderRefund(_id) {
         title: "Order Refund", text: "Do you want to go with the Retention process?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55',
         confirmButtonText: 'Yes, I am sure!', cancelButtonText: "No, go to refund!"
     }).then(function (isConfirm) {
-        console.log(isConfirm);
         if (isConfirm.value) {
             window.parent.setTab(157, 'Customer Service (Help Desk)', '/customer-service/search-customer', _id);
         } else {
@@ -180,7 +178,7 @@ function dataGridLoad(order_type) {
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
-            $('.dataTables_filter input').unbind(); 
+            $('.dataTables_filter input').unbind();
             $('.dataTables_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table_oh.search(this.value).draw(); }
@@ -194,7 +192,6 @@ function dataGridLoad(order_type) {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
-                    console.log(data);
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     localStorage.setItem('_search', '');
                     localStorage.setItem('_id', '');
@@ -226,7 +223,7 @@ function dataGridLoad(order_type) {
                 render: function (data, type, row) {
                     // Parse the JSON data
                     //var images = JSON.parse(data);
-                    console.log(data);
+                    //console.log(data);
                     // Initialize an empty HTML string
                     /*var html = '#' + row.id;*/
                     var html = '';
@@ -261,11 +258,11 @@ function dataGridLoad(order_type) {
             {
                 data: 'first_name', title: 'Order Placed From', sWidth: "14%", render: function (id, type, row) {
                     //if (row.post_mime_type == 'shop_order_replace_erp' || row.post_mime_type == 'shoporderreplaceerp') return row.first_name + ' ' + row.last_name + ' (#' + row.post_parent + ')';
-                   // else return row.first_name + ' ' + row.last_name;
-                    return 'Order created via : ' + row.created_via +' </br> Order Placed by:'+ row.first_name + ' ' + row.last_name;
+                    // else return row.first_name + ' ' + row.last_name;
+                    return 'Order created via : ' + row.created_via + ' </br> Order Placed by:' + row.first_name + ' ' + row.last_name;
                 }
             },
-           
+
             /* { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },*/
             { data: 'itmename', title: 'Purchase Details', sWidth: "15%" },
             {
@@ -310,7 +307,7 @@ function dataGridLoad(order_type) {
                     else return '-';
                 }
             },
-            
+
             {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (id, type, row) {
                     let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
@@ -365,7 +362,7 @@ function dataGridLoad(order_type) {
 
 function CheckAll() {
     var isChecked = $('#checkall').prop("checked");
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked); 
+    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
 }
 function Singlecheck(chk) {
     var isChecked = $(chk).prop("checked"), isHeaderChecked = $("#checkall").prop("checked");
@@ -413,7 +410,7 @@ function PaymentStatus(oid, pp_id, email) {
     let options = { method: 'GET', headers: { 'Content-Type': 'application/json', } };
     fetch(`/order/paypal-invoice-details/${pp_id}`, options).then(response => response.json())
         .then(response => {
-            let status = response.status ?? 'wait';
+            let status = response.status ?? 'wait'; 
             if (status == 'PAID') {
                 swal.queue([{
                     title: response.status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
@@ -440,7 +437,9 @@ function PaymentStatus(oid, pp_id, email) {
                     }
                 }]);
             }
-            else { swal('Not Found', 'Request sent for payment.', 'info'); }
+            else if (status == 'SENT') { swal(status, 'Request sent for payment.', 'info'); }
+            else if (status == 'DRAFT') { swal(status, 'Invoice created as draft status.', 'info'); }
+            else { swal('Not Found', 'Invoice not fount.', 'info'); }
         }).catch(err => console.error(err));
     return;
 }
@@ -595,7 +594,7 @@ function cancelpayment(data) {
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }
             }]);
-        } 
+        }
     }
     else if (data.payment_method == "podium") {
         if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {

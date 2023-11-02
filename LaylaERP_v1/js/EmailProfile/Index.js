@@ -89,7 +89,7 @@ function dataGridLoad(order_type) {
             {
                 'data': 'email_id', title: 'Action', sWidth: "10%",
                 'render': function (id, type, row) { 
-                    return '<a title="Click here to view pages details" data-toggle="tooltip" href="Compose/' + id + '?entiid=' + 1 + '" onclick="ActivityLog(\'Edit mail id (' + id + ') in mail list\',\'Mail/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a title="Click here to view email details" data-toggle="tooltip" href="Compose/' + id + '?entiid=' + 1 + '" onclick="ActivityLog(\'Edit mail id (' + id + ') in mail list\',\'Mail/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     
                 }
             }

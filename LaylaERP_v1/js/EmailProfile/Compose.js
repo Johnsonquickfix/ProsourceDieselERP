@@ -11,12 +11,16 @@
                 $("#hfid").val(0);
                 $("#divactionbutton").hide();                 
                 $("#btnsend").text('Send');
+                $("#divedit").hide();
+                
             }
-            else { 
+            else {
+                $("#divedit").show();
                 GetDataByID(id);
                 $("#hfid").val(id);
                 $("#divactionbutton").show();                
-                $("#btnsend").text('Reply');
+                $("#btnsend").text('Reply/Send');
+
             }
         }
         else {
@@ -41,12 +45,20 @@
         localStorage.setItem('_id', id);
         window.location.href = '../../audience/profiles';
     })
+    var iframe = document.getElementById('updatedcontent_ifr');
+
+    // Check if the iframe exists
+    if (iframe) {
+        // Set the contentEditable property to false to make the content read-only
+        iframe.contentDocument.designMode = 'off';
+    }
 })
 
 function Add() {
     recipient = $("#recipient").val();
     subject = $("#subject").val(); 
     let editorcontent = GetContent();
+    let sentdata = GetupdatedContent();
     ID = $("#hfid").val(); 
  
     if (recipient == "") {
@@ -71,7 +83,7 @@ function Add() {
         }
         obj.append("recipient", encodeURIComponent(recipient));
         obj.append("subject", encodeURIComponent(subject));
-        obj.append("editorcontent", encodeURIComponent(editorcontent));
+        obj.append("editorcontent", encodeURIComponent(sentdata) + encodeURIComponent(editorcontent) );
         console.log(encodeURIComponent(editorcontent));
         $.ajax({
             url: '/EmailProfile/composemail/', dataType: 'json', type: 'Post',
@@ -223,9 +235,13 @@ function getcompany(id) {
 function GetContent() {
     return tinyMCE.get('editorcontent').getContent();
 }
+function GetupdatedContent() {
+    return tinyMCE.get('updatedcontent').getContent();
+}
 function SetContent(htmlContent) {
     //alert('ok');
-    tinyMCE.get('editorcontent').setContent(htmlContent);
+    /*tinyMCE.get('editorcontent').setContent(htmlContent);*/
+    tinyMCE.get('updatedcontent').setContent(htmlContent);
 }
 
 function GetDataByID(ID) {

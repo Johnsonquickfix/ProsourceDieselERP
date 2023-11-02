@@ -986,12 +986,12 @@ function getOrderItemList(oid) {
                 //itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
                 //itemHtml += '<td class="text-right RowDiscount" data-disctype="' + row.discount_type + '" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
                 //itemHtml += '<td class="text-right linetotal">' + (row.total - row.discount).toFixed(2) + '</td>';
-                itemHtml += '<td class="text-right row-total" data-total="' + row.total.toFixed(2) + '">' + formatCurrency(row.total) + '</td>';
+                itemHtml += '<td class="text-right row-total" data-total="' + row.price.toFixed(2) + '">' + formatCurrency(row.price) + '</td>';
 
                 /*        itemHtml += '<td class="text-right RowTax">' + row.tax_amount.toFixed(4) + '</td>';*/
                 itemHtml += '</tr>';
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
-                zGAmt = zGAmt + (parseFloat(row.price) || 0.00);
+                zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
                
                 
             }

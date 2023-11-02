@@ -45,20 +45,14 @@
         localStorage.setItem('_id', id);
         window.location.href = '../../audience/profiles';
     })
-    var iframe = document.getElementById('updatedcontent_ifr');
-
-    // Check if the iframe exists
-    if (iframe) {
-        // Set the contentEditable property to false to make the content read-only
-        iframe.contentDocument.designMode = 'off';
-    }
+    
 })
 
 function Add() {
     recipient = $("#recipient").val();
     subject = $("#subject").val(); 
     let editorcontent = GetContent();
-    let sentdata = GetupdatedContent();
+    let sentdata = $("#updatedcontent").html();// GetupdatedContent();
     ID = $("#hfid").val(); 
  
     if (recipient == "") {
@@ -237,6 +231,7 @@ function GetContent() {
 }
 function GetupdatedContent() {
     return tinyMCE.get('updatedcontent').getContent();
+   
 }
 function SetContent(htmlContent) {
     //alert('ok');
@@ -258,7 +253,8 @@ function GetDataByID(ID) {
             success: function (data) {
                 var i = JSON.parse(data);
                 $("#recipient").val(i[0].email_address);
-                SetContent(i[0].html_content);
+                //SetContent(i[0].html_content);
+                $("#updatedcontent").html(i[0].html_content);
                 $('#subject').val(i[0].subject);
 
                 // Assuming 'data' contains the folder name

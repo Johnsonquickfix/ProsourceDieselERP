@@ -1542,6 +1542,7 @@
     <Content Include="Templates\Banner.html" />
     <Content Include="Templates\contactus.html" />
     <Content Include="Templates\Prosource.html" />
+    <Content Include="Uploads\Template\5214e52c-0c35-40f5-bf3d-5fd5320d7b7f.Png" />
     <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
     <Content Include="Web.config" />

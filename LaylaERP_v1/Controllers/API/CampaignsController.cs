@@ -39,8 +39,8 @@
                 return InternalServerError(ex);
             }
         }
-        [HttpPut]
-        public async Task<IHttpActionResult> Put(CampaignRequest request)
+        [HttpPatch]
+        public async Task<IHttpActionResult> Patch(CampaignRequest request)
         {
             try
             {

@@ -65,7 +65,7 @@
         if (j.campaign_id === 0) { swal('Error!', 'Invalid campaign.', 'error').then(function () { swal.close(); }); return false; }
         else {
             $.ajax({
-                type: 'PUT', url: '/api/campaigns',
+                type: 'PATCH', url: '/api/campaigns',
                 contentType: "application/json",
                 data: JSON.stringify(j),
                 success: function (result) {
@@ -95,7 +95,7 @@
         //else if (j.content.template_id === 0) { swal('Error!', 'Your changes have been saved. Select a template to continue.', 'error').then(function () { swal.close(); e.getElementById('from_email').focus(); }); return false; }
         else {
             $.ajax({
-                type: 'PUT', url: '/api/campaigns',
+                type: 'PATCH', url: '/api/campaigns',
                 contentType: "application/json",
                 data: JSON.stringify(j),
                 success: function (result) {

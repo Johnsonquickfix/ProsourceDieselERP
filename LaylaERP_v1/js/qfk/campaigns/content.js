@@ -6,7 +6,7 @@
     e.querySelector("#change-template")?.addEventListener("click", (evt) => {
         evt.preventDefault(), evt.stopPropagation();
         let p = e.getElementById("template_type"); e.getElementById("btn-action").replaceChildren();
-        p.replaceChildren(e.createElement('div', { class: 'alert alert-warning' }, '<i class="mdi mdi-alert-outline me-2"></i>Selecting a new template will permanently delete existing content for your campaign. To avoid losing any work, <a href="">return to your current template</a>'));
+        p.replaceChildren(e.createElement('div', { class: 'alert alert-warning' }, '<i class="fas fa-exclamation-triangle me-2"></i>Selecting a new template will permanently delete existing content for your campaign. To avoid losing any work, <a href="">return to your current template</a>'));
         p.append(e.createElement('div', { class: 'row' }, e.createElement('div', { class: 'col-sm-12 d-grid gap-2 mb-2' },
             e.createElement('a', { id: 'email-editor', class: 'btn p-0', href: 'javascript:void(0);' },
                 e.createElement('div', { class: 'card-radio text-center' },

@@ -108,6 +108,19 @@
                             <th style="width:70%">Value</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @foreach (var o in @Model.CustomProperties)
+                        {
+                            <tr>
+                                <td class="metric-label">
+                                    @o.Key
+                                </td>
+                                <td class="">
+                                    <div class="loading-metric"><span>@o.Value</span></div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>

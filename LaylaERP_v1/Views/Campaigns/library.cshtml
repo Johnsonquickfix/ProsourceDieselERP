@@ -81,25 +81,11 @@
             var requestOptions = {
                 method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(j)
             };
-
             fetch('/api/campaigns', requestOptions).then(response => response.json())
                 .then(result => {
                     if (result.status > 0) window.location = window.location.origin + `/campaigns/${result.id}/content`;
                     else  swal('Info!', result.response, 'info');
-                }).catch(error => console.log('error', error));
-
-            //$.ajax({
-            //    type: 'PUT', url: '/api/campaigns',
-            //    contentType: "application/json",
-            //    data: JSON.stringify(j),
-            //    success: function (result) {
-            //        if (result.status > 0) {
-            //            window.location = window.location.origin + `/campaigns/${result.id}/content`;
-            //        }
-            //        else { swal('Info!', result.response, 'info'); }
-            //    },
-            //    error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
-            //});
+                }).catch(error => { swal('Error!', error, 'error'); } );
         }
     }
     function GetTemplate(id, title) {

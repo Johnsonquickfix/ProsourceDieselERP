@@ -50,5 +50,8 @@
 
         [JsonProperty("$consent")]
         public List<string> Consent { get; set; }
+
+        [JsonProperty("properties", NullValueHandling = NullValueHandling.Ignore)]
+        public IDictionary<string, object> CustomProperties { get; set; }
     }
 }

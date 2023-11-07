@@ -169,14 +169,31 @@
             catch { throw; }
             return dt;
         }
-        public static string ProfileDetails(long company_id, string id)
+        public static string ProfileCreate(string flag, long company_id = 0, string id = "", string json_data = "")
+        {
+            string _json = string.Empty;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag",flag),
+                    new SqlParameter("@company_id", company_id),
+                    !string.IsNullOrEmpty(id) ? new SqlParameter("@id", id) : new SqlParameter("@id", DBNull.Value),
+                    !string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data", json_data) : new SqlParameter("@json_data",DBNull.Value)
+                };
+                _json = SQLHelper.ExecuteReaderReturnJSON("qfk_profiles_search", parameters).ToString();
+            }
+            catch { throw; }
+            return _json;
+        }
+        public static string ProfileDetails(string flag = "profiledetail", long company_id = 0, string id = "")
         {
             string json_data = string.Empty;
             try
             {
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@flag","profiledetail"),
+                    new SqlParameter("@flag",flag),
                     new SqlParameter("@company_id", company_id),
                     new SqlParameter("@id", id),
                 };

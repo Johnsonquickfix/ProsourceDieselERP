@@ -13,7 +13,12 @@
             $('#raw_data_modal').modal('show');
 
         });
+        $('#matrics-list').DataTable({
+            paging: false, info: false, searching: false, ordering: false, scrollCollapse: true,
+            scrollY: '40vh'
+        });
     });
+    var d = document;
     var m = $('#metrics'), feed = $('#activity-feed'),
         loadActivities = function () {
             let _i = parseInt(m.val()) || 0; feed.empty().append('<li class="text-center py-4"><h4>Loging activities....</h4></li>');
@@ -45,16 +50,34 @@
         json_template = function (data) {
             let _h = '';
             $.each(data, function (key, value) {
-                if (value instanceof Array) {
-                    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
+
+                if (value.constructor === Object) _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
+                else if (value.constructor === Array) {
+                    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${value.toString()}</span></div>`;
                 }
-                else if (value instanceof Array) { }
+                else if (isURL(value)) {
+                    console.log(key, value, isURL(value))
+                    _h += `<div class="event_property"><strong>${key}</strong>: <a target="_blank" href="${value}">${value.toString()}</a></div>`;
+                }
                 else {
-                    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
+                    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${value}">${value}</span></div>`;
                 }
+                //if (value instanceof String) _h += `<div class="event_property"><strong>${key}</strong>: <span title="${value}">${value}</span></div>`;
+                //else if (value instanceof Number) _h += `<div class="event_property"><strong>${key}</strong>: <span title="${value}">${value}</span></div>`;
+                //else if (value instanceof Array) {
+                //    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
+                //}
+                //else {
+                //    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
+                //}
             });
             return _h;
         };
+
+    function isURL(str) {
+        var regex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+        if (!regex.test(str)) { return false; } else { return true; }
+    }
 })();
 
 //$(document).ready(function () {

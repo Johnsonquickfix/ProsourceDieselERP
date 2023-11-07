@@ -3,6 +3,21 @@
     ViewBag.Title = "ProfileView";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<style>
+    .event_properties {
+        border-radius: 2px;
+        background-color: #F3F6F7;
+        overflow-x: auto;
+        display: flex;
+        padding: 16px;
+        flex-direction: column;
+    }
+</style>
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
@@ -27,8 +42,8 @@
 </div>
 
 <div class="row">
-    <div class="col-7">
-        <div class="card">
+    <div class="col-md-7">
+        <div class="card boxed_style">
             <div class="card-body">
                 <div class="mb-2 flex-grow-1 border-bottom">
                     <div class="mb-3 row">
@@ -52,11 +67,11 @@
             </div>
         </div>
     </div>
-    <div class="col-5">
-        <div class="card">
+    <div class="col-md-5">
+        <div class="card boxed_style">
             <div class="card-body">
                 <h5 class="card-title mb-1">METRICS</h5>
-                <table class="table">
+                <table id="matrics-list" class="table">
                     <thead>
                         <tr>
                             <th></th>
@@ -81,11 +96,29 @@
                 </table>
             </div>
         </div>
-        <div class="card">
+        <div class="card boxed_style">
             <div class="card-body border-bottom">
-                <h5 class="card-title mb-0">CONTACT</h5>
+                <h5 class="card-title mb-0">Custom properties </h5>
             </div>
+            <div class="card-body">
+                <table class="table dataTable no-footer" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:30%">Key</th>
+                            <th style="width:70%">Value</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="card boxed_style">
             <div class="card-body border-bottom">
+                <h5 class="card-title mb-0">INFORMATION</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">Profile details</h5>
+                </div>
                 <div class="mb-2 flex-grow-1">
                     <h5 class="mb-0 card-title">Unique ID</h5>
                     <p class="text-muted mb-0">
@@ -141,7 +174,29 @@
                         @s_address
                     </p>
                 </div>
-                <div class="d-flex border-top pt-2">
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">Timezone</h5>
+                    @if (!string.IsNullOrEmpty(Model.Timezone))
+                    {
+                        <p class="text-muted mb-0">@Model.Timezone</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">-</p>
+                    }
+                </div>
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">IP Address</h5>
+                    @if (!string.IsNullOrEmpty(Model.IP))
+                    {
+                        <p class="text-muted mb-0">@Model.IP</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">-</p>
+                    }
+                </div>
+                <div class="mb-2 d-flex border-top border-bottom pt-2">
                     <div class="align-self-center overflow-hidden me-auto">
                         <h5 class="mb-0 card-title">Email</h5>
                         <p class="text-muted mb-0"><i class="bx bx-envelope me-2"></i> @Model.Email</p>
@@ -157,14 +212,26 @@
                         }
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body border-bottom">
-                <h5 class="card-title mb-0">INFORMATION</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-2 pb-2 flex-grow-1 border-bottom flex-grow-1 border-bottom">
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">Activity</h5>
+                </div>
+                <div class="mb-2 flex-grow-1">
+                    <p class="mb-1">
+                        <strong>Profile Created</strong>
+                        @if (Model.created.HasValue)
+                        {
+                            @Model.created.Value.ToString("MMMM dd, yyyy h:mm tt")
+                        }
+                    </p>
+                    <p class="mb-1">
+                        <strong>Profile Updated</strong>
+                        @if (Model.updated.HasValue)
+                        {
+                            @Model.updated.Value.ToString("MMMM dd, yyyy h:mm tt")
+                        }
+                    </p>
+                </div>
+                <div class="mb-2 flex-grow-1 flex-grow-1">
                     <p class="mb-1">
                         <strong>First Active</strong>
                         @if (Model.first_active_on.HasValue)
@@ -220,22 +287,7 @@
                     </p>
                     <p class="mb-1"></p>
                 </div>-->
-                <div class="mb-2 flex-grow-1">
-                    <p class="mb-1">
-                        <strong>Profile Created</strong>
-                        @if (Model.created.HasValue)
-                        {
-                            @Model.created.Value.ToString("MMMM dd, yyyy h:mm tt")
-                        }
-                    </p>
-                    <p class="mb-1">
-                        <strong>Profile Updated</strong>
-                        @if (Model.updated.HasValue)
-                        {
-                            @Model.updated.Value.ToString("MMMM dd, yyyy h:mm tt")
-                        }
-                    </p>
-                </div>
+
             </div>
         </div>
     </div>
@@ -264,6 +316,5 @@
 
     </div>
 </div>
-
-<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
 <script async src="@Url.Content("~/js/qfk/audience/profileview.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

@@ -43,6 +43,10 @@
 
         [JsonProperty("$image")]
         public string Image { get; set; }
+        [JsonProperty("$timezone")]
+        public string Timezone { get; set; }
+        [JsonProperty("$ip")]
+        public string IP { get; set; }
 
         [JsonProperty("$consent")]
         public List<string> Consent { get; set; }

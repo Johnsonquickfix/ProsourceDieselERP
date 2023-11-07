@@ -27,7 +27,7 @@
             ViewBag.id = id;
             OperatorModel om = CommanUtilities.Provider.GetCurrent();
             //ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails(om.company_id, id));
-            ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails(1, id));
+            ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails("profiledetail", 1, id));
             return View(profile);
         }
 
@@ -48,7 +48,7 @@
             ViewBag.id = id;
             OperatorModel om = CommanUtilities.Provider.GetCurrent();
             //ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails(om.company_id, id));
-            ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails(1, id));
+            ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails("profiledetail", 1, id));
             return View(profile);
         }
     }

@@ -746,7 +746,7 @@
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", _item.name, "line_item", order_id));
                         strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, _item.id, _item.variation_id, customer_id,
-                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), _item.quantity, _item.line_subtotal, _item.line_total, (_item.line_total - _item.line_subtotal), _item.line_total_tax, 0, 0));
+                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), _item.quantity, _item.line_subtotal, _item.line_total, (_item.line_subtotal - _item.line_total), _item.line_total_tax, 0, 0));
                         //Insert tax data in serialize format
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax_data','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", "", order_id, "line_item", _item.name));
                     }
@@ -787,7 +787,7 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id={0}", order_id));
                     strSql.Append(string.Format(" union all select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id={0}", order_id));
                     strSql.Append(string.Format(" union all select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id={0}", order_id));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal',product_net_revenue + coupon_amount from wp_wc_order_product_lookup where order_id={0}", order_id));
+                    strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal',product_net_revenue  from wp_wc_order_product_lookup where order_id={0}", order_id));
                     strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id={0}", order_id));
                     strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id={0}", order_id));
                     strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id={0}", order_id));

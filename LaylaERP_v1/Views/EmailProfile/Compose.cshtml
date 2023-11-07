@@ -28,8 +28,13 @@
             color: #fff; /* White text on hover */
             border: 1px solid #007bff; /* Blue border on hover */
         }
+
+    #divedit {
+        height: 300px; /* Set the fixed height as needed */
+        overflow: auto; /* Enable scrolling when content exceeds the height */
+    }
 </style>
-<script src='~/js/tinymce/tinymce.min.js'></script>
+<script src='~/js/tinymce/tinymce.min.js'></script> 
 <script>
     // Create a custom shortcode plugin
     tinymce.PluginManager.add('shortcode', function (editor) {
@@ -133,6 +138,9 @@
 
         <div class="row mx-0 ">
             <label for="message">Message:</label>
+            <div id="divedit">
+                <div readonly id="updatedcontent"></div>
+            </div>
             <textarea id="editorcontent"></textarea>
         </div>
         <div class="row mx-0" id="fileList"></div>

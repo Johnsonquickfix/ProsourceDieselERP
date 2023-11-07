@@ -179,7 +179,7 @@ function format(d) {
     let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
     let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
     let vnid = parseInt($("#ddlVendor").val()) || 0;
-    let option = { strValue1: d.id, strValue2: (vnid > 0 ? vnid : ''), strValue3: sd, strValue4: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer children_table"><thead><tr><th style="width:60%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Units in Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
+    let option = { strValue1: d.id, strValue2: (vnid > 0 ? vnid : ''), strValue3: sd, strValue4: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer children_table"><thead><tr><th style="width: 43% !important;text-align:left;">Warehouse</th><th style="width:8% !important; text-align:right;">Units in Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:10%; text-align:right;">Sale Units</th><th style="width:10%; text-align:right;">Damage Units</th><th style="width:10%; text-align:right;">Available Units</th></tr></thead>';
     console.log(d, option);
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),

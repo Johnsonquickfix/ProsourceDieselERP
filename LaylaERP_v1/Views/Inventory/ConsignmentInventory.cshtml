@@ -6,6 +6,18 @@
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<style>
+    #dtdata.inventory-table .table-blue.children_table thead tr {
+        height: auto !important;
+    }
+    .dataTables_scrollBody #dtdata.inventory-table .table-blue.children_table thead tr th {
+        background: #3c8dbc;
+        visibility: visible !important;
+        opacity: 1 !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important
+    }
+</style>
 @*datatables js*@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>

@@ -315,7 +315,7 @@ function ChangeStatus(id) {
 function dataGridLoad() {
     let _searchText = localStorage.getItem('_search');
     localStorage.setItem('_search', '')
-    var urid = parseInt($("#ddlSearchStatus").val()) || "";
+    var urid = parseInt($("#ddlSearchStatus").val()) || 0;
     var sid = ""//$('#txtSearch').val() ;
     var obj = { user_status: urid, Search: sid,  PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
     table_oh =  $('#dtdata').DataTable({

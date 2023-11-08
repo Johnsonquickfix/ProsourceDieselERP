@@ -67,6 +67,45 @@
             }
         }
 
+        [HttpPatch, Route("add-custom-property")]
+        public IHttpActionResult AddCustomProperty(PeopleCustomProperty model)
+        {
+            try
+            {
+                //OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                //if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+                if (string.IsNullOrEmpty(model.PeopleId)) return BadRequest("'profile_id' is a required field.");
+                else if (string.IsNullOrEmpty(model.MetaKey)) return BadRequest("'meta_key' is a required field.");
+                else if (string.IsNullOrEmpty(model.MetaValue)) return BadRequest("'meta_value' is a required field.");
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("add-properties", 1, model.PeopleId, JsonConvert.SerializeObject(model)));
+                if (obj == null) return BadRequest("Invalid details.");
+                else return Ok(new { status = true, data = obj });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpDelete, Route("delete-custom-property")]
+        public IHttpActionResult DeletedCustomProperty(PeopleCustomProperty model)
+        {
+            try
+            {
+                //OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                //if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+                if (string.IsNullOrEmpty(model.PeopleId)) return BadRequest("'profile_id' is a required field.");
+                else if (model.ID <= 0) return BadRequest("'ID' is a required field.");
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("delete-properties", 1, model.PeopleId, JsonConvert.SerializeObject(model)));
+                if (obj == null) return BadRequest("Invalid details.");
+                else return Ok(new { status = true, data = obj });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         [HttpGet, Route("group-list")]
         public IHttpActionResult GetGroupsList([FromUri] JqDataTableModel model)
         {

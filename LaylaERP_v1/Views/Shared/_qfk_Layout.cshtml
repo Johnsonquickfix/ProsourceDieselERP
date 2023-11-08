@@ -1,6 +1,6 @@
 ﻿@{
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
-    //if (user.user_id <= 0) { Response.Redirect("~/user/sign_in"); }
+    if (user.UserID <= 0) { Response.Redirect("~/Home/Login"); }
 }
 <!DOCTYPE html>
 <html>

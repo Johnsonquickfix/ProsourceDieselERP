@@ -56,7 +56,6 @@
                     _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${value.toString()}</span></div>`;
                 }
                 else if (isURL(value)) {
-                    console.log(key, value, isURL(value))
                     _h += `<div class="event_property"><strong>${key}</strong>: <a target="_blank" href="${value}">${value.toString()}</a></div>`;
                 }
                 else {
@@ -77,6 +76,120 @@
     function isURL(str) {
         var regex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
         if (!regex.test(str)) { return false; } else { return true; }
+    }
+    d.querySelector('#add-custom-property').addEventListener('click', function (evt) {
+        evt.preventDefault(), evt.stopPropagation();
+        var html = '<div class="modal-header">' +
+            '<h5 class="modal-title" id="exampleModalLabel">Add custom profile property</h5>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+            '</div>' +
+            '<div class="modal-body">' +
+            '<p>Enter a profile property name and value. We will automatically convert numbers and other data types.</p>' +
+            '<div class="row">' +
+            '<div class="form-group col-md-6"><label>Property name <span style="color:red">*</span></label><input type="text" class="form-control" id="meta_key"></div>' +
+            '<div class="form-group col-md-6"><label>Value <span style="color:red">*</span></label><input type="text" class="form-control" id="meta_value"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="modal-footer"></div>';
+        setModalContent(html);
+        let p = d.querySelector("#modalEdit .modal-footer"), btn = d.createElement('button', { "type": "button", "class": "btn btn-dark" }, 'Add profile property');
+        p.replaceChildren();
+        p.append(d.createElement('button', { "type": "button", "class": "btn btn-outline-dark", "data-bs-dismiss": "modal" }, 'Close'), btn);
+        btn.addEventListener('click', function (evt) {
+            let _j = { profile_id: d.querySelector("#metrics").getAttribute('data-profileid') || '', meta_key: d.querySelector("#modalEdit #meta_key").value, meta_value: d.querySelector("#modalEdit #meta_value").value };
+            let requestOptions = { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(_j) };
+            fetch('/api/profiles/add-custom-property', requestOptions).then(response => response.json())
+                .then(result => {
+                    if (result.status) location.reload();
+                    else swal('Info!', 'Invalid details.', 'info');
+                }).catch(error => { swal('Error!', error, 'error'); });
+        });
+    });
+    d.querySelectorAll('[name="menu-option-edit-value"]').forEach(ele => {
+        ele.addEventListener('click', function (ev) {
+            var html = '<div class="modal-header">' +
+                '<h5 class="modal-title" id="exampleModalLabel">Edit Property</h5>' +
+                '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                '<p>This will update the value for the custom property Engine Type for this specific profile.</p>' +
+                '<div class="row"><div class="form-group col-md-12"><h5>Value </h5> <input type="text" class="form-control" id="meta_value" value=\'' + ev.target.getAttribute('data-value') + '\'></div></div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="modal-footer"><button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-dark">Update</button></div>';
+            setModalContent(html);
+            let p = d.querySelector("#modalEdit .modal-footer"), btn = d.createElement('button', { "type": "button", "class": "btn btn-dark" }, 'Add profile property');
+            p.replaceChildren();
+            p.append(d.createElement('button', { "type": "button", "class": "btn btn-outline-dark", "data-bs-dismiss": "modal" }, 'Close'), btn);
+            btn.addEventListener('click', function (evt) {
+                let _j = { profile_id: d.querySelector("#metrics").getAttribute('data-profileid') || '', meta_key: ev.target.getAttribute('data-key'), meta_value: d.querySelector("#modalEdit #meta_value").value };
+                let requestOptions = { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(_j) };
+                fetch('/api/profiles/add-custom-property', requestOptions).then(response => response.json())
+                    .then(result => {
+                        if (result.status) location.reload(); else swal('Info!', 'Invalid details.', 'info');
+                    }).catch(error => { swal('Error!', error, 'error'); });
+            });
+        });
+    });
+    d.querySelectorAll('[name="menu-option-view"]').forEach(ele => {
+        ele.addEventListener('click', function (ev) {
+            var html = '<div class="modal-header">' +
+                '<h5 class="modal-title" id="exampleModalLabel">View Property</h5>' +
+                '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                `<div class="row row mb-2"><div class="form-group col-md-12"><h5>Property </h5> ${ev.target.getAttribute('data-key')}</div></div>` +
+                `<div class="row"><div class="form-group col-md-12"><h5>Value </h5> ${ev.target.getAttribute('data-value')}</div></div>` +
+                '</div>' +
+                '</div>' +
+                '<div class="modal-footer"><button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button></div>';
+            setModalContent(html);
+        });
+    });
+    d.querySelectorAll('[name="menu-option-delete"]').forEach(ele => {
+        ele.addEventListener('click', function (ev) {
+            var html = '<div class="modal-header">' +
+                '<h5 class="modal-title" id="exampleModalLabel">Delete Property</h5>' +
+                '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                '<p>You are about to delete the custom property Engine Type for this profile. Note: This will only remove the custom property for this specific profile. It will not delete the custom property entirely. Are you sure?</p>' +
+                '</div>' +
+                '</div>' +
+                '<div class="modal-footer"></div>';
+            setModalContent(html);
+            let p = d.querySelector("#modalEdit .modal-footer"), btn = d.createElement('button', { "type": "button", "class": "btn btn-danger" }, 'Delete');
+            p.replaceChildren();
+            p.append(d.createElement('button', { "type": "button", "class": "btn btn-outline-dark", "data-bs-dismiss": "modal" }, 'Close'), btn);
+            btn.addEventListener('click', function (evt) {
+                let _j = { profile_id: d.querySelector("#metrics").getAttribute('data-profileid') || '', id: ev.target.getAttribute('data-id') };
+                let requestOptions = { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(_j) };
+                fetch('/api/profiles/delete-custom-property', requestOptions).then(response => response.json())
+                    .then(result => {
+                        if (result.status) location.reload(); else swal('Info!', 'Invalid details.', 'info');
+                    }).catch(error => { swal('Error!', error, 'error'); });
+            });
+        });
+    })
+    function setModalContent(html) {
+        if (d.getElementById('modalEdit')) d.getElementById('modalEdit').remove();
+        initModal().querySelector('.modal-content').innerHTML = html;
+        let _m = d.getElementById('modalEdit');
+        // Show the modal.
+        jQuery(_m).modal('show');
+    }
+    function initModal() {
+        var modal = document.createElement('div');
+        modal.classList.add('modal', 'fade');
+        modal.setAttribute('id', 'modalEdit');
+        modal.setAttribute('tabindex', '-1');
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-labelledby', 'exampleModalLabel');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.innerHTML = '<div class="modal-dialog" role="document"><div class="modal-content"></div></div>';
+        document.body.appendChild(modal);
+        return modal;
     }
 })();
 

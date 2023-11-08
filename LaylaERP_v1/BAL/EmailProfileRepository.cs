@@ -26,12 +26,12 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static int AddMails(int company_id,string email_address,string subject,string direction,bool is_read,bool is_deleted,string html_content,string text_content,string MessageId,string in_reply_to,bool is_attached,string UniqueId)
+        public static int AddMails(string qflag, int company_id,string email_address,string subject,string direction,bool is_read,bool is_deleted,string html_content,string text_content,string MessageId,string in_reply_to,bool is_attached,string UniqueId)
         {
             try
             {
                 SqlParameter[] para = {
-                    new SqlParameter("@qflag","I"),
+                    new SqlParameter("@qflag",qflag),
                     new SqlParameter("@company_id", company_id),
                     new SqlParameter("@email_address",email_address),
                     new SqlParameter("@subject", subject),

@@ -182,7 +182,7 @@ namespace LaylaERP_v1.Controllers
                     //if (!string.IsNullOrEmpty(_body))
                     if (_body == null)
                         _body = message.TextBody;
-                    int ID = EmailProfileRepository.AddMails(1, email_address, message.Subject, type, is_seen, false, _body, message.TextBody, message.MessageId, message.InReplyTo, is_attached, folderName);
+                    int ID = EmailProfileRepository.AddMails("I",1, email_address, message.Subject, type, is_seen, false, _body, message.TextBody, message.MessageId, message.InReplyTo, is_attached, folderName);
 
                 }
                 client.Disconnect(true);
@@ -257,6 +257,7 @@ namespace LaylaERP_v1.Controllers
 
                 SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachments);
 
+                int ID = EmailProfileRepository.AddMails("SI",1, recipient, subject, "S", false, false, editorcontent, editorcontent, "0" ,"0",false,"0" );
 
                 //System.Net.Mail.Attachment attachment;
                 //foreach (var ImageFile in ImageFiles)

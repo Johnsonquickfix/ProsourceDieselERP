@@ -169,7 +169,7 @@
             catch { throw; }
             return dt;
         }
-        public static string ProfileCreate(string flag, long company_id = 0, string id = "", string json_data = "")
+        public static string ProfileCreate(string flag, string api_key, long company_id = 0, string id = "", string json_data = "")
         {
             string _json = string.Empty;
             try
@@ -177,6 +177,7 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag",flag),
+                    new SqlParameter("@api_key",api_key),
                     new SqlParameter("@company_id", company_id),
                     !string.IsNullOrEmpty(id) ? new SqlParameter("@id", id) : new SqlParameter("@id", DBNull.Value),
                     !string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data", json_data) : new SqlParameter("@json_data",DBNull.Value)

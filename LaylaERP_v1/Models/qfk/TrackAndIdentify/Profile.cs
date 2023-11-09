@@ -52,6 +52,16 @@
         public List<string> Consent { get; set; }
 
         [JsonProperty("properties", NullValueHandling = NullValueHandling.Ignore)]
-        public IDictionary<string, object> CustomProperties { get; set; }
+        public  List<ProfileCustomProperties> CustomProperties { get; set; }
+
+        public class ProfileCustomProperties
+        {
+            [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+            public long id { get; set; }
+            [JsonProperty("meta_key", NullValueHandling = NullValueHandling.Ignore)]
+            public string meta_key { get; set; }
+            [JsonProperty("meta_value", NullValueHandling = NullValueHandling.Ignore)]
+            public object meta_value { get; set; }
+        }
     }
 }

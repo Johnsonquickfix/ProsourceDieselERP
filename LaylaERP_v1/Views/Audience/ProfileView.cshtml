@@ -70,7 +70,7 @@
     <div class="col-md-5">
         <div class="card boxed_style">
             <div class="card-body">
-                <h5 class="card-title mb-1">METRICS</h5>
+                <h2 class="h2-title">METRICS</h2>
                 <table id="matrics-list" class="table">
                     <thead>
                         <tr>
@@ -97,36 +97,58 @@
             </div>
         </div>
         <div class="card boxed_style">
-            <div class="card-body border-bottom">
-                <h5 class="card-title mb-0">Custom properties </h5>
+            <div class="d-flex align-center justify-content-between business_performance py-3">
+                <h2 class="h2-title">Custom properties </h2>
+                <div class="ms-auto">
+                    <a id="add-custom-property" href="javascript: void(0);" class="btn btn-outline-dark">Add custom property</a>
+                </div>
             </div>
-            <div class="card-body">
-                <table class="table dataTable no-footer" width="100%">
-                    <thead>
-                        <tr>
-                            <th style="width:30%">Key</th>
-                            <th style="width:70%">Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var o in @Model.CustomProperties)
-                        {
+            <div class="card-body pt-1">
+                @if (@Model.CustomProperties == null)
+                {
+                    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Selecting a new template will permanently delete existing content for your campaign. To avoid losing any work, <a href="">return to your current template</a></div>
+                }
+                else
+                {
+                    <table class="table dataTable no-footer" width="100%">
+                        <thead>
                             <tr>
-                                <td class="metric-label">
-                                    @o.Key
-                                </td>
-                                <td class="">
-                                    <div class="loading-metric"><span>@o.Value</span></div>
-                                </td>
+                                <th style="width:30%">Key</th>
+                                <th style="width:65%">Value</th>
+                                <th style="width:5%"></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var o in @Model.CustomProperties)
+                            {
+                                <tr>
+                                    <td class="metric-label">
+                                        @o.meta_key
+                                    </td>
+                                    <td class="">
+                                        <div class="loading-metric"><span>@o.meta_value</span></div>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <a class="btn btn-outline-dark" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item" name="menu-option-edit-value" href="javascript: void(0);" data-id="@o.id" data-key="@o.meta_key" data-value="@o.meta_value">Edit value</a>
+                                                <a class="dropdown-item" name="menu-option-view" href="javascript: void(0);" data-id="@o.id" data-key="@o.meta_key" data-value="@o.meta_value">View</a>
+                                                <a class="dropdown-item" name="menu-option-delete" href="javascript: void(0);" data-id="@o.id">Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>}
             </div>
         </div>
         <div class="card boxed_style">
             <div class="card-body border-bottom">
-                <h5 class="card-title mb-0">INFORMATION</h5>
+                <h2 class="h2-title">INFORMATION</h2>
             </div>
             <div class="card-body">
                 <div class="mb-2 flex-grow-1">
@@ -326,8 +348,8 @@
                 <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
-
     </div>
 </div>
+<script src="~/js/qfk/common.js"></script>
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
 <script async src="@Url.Content("~/js/qfk/audience/profileview.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

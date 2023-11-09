@@ -546,6 +546,28 @@
             catch { }
             return Json(new { status = status, message = JSONresult }, 0);
         }
+        [HttpPost]
+        public JsonResult UpdateCustomerOrder(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                //OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_tax_api", meta_value = "avatax" });
+                //model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
+                //model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
+
+                //int result = SaveOrder(model);
+                int result = LaylaERP_v1.Controllers.CartApiController.UpdateOrderStatus(1, model.s_address_2, model.order_id, model.OrderPostStatus.customer_id, model.OrderPostStatus.status, model.OrderPostMeta);
+                if (result > 0)
+                { status = true; JSONresult = "Order placed successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
         public static int SaveOrder(OrderModel model)
         {
             int result = 0;

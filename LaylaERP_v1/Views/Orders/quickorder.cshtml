@@ -281,7 +281,7 @@
         <div class="col-sm-6 checkout-box-total">
             <div class="box box-primary">
                 <div class="box-header with-border">                    
-                    <button type="button" id="btnpriceorder" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Price">Order Process</button>
+                    @*<button type="button" id="btnpriceorder" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Price">Order Process</button>*@
                 </div>
                 <div class="box-body no-padding">                    
                 </div>
@@ -307,7 +307,7 @@
                 </div>
             </div>
             <!-- /.box-body -->
-            <div style="display:none" id="divtotal" class="box box-primary">
+            <div  id="divtotal" class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Total</h3>
                     <div class="box-tools pull-right">
@@ -397,7 +397,8 @@
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
                     @*<button type="button" id="btnpay" class="btn btn-primary"> Payment</button>*@
-                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>
+                    <button type="button" style="display:none"  id="btnpriceorder" class="btn btn-danger pull-right " data-toggle="tooltip" title="" data-original-title="Price">Order Process</button>
+                    <button type="button" style="display:none" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>
                 </div>
             </div>
         </div>

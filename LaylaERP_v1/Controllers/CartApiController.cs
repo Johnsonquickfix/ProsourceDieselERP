@@ -812,5 +812,42 @@
             return result;
         }
         #endregion
+        #region [Update Order Status]
+        public static int UpdateOrderStatus(long entity_id, string cart_session_id, long order_id, long customer_id, string order_status, List<OrderPostMetaModel> orderPostMetas)
+        {
+            int result = 0;
+            try
+            {
+                //CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, 0, cart_session_id, ""));
+                     string _giftcard_to = string.Empty, _giftcard_from = string.Empty, _giftcard_from_mail = string.Empty, _giftcard_message = string.Empty, _giftcard_amt = string.Empty;
+                    StringBuilder strProductMeta = new StringBuilder("");
+                    string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+                    DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                    /// step 1 : wp_wc_order_stats
+                    //StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", obj.data.item_count, obj.data.cart_totals.subtotal,
+                    //obj.data.cart_totals.total_tax, obj.data.cart_totals.shipping_total, obj.data.cart_totals.total, order_status, customer_id, order_id));
+                    //strSql.Append(string.Format(" delete from wp_woocommerce_order_itemmeta where order_item_id in (select order_item_id from wp_woocommerce_order_items where order_id={0});", order_id));
+                    //strSql.Append(string.Format(" delete from wp_wc_order_product_lookup where order_id={0};", order_id));
+                    //strSql.Append(string.Format(" delete from wp_woocommerce_order_items where order_id={0};", order_id));
+                   StringBuilder strSql = new StringBuilder();
+                    /// step 2 : wp_postmeta 
+                    foreach (OrderPostMetaModel _meta in orderPostMetas)
+                    {
+                    strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", _meta.meta_value, order_id, _meta.meta_key));
+                        if (_meta.meta_key.Equals("_billing_email")) _giftcard_from_mail = _meta.meta_value;
+                        strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT '{0}' id, '{1}' _key, '{2}' _value) tb WHERE _key not in (SELECT meta_key FROM wp_postmeta WHERE post_id = '{3}'); ", order_id, _meta.meta_key, _meta.meta_value, order_id));
+                    } 
+                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", order_status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_id));
+                     result = LaylaERP.DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                
+                //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
+        }
+        #endregion
     }
 }

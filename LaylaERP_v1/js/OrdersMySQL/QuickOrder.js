@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+    
+   
     $("#txtbillphone").mask("(999) 999-9999");
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
@@ -30,7 +32,10 @@
         }
     });
     $("#ddlUser").change(function () {
-        $.when(NewOrderNo()).done(function () { CustomerAddress($("#ddlUser").val()); }).fail(function (error) { console.log(error); }); return false;
+        
+        $.when(NewOrderNo()).done(function () { CustomerAddress($("#ddlUser").val());  }).fail(function (error) { console.log(error); });
+         
+        return false;
     });
 
     $("#ddlShipping").change(function (t) {
@@ -66,9 +71,11 @@
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } }); 
 
     $(document).on("click", "#btnpriceorder", function (t) {
+        $("#btnpriceorder").hide();
         gettotaldetails();
         //$("#divAddItemFinal :input").prop("disabled", true);
-        $("#divtotal").show();
+        $("#btnCheckout").show();
+        
 
     });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
@@ -102,12 +109,14 @@
         t.preventDefault(); $("#loader").show(); //$('#ddlStatus').prop("disabled", true); 
         $('#ddlStatus,.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
-        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
+        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button"  id="btnpriceorder" class="btn btn-danger pull-right " data-toggle="tooltip" title="" data-original-title="Price">Order Process</button> <button style="display:none" type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
         ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory');
         // all item add to cart 
         //$('.add_order_item_meta').hide();
+        $("#btnpriceorder").show();
+        
         gettotaldetailsedit();
 
     });
@@ -118,7 +127,7 @@
         //getOrderInfo(); i
         sEdit(false);
     });
-    $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory'); });
+    $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateODS(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory'); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -142,7 +151,7 @@
         // Now you can use 'parent_id' as needed
         //console.log('Other ID: ' + productData[product_id].parent_id);
         //getItemList(product_id, parent_id); //$('#ddlProduct').val('').trigger('change');
-        gettotaldetailsfromif(product_id, parent_id, 1); $("#divtotal").hide();
+        gettotaldetailsfromif(product_id, parent_id, 1); //$("#divtotal").hide();
 
         //setTimeout(function () { ; $("#divtotal").hide(); }, 3000);
 
@@ -671,6 +680,7 @@ function selectOrderAddress(ele) {
         if ($(ele).data('sc') != undefined) $('#txtshipcity').val($(ele).data('sc'));
         if ($(ele).data('sct') != undefined) $('#ddlshipcountry').val($(ele).data('sct').trim()).trigger('change');
         if ($(ele).data('ss') != undefined) $('#ddlshipstate').val($(ele).data('ss').trim()).trigger('change');
+        $("#btnCheckout").hide();
     }
 }
 function addCustomerModal(cus_name) {
@@ -1092,7 +1102,7 @@ function getOrderItemList(oid) {
         $('#line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
         $('#billCoupon').append(couponHtml);
-        $('#divtotal').show();
+        //$('#divtotal').show();
         //Calculate Final
         //FinalTotalControl(_tax);
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
@@ -1290,7 +1300,7 @@ $("#line_items").on("change", ".rowCalulate[name='txt_itemqty']", function (e) {
 
     //console.log(newValue, lastValue, quantityChange);
 
-    gettotaldetailsfromif(rowId, parentId, quantityChange); $("#divtotal").hide();
+    gettotaldetailsfromif(rowId, parentId, quantityChange); //$("#divtotal").hide();
 
     //let cartItems = []; // Initialize an empty array to store cart items 
     //cartItems.push({
@@ -1362,7 +1372,7 @@ function removeItems(id, parentid, qty) {
         .then((result) => {
             if (result.value) {
 
-                gettotaldetailsfromif(id, parentid, -initialQty); $("#divtotal").hide();
+                gettotaldetailsfromif(id, parentid, -initialQty); //$("#divtotal").hide();
 
               //  $('#tritemid_' + id).remove(); calculateFinal();
                 //ActivityLog('delete other product id (' + id + ') in new purchase order', '/PurchaseOrder/NewPurchaseOrder');
@@ -3159,6 +3169,9 @@ function gettotaldetailsfromif(product_id, parent_id, quantity) {
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         async: true
     });
+    $("#btnpriceorder").show();
+    $("#btnCheckout").hide();
+
 }
 
 
@@ -3237,7 +3250,7 @@ function gettotaldetailsedit() {
                 const item = data[0];
                 $("#hfsession_id").val(item.product_sku);
                 console.log($("#hfsession_id").val(), item.product_sku);
-                $("#divtotal").hide();
+                //$("#divtotal").hide();
                 let dataCouponValue = '';
                 $("ul#billCoupon li").each(function () {
                     dataCouponValue = $(this).data("coupon");
@@ -3458,6 +3471,51 @@ function updateCO() {
     }]);
     return false;
 }
+
+
+function updateODS() {
+
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    if (!ValidateData()) { $("#loader").hide(); return false };
+    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
+
+    //if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
+    let obj = { order_id: oid, OrderPostMeta: postMeta, s_address_2: $("#hfsession_id").val(), OrderPostStatus: postStatus };
+    console.log(obj);
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/OrdersMySQL/UpdateCustomerOrder', obj).done(function (result) {
+                    if (result.status) {
+                        //$('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+                        //swal('Success', 'Order updated successfully.', "success");
+                        $.when(UpdateOrders()).done(function () {
+                            //getOrderInfo(); $('[data-toggle="tooltip"]').tooltip();
+                            swal('Success', 'Order updated successfully.').then((result) => {
+                                let status = $('#ddlStatus').val();
+                                console.log(status);
+                                if (status == 'wc-pending') {
+                                    PaymentModal();
+                                }
+                                else {
+                                    location.href = '../../OrdersMySQL/OrdersHistory';
+                                }
+
+                                //location.href = '../../OrdersMySQL/OrdersHistory';  ddlStatus wc-pending
+                            });
+                        });
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+    return false;
+}
+
+
 function UpdateOrders() {
     $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
     //$.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });

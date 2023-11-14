@@ -71,7 +71,7 @@
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } }); 
 
     $(document).on("click", "#btnpriceorder", function (t) {
-        $("#btnpriceorder").hide();
+        //$("#btnpriceorder").hide();
         gettotaldetails();
         //$("#divAddItemFinal :input").prop("disabled", true);
         $("#btnCheckout").show();
@@ -109,8 +109,9 @@
         t.preventDefault(); $("#loader").show(); //$('#ddlStatus').prop("disabled", true); 
         $('#ddlStatus,.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
-        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button"  id="btnpriceorder" class="btn btn-danger pull-right " data-toggle="tooltip" title="" data-original-title="Price">Order Process</button> <button style="display:none" type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
-        $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
+        //$('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button"  id="btnpriceorder" class="btn btn-danger pull-right " data-toggle="tooltip" title="" data-original-title="Price">Order Process</button> <button style="display:none" type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
+        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button> <button style="display:none" type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
+       $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
         ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory');
         // all item add to cart 

@@ -405,6 +405,8 @@
     <Compile Include="Models\Product\ProductFilterRequest.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\PurchaseReceiceOrderModel.cs" />
+    <Compile Include="Models\qfk\Audience\EventRequest.cs" />
+    <Compile Include="Models\qfk\Audience\MetricRequest.cs" />
     <Compile Include="Models\qfk\Audience\People.cs" />
     <Compile Include="Models\qfk\Audience\PeopleCustomProperty.cs" />
     <Compile Include="Models\qfk\BaseModel.cs" />

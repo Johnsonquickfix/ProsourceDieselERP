@@ -41,10 +41,6 @@
                 else if (string.IsNullOrEmpty(model.Data.Attributes.Profile.Data.Attributes.Email)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "Invalid input. Profile `email` or `id` is a required field for the resource 'event'." });
                 //else if (string.IsNullOrEmpty(model.Data.Attributes.Profile.Data.Attributes.Email) && string.IsNullOrEmpty(model.Data.Attributes.Profile.Data.Attributes.ID)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "Invalid input. Profile `email` or `id` is a required field for the resource 'event'." });
 
-                //else if (string.IsNullOrEmpty(app_key)) return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = "Authentication credentials were not provided. Missing `API-Key` header." });
-                //else if (string.IsNullOrEmpty(model.Data.Attributes.Email)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "'email' is a required field for this call." });
-
-                ////model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("create-profile", app_key, 1, "", JsonConvert.SerializeObject(model)));
                 dynamic result = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("create-activities", app_key, 1, "", JsonConvert.SerializeObject(model)));
                 if (result.status != null) return Content((HttpStatusCode)result.status, result);
                 else return Ok(result);

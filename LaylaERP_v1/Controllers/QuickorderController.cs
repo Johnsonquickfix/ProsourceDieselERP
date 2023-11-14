@@ -154,6 +154,18 @@ namespace LaylaERP_v1.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpPost]
+        public JsonResult GetvariationProductList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = QuickorderRepository.GetvariationProductList(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
 
         [HttpPost]
         public JsonResult paymentorder(CartPaymentController objs, long product_id, long vendor_id)

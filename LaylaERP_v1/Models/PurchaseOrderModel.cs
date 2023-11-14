@@ -67,6 +67,7 @@ namespace LaylaERP.Models
         public bool is_free { get; set; }
         public string free_itmes { get; set; }
         public List<ShippingMethods> ShippingMethods { get; set; }
+        public List<couponsdetails> couponsdetails { get; set; }
     }
     public class ShippingMethods
     {
@@ -74,6 +75,12 @@ namespace LaylaERP.Models
         public string method_title { get; set; }
         public decimal amount { get; set; }
         public bool isactive { get; set; }
+    }
+    public class couponsdetails
+    {
+        public string coupon_title { get; set; }        
+        public decimal discount_amount { get; set; }
+        
     }
     public class Ordershipping
     {              

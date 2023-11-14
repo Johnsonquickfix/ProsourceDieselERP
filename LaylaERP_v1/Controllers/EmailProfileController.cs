@@ -252,9 +252,17 @@ namespace LaylaERP_v1.Controllers
                     {
                         System.Net.Mail.Attachment attachment = new System.Net.Mail.Attachment(ImageFile.InputStream, Path.GetFileName(ImageFile.FileName));
                         attachments.Add(attachment);
+                        // Create a unique file name to avoid overwriting existing files
+                        //string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ImageFile.FileName);
+                        // Get the full path for the destination file in the "~/mail/draft" directory
+                        //string destinationPath = Path.Combine(Server.MapPath("~/mail/draft"), uniqueFileName);
+                        //using (var fileStream = new FileStream(destinationPath, FileMode.Create))
+                        //{
+                            // Copy the data from ImageFile.InputStream to the destination file
+                            //ImageFile.InputStream.CopyTo(fileStream);
+                       // }
                     }
-                }
-
+                } 
                 SendEmail.Sendattachmentemails(recipient, subject, editorcontent, attachments);
 
                 int ID = EmailProfileRepository.AddMails("SI",1, recipient, subject, "S", false, false, editorcontent, editorcontent, "0" ,"0",false,"0" );

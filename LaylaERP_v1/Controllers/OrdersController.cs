@@ -53,6 +53,18 @@
             ///OrderRepository.OrderInvoiceMail(id);
             return View();
         }
+        // GET: Mines of Moria (Quick Orders)
+        public ActionResult quickorders(long id = 0)
+        {
+            ViewBag.id = id;
+            string pay_method = ""; //CommanUtilities.Provider.GetCurrent().AuthorizeNet ? "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
+
+            pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
+            ViewBag.pay_option = "[" + pay_method + "]";
+            ///OrderRepository.OrderInvoiceMail(id);
+            return View();
+        }
         // GET: Order Refund
         public ActionResult OrderRefund(long id = 0)
         {

@@ -471,6 +471,10 @@ namespace LaylaERP.BAL
                         //PurchaseOrderProductsModel productsModeltax = new PurchaseOrderProductsModel();
                         dynamic jsonResponsetotal = JsonConvert.DeserializeObject(responseContenttax);
                         //var shippingMethodsArray = jsonResponsetotal.data.shipping_methods.ToObject<List<ShippingMethods>>();
+
+                        var couponsdetails = jsonResponsetotal.data.coupons.ToObject<List<couponsdetails>>();
+                        productsModel.couponsdetails = couponsdetails;
+
                         var stauscode = jsonResponsetotal.status;
                         if (stauscode == "200")
                         {
@@ -481,7 +485,10 @@ namespace LaylaERP.BAL
                             productsModel.discount = jsonResponsetotal.data.cart_totals.discount_total;
                             productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total;
                             productsModel.product_type = jsonResponsetotal.status;
-                            productsModel.total_tva = jsonResponsetotal.data.coupons[0].coupon_amount; 
+                            productsModel.total_tva = jsonResponsetotal.data.coupons[0].coupon_amount;
+                            //int lastIndex = jsonResponsetotal.data.coupons.Count - 1;
+                            //productsModel.total_tva = jsonResponsetotal.data.coupons[lastIndex].discount_amount;
+
                         }
                         else
                         {
@@ -553,6 +560,24 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "select distinct top 100 p.id id,CONCAT(p.post_title, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as displayname,post_parent"
+                              + " FROM wp_posts as p"
+                               + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
+                             // + " WHERE p.post_type = '" + strproducttype + "' and CONCAT(p.post_title,p.id,post_name, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'  ORDER BY id; ";//AND p.post_status = 'publish' 
+                             + " WHERE p.post_type in ('product', 'product_variation') and CONCAT(p.post_title,p.id,post_name, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'  ORDER BY id; ";//AND p.post_status = 'publish' 
+
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetvariationProductList(string strSearch, string strproducttype)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "select distinct top 100 convert(varchar, p.id) + '#' + convert(varchar,post_parent) id,CONCAT(p.post_title, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as displayname,post_parent"
                               + " FROM wp_posts as p"
                                + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                              // + " WHERE p.post_type = '" + strproducttype + "' and CONCAT(p.post_title,p.id,post_name, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'  ORDER BY id; ";//AND p.post_status = 'publish' 

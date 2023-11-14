@@ -2245,26 +2245,34 @@ function ApplyCoupon() {
                         $("#salesTaxTotal").text(formatCurrency(item.total_localtax1)); $("#salesTaxTotal").data('total', item.total_localtax1);
                         $("#shippingTotal").text(formatCurrency(item.total_localtax2)); $("#shippingTotal").data('total', item.total_localtax2);
                         $("#netPaymentTotal").text(formatCurrency(totalTtc)); $("#netPaymentTotal").data('total', totalTtc);
-                        layoutHtml = '<li id="li_' + newItemText.toString().toLowerCase().replaceAll(' ', '_') + '"  data-coupon= "' + newItemText + '" >';
-                        layoutHtml += '<a href="javascript:void(0);">';
-                        layoutHtml += '<i class="fa fa-gift"></i><span>' + newItemText.toString().toLowerCase() + '</span>';
-                        layoutHtml += '<div class="pull-right">';
+                        var coupons = item.couponsdetails;
+                        $('#billCoupon').empty();
+                        if (coupons && coupons.length > 0) {
+                        for (var i = 0; i < coupons.length; i++) {
+                            layoutHtml = '<li id="li_' + coupons[i].coupon_title + '"  data-coupon= "' + coupons[i].coupon_title + '" >';
+                            layoutHtml += '<a href="javascript:void(0);">';
+                            layoutHtml += '<i class="fa fa-gift"></i><span>' + coupons[i].coupon_title + '</span>';
+                            layoutHtml += '<div class="pull-right">';
 
 
-                        layoutHtml += '$<span id="cou_discamt">' + item.total_tva + '</span>';
-                        layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="deleteAllCoupons(\'' + newItemText.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button>';
-                        //}
-                        //else {
-                        //    layoutHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
-                        //}
-                        layoutHtml += '</div>';
-                        layoutHtml += '</a>';
-                        layoutHtml += '</li>';
-                        //console.log(data[i].post_title, data[i].coupon_amount);
-                        $('#billCoupon').append(layoutHtml);
+                            layoutHtml += '$<span id="cou_discamt">' + coupons[i].discount_amount + '</span>';
+                            layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="deleteAllCoupons(\'' + coupons[i].coupon_title + '\');"><i class="fa fa-times"></i></button>';
+                            //}
+                            //else {
+                            //    layoutHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
+                            //}
+                            layoutHtml += '</div>';
+                            layoutHtml += '</a>';
+                            layoutHtml += '</li>';
+                            //console.log(data[i].post_title, data[i].coupon_amount);
+                            $('#billCoupon').append(layoutHtml);
+                            }
+                        } else {
+                            console.error("No coupons available for the current item.");
+                        }
 
                         $("#txt_Coupon").val('');
-                        //$("#billModal").modal("hide");
+                        $("#billModal").modal("hide");
                     }
                     else {
                         swal('Alert!', item.product_label, "info");

@@ -13,6 +13,34 @@
 <link href="~/Content/css/Style.css" rel="stylesheet" />
 <link href="~/css/order_style.css?v=1.0.0" rel="stylesheet" />
 <style>
+    #tbladdproduct {
+    table-layout:fixed;}
+    body #billModal .modal-footer {
+        align-items: stretch;
+    }
+    #tbladdproduct .select2.select2-container.select2-container--default {width:100% !important;
+    }
+    #billModal .modal-body > div > table > tbody > tr > td {
+        padding-bottom: 5px !important;
+    }
+    #billModal .modal-body > div > table > tbody > tr > td:first-child, #billModal .modal-body > div > table > tbody > tr > th:first-child {
+        padding-right: 20px !important;
+        width: calc(100% - 100px) !important;
+    }
+    #billModal .modal-body > div > table > tbody > tr > td:last-child, #billModal .modal-body > div > table > tbody > tr > th:last-child {
+         width:100px !important;
+    }
+    #billModal .modal-footer {padding-left:0px; padding-right:0px;
+    }
+    #billModal #addButton {
+        border-radius: 3px;
+        margin-right: auto;
+        border: 1px solid;
+    }
+    #btnaddsession {
+        margin-left: auto;
+        border-radius: 3px
+    }
     .input-group .select2-container, .form-group .select2-container {
         position: relative !important;
         z-index: 2;

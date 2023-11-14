@@ -11,13 +11,20 @@
 
     public class People
     {
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
+        public string type { get; set; }
+
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public string PeopleId { get; set; }
+
         [JsonProperty("attributes", NullValueHandling = NullValueHandling.Ignore)]
         public PeopleAttributes Attributes { get; set; }
 
         public class PeopleAttributes
         {
+            [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+            public string ID { get; set; }
+
             [JsonProperty("email", NullValueHandling = NullValueHandling.Ignore)]
             public string Email { get; set; }
 

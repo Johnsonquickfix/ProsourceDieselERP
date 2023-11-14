@@ -22,11 +22,17 @@
         {
             try
             {
-                OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
-                if (string.IsNullOrEmpty(model.Data.Attributes.Email)) return Content(HttpStatusCode.BadRequest, "Invalid email address.");
-                model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("create-profile", 1, "", JsonConvert.SerializeObject(model)));
-                return Ok(model);
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string app_key = string.Empty;
+                if (headers.Contains("API-Key")) app_key = headers.GetValues("API-Key").First();
+
+                if (string.IsNullOrEmpty(app_key)) return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = "Authentication credentials were not provided. Missing `API-Key` header." });
+                else if (string.IsNullOrEmpty(model.Data.Attributes.Email)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "'email' is a required field for this call." });
+
+                //model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("create-profile", app_key, 1, "", JsonConvert.SerializeObject(model)));
+                dynamic result = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("create-profile", app_key, 1, "", JsonConvert.SerializeObject(model)));
+                if (result.status != null) return Content((HttpStatusCode)result.status, result);
+                else return Ok(result);
             }
             catch (Exception ex)
             {
@@ -38,10 +44,17 @@
         {
             try
             {
-                OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
-                PeopleRequest model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("get-profile", 1, id, string.Empty));
-                return Ok(model);
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string app_key = string.Empty;
+                if (headers.Contains("API-Key")) app_key = headers.GetValues("API-Key").First();
+                if (string.IsNullOrEmpty(app_key)) return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = "Authentication credentials were not provided. Missing `API-Key` header." });
+                else if (string.IsNullOrEmpty(id)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "'id' is a required field for this call." });
+                //else if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(email) && string.IsNullOrEmpty(phone_number)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "'id' or 'email' or 'phone_number' is a required field for this call." });
+
+                //PeopleRequest model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("get-profile", app_key, 1, id, string.Empty));
+                dynamic result = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("get-profile", app_key, 1, id, string.Empty));
+                if (result.status != null) return Content((HttpStatusCode)result.status, result);
+                else return Ok(result);
             }
             catch (Exception ex)
             {
@@ -53,13 +66,19 @@
         {
             try
             {
-                OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                //if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
-                if (string.IsNullOrEmpty(model.Data.PeopleId)) return BadRequest("'id' is a required field for this call.");
-                if (model.Data.Attributes.Email != null)
-                    if (model.Data.Attributes.Email.Trim() == string.Empty) return BadRequest("Invalid email address.");
-                model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("update-profile", 1, id, JsonConvert.SerializeObject(model)));
-                return Ok(model);
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string app_key = string.Empty;
+                if (headers.Contains("API-Key")) app_key = headers.GetValues("API-Key").First();
+
+                if (string.IsNullOrEmpty(app_key)) return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = "Authentication credentials were not provided. Missing `API-Key` header." });
+                else if (string.IsNullOrEmpty(model.Data.PeopleId)) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "'id' is a required field for this call." });
+                else if (model.Data.Attributes.Email != null)
+                    if (model.Data.Attributes.Email.Trim() == string.Empty) return Content(HttpStatusCode.BadRequest, new { status = 400, code = "invalid", message = "'email' is a required field for this call." });
+
+                //model = JsonConvert.DeserializeObject<PeopleRequest>(ProfilesRepository.ProfileCreate("update-profile", app_key, 1, id, JsonConvert.SerializeObject(model)));
+                dynamic result = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("update-profile", app_key, 1, id, JsonConvert.SerializeObject(model)));
+                if (result.status != null) return Content((HttpStatusCode)result.status, result);
+                else return Ok(result);
             }
             catch (Exception ex)
             {
@@ -77,7 +96,7 @@
                 if (string.IsNullOrEmpty(model.PeopleId)) return BadRequest("'profile_id' is a required field.");
                 else if (string.IsNullOrEmpty(model.MetaKey)) return BadRequest("'meta_key' is a required field.");
                 else if (string.IsNullOrEmpty(model.MetaValue)) return BadRequest("'meta_value' is a required field.");
-                dynamic obj = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("add-properties", 1, model.PeopleId, JsonConvert.SerializeObject(model)));
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("add-properties", "", 1, model.PeopleId, JsonConvert.SerializeObject(model)));
                 if (obj == null) return BadRequest("Invalid details.");
                 else return Ok(new { status = true, data = obj });
             }
@@ -96,7 +115,7 @@
                 //if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
                 if (string.IsNullOrEmpty(model.PeopleId)) return BadRequest("'profile_id' is a required field.");
                 else if (model.ID <= 0) return BadRequest("'ID' is a required field.");
-                dynamic obj = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("delete-properties", 1, model.PeopleId, JsonConvert.SerializeObject(model)));
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(ProfilesRepository.ProfileCreate("delete-properties", "", 1, model.PeopleId, JsonConvert.SerializeObject(model)));
                 if (obj == null) return BadRequest("Invalid details.");
                 else return Ok(new { status = true, data = obj });
             }

@@ -486,21 +486,21 @@ function CustomerAddress(id) {
 }
 function GetTaxRate() {
     ///Tax Calculate for state
-    let tax_states = ["NY", "CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
-    let s_state = $("#ddlshipstate").val(), sub_total = parseFloat($("#ddlshipstate").val()) || 100, ship_total = parseFloat($("#shippingTotal").val()) || 0.00;
-    if (tax_states.includes(s_state)) {
-        var opt = {
-            to_zip: $("#txtshipzipcode").val(), to_street: $("#txtshipaddress1").val(), to_city: $("#txtshipcity").val(), to_state: s_state, to_country: $("#ddlshipcountry").val(), amount: sub_total, shipping: ship_total
-        };
-        if (opt.to_zip.length <= 0 || opt.to_city.length <= 0 || opt.to_country.length <= 0) { $('#hfTaxRate').data('meta_data', []); $('#hfTaxRate').val(0); $('#hfFreighttaxable').val(false); }
-        else {
-            ajaxFunction('/Orders/GetTaxAmounts', opt, function () { }, function (res) {
-                let tax_meta = (res.tax_meta != '' && res.tax_meta != null) ? JSON.parse(res.tax_meta) : [];
-                $('#hfTaxRate').data('meta_data', tax_meta); $('#hfTaxRate').val(res.rate); $('#hfFreighttaxable').val(res.freight_taxable);
-            }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); }, false);
-        }
-    }
-    else { $('#hfTaxRate').data('meta_data', []); $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
+    //let tax_states = ["NY", "CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
+    //let s_state = $("#ddlshipstate").val(), sub_total = parseFloat($("#ddlshipstate").val()) || 100, ship_total = parseFloat($("#shippingTotal").val()) || 0.00;
+    //if (tax_states.includes(s_state)) {
+    //    var opt = {
+    //        to_zip: $("#txtshipzipcode").val(), to_street: $("#txtshipaddress1").val(), to_city: $("#txtshipcity").val(), to_state: s_state, to_country: $("#ddlshipcountry").val(), amount: sub_total, shipping: ship_total
+    //    };
+    //    if (opt.to_zip.length <= 0 || opt.to_city.length <= 0 || opt.to_country.length <= 0) { $('#hfTaxRate').data('meta_data', []); $('#hfTaxRate').val(0); $('#hfFreighttaxable').val(false); }
+    //    else {
+    //        ajaxFunction('/Orders/GetTaxAmounts', opt, function () { }, function (res) {
+    //            let tax_meta = (res.tax_meta != '' && res.tax_meta != null) ? JSON.parse(res.tax_meta) : [];
+    //            $('#hfTaxRate').data('meta_data', tax_meta); $('#hfTaxRate').val(res.rate); $('#hfFreighttaxable').val(res.freight_taxable);
+    //        }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); }, false);
+    //    }
+    //}
+    //else { $('#hfTaxRate').data('meta_data', []); $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
     //calculateDiscountAcount();
 }
 function GetSRTaxRate() {
@@ -971,10 +971,20 @@ function getOrderItemList(oid) {
                 else itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
 
                 if (row.is_free) {
-                    itemHtml += '<td class="text-center item-action"></td><td>' + row.product_name + '</td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
-                    itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    //console.log('AA');
+                    //itemHtml += '<td class="text-center item-action"></td><td>' + row.product_name + '</td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                    //itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                    itemHtml += '<td>' + row.product_name + '<div class="view-addmeta" style="word-wrap: break-word;">';
+                    $.each(_meta, function (name, value) { itemHtml += '<b>' + name.replace('_system_', '') + '</b> : ' + value + '<br>'; });
+                    itemHtml += '</div></td>';                   
+                    itemHtml += '<td class="text-left">' + row.product_sku + '</td>';
+                    //itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    itemHtml += '<td class="text-right product-price" data-price="' + row.sale_price + '">' + row.sale_price + '</td>';
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.product_id + '" value="' + row.quantity + '" name="txt_itemqty" placeholder="Qty."></td>';
+
                 }
-                else if (giftcard_amount > 0) {
+                else if (giftcard_amount > 0) {                     
                     itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                     itemHtml += '<td>' + row.product_name + '<div class="view-giftmeta" style="word-wrap: break-word;"> <b>To:</b> ' + _meta.wc_gc_giftcard_to_multiple + '<br><b>From:</b> ' + _meta.wc_gc_giftcard_from + '<br><b>Amount:</b> $' + giftcard_amount + '</div></td>';
                     itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
@@ -983,7 +993,7 @@ function getOrderItemList(oid) {
                     itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                     itemHtml += '<td>' + row.product_name + '<div class="view-addmeta" style="word-wrap: break-word;">';
                     $.each(_meta, function (name, value) { itemHtml += '<b>' + name.replace('_system_', '') + '</b> : ' + value + '<br>'; });
-                    itemHtml += '</div></td>';
+                    itemHtml += '</div></td>';                    
                     itemHtml += '<td class="text-left">' + row.product_sku + '</td>';
                     //itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     itemHtml += '<td class="text-right product-price" data-price="' + row.sale_price + '">' + row.sale_price + '</td>';

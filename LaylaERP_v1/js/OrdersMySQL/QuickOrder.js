@@ -3274,24 +3274,40 @@ function gettotaldetailsedit() {
                 $("ul#billCoupon li").each(function () {
                     dataCouponValue = $(this).data("coupon");
                     console.log(dataCouponValue);
+                    let option = {
+                        code: dataCouponValue,
+                        session_id: $("#hfsession_id").val()
+                    };
+                    $.ajax({
+                        type: "Post", url: '/Quickorder/applycoupon', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            console.log(data);
+                            var row = data[0];
+
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+                        async: true
+                    });
                 });
 
-                let option = {
-                    code: dataCouponValue,
-                    session_id: $("#hfsession_id").val()
-                };
-                $.ajax({
-                    type: "Post", url: '/Quickorder/applycoupon', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-                    beforeSend: function () { $("#loader").show(); },
-                    success: function (data) {
-                        console.log(data);
-                        var row = data[0];
+                //let option = {
+                //    code: dataCouponValue,
+                //    session_id: $("#hfsession_id").val()
+                //};
+                //$.ajax({
+                //    type: "Post", url: '/Quickorder/applycoupon', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                //    beforeSend: function () { $("#loader").show(); },
+                //    success: function (data) {
+                //        console.log(data);
+                //        var row = data[0];
 
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-                    async: true
-                });
+                //    },
+                //    complete: function () { $("#loader").hide(); },
+                //    error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+                //    async: true
+                //});
 
             }
         },

@@ -170,162 +170,164 @@
                 LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                 //double _dimension = 2.54, _weight = 0.453592;
                 double _dimension = 1, _weight = 1;
-                //Packer packer = new Packer(true, false);
-                WC_Boxpack packer = new WC_Boxpack();
+                //calculate tax info
                 TaxJarModel _tax = new TaxJarModel();
                 if (obj.data.shipping_address != null && checkout)
                 {
-                    _tax.to_street = obj.data.shipping_address.address_1;
-                    _tax.to_city = obj.data.shipping_address.city;
-                    _tax.to_state = obj.data.shipping_address.state;
-                    _tax.to_zip = obj.data.shipping_address.postcode;
-                    _tax.to_country = obj.data.shipping_address.country;
-                    _tax.amount = 100;
                     if (!string.IsNullOrEmpty(obj.data.shipping_address.address_1) && !string.IsNullOrEmpty(obj.data.shipping_address.city) && !string.IsNullOrEmpty(obj.data.shipping_address.state) && !string.IsNullOrEmpty(obj.data.shipping_address.postcode) && !string.IsNullOrEmpty(obj.data.shipping_address.country))
-                        _tax = GetTaxAmounts(_tax);
+                        _tax = GetTaxAmounts(obj.data.shipping_address.address_1, obj.data.shipping_address.city, obj.data.shipping_address.state, obj.data.shipping_address.postcode, obj.data.shipping_address.country, 100);
                     else _tax = new TaxJarModel { order_total_amount = 0, taxable_amount = 0, amount_to_collect = 0, rate = 0, freight_taxable = false };
                 }
 
-                long item_count = obj.data.item_count;
-                decimal shipping_total = 0, shipping_tax = 0;
-                decimal fee_total = 0, fee_tax = 0;
+                long item_count = obj.data.item_count, item_count1 = obj.data.item_count;
+                decimal shipping_total = 0, shipping_tax = 0, fee_total = 0, fee_tax = 0, discount_total = 0, discount_tax = 0, f_subtotal = 0, f_subtotal_tax = 0, f_line_total = 0, f_line_tax = 0;
                 decimal cart_contents_total = 0, cart_contents_tax = 0;
-                decimal f_subtotal = 0, f_subtotal_tax = 0, f_line_total = 0, f_line_tax = 0;
-                decimal discount_total = 0, discount_tax = 0;
+
+                // fixed cart total
+                decimal coupon_amount_fixed = obj.data.coupons.Where(s => s.discount_type != "percent").Sum(s => s.coupon_amount);
+                decimal coupon_amount_fixed_per_qty = item_count1 > 0 ? coupon_amount_fixed / item_count1 : 0;
 
                 List<CartDataResponse.Item> _newItem = new List<CartDataResponse.Item>();
-                foreach (var item in obj.data.items)
+                foreach (var item in obj.data.items.Where(s => s.id > 0).OrderBy(s => s.price))
                 {
-                    if (item.id > 0)
+                    // Price filter
+                    // Wholesale price 
+                    if (item.wholesale != null)
                     {
-                        // get wholesale rate 
-                        if (item.wholesale != null)
+                        if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
                         {
-                            if ((item.wholesale.price.HasValue ? item.wholesale.price : 0) > 0)
+                            decimal? _price = item.wholesale.price;
+                            System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.ArrayList;
+                            foreach (System.Collections.Hashtable _r in _att)
                             {
-                                decimal? _price = item.wholesale.price;
-                                System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.rule_mapping) as System.Collections.ArrayList;
+                                if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
+                                {
+                                    int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
+                                    decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
+                                    if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = _wholesale_discount_range;
+                                }
+                            }
+                            item.price = _price;
+                        }
+                        else
+                        {
+                            if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
+                            {
+                                decimal? _price = item.price - (item.price * item.wholesale.cat_discount) / 100;
+                                System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.ArrayList;
                                 foreach (System.Collections.Hashtable _r in _att)
                                 {
                                     if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
                                     {
                                         int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
                                         decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
-                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = _wholesale_discount_range;
+                                        if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = item.price - (item.price * _wholesale_discount_range) / 100;
                                     }
                                 }
                                 item.price = _price;
                             }
-                            else
-                            {
-                                if ((item.wholesale.cat_discount.HasValue ? item.wholesale.cat_discount : 0) > 0 && item.price > 0)
-                                {
-                                    decimal? _price = item.price - (item.price * item.wholesale.cat_discount) / 100;
-                                    System.Collections.ArrayList _att = serializer.Deserialize(item.wholesale.cat_rule_mapping) as System.Collections.ArrayList;
-                                    foreach (System.Collections.Hashtable _r in _att)
-                                    {
-                                        if (_r["wholesale-role"].ToString().ToLower() == item.wholesale.role.ToLower())
-                                        {
-                                            int _start_qty = _r["start-qty"] != DBNull.Value ? Convert.ToInt32(_r["start-qty"].ToString()) : 0, _end_qty = !string.IsNullOrEmpty(_r["end-qty"].ToString()) ? Convert.ToInt32(_r["end-qty"].ToString()) : 0;
-                                            decimal _wholesale_discount_range = _r["wholesale-discount"] != DBNull.Value ? Convert.ToDecimal(_r["wholesale-discount"].ToString()) : 0;
-                                            if (_start_qty <= item.quantity && (_end_qty >= item.quantity || _end_qty == 0)) _price = item.price - (item.price * _wholesale_discount_range) / 100;
-                                        }
-                                    }
-                                    item.price = _price;
-                                }
-                            }
                         }
-                        if (item.add_core_price.HasValue) item.price = (item.price.HasValue ? item.price.Value : 0) + (item.add_core_price.Value ? item.core_price.Value : 0);
-                        item.wholesale = null;
-                        decimal line_subtotal = item.quantity * (item.price.HasValue ? item.price.Value : 0), line_discount = 0, line_total = 0;
-                        item.line_subtotal = line_subtotal;
-                        if (obj.data.coupons != null)
+                    }
+                    // Core Price
+                    if (item.add_core_price.HasValue) item.price = (item.price.HasValue ? item.price.Value : 0) + (item.add_core_price.Value ? item.core_price.Value : 0);
+
+                    item.wholesale = null;
+                    decimal line_subtotal = item.quantity * (item.price.HasValue ? item.price.Value : 0), line_discount = 0, line_total = 0;
+                    item.line_subtotal = line_subtotal;
+                    if (obj.data.coupons != null)
+                    {
+                        foreach (var coupon in obj.data.coupons)
                         {
-                            foreach (var coupon in obj.data.coupons)
+                            decimal discount = 0;
+                            if (coupon.categories != null)
                             {
-                                decimal discount = 0;
-                                if (coupon.categories != null)
-                                {
-                                    long[] _p_c = item.categories.ToArray();
-                                    long[] _c_c = coupon.categories.ToArray();
-                                    var intersect = _p_c.Intersect(_c_c);
-                                    if (intersect.Count() > 0)
-                                    {
-                                        if (coupon.discount_type == "percent")
-                                        {
-                                            discount = ((line_subtotal * coupon.coupon_amount) / 100M);
-                                            //line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
-                                        }
-                                        else
-                                        {
-                                            discount = ((coupon.coupon_amount / item_count) * item.quantity);
-                                            //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
-                                        }
-                                    }
-                                    else line_discount = 0;
-                                }
-                                else
+                                long[] _p_c = item.categories.ToArray();
+                                long[] _c_c = coupon.categories.ToArray();
+                                var intersect = _p_c.Intersect(_c_c);
+                                if (intersect.Count() > 0)
                                 {
                                     if (coupon.discount_type == "percent")
                                     {
                                         discount = ((line_subtotal * coupon.coupon_amount) / 100M);
-                                        //line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
                                     }
-                                    else
-                                    {
-                                        discount = ((coupon.coupon_amount / item_count) * item.quantity);
-                                        //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
-                                    }
+                                    //else
+                                    //{
+                                    //    discount = ((coupon.coupon_amount / item_count1) * item.quantity);
+                                    //}
                                 }
-                                line_discount = line_discount + discount;
-                                //if (coupon.discount_amount == null) coupon.discount_amount = 0;
-                                coupon.discount_amount = coupon.discount_amount + discount;
-                                coupon.coupon_amount = coupon.coupon_amount;
-                            }
-
-                            if (line_subtotal > line_discount) line_total = line_subtotal - line_discount;
-                            else if (line_subtotal < line_discount) line_total = 0;
-                            else line_total = line_subtotal - line_discount;
-                        }
-                        else line_total = line_subtotal;
-
-                        item.line_total = line_total;
-                        item.line_subtotal_tax = Math.Round((line_subtotal * _tax.rate / 100), 2);
-                        item.line_total_tax = Math.Round((line_total * _tax.rate / 100), 2);
-                        f_subtotal = f_subtotal + line_subtotal;
-                        f_subtotal_tax = f_subtotal_tax + (item.line_subtotal_tax ?? 0);
-                        f_line_total = f_line_total + line_total;
-                        f_line_tax = f_line_tax + (item.line_total_tax ?? 0);
-
-                        discount_total = discount_total + line_discount;//(line_subtotal - line_total);
-                        // Add Item in Box
-                        if (item.dimensions != null)
-                        {
-                            for (int qty = 0; qty < item.quantity; qty++)
-                            {
-                                packer.AddItem(item.dimensions.length * _dimension, item.dimensions.width * _dimension, item.dimensions.height * _dimension, (item.weight.HasValue ? (item.weight.Value * _weight) : 0));
-                            }
-                            //packer.AddItem(new Item { Id = "", Description = "", Depth = (item.dimensions.height.ToObject<double>() ?? 0) * _mm, Length = (item.dimensions.length.ToObject<double>() ?? 0) * _mm, Width = (item.dimensions.width.ToObject<double>() ?? 0) * _mm, Weight = (item.weight.ToObject<double>() ?? 0) * _mm }, (item.quantity.ToObject<int>() ?? 0));
-                        }
-
-                        CartDataResponse.Item _o = obj.data.items.Where(o => o.kit_key == item.kit_key && o.id == 0).FirstOrDefault();
-                        if (_o != null)
-                        {
-                            if (!_newItem.Any(x => x.kit_key == _o.kit_key))
-                            {
-                                if (_o.children == null) _o.children = new List<CartDataResponse.Item>();
-                                _o.children.Add(item);
-                                _newItem.Add(_o);
+                                else line_discount = 0;
                             }
                             else
                             {
-                                _o = _newItem.Where(o => o.kit_key == item.kit_key).FirstOrDefault();
-                                if (_o.children == null) _o.children = new List<CartDataResponse.Item>();
-                                _o.children.Add(item);
-                            };
+                                if (coupon.discount_type == "percent")
+                                {
+                                    discount = ((line_subtotal * coupon.coupon_amount) / 100M);
+                                }
+                                //else
+                                //{
+                                //    discount = ((coupon.coupon_amount / item_count1) * item.quantity);
+                                //}
+                            }
+                            line_discount = line_discount + discount;
+                            //if (coupon.discount_amount == null) coupon.discount_amount = 0;
+                            coupon.discount_amount = coupon.discount_type != "percent" ? coupon.coupon_amount : coupon.discount_amount + discount;
+                            coupon.coupon_amount = coupon.coupon_amount;
                         }
-                        else _newItem.Add(item);
+
+                        // Add fixed cart total
+                        if (line_subtotal < (line_discount + (coupon_amount_fixed_per_qty * item.quantity)))
+                        {
+                            coupon_amount_fixed = coupon_amount_fixed - (line_subtotal - line_discount);
+                            item_count1 = item_count1 - item.quantity;
+                            coupon_amount_fixed_per_qty = item_count1 > 0 ? coupon_amount_fixed / item_count1 : 0;
+                            line_discount = line_subtotal;
+                        }
+                        else line_discount = line_discount + (coupon_amount_fixed_per_qty * item.quantity);
+
+                        // set line_total
+                        if (line_subtotal > line_discount) line_total = line_subtotal - line_discount;
+                        else if (line_subtotal < line_discount) line_total = 0;
+                        else line_total = line_subtotal - line_discount;
                     }
+                    else line_total = line_subtotal;
+
+                    item.line_total = line_total;
+                    item.line_subtotal_tax = Math.Round((line_subtotal * _tax.rate / 100), 2);
+                    item.line_total_tax = Math.Round((line_total * _tax.rate / 100), 2);
+                    f_subtotal = f_subtotal + line_subtotal;
+                    f_subtotal_tax = f_subtotal_tax + (item.line_subtotal_tax ?? 0);
+                    f_line_total = f_line_total + line_total;
+                    f_line_tax = f_line_tax + (item.line_total_tax ?? 0);
+
+                    discount_total = discount_total + line_discount;//(line_subtotal - line_total);                                              
+                }
+                /// Create boxes for packing
+                WC_Boxpack packer = new WC_Boxpack();
+                foreach (var item in obj.data.items.Where(s => s.id > 0))
+                {
+                    for (int qty = 0; qty < item.quantity; qty++)
+                    {
+                        if (item.dimensions != null) packer.AddItem(item.dimensions.length * _dimension, item.dimensions.width * _dimension, item.dimensions.height * _dimension, (item.weight.HasValue ? (item.weight.Value * _weight) : 0));
+                        else packer.AddItem(_dimension, _dimension, _dimension, 1);
+                        //packer.AddItem(new Item { Id = "", Description = "", Depth = (item.dimensions.height.ToObject<double>() ?? 0) * _mm, Length = (item.dimensions.length.ToObject<double>() ?? 0) * _mm, Width = (item.dimensions.width.ToObject<double>() ?? 0) * _mm, Weight = (item.weight.ToObject<double>() ?? 0) * _mm }, (item.quantity.ToObject<int>() ?? 0));
+                    }
+                    CartDataResponse.Item _o = obj.data.items.Where(o => o.kit_key == item.kit_key && o.id == 0).FirstOrDefault();
+                    if (_o != null)
+                    {
+                        if (!_newItem.Any(x => x.kit_key == _o.kit_key))
+                        {
+                            if (_o.children == null) _o.children = new List<CartDataResponse.Item>();
+                            _o.children.Add(item);
+                            _newItem.Add(_o);
+                        }
+                        else
+                        {
+                            _o = _newItem.Where(o => o.kit_key == item.kit_key).FirstOrDefault();
+                            if (_o.children == null) _o.children = new List<CartDataResponse.Item>();
+                            _o.children.Add(item);
+                        };
+                    }
+                    else _newItem.Add(item);
                 }
                 //Group total
                 foreach (var item in _newItem.Where(x => x.group_id > 0))
@@ -391,8 +393,9 @@
             }
             return obj;
         }
-        public static TaxJarModel GetTaxAmounts(TaxJarModel model)
+        public static TaxJarModel GetTaxAmounts(string to_street, string to_city, string to_state, string to_zip, string to_country, decimal amount = 100)
         {
+            TaxJarModel model = new TaxJarModel() { to_street = to_street, to_city = to_city, to_state = to_state, to_zip = to_zip, to_country = to_country, amount = amount };
             try
             {
                 DataTable dt = CartRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
@@ -819,27 +822,27 @@
             try
             {
                 //CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, 0, cart_session_id, ""));
-                     string _giftcard_to = string.Empty, _giftcard_from = string.Empty, _giftcard_from_mail = string.Empty, _giftcard_message = string.Empty, _giftcard_amt = string.Empty;
-                    StringBuilder strProductMeta = new StringBuilder("");
-                    string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
-                    DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                    /// step 1 : wp_wc_order_stats
-                    //StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", obj.data.item_count, obj.data.cart_totals.subtotal,
-                    //obj.data.cart_totals.total_tax, obj.data.cart_totals.shipping_total, obj.data.cart_totals.total, order_status, customer_id, order_id));
-                    //strSql.Append(string.Format(" delete from wp_woocommerce_order_itemmeta where order_item_id in (select order_item_id from wp_woocommerce_order_items where order_id={0});", order_id));
-                    //strSql.Append(string.Format(" delete from wp_wc_order_product_lookup where order_id={0};", order_id));
-                    //strSql.Append(string.Format(" delete from wp_woocommerce_order_items where order_id={0};", order_id));
-                   StringBuilder strSql = new StringBuilder();
-                    /// step 2 : wp_postmeta 
-                    foreach (OrderPostMetaModel _meta in orderPostMetas)
-                    {
+                string _giftcard_to = string.Empty, _giftcard_from = string.Empty, _giftcard_from_mail = string.Empty, _giftcard_message = string.Empty, _giftcard_amt = string.Empty;
+                StringBuilder strProductMeta = new StringBuilder("");
+                string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                /// step 1 : wp_wc_order_stats
+                //StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", obj.data.item_count, obj.data.cart_totals.subtotal,
+                //obj.data.cart_totals.total_tax, obj.data.cart_totals.shipping_total, obj.data.cart_totals.total, order_status, customer_id, order_id));
+                //strSql.Append(string.Format(" delete from wp_woocommerce_order_itemmeta where order_item_id in (select order_item_id from wp_woocommerce_order_items where order_id={0});", order_id));
+                //strSql.Append(string.Format(" delete from wp_wc_order_product_lookup where order_id={0};", order_id));
+                //strSql.Append(string.Format(" delete from wp_woocommerce_order_items where order_id={0};", order_id));
+                StringBuilder strSql = new StringBuilder();
+                /// step 2 : wp_postmeta 
+                foreach (OrderPostMetaModel _meta in orderPostMetas)
+                {
                     strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", _meta.meta_value, order_id, _meta.meta_key));
-                        if (_meta.meta_key.Equals("_billing_email")) _giftcard_from_mail = _meta.meta_value;
-                        strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT '{0}' id, '{1}' _key, '{2}' _value) tb WHERE _key not in (SELECT meta_key FROM wp_postmeta WHERE post_id = '{3}'); ", order_id, _meta.meta_key, _meta.meta_value, order_id));
-                    } 
-                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", order_status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_id));
-                     result = LaylaERP.DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                
+                    if (_meta.meta_key.Equals("_billing_email")) _giftcard_from_mail = _meta.meta_value;
+                    strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT '{0}' id, '{1}' _key, '{2}' _value) tb WHERE _key not in (SELECT meta_key FROM wp_postmeta WHERE post_id = '{3}'); ", order_id, _meta.meta_key, _meta.meta_value, order_id));
+                }
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", order_status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_id));
+                result = LaylaERP.DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+
                 //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });
             }
             catch (Exception ex)

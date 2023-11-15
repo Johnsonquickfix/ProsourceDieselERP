@@ -1135,7 +1135,8 @@
             {
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 string strSql_insert = string.Empty, Payment_method = string.Empty;
-                StringBuilder strSql = new StringBuilder("Update wp_woocommerce_gc_cards set is_active='on', delivered=1,create_date = UNIX_TIMESTAMP() where order_id=" + model.order_id.ToString() + "; ");
+                //StringBuilder strSql = new StringBuilder("Update wp_woocommerce_gc_cards set is_active='on', delivered=1,create_date = UNIX_TIMESTAMP() where order_id=" + model.order_id.ToString() + "; ");
+                StringBuilder strSql = new StringBuilder();
                 foreach (OrderPostMetaModel obj in model.OrderPostMeta)
                 {
                     strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
@@ -1159,7 +1160,7 @@
                     OrderRepository.OrderInvoiceMail(model.order_id);
                 }
             }
-            catch { }
+            catch (Exception ex) {   }
             return Json(JSONresult, 0);
         }
 

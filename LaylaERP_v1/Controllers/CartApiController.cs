@@ -184,7 +184,7 @@
                 decimal cart_contents_total = 0, cart_contents_tax = 0;
 
                 // fixed cart total
-                decimal coupon_amount_fixed = obj.data.coupons.Where(s => s.discount_type != "percent").Sum(s => s.coupon_amount);
+                decimal coupon_amount_fixed = obj.data.coupons != null ? obj.data.coupons.Where(s => s.discount_type != "percent").Sum(s => s.coupon_amount) : 0;
                 decimal coupon_amount_fixed_per_qty = item_count1 > 0 ? coupon_amount_fixed / item_count1 : 0;
 
                 List<CartDataResponse.Item> _newItem = new List<CartDataResponse.Item>();

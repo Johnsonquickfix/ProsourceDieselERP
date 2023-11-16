@@ -439,7 +439,7 @@ function PaymentStatus(oid, pp_id, email) {
             }
             else if (status == 'SENT') { swal(status, 'Request sent for payment.', 'info'); }
             else if (status == 'DRAFT') { swal(status, 'Invoice created as draft status.', 'info'); }
-            else { swal('Not Found', 'Invoice not fount.', 'info'); }
+            else { swal('Not Found', 'Invoice not found.', 'info'); }
         }).catch(err => console.error(err));
     return;
 }

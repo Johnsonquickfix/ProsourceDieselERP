@@ -1,10 +1,10 @@
 ﻿!(function (r) {
     "use strict";
     $(document).ready(function () {
-        renderSelect();
-        $(document).on('change', 'select[name="type"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(); addFilter(this);
-        });
+        //renderSelect();
+        //$(document).on('change', 'select[name="type"]', function (evt) {
+        //    evt.preventDefault(), evt.stopPropagation(); addFilter(this);
+        //});
         $(document).on('click', '[name="add-definition"]', function (evt) {
             evt.preventDefault(), evt.stopPropagation(), $(this).prop('disabled', true); addDefinition();
         });
@@ -35,12 +35,13 @@
         renderSelect = function () { $('.select2').select2({ minimumResultsForSearch: -1 }); $('.select2-search').select2(); },
         addDefinition = function () {
             r = document;
+            let _condition = r.createElement('select', { name: "type", class: "form-select", style: "width:100%" }, '<option value="" selected>Select a condition…</option>');
             var p = r.getElementById("definition"), d = r.createElement('div', { class: 'definition__container mb-2', },
                 r.createElement('div', { class: 'card card-body mb-2' },
                     r.createElement('div', { class: 'definition-row d-flex' },
                         r.createElement('div', { class: 'definition-col flex-grow-1' },
                             r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' },
-                                r.createElement('select', { name: "type", class: "select2", style: "width:100%" }, '<option value="" selected>Select a condition…</option>')
+                                _condition
                             )
                         ),
                         r.createElement('div', { class: 'definition-col-action' }, r.createElement('button', { name: "remove-definition", class: 'btn btn-outline-primary waves-effect waves-light' }, '<i class="fa fa-trash"></i>')),
@@ -49,8 +50,15 @@
                 r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-primary waves-effect waves-light' }, '<i class="fa fa-plus"></i> AND')
             );
             p.append(d);
-            let t = $(d).find('[name="type"]'); t.select2({ minimumResultsForSearch: -1 });
-            for (var l in L) { t.append(`<option value="${L[l].value}">${L[l].name}</option>`); }
+            //$(d).find('[name="type"]').select2({ minimumResultsForSearch: -1 });
+
+            let requestOptions = { method: 'GET', headers: {} };
+            fetch("/api/lists/criteria/type", requestOptions).then(response => response.json())
+                .then(result => {
+                    for (var key in result) { _condition.appendChild(r.createElement('option', { 'value': key }, result[key])); }
+                }).catch(error => console.log('error', error));
+
+            _condition.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
         },
         removeDefinition = function (c) {
             let r = document, t = $(c).closest('.definition__container'), i = t.find('.definition-row').index($(c).closest('.definition-row'));
@@ -84,7 +92,30 @@
         addFilter = function (t) {
             let r = document, v = t.value, d = t.closest(dc), pr = t.closest('.definition__container');
             d.querySelectorAll('div:nth-child(n+2)').forEach(e => e.remove());
-            if (v === 'customer-group-membership') {
+            if (v === 'customer-statistic-value') {
+                let _metric = r.createElement('select', { name: "statistic", class: "select2", style: "width:100%" }, '<option value="" selected>Choose metric...</option>'),
+                    _operator = r.createElement('select', { name: "operator", class: "select2", style: "width:100%" });
+
+                d.append(
+                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
+                        r.createElement('div', { class: "fix-label" }, '<h6>Has</h6>'),
+                        r.createElement('div', { class: "cw-175" }, _metric),
+                        r.createElement('div', { class: "cw-175" }, _operator),
+                        r.createElement('div', { class: "fix-label" }, '<h6>in</h6>'),
+                        r.createElement('div', { class: "cw-300" }, r.createElement('select', { name: "group", class: "form-control select2", style: "width:100%", required: '' }, '<option selected=""></option>')),
+                    )
+                );
+                d.append(
+                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
+                        r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-primary", style: "margin-left: 52px; grid-column: span 1 / auto;" }, '<i class="fas fa-filter"></i> By Date Added')
+                    )
+                );
+                getMetrics(_metric); $(d).find('[name="statistic"]').select2({ minimumResultsForSearch: 0 });
+                getOperator(_operator, v); $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 });
+                //getLists($(d).find('[name="group"]'));
+                //$(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="group"]').select2({ placeholder: "Choose a list.." });
+            }
+            else if (v === 'customer-group-membership') {
                 d.append(
                     r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
                         r.createElement('div', { class: "fix-label" }, '<h6>Person</h6>'),
@@ -190,6 +221,26 @@
             for (var i in d) { _ += `<option value="${d[i].value}" ${d[i].select ? 'selected' : ''}>${d[i].name}</option>`; }
             return _;
         },
+        getMetrics = function (ctr) {
+            let requestOptions = { method: 'GET', headers: {} };
+            fetch("/api/lists/metrics", requestOptions).then(response => response.json())
+                .then(result => {
+                    for (var i in result) { ctr.appendChild(r.createElement('option', { 'value': result[i].metric_id }, result[i].metric_name)); }
+                }).catch(error => console.log('error', error));
+
+
+            //$.get(`/api/lists/static-group`, {}).done(function (result) {
+            //    for (var i in result) { c.append(`<option value="${result[i].group_id}">${result[i].name}</option>`); }
+            //});
+        },
+        getOperator = function (ctr, type) {
+            let requestOptions = { method: 'GET', headers: {} };
+            fetch(`/api/lists/criteria/operator/${type}`, requestOptions).then(response => response.json())
+                .then(result => {
+                    console.log(type, result)
+                    for (var key in result) { ctr.appendChild(r.createElement('option', { 'value': key }, result[key])); }
+                }).catch(error => console.log('error', error));
+        },
         getLists = function (c) {
             $.get(`/api/lists/static-group`, {}).done(function (result) {
                 for (var i in result) { c.append(`<option value="${result[i].group_id}">${result[i].name}</option>`); }
@@ -244,4 +295,5 @@
                 }).fail(function (xhr, status, error) { $(t).prop('disabled', false); swal('Error!', xhr.responseJSON.message, 'error'); }).always(function () { $(t).prop('disabled', false); });
             }
         };
+    var load = function () { addDefinition(); }();
 })();

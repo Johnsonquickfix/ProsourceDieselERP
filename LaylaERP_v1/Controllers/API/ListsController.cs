@@ -222,5 +222,71 @@
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }
+
+        [HttpGet, Route("metrics")]
+        public IHttpActionResult GetMetrics()
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+                return Ok(ProfilesRepository.MetricsList(1, string.Empty, 0, 100000, "metric_name", "asc"));
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        #region [Segment masters]
+        [HttpGet, Route("criteria/type")]
+        public IHttpActionResult GetCriteriaType()
+        {
+            try
+            {
+                return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaType());
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+        [HttpGet, Route("criteria/operator/{type}")]
+        public IHttpActionResult GetCriteriaOperator(string type)
+        {
+            try
+            {
+                return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type));
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+        [HttpGet, Route("criteria/timeframe")]
+        public IHttpActionResult GetCriteriaTimeframe()
+        {
+            try
+            {
+                return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe());
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+        [HttpGet, Route("criteria/unit")]
+        public IHttpActionResult GetCriteriaUnit()
+        {
+            try
+            {
+                return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaUnit());
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+        #endregion
     }
 }

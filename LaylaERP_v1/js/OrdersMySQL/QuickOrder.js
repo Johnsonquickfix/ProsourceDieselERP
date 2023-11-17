@@ -2897,13 +2897,13 @@ function ValidateData() {
 
 function gettotaldetails() {
     let cartItems = []; // Initialize an empty array to store cart items 
-
+    let qty = 0;
     $('#line_items tr').each(function () {
         const $row = $(this);
         const parentId = $row.find('.parent-id').data('parentid');
         const productid = $row.find('.parent-id').data('productid');
         const itemQuantity = parseFloat($row.find('input[name="txt_itemqty"]').val()); // Get value by name
-
+        qty += itemQuantity;
         if (parentId > 0) {
             //variation
             cartItems.push({
@@ -2930,7 +2930,7 @@ function gettotaldetails() {
         //    variation_id: parentId
         //});
     });
-
+    $("#totalQty").text(qty.toFixed(0)); $("#totalQty").data('qty', qty.toFixed(0));
     console.log(cartItems);
 
 

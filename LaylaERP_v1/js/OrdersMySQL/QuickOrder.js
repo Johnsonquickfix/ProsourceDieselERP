@@ -3840,7 +3840,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
     discountText = discountText.replace('$', '');
 
     let shipping_total = parseFloat(shippingText) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    console.log(shippingText, shipping_total);
+    console.log(salesTaxText, $('#salesTaxTotal').text(), parseFloat(salesTaxText) || 0.00);
     let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00, note = $('#txtCustomerNotes').val(); note = (note != '' ? note : 'Prosource Invoice.');
     let custom_label = 'Other Charges', _items = []; fee_total = fee_total + srf_total - gc_total;
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
@@ -3871,7 +3871,10 @@ function createPaypalXML(oid, pp_no, pp_email) {
     $('#line_items tr').each(function (index) {
         var qty = parseFloat($(this).find("[name=txt_itemqty]").val()) || 0.00;
         var rate = parseFloat($(this).find(".product-price").data('price')) || 0.00;
+        
+        
         let taxAmount = parseFloat(salesTaxText) || 0.00; //parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        custom_label = 'Sale Tax'; fee_total =   taxAmount;
         let discountAmount = parseFloat(discountText) || 0.00; //parseFloat($(tr).find(".RowDiscount").text()) || 0.00;
         //_items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
         var item = {
@@ -3885,19 +3888,19 @@ function createPaypalXML(oid, pp_no, pp_email) {
         };
 
         // Add tax and discount only for the first item
-        if (index === 0) {
-            item.tax = {
-                name: "Sales Tax",
-                value: taxAmount,
-                percent: taxPer * 100
-            };
-            item.discount = {
-                amount: {
-                    currency_code: "USD",
-                    value: discountAmount
-                }
-            };
-        }
+        //if (index === 0) {
+        //    item.tax = {
+        //        name: "Sales Tax",
+        //        value: taxAmount,
+        //        percent: taxPer * 100
+        //    };
+        //    item.discount = {
+        //        amount: {
+        //            currency_code: "USD",
+        //            value: discountAmount
+        //        }
+        //    };
+        //}
 
         // Push the item to the '_items' array
         _items.push(item);
@@ -4087,9 +4090,10 @@ function successModal(paymode, id, is_mail, is_back) {
     myHtml += '<tfoot>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>' + $('#SubTotal').text() + '</span></td></tr>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>' + $('#discountTotal').text() + '</span></td></tr>';
-    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#feeTotal').text() + '</td></tr>';
-    //myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
+     //myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#shippingTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Sale Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#salesTaxTotal').text() + '</td></tr>';
+
     //myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
     $('#order_final_total .tax-total').each(function (index, li) {
         myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $(li).data('label') + ' - ' + ((parseFloat($(li).data('percent'))) * 100).toFixed(4) + '%:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $(li).data('amount') + '</td></tr>';

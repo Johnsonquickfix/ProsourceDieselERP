@@ -520,33 +520,67 @@ function EditWarehouseinfo() {
 
 //---------------------Product stock-------------------------------------------
 function WarehouseStocklist() {
+    //let warehouseid = $("#hfid").val();
+    //var obj = { ID: warehouseid }
+    //var table_EL = $('#banktansfer').DataTable({
+    //    columnDefs: [{ 'visible': false, 'targets': [0] }],
+    //    order: [[0, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    //    language: {
+    //        lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
+    //        infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+    //    },
+    //    initComplete: function () {
+    //        $('#banktansfer_filter input').unbind();
+    //        $('#banktansfer_filter input').bind('keyup', function (e) {
+    //            var code = e.keyCode || e.which;
+    //            if (code == 13) { table_EL.search(this.value).draw(); }
+    //        });
+    //    },
+    //    ajax: {
+    //        url: '/Warehouse/GetProductStockList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+    //        error: function (xhr, error, thrown) {
+    //            console.log("AJAX error:", xhr, error, thrown);
+    //        },
+    //        dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+    //    },
+    //    aoColumns: [
+    //        { data: 'id', title: 'ID', sWidth: "10%" },
+    //        { data: 'post_title', title: 'Product Name', sWidth: "10%", class: 'text-left' },
+    //        { data: 'stock', title: 'In stock', sWidth: "5%", className: "text-right", },
+    //        { data: 'SaleUnits', title: 'Sales unit', sWidth: "5%", className: "text-right", },
+    //        { data: 'Damage', title: 'Damage unit', sWidth: "5%", className: "text-right", },
+    //    ],
+
+    //});
+
+
     let warehouseid = $("#hfid").val();
-    var obj = { ID: warehouseid }
-    var table_EL = $('#banktansfer').DataTable({
-        columnDefs: [{ 'visible': false, 'targets': [0] }],
-        order: [[0, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+     obj = { ID: warehouseid }
+    $('#banktansfer').DataTable({
+        oSearch: { "sSearch": '' }, order: [[0, "asc"]],
         language: {
-            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
         },
-        initComplete: function () {
-            $('#banktansfer_filter input').unbind();
-            $('#banktansfer_filter input').bind('keyup', function (e) {
-                var code = e.keyCode || e.which;
-                if (code == 13) { table_EL.search(this.value).draw(); }
-            });
+        destroy: true, bAutoWidth: false, ajax: {
+            url: '/Warehouse/GetProductStockList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
+            data: obj,
+            dataSrc: function (data) { return JSON.parse(data); }
         },
-        ajax: {
-            url: '/Warehouse/GetProductStockList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
-        },
-        aoColumns: [
+        lengthMenu: [[20, 50, 100], [20, 50, 100]],
+        columns: [
             { data: 'id', title: 'ID', sWidth: "10%" },
             { data: 'post_title', title: 'Product Name', sWidth: "10%", class: 'text-left' },
             { data: 'stock', title: 'In stock', sWidth: "5%", className: "text-right", },
             { data: 'SaleUnits', title: 'Sales unit', sWidth: "5%", className: "text-right", },
             { data: 'Damage', title: 'Damage unit', sWidth: "5%", className: "text-right", },
+
         ],
+        columnDefs: [{ targets: [0], visible: false, searchable: false, }, { "orderable": false, "targets": -1 }]
 
     });
 }

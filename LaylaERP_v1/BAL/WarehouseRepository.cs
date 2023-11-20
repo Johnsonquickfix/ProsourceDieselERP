@@ -1265,7 +1265,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@flag","PS"),
+                    new SqlParameter("@flag","PW"),
                     new SqlParameter("@warehouseid", id),
                 };
                 string strquery = "warehouseproductlist";

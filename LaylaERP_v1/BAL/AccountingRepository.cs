@@ -203,7 +203,7 @@ namespace LaylaERP.BAL
                     "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id  and pa.option_mode = '" + optType + "'" +
                     "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
                     "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,eaa.label,pa.fk_account_number,p.post_type,p.post_title,p.post_parent,p.post_status order by p_id, id;";
-
+ 
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
             }
@@ -2120,5 +2120,27 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetProductaccountassign(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "select  p.id,eaa.label AccountingAccount, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id, post_title FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id " +
+                  "left join product_accounting as pa on p.id = pa.fk_product_id  and pa.option_mode = '" + optType + "'" +
+                   "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
+                   "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,eaa.label,pa.fk_account_number,p.post_type,p.post_title ,post_parent order by  p_id, id;";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

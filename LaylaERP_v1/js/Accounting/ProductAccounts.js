@@ -78,7 +78,7 @@ function ProductAccountingGrid() {
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
         },
         destroy: true, bAutoWidth: false, ajax: {
-            url: '/Accounting/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
+            url: '/Accounting/GetProductaccountassign', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
              data: obj,
             dataSrc: function (data) { return JSON.parse(data); }
         },

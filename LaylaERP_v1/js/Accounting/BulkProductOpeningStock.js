@@ -1,9 +1,6 @@
 ﻿  
-$(document).ready(function () {
-    $("#loader").hide();
-    //getAccounttoAssign();
-    //GetNewAccounttoAssign();
-    ProductquantityGrid(); 
+$(document).ready(function () { 
+        ProductquantityGrid(); 
 })
 //$('#btnRefresh').click(function () {
 //    ProductquantityGrid();
@@ -57,7 +54,7 @@ function isEdit(val) {
 //        async: false
 //    });
 //}
-function ProductquantityGrid() {
+function ProductquantityGrid() { 
     var optType = "";
     obj = { strValue1: optType }
     $('#dtProductsquantity').DataTable({
@@ -70,10 +67,17 @@ function ProductquantityGrid() {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
         },
+        
         destroy: true, bAutoWidth: false, ajax: {
             url: '/Setting/GetProductopningstock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
             data: obj,
-            dataSrc: function (data) { return JSON.parse(data); }
+            dataSrc: function (data) { return JSON.parse(data); },
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            complete: function () {
+                $("#loader").hide();
+            }
         },
         lengthMenu: [[20, 50, 100], [20, 50, 100]],
         columns: [
@@ -101,8 +105,8 @@ function ProductquantityGrid() {
                 }
             },
         ],
-        columnDefs: [{ targets: [0], visible: false, searchable: false, }, { "orderable": false, "targets": -1 }]
-
+        columnDefs: [{ targets: [0], visible: false, searchable: false, }, { "orderable": false, "targets": -1 }] 
+         
     });
 }
 

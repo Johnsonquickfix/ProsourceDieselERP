@@ -953,6 +953,7 @@
     <Content Include="js\Accounting\Balancesheet.js" />
     <Content Include="js\Accounting\BankReconciliation.js" />
     <Content Include="js\Accounting\BankReconciliationprocess.js" />
+    <Content Include="js\Accounting\BulkProductOpeningStock.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
@@ -1957,6 +1958,7 @@
     <Content Include="Views\EmailNotifications\ForgotPassword.cshtml" />
     <Content Include="Views\Orders\quickorder.cshtml" />
     <Content Include="Views\Orders\quickorders.cshtml" />
+    <Content Include="Views\Setting\BulkProductOpeningStock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

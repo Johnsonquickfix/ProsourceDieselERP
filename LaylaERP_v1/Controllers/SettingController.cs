@@ -176,6 +176,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult BulkProductOpeningStock()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -878,5 +882,51 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+
+        [HttpGet]
+        public JsonResult GetProductopningstock(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.GetProductopningstock(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult AddProductstock(ProductAccountingModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string ProductID = model.strValue1;
+                string option_mode = model.option_mode;
+                string ProductAccountNumberID = model.strValue2;
+
+                if (model.ID > 0)
+                {
+                    //new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    //return Json(new { status = true, message = "Product account has been updated successfully!!", url = "", id = model.rowid }, 0);
+                }
+                else
+                {
+                    int ID = new SettingRepository().AddProductstock(ProductID, ProductAccountNumberID);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Product opening stock saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "something went wrong!! Product opening not saved ", url = "", id = 0 }, 0);
+                    }
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+
     }
 }

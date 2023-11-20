@@ -882,6 +882,79 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+        public static DataTable GetProductopningstock(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
 
+                string strSql = "select post_parent, p.id,post_title ,case when quantity is null then '' else quantity end quantity from wp_posts p " +
+                  " LEFT JOIN wp_postmeta AS s ON p.id = s.post_id " +
+                   " left join product_stock_register as psr on psr.product_id = p.id and flag = 'R' and tran_type = 'OP' " +
+                   " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' GROUP BY p.ID,post_name,post_title,quantity,post_parent ";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public int AddProductstock(string ProductID, string quantity)
+        {
+            try
+            {
+                int result = 0;
+                string[] ID = ProductID.Split(',');
+                string[] value = quantity.Split(',');
+
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    ProductID = ID[i].ToString();
+                    quantity = value[i].ToString();
+                    //if (quantity != "0")
+                    //{
+                        string strsql = "";
+                        string Product = Getproduct_id(ProductID).ToString();
+                        if (Product == ProductID)
+                        {                             
+                            strsql = "Update product_stock_register set quantity=@quantity where product_id=@product_id and flag = 'R' and tran_type = 'OP' ";
+                        }
+                        else
+                        { 
+                            strsql = "insert into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) values('OP',0,@product_id,30,getdate(),@quantity,'R');";
+                        }
+                        SqlParameter[] para =
+                        {
+                            new SqlParameter("@product_id",ProductID), 
+                            new SqlParameter("@quantity", quantity),
+                        };
+                        result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                    //}
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public int Getproduct_id(string id)
+        {
+            try
+            {
+                string strSql = "Select product_id from product_stock_register where product_id ='" + id + "' and flag = 'R' and tran_type = 'OP'";
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

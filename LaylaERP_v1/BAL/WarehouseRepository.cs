@@ -1265,7 +1265,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@flag","PS"),
+                    new SqlParameter("@flag","PW"),
                     new SqlParameter("@warehouseid", id),
                 };
                 string strquery = "warehouseproductlist";
@@ -1275,6 +1275,72 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public static string Addvendorandwarehouse(WarehouseModel obj)
+        {
+            try
+            {
+
+                // string strsql ="INSERT into wp_vendorwarehouse values('"+obj.vendor_id+"','"+obj.WarehouseID+"')";
+                SqlParameter[] para =
+               {
+                   new SqlParameter("@qflag",'I'),
+                   new SqlParameter("@id",obj.rowid),
+                   new SqlParameter("@WarehouseID",obj.WarehouseID),
+                   new SqlParameter("@VendorID", obj.vendor_id),
+            };
+                string result = SQLHelper.ExecuteScalar("erp_vendorandwarehouse_iud", para).ToString();
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable Getvendorandwarehouse()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+
+                string strsql = "erp_vendorandwarehouse_List";
+
+                // SqlParameter[] para =
+                //{
+                //    new SqlParameter("@id",'N'),
+
+                //};
+                DT = SQLHelper.ExecuteDataTable(strsql);
+                return DT;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static string Updatevendorandwarehouse(WarehouseModel obj)
+        {
+            try
+            {
+
+                // string strsql ="INSERT into wp_vendorwarehouse values('"+obj.vendor_id+"','"+obj.WarehouseID+"')";
+                SqlParameter[] para =
+               {
+                   new SqlParameter("@qflag",'U'),
+                   new SqlParameter("@id",obj.rowid),
+                   new SqlParameter("@WarehouseID",obj.WarehouseID),
+                   new SqlParameter("@VendorID", obj.vendor_id),
+            };
+                string result = SQLHelper.ExecuteScalar("erp_vendorandwarehouse_iud", para).ToString();
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

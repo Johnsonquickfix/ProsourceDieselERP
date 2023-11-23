@@ -1707,5 +1707,19 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             //return Json(robj, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public JsonResult GetProductaccountassign(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetProductaccountassign(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

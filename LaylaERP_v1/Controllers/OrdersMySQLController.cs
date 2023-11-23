@@ -1157,7 +1157,7 @@
                 if (res > 0)
                 {
                     JSONresult = "[{\"id\":903432,\"Response\":\"Success\"}]";
-                    OrderRepository.OrderInvoiceMail(model.order_id);
+                    //OrderRepository.OrderInvoiceMail(model.order_id);
                 }
             }
             catch (Exception ex) {   }

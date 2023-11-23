@@ -427,8 +427,8 @@ function PaymentStatus(oid, pp_id, email) {
                                 .then(data => {
                                     data = JSON.parse(data ?? '[{Response:"fail"}]');
                                     if (data[0].Response == "Success") {
-                                        swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email);
-                                        SendGiftCards(oid, email);
+                                       swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email);
+                                        //SendGiftCards(oid, email);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();

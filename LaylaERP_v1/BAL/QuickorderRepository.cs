@@ -379,7 +379,7 @@ namespace LaylaERP.BAL
                             productsModel.ShippingMethods = shippingMethodsArray;
  
                             productsModel.subprice = jsonResponsetotal.data.cart_totals.subtotal;
-                            productsModel.total_localtax1 = jsonResponsetotal.data.cart_totals.subtotal_tax;
+                            productsModel.total_localtax1 = jsonResponsetotal.data.cart_totals.total_tax;
                             productsModel.total_localtax2 = jsonResponsetotal.data.cart_totals.shipping_total;
                             productsModel.localtax1_tx = jsonResponsetotal.data.cart_totals.shipping_tax;
                             productsModel.total_ttc = jsonResponsetotal.data.cart_totals.total;

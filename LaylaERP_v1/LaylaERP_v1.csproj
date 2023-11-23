@@ -296,6 +296,7 @@
     <Compile Include="Controllers\API\ProfilesController.cs" />
     <Compile Include="Controllers\API\TrackController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
+    <Compile Include="Controllers\assignvendorandwarehouseController.cs" />
     <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
@@ -955,6 +956,7 @@
     <Content Include="js\Accounting\Balancesheet.js" />
     <Content Include="js\Accounting\BankReconciliation.js" />
     <Content Include="js\Accounting\BankReconciliationprocess.js" />
+    <Content Include="js\Accounting\BulkProductOpeningStock.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
@@ -1377,6 +1379,7 @@
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
+    <Content Include="js\Warehouse\assignvendorandwarehouse.js" />
     <Content Include="js\Warehouse\DamageProduct.js" />
     <Content Include="js\Warehouse\DamageProductReport.js" />
     <Content Include="js\Warehouse\updatewarehouse.js" />
@@ -1959,6 +1962,8 @@
     <Content Include="Views\EmailNotifications\ForgotPassword.cshtml" />
     <Content Include="Views\Orders\quickorder.cshtml" />
     <Content Include="Views\Orders\quickorders.cshtml" />
+    <Content Include="Views\Setting\BulkProductOpeningStock.cshtml" />
+    <Content Include="Views\assignvendorandwarehouse\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

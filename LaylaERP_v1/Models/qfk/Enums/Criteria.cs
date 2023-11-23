@@ -45,16 +45,29 @@
             //at least once, zero times, equals, doesn't equal, is at least, is greater than, is less than, is at most
             return pairs;
         }
-        public static Dictionary<string, string> CriteriaTimeframe()
+        public static Dictionary<string, string> CriteriaTimeframe(string CriteriaType = "all")
         {
             Dictionary<string, string> pairs = new Dictionary<string, string>();
-            pairs.Add("in-the-last", "in the last");
-            pairs.Add("more-than", "more than");
-            pairs.Add("at-least", "at least");
-            pairs.Add("between", "between");
-            pairs.Add("before", "before");
-            pairs.Add("after", "after");
-            pairs.Add("between-static", "between dates");
+            if (CriteriaType.ToLower().Trim().Equals("customer-statistic-value"))
+            {
+                pairs.Add("alltime", "over all time");
+                pairs.Add("in-the-last", "in the last");
+                pairs.Add("between", "between");
+                pairs.Add("before", "before");
+                pairs.Add("after", "after");
+                pairs.Add("between-static", "between dates");
+            }
+            else
+            {
+                pairs.Add("alltime", "over all time");
+                pairs.Add("in-the-last", "in the last");
+                pairs.Add("more-than", "more than");
+                pairs.Add("at-least", "at least");
+                pairs.Add("between", "between");
+                pairs.Add("before", "before");
+                pairs.Add("after", "after");
+                pairs.Add("between-static", "between dates");
+            }
             return pairs;
         }
         public static Dictionary<string, string> CriteriaUnit()

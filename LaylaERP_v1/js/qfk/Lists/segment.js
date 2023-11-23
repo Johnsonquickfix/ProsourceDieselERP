@@ -1,64 +1,60 @@
 ﻿!(function (r) {
-    "use strict";
+    "use strict"; r = r || document;
     $(document).ready(function () {
         //renderSelect();
         //$(document).on('change', 'select[name="type"]', function (evt) {
         //    evt.preventDefault(), evt.stopPropagation(); addFilter(this);
         //});
-        $(document).on('click', '[name="add-definition"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), $(this).prop('disabled', true); addDefinition();
-        });
-        $(document).on('click', '[name="or-definition"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), addOrDefinition(this);
-        });
-        $(document).on('click', '[name="remove-definition"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), removeDefinition(this);
-        });
+        //$(document).on('click', '[name="add-definition"]', function (evt) {
+        //    evt.preventDefault(), evt.stopPropagation(), $(this).prop('disabled', true); addDefinition();
+        //});
+        //$(document).on('click', '[name="remove-definition"]', function (evt) {
+        //    evt.preventDefault(), evt.stopPropagation(), removeDefinition(this);
+        //});
+        //$(document).on('click', '[name="or-definition"]', function (evt) {
+        //    evt.preventDefault(), evt.stopPropagation(), addOrDefinition(this);
+        //});
         $(document).on('click', '[name="add-filter-row"]', function (evt) {
             evt.preventDefault(), evt.stopPropagation(), addFilterRow(this);
         });
         $(document).on('click', '[name="close-filter-row"]', function (evt) {
             evt.preventDefault(), evt.stopPropagation(), removeFilterRow(this);
         });
-        $(document).on('change', '[name="timeframe"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), addTimeFrame(this);
-        });
+        //$(document).on('change', '[name="timeframe"]', function (evt) {
+        //    evt.preventDefault(), evt.stopPropagation(), addTimeFrame(this);
+        //});
         $(document).on('click', '#create-Segments', function (evt) {
             evt.preventDefault(), evt.stopPropagation(), postDetails(this);
         });
     });
     const L = [{ value: 'customer-group-membership', name: 'If someone is in or not in a list' }, { value: 'customer-exclusion', name: 'If someone is or is not suppressed for email' }, { value: 'customer-location', name: 'If someone is or is not within the country' }];
-    const U = [{ value: 'hour', name: 'hours' }, { value: 'day', name: 'days', select: true }, { value: 'week', name: 'weeks' }];
     const T = [{ value: 'in-the-last', name: 'in the last', select: true }, { value: 'more-than', name: 'more than' }, { value: 'at-least', name: 'at least' }, { value: 'between', name: 'between' }, { value: 'before', name: 'before' }, { value: 'after', name: 'after' }, { value: 'between-static', name: 'between dates' }];
     const O = [{ value: 'eq', name: 'is', select: true }, { value: 'neq', name: 'is not' }];
     var dr = '.definition-row', dc = '.definition-col', dcfr = '.FilterRowContainer',
-        renderSelect = function () { $('.select2').select2({ minimumResultsForSearch: -1 }); $('.select2-search').select2(); },
         addDefinition = function () {
-            r = document;
-            let _condition = r.createElement('select', { name: "type", class: "form-select", style: "width:100%" }, '<option value="" selected>Select a condition…</option>');
-            var p = r.getElementById("definition"), d = r.createElement('div', { class: 'definition__container mb-2', },
-                r.createElement('div', { class: 'card card-body mb-2' },
+            let _condition = r.createElement('select', { name: "type", class: "form-select", style: "width:100%" }, '<option value="" selected>Select a condition…</option>'),
+                _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND'),
+                _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
+            _condition.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
+            _and.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); this.disabled = true, addDefinition(); });
+            _remove.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); removeDefinition(this); });
+
+            let p = r.getElementById("definition"), d = r.createElement('div', { class: 'definition__container mb-2', },
+                r.createElement('div', { class: 'boxed_style card card-body my-2' },
                     r.createElement('div', { class: 'definition-row d-flex' },
                         r.createElement('div', { class: 'definition-col flex-grow-1' },
-                            r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' },
-                                _condition
-                            )
+                            r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' }, _condition)
                         ),
-                        r.createElement('div', { class: 'definition-col-action' }, r.createElement('button', { name: "remove-definition", class: 'btn btn-outline-primary waves-effect waves-light' }, '<i class="fa fa-trash"></i>')),
+                        r.createElement('div', { class: 'definition-col-action' }, _remove),
                     )
-                ),
-                r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-primary waves-effect waves-light' }, '<i class="fa fa-plus"></i> AND')
-            );
+                ), _and);
             p.append(d);
-            //$(d).find('[name="type"]').select2({ minimumResultsForSearch: -1 });
-
-            let requestOptions = { method: 'GET', headers: {} };
-            fetch("/api/lists/criteria/type", requestOptions).then(response => response.json())
-                .then(result => {
-                    for (var key in result) { _condition.appendChild(r.createElement('option', { 'value': key }, result[key])); }
-                }).catch(error => console.log('error', error));
-
-            _condition.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
+            new Choices(_condition, { allowHTML: false, searchEnabled: false, itemSelectText: '', shouldSort: false })
+                .setChoices(async () => {
+                    try {
+                        return await fetch('/api/lists/criteria/type', { method: 'GET' }).then(response => response.json());
+                    } catch (err) { console.error(err); }
+                });
         },
         removeDefinition = function (c) {
             let r = document, t = $(c).closest('.definition__container'), i = t.find('.definition-row').index($(c).closest('.definition-row'));
@@ -66,54 +62,52 @@
             if (t.find('.definition-row').length <= 1) t.remove(); else $(c).closest('.definition-row').remove();
             if ($('#definition .definition__container').length <= 0) addDefinition();
             $(t).find('[name="or-definition"]').remove();
-            $(t).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-primary' }, 'OR'))
+            $(t).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
             $('[name="add-definition"]').last().prop('disabled', false);
         },
         addOrDefinition = function (c) {
-            let r = document, pr = c.closest('.definition__container .card-body'); c.remove();
+            let pr = c.closest('.definition__container .card-body'); c.remove();
+            let _condition = r.createElement('select', { name: "type", class: "form-select", style: "width:100%" }, '<option value="" selected>Select a condition…</option>'),
+                _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
+            _condition.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
+            _remove.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); removeDefinition(this); });
+
             var p = r.getElementById("definition"), d = r.createElement('div', { class: 'definition-row d-flex' },
-                r.createElement('div', { class: 'definition-col flex-grow-1' },
-                    r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' },
-                        r.createElement('select', { name: "type", class: "select2", style: "width:100%" }, '<option value="" selected>Select a condition…</option>')
-                    )
-                ),
-                r.createElement('div', { class: 'definition-col-action' }, r.createElement('button', { name: "remove-definition", class: 'btn btn-outline-primary waves-effect waves-light' }, '<i class="fa fa-trash"></i>'))
+                r.createElement('div', { class: 'definition-col flex-grow-1' }, r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' }, _condition)),
+                r.createElement('div', { class: 'definition-col-action' }, _remove),
             );
             pr.append(
                 r.createElement('div', { class: 'CriterionDivider' },
-                    r.createElement('div', { class: 'BoxedPlaceholder__Container me-3' }, r.createElement('div', null, 'OR')),
+                    r.createElement('div', { class: 'BoxedPlaceholder__Container me-3' }, r.createElement('div', null, r.createElement('span', { class: "h4_title" }, 'OR'))),
                     r.createElement('div', { class: 'CriterionDivider__LineContainer flex-grow-1' }, r.createElement('div'), r.createElement('div'))
                 )
-            );
-            pr.append(d);
-            let t = $(d).find('[name="type"]'); t.select2({ minimumResultsForSearch: -1 });
-            for (var l in L) { t.append(`<option value="${L[l].value}">${L[l].name}</option>`); }
+            ), pr.append(d);
+            new Choices(_condition, { allowHTML: false, searchEnabled: false, itemSelectText: '', shouldSort: false })
+                .setChoices(async () => {
+                    try {
+                        return await fetch('/api/lists/criteria/type', { method: 'GET' }).then(response => response.json());
+                    } catch (err) { console.error(err); }
+                });
         },
         addFilter = function (t) {
-            let r = document, v = t.value, d = t.closest(dc), pr = t.closest('.definition__container');
-            d.querySelectorAll('div:nth-child(n+2)').forEach(e => e.remove());
+            let v = t.value, d = t.closest('.definition-col'), pr = t.closest('.definition__container');
+            d.replaceChildren(d.firstElementChild);
             if (v === 'customer-statistic-value') {
-                let _metric = r.createElement('select', { name: "statistic", class: "select2", style: "width:100%" }, '<option value="" selected>Choose metric...</option>'),
-                    _operator = r.createElement('select', { name: "operator", class: "select2", style: "width:100%" });
+                let _metric = r.createElement('select', { name: "statistic", class: "cw-175", style: "width:100%" }),
+                    _operator = r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }),
+                    _timeframe = r.createElement('select', { name: "timeframe", class: "select2", style: "width:100%" });
+                _metric.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); let v = parseInt(this.value) || 0; createFilterRow(d, v); });
+                _operator.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); createOperatorValue(this); });
+                _timeframe.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
 
                 d.append(
                     r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('div', { class: "fix-label" }, '<h6>Has</h6>'),
-                        r.createElement('div', { class: "cw-175" }, _metric),
-                        r.createElement('div', { class: "cw-175" }, _operator),
-                        r.createElement('div', { class: "fix-label" }, '<h6>in</h6>'),
-                        r.createElement('div', { class: "cw-300" }, r.createElement('select', { name: "group", class: "form-control select2", style: "width:100%", required: '' }, '<option selected=""></option>')),
+                        r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'Has')),
+                        r.createElement('div', { class: "InputContainer cw-225" }, _metric),
+                        r.createElement('div', { class: "InputContainer cw-175" }, _operator),
+                        r.createElement('div', { class: "InputContainer cw-175" }, _timeframe),
                     )
-                );
-                d.append(
-                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-primary", style: "margin-left: 52px; grid-column: span 1 / auto;" }, '<i class="fas fa-filter"></i> By Date Added')
-                    )
-                );
-                getMetrics(_metric); $(d).find('[name="statistic"]').select2({ minimumResultsForSearch: 0 });
-                getOperator(_operator, v); $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 });
-                //getLists($(d).find('[name="group"]'));
-                //$(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="group"]').select2({ placeholder: "Choose a list.." });
+                ), getMetrics(_metric), getOperator(_operator, _timeframe, v);
             }
             else if (v === 'customer-group-membership') {
                 d.append(
@@ -155,16 +149,22 @@
                 $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="country"]').select2({ placeholder: "Choose a country..." });
             }
             pr.querySelectorAll('button[name="or-definition"]').forEach(e => e.remove());
-            $(pr).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-primary' }, 'OR'))
+            // or condition
+            let _or = r.createElement('a', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR');
+            pr.querySelectorAll(".definition-col-action:last-child").forEach(e => e.append(_or));
+            _or.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); addOrDefinition(this); });
+
+            //$(pr).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
         },
         addTimeFrame = function (t) {
-            let r = document, v = t.value, d = t.closest('[data-filterid="filter-row"]');
-            d.querySelectorAll('div:nth-child(n+3)').forEach(e => e.remove());
+            let v = t.value, d = t.closest('.InputContainer'), p = d.parentNode;
+            while (!!d.nextElementSibling) { console.log(d.nextElementSibling); d.nextElementSibling.remove(); }
             if (v === 'in-the-last') {
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
-                d.append(r.createElement('div', { class: 'InputContainer cw-80', }, r.createElement('select', { name: "units", class: "select2", style: "width:100%" }, fillSelect(U))));
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                $(d).find('[name="units"]').select2({ minimumResultsForSearch: -1 });
+                //let _unit = r.createElement('select', { style: "width:100%" });
+                p.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
+                createUnit(p);
+                //p.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, getUnit()));
+                //getUnit(_unit);
             }
             else if (v === 'more-than' || v === 'at-least') {
                 d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
@@ -174,35 +174,36 @@
                 $(d).find('[name="units"]').select2({ minimumResultsForSearch: -1 });
             }
             else if (v === 'between') {
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "start_quantity", class: "form-control", type: "number", value: "0" })));
-                d.append(r.createElement('div', { class: 'fix-label', }, '<h6>and</h6>'));
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "end_quantity", class: "form-control", type: "number", value: "30" })));
-                d.append(r.createElement('div', { class: 'InputContainer cw-80', }, r.createElement('select', { name: "units", class: "select2", style: "width:100%" }, fillSelect(U))));
-                d.append(r.createElement('div', { class: 'fix-label', }, '<h6>ago</h6>'));
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                $(d).find('[name="units"]').select2({ minimumResultsForSearch: -1 });
+                let _unit = r.createElement('select', { style: "width:100%" });
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "start_quantity", class: "form-control", type: "number", value: "0" })));
+                p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'and')));
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "end_quantity", class: "form-control", type: "number", value: "30" })));
+                createUnit(p);
+                p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'ago')));
+                //d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
+
             }
             else if (v === 'before' || v === 'after') {
-                d.append(r.createElement('div', { class: 'fix-label', }, r.createElement('input', { name: "date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                $(d).find('[name="date"]').inputmask("mm/dd/yyyy");
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+                //p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
+                //$(d).find('[name="date"]').inputmask("mm/dd/yyyy");
             }
             else if (v === 'between-static') {
-                d.append(r.createElement('div', { class: 'fix-label', }, r.createElement('input', { name: "start_date", class: "form-control", type: "text", value: moment().subtract(1, "days").format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
-                d.append(r.createElement('div', { class: 'fix-label', }, '<h6>and</h6>'));
-                d.append(r.createElement('div', { class: 'fix-label', }, r.createElement('input', { name: "end_date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                $(d).find('[name="start_date"],[name="end_date"]').inputmask("mm/dd/yyyy");
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "start_date", class: "form-control", type: "text", value: moment().subtract(1, "days").format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+                p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'and')));
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "end_date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+                //d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
+                //$(d).find('[name="start_date"],[name="end_date"]').inputmask("mm/dd/yyyy");
             }
         },
         addFilterRow = function (t) {
-            let r = document, $div = t.closest(dc); t.closest('div').remove();
+            let $div = t.closest(dc); t.closest('div').remove();
             let c = r.createElement('div', { "data-filterid": "filter-row", class: 'FilterRowContainer d-flex mb-2', style: "margin-left: 52px;" },
                 r.createElement('div', { class: 'fix-label', }, '<h6>and was added</h6>'),
                 r.createElement('div', { class: 'InputContainer cw-175', }, r.createElement('select', { name: "timeframe", class: "select2", style: "width:100%" }, fillSelect(T))),
                 r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })),
                 r.createElement('div', { class: 'InputContainer cw-80', }, r.createElement('select', { name: "units", class: "select2", style: "width:100%" }, fillSelect(U))),
-                r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X'))
+                r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-dark", type: "button" }, 'X'))
             );
             $(c).find('.select2').select2({ minimumResultsForSearch: -1 });
             $div.append(c);
@@ -222,24 +223,82 @@
             return _;
         },
         getMetrics = function (ctr) {
-            let requestOptions = { method: 'GET', headers: {} };
-            fetch("/api/lists/metrics", requestOptions).then(response => response.json())
-                .then(result => {
-                    for (var i in result) { ctr.appendChild(r.createElement('option', { 'value': result[i].metric_id }, result[i].metric_name)); }
-                }).catch(error => console.log('error', error));
+            var multipleFetch = new Choices(ctr, { allowHTML: false, placeholder: true, placeholderValue: 'Choose metric...', itemSelectText: '', shouldSort: false })
+                .setChoices(async () => {
+                    try {
+                        return await fetch('/api/lists/metrics', { method: 'GET' }).then(response => response.json())
+                            .then(function (data) {
+                                return data.map(function (row) { return { value: row.metric_id, label: row.metric_name }; });
+                            });
+                    } catch (err) { console.error(err); }
+                });
 
-
-            //$.get(`/api/lists/static-group`, {}).done(function (result) {
-            //    for (var i in result) { c.append(`<option value="${result[i].group_id}">${result[i].name}</option>`); }
-            //});
+            //let requestOptions = { method: 'GET', headers: {} };
+            //fetch("/api/lists/metrics", requestOptions).then(response => response.json())
+            //    .then(result => {
+            //        for (var i in result) { ctr.appendChild(r.createElement('option', { 'value': result[i].metric_id }, result[i].metric_name)); }
+            //    }).catch(error => console.log('error', error));
         },
-        getOperator = function (ctr, type) {
+        getOperator = function (operator_ctr, timeframe_ctr, type) {
+            const $_operator_ctr = new Choices(operator_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }),
+                $_timeframe_ctr = new Choices(timeframe_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false });
+
             let requestOptions = { method: 'GET', headers: {} };
             fetch(`/api/lists/criteria/operator/${type}`, requestOptions).then(response => response.json())
                 .then(result => {
-                    console.log(type, result)
-                    for (var key in result) { ctr.appendChild(r.createElement('option', { 'value': key }, result[key])); }
+                    $_operator_ctr.setChoices(result.operators), $_timeframe_ctr.setChoices(result.timeframes);
+                    //if (operator_ctr) for (var key in result.operators) { operator_ctr.appendChild(r.createElement('option', { 'value': key }, result.operators[key])); }
+                    //if (timeframe_ctr) for (var key in result.timeframes) { timeframe_ctr.appendChild(r.createElement('option', { 'value': key }, result.timeframes[key])); }
                 }).catch(error => console.log('error', error));
+        },
+        createCriteriaType = function (e) {
+            let s = r.createElement('select', { style: "width:100%" });
+            e.appendChild(r.createElement('div', { class: "CriterionTypeSelectm cw-400 mb-2" }, s));
+            (function (a) {
+                new Choices(a, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }).setChoices(u);
+            })(s);
+        },
+        createOperatorValue = function (e) {
+            let v = e.value, d = e.closest('.InputContainer');
+            !v.includes('-zero') ? function (e) {
+                let s = r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "operator_value", class: "form-control", type: "number", value: "1" }));
+                !d.nextElementSibling.querySelector('[name="operator_value"]') && d.insertAdjacentElement("afterEnd", s);
+            }(d) : function (e) { d.nextElementSibling.querySelector('[name="operator_value"]') && d.nextElementSibling.querySelector('[name="operator_value"]').parentNode.remove() }(d);
+        },
+        createUnit = function (e) {
+            let s = r.createElement('select', { style: "width:100%" });
+            e.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, s));
+            (function (a) {
+                const u = [{ value: 'hour', label: 'hours' }, { value: 'day', label: 'days', selected: true }, { value: 'week', label: 'weeks' }];
+                new Choices(a, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }).setChoices(u);
+            })(s);
+        },
+        createFilterRow = function (e, v) {
+            if (e.childNodes.length > 2) e.removeChild(e.lastChild);
+            let b = r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> Add Filter');
+            e.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, b));
+
+            b.addEventListener("click", function (evt) {
+                evt.preventDefault(), evt.stopPropagation();
+                let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('select', { style: "width:100%" });
+                div.replaceChildren(r.createElement('div', { class: 'fix-label' }, r.createElement('span', { class: "h4_title" }, 'where')));
+                div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+                div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('span', { class: "h4_title" }, 'equals')));
+                //div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, s));
+                div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, 'X'));
+
+                (function (a, v) {
+                    new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
+                        .setChoices(async () => {
+                            try {
+                                return await fetch(`/api/lists/metric/dimensions/${v}`, { method: 'GET' }).then(response => response.json())
+                                    .then(function (data) {
+                                        return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, value_type: row.meta_type }; }) : [];
+                                    });
+                            } catch (err) { console.error(err); }
+                        });
+                })(s, v);
+            });
         },
         getLists = function (c) {
             $.get(`/api/lists/static-group`, {}).done(function (result) {

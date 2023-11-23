@@ -876,6 +876,8 @@
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />
     <Content Include="Content\qfk\apexcharts\apexcharts.min.js" />
+    <Content Include="Content\qfk\choices\choices.min.css" />
+    <Content Include="Content\qfk\choices\choices.min.js" />
     <Content Include="Content\qfk\css\app.min.css" />
     <Content Include="Content\qfk\css\bootstrap.min.css" />
     <Content Include="Content\qfk\css\custom.css" />

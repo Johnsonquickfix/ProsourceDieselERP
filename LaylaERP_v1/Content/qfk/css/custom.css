@@ -847,43 +847,61 @@ textarea {
     align-items: center !important;
     margin-right: 0.5rem !important;
 }
-
-.cw-175 {
-    flex-basis: 175px;
+.cw-125 {
+    flex-basis: 125px;
+    max-width: 125px;
     -webkit-box-flex: 0;
     flex-grow: 0;
-    display: flex;
+    display: flow;
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
-
+.cw-175 {
+    flex-basis: 175px;max-width:175px;
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    display: flow;
+    align-items: flex-start;
+    margin-right: 0.5rem !important;
+}
+.cw-225 {
+    flex-basis: 225px;
+    max-width: 225px;
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    display: flow;
+    align-items: flex-start;
+    margin-right: 0.5rem !important;
+}
 .cw-400 {
     max-width: 400px;
 }
 
 .cw-300 {
     flex-basis: 300px;
+    max-width: 300px;
     -webkit-box-flex: 0;
     flex-grow: 0;
-    display: flex;
+    display: flow;
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
 
 .cw-75 {
     flex-basis: 75px;
+    max-width: 75px;
     -webkit-box-flex: 0;
     flex-grow: 0;
-    display: flex;
+    display: flow;
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
 
 .cw-80 {
-    flex-basis: 80px;
+    flex-basis: 80px;max-width:80px;
     -webkit-box-flex: 0;
     flex-grow: 0;
-    display: flex;
+    display: flow;
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
@@ -915,3 +933,9 @@ textarea {
         .CriterionDivider__LineContainer > div:first-child {
             border-bottom: 1px dashed rgb(223, 227, 230);
         }
+.InputContainer .form-control {
+    height: 34px;
+    padding: 5px 8px;
+    border: 1px solid rgb(145, 151, 159);
+    border-radius: 2px;
+}

@@ -33,29 +33,29 @@
             </div>
 
             <div>
-                <h5>Definition</h5>
+                <span class="h4_title">Definition</span>
                 <div id="definition">
                     @*<div class="definition__container mb-2">
-                        <div class="card card-body mb-2">
-                            <div class="definition-row d-flex">
-                                <div class="definition-col flex-grow-1">
-                                    <div class="CriterionTypeSelectm cw-400 mb-2">
-                                        <select name="type" class="select2" style="width:100%">
-                                            <option value="" selected>Select a condition…</option>
-                                            @foreach (var t in _type)
-                                            {
-                                                <option value="@t.Key">@t.Value</option>
-                                            }
-                                        </select>
+                            <div class="card card-body mb-2">
+                                <div class="definition-row d-flex">
+                                    <div class="definition-col flex-grow-1">
+                                        <div class="CriterionTypeSelectm cw-400 mb-2">
+                                            <select name="type" class="select2" style="width:100%">
+                                                <option value="" selected>Select a condition…</option>
+                                                @foreach (var t in _type)
+                                                {
+                                                    <option value="@t.Key">@t.Value</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="definition-col-action">
+                                        <button name="remove-definition" type="button" class="btn btn-outline-primary waves-effect waves-light"><i class="fa fa-trash"></i></button>
                                     </div>
                                 </div>
-                                <div class="definition-col-action">
-                                    <button name="remove-definition" type="button" class="btn btn-outline-primary waves-effect waves-light"><i class="fa fa-trash"></i></button>
-                                </div>
                             </div>
-                        </div>
-                        <button name="add-definition" class="btn btn-outline-primary waves-effect waves-light"><i class="fas fa-plus"></i> AND</button>
-                    </div>*@
+                            <button name="add-definition" class="btn btn-outline-primary waves-effect waves-light"><i class="fas fa-plus"></i> AND</button>
+                        </div>*@
 
                 </div>
             </div>

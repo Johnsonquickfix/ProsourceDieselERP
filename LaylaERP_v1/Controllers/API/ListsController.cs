@@ -13,6 +13,8 @@
     using BAL.qfk;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using System.Dynamic;
+    using System.Data;
 
     [RoutePrefix("api/lists")]
     public class ListsController : ApiController
@@ -230,6 +232,13 @@
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+                //DataTable dt = ProfilesRepository.MetricsList(1, string.Empty, 0, 100000, "metric_name", "asc");
+                //dynamic x = new List<dynamic>();
+                //foreach (DataRow row in dt.Rows)
+                //{
+                //    x.Add(new { value = Convert.ToInt64(row["metric_id"].ToString()), label = row["metric_name"].ToString() });
+                //}
+                //return Ok(x);
                 return Ok(ProfilesRepository.MetricsList(1, string.Empty, 0, 100000, "metric_name", "asc"));
             }
             catch (Exception ex)
@@ -244,25 +253,48 @@
         {
             try
             {
-                return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaType());
+                dynamic x = new List<dynamic>();
+                foreach (var item in LaylaERP.Models.qfk.Enums.Criteria.CriteriaType())
+                {
+                    x.Add(new { value = item.Key, label = item.Value });
+                }
+                return Ok(x);
+                //return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaType());
             }
             catch (Exception ex)
             {
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }
+
         [HttpGet, Route("criteria/operator/{type}")]
         public IHttpActionResult GetCriteriaOperator(string type)
         {
             try
             {
-                return Ok(LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type));
+                dynamic x = new ExpandoObject();
+                x.operators = new List<dynamic>();
+                x.timeframes = new List<dynamic>();
+                foreach (var item in LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type))
+                {
+                    if (item.Key == "gt-zero") x.operators.Add(new { value = item.Key, label = item.Value, selected = true });
+                    else x.operators.Add(new { value = item.Key, label = item.Value });
+                }
+                foreach (var item in LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe(type))
+                {
+                    if (item.Key == "alltime") x.timeframes.Add(new { value = item.Key, label = item.Value, selected = true });
+                   else x.timeframes.Add(new { value = item.Key, label = item.Value });
+                }
+                return Ok(x);
+                //dynamic dynamic = new { operators = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type), timeframes = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe() };
+                //return Ok(dynamic);
             }
             catch (Exception ex)
             {
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }
+
         [HttpGet, Route("criteria/timeframe")]
         public IHttpActionResult GetCriteriaTimeframe()
         {
@@ -275,6 +307,7 @@
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }
+
         [HttpGet, Route("criteria/unit")]
         public IHttpActionResult GetCriteriaUnit()
         {
@@ -285,6 +318,24 @@
             catch (Exception ex)
             {
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet, Route("metric/dimensions/{statistic}")]
+        public IHttpActionResult dimensions(int statistic)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+                
+                var value = ProfilesRepository.ProfileActivityFeed("dimensions", 1, statistic, string.Empty, 0, 1000);
+
+                return Ok(JsonConvert.DeserializeObject<JArray>(value));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
             }
         }
         #endregion

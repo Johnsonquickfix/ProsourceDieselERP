@@ -18,8 +18,8 @@
 
 var cachedCreateElement = Document.prototype.createElement;
 
-Document.prototype.createElement = function (tagName, props, children0, children1, children2, children3, children4, children5) {
-    var splitTagName = tagName.match(/(^|[\.\#])[^\.\#]*/g);
+Document.prototype.createElement = function (type, props, ...children) {
+    var splitTagName = type.match(/(^|[\.\#])[^\.\#]*/g);
     var element = cachedCreateElement.call(this, splitTagName[0]);
     for (var i = 0, l = splitTagName.length; i < l; i++) {
         var str = splitTagName[i];
@@ -29,14 +29,13 @@ Document.prototype.createElement = function (tagName, props, children0, children
             element.classList.add(str.slice(1));
         }
     }
-    for (var prop in props) {
-        element.setAttribute(prop, props[prop]);
-    }
-    if (children0 != null) typeof (children0) === 'string' ? element.innerHTML = children0 : element.append(children0);
-    if (children1 != null) typeof (children1) === 'string' ? element.innerHTML = children1 : element.append(children1);
-    if (children2 != null) typeof (children2) === 'string' ? element.innerHTML = children2 : element.append(children2);
-    if (children3 != null) typeof (children3) === 'string' ? element.innerHTML = children3 : element.append(children3);
-    if (children4 != null) typeof (children4) === 'string' ? element.innerHTML = children4 : element.append(children4);
-    if (children5 != null) typeof (children5) === 'string' ? element.innerHTML = children5 : element.append(children5);
+    for (var prop in props) { element.setAttribute(prop, props[prop]); }
+    children.forEach((child, index) => {
+        typeof (child) === 'string' ? element.innerHTML = child : element.append(child)
+    });
     return element;
+}
+
+function ApiHelper(url, data = {}, headers = { 'Content-Type': 'application/json' }, method = 'POST') {
+    return fetch(url, { method: method, data: data, headers: headers }).then(res => res.json()).then((result) => { return result; }, (error) => { return error; })
 }

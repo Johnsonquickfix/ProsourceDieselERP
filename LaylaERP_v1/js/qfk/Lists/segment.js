@@ -1,36 +1,14 @@
 ﻿!(function (r) {
-    "use strict"; r = r || document;
+    "use strict";;
     $(document).ready(function () {
-        //renderSelect();
-        //$(document).on('change', 'select[name="type"]', function (evt) {
-        //    evt.preventDefault(), evt.stopPropagation(); addFilter(this);
-        //});
-        //$(document).on('click', '[name="add-definition"]', function (evt) {
-        //    evt.preventDefault(), evt.stopPropagation(), $(this).prop('disabled', true); addDefinition();
-        //});
-        //$(document).on('click', '[name="remove-definition"]', function (evt) {
-        //    evt.preventDefault(), evt.stopPropagation(), removeDefinition(this);
-        //});
-        //$(document).on('click', '[name="or-definition"]', function (evt) {
-        //    evt.preventDefault(), evt.stopPropagation(), addOrDefinition(this);
-        //});
-        $(document).on('click', '[name="add-filter-row"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), addFilterRow(this);
-        });
         $(document).on('click', '[name="close-filter-row"]', function (evt) {
             evt.preventDefault(), evt.stopPropagation(), removeFilterRow(this);
         });
-        //$(document).on('change', '[name="timeframe"]', function (evt) {
-        //    evt.preventDefault(), evt.stopPropagation(), addTimeFrame(this);
-        //});
         $(document).on('click', '#create-Segments', function (evt) {
             evt.preventDefault(), evt.stopPropagation(), postDetails(this);
         });
     });
-    const L = [{ value: 'customer-group-membership', name: 'If someone is in or not in a list' }, { value: 'customer-exclusion', name: 'If someone is or is not suppressed for email' }, { value: 'customer-location', name: 'If someone is or is not within the country' }];
-    const T = [{ value: 'in-the-last', name: 'in the last', select: true }, { value: 'more-than', name: 'more than' }, { value: 'at-least', name: 'at least' }, { value: 'between', name: 'between' }, { value: 'before', name: 'before' }, { value: 'after', name: 'after' }, { value: 'between-static', name: 'between dates' }];
-    const O = [{ value: 'eq', name: 'is', select: true }, { value: 'neq', name: 'is not' }];
-    var dr = '.definition-row', dc = '.definition-col', dcfr = '.FilterRowContainer',
+    var r = r || document,
         addDefinition = function () {
             let d = r.getElementById("definition"), dr = r.createElement('div', { class: 'definition-row d-flex', }),
                 _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
@@ -76,22 +54,48 @@
                     )
                 ), getMetrics(_metric), getOperator(_operator, _timeframe, v);
             }
+            else if (v === 'customer-attribute') {
+                //d.append(
+                //    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
+                //        r.createElement('div', { class: "fix-label" }, '<h6>Location</h6>'),
+                //        r.createElement('div', { class: "cw-175" }, r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }, fillSelect(O))),
+                //        r.createElement('div', { class: "fix-label" }, '<h6>within</h6>'),
+                //        r.createElement('div', { class: "cw-300" }, r.createElement('select', { name: "country", class: "select2", style: "width:100%" }, '<option value=""></option>'))
+                //    )
+                //);
+                //getCountries($(d).find('[name="country"]'));
+                //$(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="country"]').select2({ placeholder: "Choose a country..." });
+            }
+            else if (v === 'customer-location') {
+                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _region = r.createElement('select', { name: "region", style: "width:100%" });
+                d.append(
+                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
+                        r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'Location')),
+                        r.createElement('div', { class: "cw-175" }, _operator),
+                        r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'within')),
+                        r.createElement('div', { class: "cw-300" }, _region)
+                    )
+                ), getOperator(_operator, _region, v);
+            }
             else if (v === 'customer-group-membership') {
-                d.append(
-                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('div', { class: "fix-label" }, '<h6>Person</h6>'),
-                        r.createElement('div', { class: "cw-175" }, r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }, fillSelect(O))),
-                        r.createElement('div', { class: "fix-label" }, '<h6>in</h6>'),
-                        r.createElement('div', { class: "cw-300" }, r.createElement('select', { name: "group", class: "form-control select2", style: "width:100%", required: '' }, '<option selected=""></option>')),
-                    )
-                );
-                d.append(
-                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-primary", style: "margin-left: 52px; grid-column: span 1 / auto;" }, '<i class="fas fa-filter"></i> By Date Added')
-                    )
-                );
-                getLists($(d).find('[name="group"]'));
-                $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="group"]').select2({ placeholder: "Choose a list.." });
+                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _group = r.createElement('select', { name: "region", style: "width:100%" }),
+                    dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
+                dr.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'Person')));
+                dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, _operator));
+                dr.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "in" }, 'Person')));
+                createGroup(dr), d.appendChild(dr), getOperator(_operator, null, v);
+                let btn = r.createElement('button', { class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> By Date Added');
+                d.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, btn));
+
+                btn.addEventListener("click", function (evt) {
+                    evt.preventDefault(), evt.stopPropagation();
+                    let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('input', { "type": 'text', style: "width:100%", class: "form-control", disabled: 'disabled' });
+                    s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
+                    div.replaceChildren(r.createElement('div', { class: 'fix-label' }, r.createElement('span', { class: "h4_title" }, 'and was added')));
+                    div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s)), getOperator(null, s, v);
+                    div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
+                    createUnit(div);
+                });
             }
             else if (v === 'customer-exclusion') {
                 d.append(
@@ -103,20 +107,9 @@
                 );
                 $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 });
             }
-            else if (v === 'customer-location') {
-                d.append(
-                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('div', { class: "fix-label" }, '<h6>Location</h6>'),
-                        r.createElement('div', { class: "cw-175" }, r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }, fillSelect(O))),
-                        r.createElement('div', { class: "fix-label" }, '<h6>within</h6>'),
-                        r.createElement('div', { class: "cw-300" }, r.createElement('select', { name: "country", class: "select2", style: "width:100%" }, '<option value=""></option>'))
-                    )
-                );
-                getCountries($(d).find('[name="country"]'));
-                $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="country"]').select2({ placeholder: "Choose a country..." });
-            }
-            pr.querySelectorAll('button[name="or-definition"]').forEach(e => e.remove());
+            
             // or condition
+            pr.querySelectorAll('a[name="or-definition"]').forEach(e => e.remove());
             let _or = r.createElement('a', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR');
             pr.querySelectorAll(".definition-col-action:last-child").forEach(e => e.append(_or));
             _or.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); addOrDefinition(this); });
@@ -129,11 +122,9 @@
                 createUnit(p);
             }
             else if (v === 'more-than' || v === 'at-least') {
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
-                d.append(r.createElement('div', { class: 'InputContainer cw-80', }, r.createElement('select', { name: "units", class: "select2", style: "width:100%" }, fillSelect(U))));
-                d.append(r.createElement('div', { class: 'fix-label', }, '<h6>ago</h6>'));
-                d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                $(d).find('[name="units"]').select2({ minimumResultsForSearch: -1 });
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" }))), createUnit(p);
+                p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'ago')));
+                //p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
             }
             else if (v === 'between') {
                 let _unit = r.createElement('select', { style: "width:100%" });
@@ -158,18 +149,6 @@
                 //$(d).find('[name="start_date"],[name="end_date"]').inputmask("mm/dd/yyyy");
             }
         },
-        addFilterRow = function (t) {
-            let $div = t.closest(dc); t.closest('div').remove();
-            let c = r.createElement('div', { "data-filterid": "filter-row", class: 'FilterRowContainer d-flex mb-2', style: "margin-left: 52px;" },
-                r.createElement('div', { class: 'fix-label', }, '<h6>and was added</h6>'),
-                r.createElement('div', { class: 'InputContainer cw-175', }, r.createElement('select', { name: "timeframe", class: "select2", style: "width:100%" }, fillSelect(T))),
-                r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })),
-                r.createElement('div', { class: 'InputContainer cw-80', }, r.createElement('select', { name: "units", class: "select2", style: "width:100%" }, fillSelect(U))),
-                r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-dark", type: "button" }, 'X'))
-            );
-            $(c).find('.select2').select2({ minimumResultsForSearch: -1 });
-            $div.append(c);
-        },
         removeFilterRow = function (t) {
             let r = document, d = t.closest('.definition-col');
             t.closest('[data-filterid="filter-row"]').remove();
@@ -178,11 +157,6 @@
                     r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-primary", style: "margin-left: 52px; grid-column: span 1 / auto;" }, '<i class="fas fa-filter"></i> By Date Added')
                 )
             );
-        },
-        fillSelect = function (d) {
-            let _ = '';
-            for (var i in d) { _ += `<option value="${d[i].value}" ${d[i].select ? 'selected' : ''}>${d[i].name}</option>`; }
-            return _;
         },
         getMetrics = function (ctr) {
             var multipleFetch = new Choices(ctr, { allowHTML: false, placeholder: true, placeholderValue: 'Choose metric...', itemSelectText: '', shouldSort: false })
@@ -196,15 +170,12 @@
                 });
         },
         getOperator = function (operator_ctr, timeframe_ctr, type) {
-            const $_operator_ctr = new Choices(operator_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }),
-                $_timeframe_ctr = new Choices(timeframe_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false });
-
+            const $_operator_ctr = operator_ctr ? new Choices(operator_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }) : null,
+                $_timeframe_ctr = timeframe_ctr ? new Choices(timeframe_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }) : null;
             let requestOptions = { method: 'GET', headers: {} };
             fetch(`/api/lists/criteria/operator/${type}`, requestOptions).then(response => response.json())
                 .then(result => {
-                    $_operator_ctr.setChoices(result.operators), $_timeframe_ctr.setChoices(result.timeframes);
-                    //if (operator_ctr) for (var key in result.operators) { operator_ctr.appendChild(r.createElement('option', { 'value': key }, result.operators[key])); }
-                    //if (timeframe_ctr) for (var key in result.timeframes) { timeframe_ctr.appendChild(r.createElement('option', { 'value': key }, result.timeframes[key])); }
+                    (result.operators && $_operator_ctr) && $_operator_ctr.setChoices(result.operators), (result.timeframes && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.timeframes), (result.region && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.region);
                 }).catch(error => console.log('error', error));
         },
         createCriteria = function (e) {
@@ -271,7 +242,7 @@
                             p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
 
                             (function (a, v1, v2) {
-                                new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400',} })
+                                new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
                                     .setChoices(async () => {
                                         try {
                                             return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
@@ -298,20 +269,24 @@
                                     });
                             })(sv, v, this.value);
                         }
-
-                        //console.log(evt.target.parentNode.nextElementSibling.querySelector('[name="operator_value"]'))
-                        //removeDefinition(this);
-                        //const example = new Choices(a);
-                        //const values = example.getValue(true);
-                        //console.log(values)
                     });
                 })(s, v);
             });
         },
-        getLists = function (c) {
-            $.get(`/api/lists/static-group`, {}).done(function (result) {
-                for (var i in result) { c.append(`<option value="${result[i].group_id}">${result[i].name}</option>`); }
-            });
+        createGroup = function (e) {
+            let s = r.createElement('select', { style: "width:100%" });
+            e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+            (function (s) {
+                new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a list…', itemSelectText: '', shouldSort: false })
+                    .setChoices(async () => {
+                        try {
+                            return await fetch('/api/lists/static-group', { method: 'GET' }).then(response => response.json())
+                                .then(function (data) {
+                                    return data ? data.map(function (row) { return { value: row.group_id, label: row.name }; }) : [];
+                                });
+                        } catch (err) { console.error(err); }
+                    });
+            })(s);
         },
         getCountries = function (c) {
             $.get(`/api/lists/countries`, {}).done(function (result) {

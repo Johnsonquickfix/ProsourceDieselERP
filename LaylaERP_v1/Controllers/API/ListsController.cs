@@ -273,21 +273,13 @@
             try
             {
                 dynamic x = new ExpandoObject();
-                x.operators = new List<dynamic>();
-                x.timeframes = new List<dynamic>();
-                foreach (var item in LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type))
-                {
-                    if (item.Key == "gt-zero") x.operators.Add(new { value = item.Key, label = item.Value, selected = true });
-                    else x.operators.Add(new { value = item.Key, label = item.Value });
-                }
-                foreach (var item in LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe(type))
-                {
-                    if (item.Key == "alltime") x.timeframes.Add(new { value = item.Key, label = item.Value, selected = true });
-                   else x.timeframes.Add(new { value = item.Key, label = item.Value });
-                }
+                x.operators = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type);
+                if (type.ToLower().Trim().Equals("customer-statistic-value") || type.ToLower().Trim().Equals("customer-group-membership"))
+                    x.timeframes = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe(type);
+                else if (type.ToLower().Trim().Equals("customer-location"))
+                    x.region = LaylaERP.Models.qfk.Enums.Criteria.CriteriaRegion();
+
                 return Ok(x);
-                //dynamic dynamic = new { operators = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator(type), timeframes = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe() };
-                //return Ok(dynamic);
             }
             catch (Exception ex)
             {

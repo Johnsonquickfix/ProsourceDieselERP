@@ -7,9 +7,15 @@
     if (om.UserID <= 0) { Response.Redirect("~/user/sign_in"); }
 
     Dictionary<string, string> _type = LaylaERP.Models.qfk.Enums.Criteria.CriteriaType();
-    Dictionary<string, string> _operator = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator();
-    Dictionary<string, string> _timeframe = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe();
-    Dictionary<string, string> _unit = LaylaERP.Models.qfk.Enums.Criteria.CriteriaUnit();
+
+    Dictionary<string, string> _operator = new Dictionary<string, string>();
+    Dictionary<string, string> _timeframe = new Dictionary<string, string>();
+    Dictionary<string, string> _unit = new Dictionary<string, string>();
+
+
+    //Dictionary<string, string> _operator = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator();
+    //Dictionary<string, string> _timeframe = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe();
+    //Dictionary<string, string> _unit = LaylaERP.Models.qfk.Enums.Criteria.CriteriaUnit();
     //System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(om.company_id, 1);
     System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(1, 1);
     System.Data.DataTable cl = LaylaERP.BAL.qfk.ProfilesRepository.GetCountries();

@@ -18,6 +18,14 @@
 </div>
 <div id="divAlert">
 </div>
+
+<!--Address List -->
+<input type="hidden" id="billing_address_1" />
+<input type="hidden" id="billing_address_2" />
+<input type="hidden" id="billing_postcode" />
+<input type="hidden" id="billing_city" />
+<input type="hidden" id="billing_country" />
+<input type="hidden" id="billing_state" />
 <!-- Main content -->
 <section>
     <div class="box box-primary">
@@ -52,9 +60,9 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             @*<label class="control-label" for="ddlPaymentType" data-toggle="tooltip" title="Vendor payment type.">Bill Type<span class="text-red">*</span></label>
-                            <div class="">
-                                <select class="form-control select2 billinfoval" id="ddlPaymentType"></select>
-                            </div>*@
+                                <div class="">
+                                    <select class="form-control select2 billinfoval" id="ddlPaymentType"></select>
+                                </div>*@
                             <label class="control-label " for="Payment Terms">Payment Terms</label>
                             <div class="">
                                 <select class="form-control select2 billinfovalff" id="ddlPaymentTerms"></select>
@@ -131,12 +139,12 @@
                     </div>
                     <div class="col-md-4">
                         <label class="control-label" id="lblbillNo" data-id="0"></label>
-                        @*<div class="form-group">                             
-                            <label class="control-label">Balance Net</label>                            
-                                <label id="lblbalancenet" class="control-label" />                            
-                        </div>*@
-                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label">Balance Net</label>
+                                    <label id="lblbalancenet" class="control-label" />
+                            </div>*@
                     </div>
+                </div>
             </div>
         </div>
     </div>
@@ -177,7 +185,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
     <div class="row">
         <div class="col-sm-6">
             <div class="box box-primary">
@@ -279,11 +287,11 @@
                             </div>
                         </div>
                         @*<div class="form-group ">
-                    <label class="col-sm-10 control-label">Discount</label>
-                    <div class="col-sm-2 controls text-right">
-                        <span id="discountTotal">$0.00</span>
-                    </div>
-                </div>*@
+                                <label class="col-sm-10 control-label">Discount</label>
+                                <div class="col-sm-2 controls text-right">
+                                    <span id="discountTotal">$0.00</span>
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="col-sm-10 control-label">Amount tax</label>
                             <div class="col-sm-2 controls text-right">
@@ -313,17 +321,17 @@
                             </div>
                         </div>
                         @*<div class="form-group text-success ispaid">
-                    <label class="col-sm-10 control-label">Paid</label>
-                    <div class="col-sm-2 controls text-right">
-                        <strong><span id="paidTotal">$0.00</span></strong>
-                    </div>
-                </div>
-                <div class="form-group text-danger ispaid">
-                    <label class="col-sm-10 control-label">Remaining Unpaid</label>
-                    <div class="col-sm-2 controls text-right">
-                        <strong><span id="unpaidTotal">$0.00</span></strong>
-                    </div>
-                </div>*@
+                                <label class="col-sm-10 control-label">Paid</label>
+                                <div class="col-sm-2 controls text-right">
+                                    <strong><span id="paidTotal">$0.00</span></strong>
+                                </div>
+                            </div>
+                            <div class="form-group text-danger ispaid">
+                                <label class="col-sm-10 control-label">Remaining Unpaid</label>
+                                <div class="col-sm-2 controls text-right">
+                                    <strong><span id="unpaidTotal">$0.00</span></strong>
+                                </div>
+                            </div>*@
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -455,9 +463,9 @@
             </div>
         </div>
     </div>-->
-</section> 
+</section>
 <script src="@Url.Content("~/js/PaymentInvoice/PayMiscBills.js?v="+DateTime.Now.ToString(" ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/PaymentInvoice/MiscBillPrint.js?v="+DateTime.Now.ToString(" ddMMyyyymmss")+"")" asp-append-version="true"></script>
- 
+
 
 

@@ -73,13 +73,13 @@ function misclistList() {
             { data: 'date_creation', title: 'Bill Date', sWidth: "10%", render: function (id, type, full, meta) { return full.date_creation; } },
             
             //{ data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) { if (data > 0) return '#' + data; else return ''; } },
-            { data: 'transaction_t', title: 'Transaction Type', sWidth: "10%" },
+            { data: 'transaction_t', title: 'Transaction Type', sWidth: "10%", class: 'text-center' },
             { data: 'customertype', title: 'Customer Type', sWidth: "10%" },
-            { data: 'displayname', title: 'Name', sWidth: "15%" },
+            { data: 'displayname', title: 'Name', sWidth: "20%" },
           /*  { data: 'paymenttype', title: 'Bill Type', sWidth: "10%" },*/
-            { data: 'payaccount', title: 'Pay Account', sWidth: "10%" },
+            { data: 'payaccount', title: 'Pay Account', sWidth: "10%", class: 'text-center' },
             {
-                data: 'totqty', title: 'Quantity', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
+                data: 'totqty', title: 'Quantity', sWidth: "8%", class: 'text-center', render: function (data, type, full, meta) {
                     //let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
                     return data;
                 }

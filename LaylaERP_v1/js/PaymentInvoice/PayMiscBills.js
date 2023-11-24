@@ -515,19 +515,34 @@ function CustomerAddress(id) {
     let option = { strValue1: parseInt(id) || 0 };
     if (option.strValue1 > 0) {
         ajaxFunc('/Orders/GetCustomerAddress', option, function () { }, function (result) {
+            //debugger;
             var data = JSON.parse(result);
             let add = "";
             for (var i = 0; i < data.length; i++) {
-                ///billing_Details 
-                if (data[i].meta_key == 'billing_address_1') { add = data[i].meta_value + ' '; }
-                else if (data[i].meta_key == 'billing_address_2') { add = data[i].meta_value + ' '; }
-                else if (data[i].meta_key == 'billing_postcode') { add += data[i].meta_value + ' ';  }
-                else if (data[i].meta_key == 'billing_city') { add += data[i].meta_value + ' '; }
-                else if (data[i].meta_key == 'billing_country') { add += data[i].meta_value + ' ';}
-                else if (data[i].meta_key == 'billing_state') { add += data[i].meta_value + ' ';}
+                ///billing_Details
+                //if (data[i].meta_key == 'billing_address_1'){ add += data[i].meta_value + ' ';}
+                //else if (data[i].meta_key == 'billing_address_2' && data[i].meta_key !=null ) { add += data[i].meta_value + ' '; }
+                //else if (data[i].meta_key == 'billing_postcode') { add += data[i].meta_value + ' ';  }
+                //else if (data[i].meta_key == 'billing_city') { add += data[i].meta_value + ' '; }
+                //else if (data[i].meta_key == 'billing_country') { add += data[i].meta_value + ' ';}
+                //else if (data[i].meta_key == 'billing_state') { add += data[i].meta_value + ' ';}
+                if (data[i].meta_key == 'billing_address_1') { $("#billing_address_1").val(data[i].meta_value )  }
+                else if (data[i].meta_key == 'billing_address_2' && data[i].meta_key != null) { $("#billing_address_2").val( data[i].meta_value ) }
+                else if (data[i].meta_key == 'billing_postcode') { $("#billing_postcode").val( data[i].meta_value) }
+                else if (data[i].meta_key == 'billing_city') { $("#billing_city").val(data[i].meta_value ) }
+                else if (data[i].meta_key == 'billing_country') { $("#billing_country").val( add += data[i].meta_value ) }
+                else if (data[i].meta_key == 'billing_state') { $("#billing_state").val( data[i].meta_value) }
                  
-                $('#txtcustmeraddress').text(add);
+               /* $('#txtcustmeraddress').text(add);*/
             }
+            var billing_address_1 = $("#billing_address_1").val();
+            var billing_address_2 = $("#billing_address_2").val();
+            var billing_postcode = $("#billing_postcode").val();
+            var billing_city = $("#billing_city").val();
+            var billing_country = $("#billing_country").val();
+            var billing_state = $("#billing_state").val();
+            add = billing_address_1 + " " + billing_city + " " + billing_state + " " + billing_postcode + " " + billing_country;
+            $('#txtcustmeraddress').text(add);
         })
     }
      

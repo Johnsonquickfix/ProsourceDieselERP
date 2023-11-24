@@ -165,7 +165,7 @@ function GetDamageProductByWarehouse() {
 }
 
 $('#ddlDamageProduct').change(function () {
-    debugger
+    //debugger
     if ($('#ddlDamageProduct').val() == null) return false;
     var fk_product = $('#ddlDamageProduct').val();
     var obj = {

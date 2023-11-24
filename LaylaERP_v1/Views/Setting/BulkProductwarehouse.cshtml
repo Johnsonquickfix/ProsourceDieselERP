@@ -1,8 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "BulkProductOpeningStock";
+    ViewBag.Title = "BulkProductwarehouse";
     Layout = "~/Views/Shared/_Layout.cshtml";
-} 
+}
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 @*datatables js*@
@@ -13,26 +13,26 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2>Bulk Assign Product Opening Stock</h2>
+    <h2>Bulk Assign Product warehouse</h2>
 </div>
-<section class="content section-content product-acctount-section table-design">    
+<section class="content section-content product-acctount-section table-design">
     <div class="row">
         <div class="col-md-12">
             <div class="page-title">
                 <div class="ml-auto">
-                    <button class="btn btn-danger btn-flat button" id="btnSaveProductquantity" disabled><span title="Click here to assign quantity" data-placement="top" data-toggle="tooltip">Save</span></button>
+                    <button class="btn btn-danger btn-flat button" id="btnSaveProductwarehouse" disabled><span title="Click here to assign warehouse" data-placement="top" data-toggle="tooltip">Save</span></button>
                 </div>
             </div>
             <div class="box box-primary table-design not-fixed">
                 <div class="box-body">
-                    <table id="dtProductsquantity" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                    <table id="dtProductswarehouse" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                         <thead>
                             <tr>
                                 <th class="text-left">ID</th>
                                 <th class="text-left">Parent</th>
                                 <th class="text-left">Ref</th>
-                                <th>Quantity</th>
-                                <th><div class="a-relative"><input type="checkbox" id="checkAll"><label></label></div></th> 
+                                <th>Warehouse</th>
+                                <th><div class="a-relative"><input type="checkbox" id="checkAll"><label></label></div></th>
                             </tr>
                         </thead>
                     </table>
@@ -41,5 +41,5 @@
         </div>
     </div>
 </section>
-<script src="@Url.Content("~/js/Accounting/BulkProductOpeningStock.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Accounting/BulkProductwarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

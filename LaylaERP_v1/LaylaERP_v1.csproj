@@ -957,6 +957,7 @@
     <Content Include="js\Accounting\BankReconciliation.js" />
     <Content Include="js\Accounting\BankReconciliationprocess.js" />
     <Content Include="js\Accounting\BulkProductOpeningStock.js" />
+    <Content Include="js\Accounting\BulkProductwarehouse.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
@@ -1964,6 +1965,7 @@
     <Content Include="Views\Orders\quickorders.cshtml" />
     <Content Include="Views\Setting\BulkProductOpeningStock.cshtml" />
     <Content Include="Views\assignvendorandwarehouse\Index.cshtml" />
+    <Content Include="Views\Setting\BulkProductwarehouse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

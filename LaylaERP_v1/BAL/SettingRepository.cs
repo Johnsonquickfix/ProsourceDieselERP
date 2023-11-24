@@ -956,5 +956,67 @@ namespace LaylaERP.BAL
                 throw ex;
             }
         }
+
+        public static DataTable GetProductwarehouse(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "select post_parent, p.id,post_title ,fk_warehouse  from wp_posts p  " +
+                  " LEFT JOIN wp_postmeta AS s ON p.id = s.post_id  " +
+                   " left join product_warehouse as pwr on pwr.fk_product = p.id " +
+                   " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' GROUP BY p.ID,post_name,post_title,fk_warehouse,post_parent ";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public int AddProductwarehouse(string ProductID, string fk_warehouse)
+        {
+            try
+            {
+                int result = 0;
+                string[] ID = ProductID.Split(',');
+                string[] value = fk_warehouse.Split(',');
+
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    ProductID = ID[i].ToString();
+                    fk_warehouse = value[i].ToString();
+                    //if (quantity != "0")
+                    //{
+                    string strsql = "";
+                    string Product = Getproduct_id(ProductID).ToString();
+                    if (Product == ProductID)
+                    {
+                        strsql = "Update product_warehouse set fk_warehouse=@fk_warehouse where fk_product=@product_id ";
+                    }
+                    else
+                    {
+                        strsql = "insert into product_warehouse(fk_product,fk_warehouse,openning_stock,is_active) values(@product_id,@fk_warehouse,1,1);";
+                    }
+                    SqlParameter[] para =
+                    {
+                            new SqlParameter("@product_id",ProductID),
+                            new SqlParameter("@fk_warehouse", fk_warehouse),
+                        };
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                    //}
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }

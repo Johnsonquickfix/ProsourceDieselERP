@@ -180,6 +180,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult BulkProductwarehouse()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -928,5 +932,48 @@ namespace LaylaERP.Controllers
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
 
+        [HttpGet]
+        public JsonResult GetProductwarehouse(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.GetProductwarehouse(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult AddProductwarehouse(ProductAccountingModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string ProductID = model.strValue1;
+                string option_mode = model.option_mode;
+                string ProductAccountNumberID = model.strValue2;
+
+                if (model.ID > 0)
+                {
+                    //new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    //return Json(new { status = true, message = "Product account has been updated successfully!!", url = "", id = model.rowid }, 0);
+                }
+                else
+                {
+                    int ID = new SettingRepository().AddProductwarehouse(ProductID, ProductAccountNumberID);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Product warehouse saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "something went wrong!! Product warehouse not saved ", url = "", id = 0 }, 0);
+                    }
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
     }
 }

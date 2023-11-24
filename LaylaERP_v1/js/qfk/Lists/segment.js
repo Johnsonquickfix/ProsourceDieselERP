@@ -32,62 +32,29 @@
     const O = [{ value: 'eq', name: 'is', select: true }, { value: 'neq', name: 'is not' }];
     var dr = '.definition-row', dc = '.definition-col', dcfr = '.FilterRowContainer',
         addDefinition = function () {
-            let _condition = r.createElement('select', { name: "type", class: "form-select", style: "width:100%" }, '<option value="" selected>Select a condition…</option>'),
-                _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND'),
-                _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
-            _condition.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
+            let d = r.getElementById("definition"), dr = r.createElement('div', { class: 'definition-row d-flex', }),
+                _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
             _and.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); this.disabled = true, addDefinition(); });
-            _remove.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); removeDefinition(this); });
-
-            let p = r.getElementById("definition"), d = r.createElement('div', { class: 'definition__container mb-2', },
-                r.createElement('div', { class: 'boxed_style card card-body my-2' },
-                    r.createElement('div', { class: 'definition-row d-flex' },
-                        r.createElement('div', { class: 'definition-col flex-grow-1' },
-                            r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' }, _condition)
-                        ),
-                        r.createElement('div', { class: 'definition-col-action' }, _remove),
+            createCriteria(dr), d.appendChild(r.createElement('div', { class: 'definition__container mb-2', }, r.createElement('div', { class: 'boxed_style card card-body my-2' }, dr), _and));
+        },
+        addOrDefinition = function (c) {
+            let pr = c.closest('.definition__container .card-body'), dr = r.createElement('div', { class: 'definition-row d-flex', });
+            c.remove(), createCriteria(dr),
+                pr.append(
+                    r.createElement('div', { class: 'CriterionDivider' },
+                        r.createElement('div', { class: 'BoxedPlaceholder__Container me-3' }, r.createElement('div', null, r.createElement('span', { class: "h4_title" }, 'OR'))),
+                        r.createElement('div', { class: 'CriterionDivider__LineContainer flex-grow-1' }, r.createElement('div'), r.createElement('div'))
                     )
-                ), _and);
-            p.append(d);
-            new Choices(_condition, { allowHTML: false, searchEnabled: false, itemSelectText: '', shouldSort: false })
-                .setChoices(async () => {
-                    try {
-                        return await fetch('/api/lists/criteria/type', { method: 'GET' }).then(response => response.json());
-                    } catch (err) { console.error(err); }
-                });
+                ), pr.append(dr);
         },
         removeDefinition = function (c) {
-            let r = document, t = $(c).closest('.definition__container'), i = t.find('.definition-row').index($(c).closest('.definition-row'));
-            t.find('div.CriterionDivider').eq(i > 0 ? i - 1 : i).remove();
-            if (t.find('.definition-row').length <= 1) t.remove(); else $(c).closest('.definition-row').remove();
-            if ($('#definition .definition__container').length <= 0) addDefinition();
+            let r = document, t = c.closest('.definition__container'), i = $(t).find('.definition-row').index(c.closest('.definition-row'));
+            $(t).find('div.CriterionDivider').eq(i > 0 ? i - 1 : i).remove();
+            $(t).find('.definition-row').length <= 1 ? t.remove() : c.closest('.definition-row').remove()
+            $('#definition .definition__container').length <= 0 && addDefinition();
             $(t).find('[name="or-definition"]').remove();
             $(t).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
             $('[name="add-definition"]').last().prop('disabled', false);
-        },
-        addOrDefinition = function (c) {
-            let pr = c.closest('.definition__container .card-body'); c.remove();
-            let _condition = r.createElement('select', { name: "type", class: "form-select", style: "width:100%" }, '<option value="" selected>Select a condition…</option>'),
-                _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
-            _condition.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
-            _remove.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); removeDefinition(this); });
-
-            var p = r.getElementById("definition"), d = r.createElement('div', { class: 'definition-row d-flex' },
-                r.createElement('div', { class: 'definition-col flex-grow-1' }, r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' }, _condition)),
-                r.createElement('div', { class: 'definition-col-action' }, _remove),
-            );
-            pr.append(
-                r.createElement('div', { class: 'CriterionDivider' },
-                    r.createElement('div', { class: 'BoxedPlaceholder__Container me-3' }, r.createElement('div', null, r.createElement('span', { class: "h4_title" }, 'OR'))),
-                    r.createElement('div', { class: 'CriterionDivider__LineContainer flex-grow-1' }, r.createElement('div'), r.createElement('div'))
-                )
-            ), pr.append(d);
-            new Choices(_condition, { allowHTML: false, searchEnabled: false, itemSelectText: '', shouldSort: false })
-                .setChoices(async () => {
-                    try {
-                        return await fetch('/api/lists/criteria/type', { method: 'GET' }).then(response => response.json());
-                    } catch (err) { console.error(err); }
-                });
         },
         addFilter = function (t) {
             let v = t.value, d = t.closest('.definition-col'), pr = t.closest('.definition__container');
@@ -153,18 +120,13 @@
             let _or = r.createElement('a', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR');
             pr.querySelectorAll(".definition-col-action:last-child").forEach(e => e.append(_or));
             _or.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); addOrDefinition(this); });
-
-            //$(pr).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
         },
         addTimeFrame = function (t) {
             let v = t.value, d = t.closest('.InputContainer'), p = d.parentNode;
-            while (!!d.nextElementSibling) { console.log(d.nextElementSibling); d.nextElementSibling.remove(); }
+            while (!!d.nextElementSibling) { d.nextElementSibling.remove(); }
             if (v === 'in-the-last') {
-                //let _unit = r.createElement('select', { style: "width:100%" });
                 p.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
                 createUnit(p);
-                //p.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, getUnit()));
-                //getUnit(_unit);
             }
             else if (v === 'more-than' || v === 'at-least') {
                 d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
@@ -232,12 +194,6 @@
                             });
                     } catch (err) { console.error(err); }
                 });
-
-            //let requestOptions = { method: 'GET', headers: {} };
-            //fetch("/api/lists/metrics", requestOptions).then(response => response.json())
-            //    .then(result => {
-            //        for (var i in result) { ctr.appendChild(r.createElement('option', { 'value': result[i].metric_id }, result[i].metric_name)); }
-            //    }).catch(error => console.log('error', error));
         },
         getOperator = function (operator_ctr, timeframe_ctr, type) {
             const $_operator_ctr = new Choices(operator_ctr, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }),
@@ -251,11 +207,20 @@
                     //if (timeframe_ctr) for (var key in result.timeframes) { timeframe_ctr.appendChild(r.createElement('option', { 'value': key }, result.timeframes[key])); }
                 }).catch(error => console.log('error', error));
         },
-        createCriteriaType = function (e) {
-            let s = r.createElement('select', { style: "width:100%" });
-            e.appendChild(r.createElement('div', { class: "CriterionTypeSelectm cw-400 mb-2" }, s));
-            (function (a) {
-                new Choices(a, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }).setChoices(u);
+        createCriteria = function (e) {
+            let s = r.createElement('select', { style: "width:100%" }), _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
+            s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
+            _remove.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); removeDefinition(this); });
+
+            e.appendChild(r.createElement('div', { class: 'definition-col flex-grow-1' }, r.createElement('div', { class: 'CriterionTypeSelectm cw-400 mb-2' }, s)));
+            e.appendChild(r.createElement('div', { class: 'definition-col-action' }, _remove));
+            (function (s) {
+                new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a condition…', itemSelectText: '', shouldSort: false })
+                    .setChoices(async () => {
+                        try {
+                            return await fetch('/api/lists/criteria/type', { method: 'GET' }).then(response => response.json());
+                        } catch (err) { console.error(err); }
+                    });
             })(s);
         },
         createOperatorValue = function (e) {
@@ -280,23 +245,66 @@
 
             b.addEventListener("click", function (evt) {
                 evt.preventDefault(), evt.stopPropagation();
-                let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('select', { style: "width:100%" });
+                let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('input', { "type": 'text', style: "width:100%", class: "form-control", disabled: 'disabled' });
                 div.replaceChildren(r.createElement('div', { class: 'fix-label' }, r.createElement('span', { class: "h4_title" }, 'where')));
                 div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
-                div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('span', { class: "h4_title" }, 'equals')));
-                //div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, s));
-                div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, 'X'));
-
+                div.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'equals')));
+                div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
+                div.appendChild(r.createElement('div', { class: "fix-label" }, '<span>X</span>'));
                 (function (a, v) {
-                    new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
+                    const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
                         .setChoices(async () => {
                             try {
-                                return await fetch(`/api/lists/metric/dimensions/${v}`, { method: 'GET' }).then(response => response.json())
+                                return await fetch(`/api/lists/metric/dimensions?statistic=${v}`, { method: 'GET' }).then(response => response.json())
                                     .then(function (data) {
-                                        return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, value_type: row.meta_type }; }) : [];
+                                        return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type }; }) : [];
                                     });
                             } catch (err) { console.error(err); }
                         });
+                    a.addEventListener("change", function (evt) {
+                        evt.preventDefault(), evt.stopPropagation();
+                        let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
+                        while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
+                        if (_type === 'list') {
+                            let sv = r.createElement('select', { multiple: 'multiple', style: "width:100%" });
+                            p.parentNode.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'contains')));
+                            p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+
+                            (function (a, v1, v2) {
+                                new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400',} })
+                                    .setChoices(async () => {
+                                        try {
+                                            return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
+                                                .then(function (data) {
+                                                    return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
+                                                });
+                                        } catch (err) { console.error(err); }
+                                    });
+                            })(sv, v, this.value);
+                        }
+                        else {
+                            let sv = r.createElement('select', { style: "width:100%" });
+                            p.parentNode.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'equals')));
+                            p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+                            (function (a, v1, v2) {
+                                new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
+                                    .setChoices(async () => {
+                                        try {
+                                            return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
+                                                .then(function (data) {
+                                                    return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
+                                                });
+                                        } catch (err) { console.error(err); }
+                                    });
+                            })(sv, v, this.value);
+                        }
+
+                        //console.log(evt.target.parentNode.nextElementSibling.querySelector('[name="operator_value"]'))
+                        //removeDefinition(this);
+                        //const example = new Choices(a);
+                        //const values = example.getValue(true);
+                        //console.log(values)
+                    });
                 })(s, v);
             });
         },

@@ -321,7 +321,7 @@
             }
         }
 
-        [HttpGet, Route("metric/dimensions/{statistic}")]
+        [HttpGet, Route("metric/dimensions")]
         public IHttpActionResult dimensions(int statistic)
         {
             try
@@ -330,6 +330,24 @@
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
                 
                 var value = ProfilesRepository.ProfileActivityFeed("dimensions", 1, statistic, string.Empty, 0, 1000);
+
+                return Ok(JsonConvert.DeserializeObject<JArray>(value));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("metric/dimension-values")]
+        public IHttpActionResult dimensions(int statistic, string dimension)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+
+                var value = ProfilesRepository.ProfileActivityFeed("dimension-values", 1, statistic, dimension, 0, 1000);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }

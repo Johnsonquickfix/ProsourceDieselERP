@@ -14,8 +14,8 @@
             Dictionary<string, string> pairs = new Dictionary<string, string>();
             pairs.Add("customer-statistic-value", "What someone has done (or not done)");
             pairs.Add("customer-attribute", "Properties about someone");
-            //pairs.Add("customer-location", "If someone is or is not within the EU (GDPR)");
-            pairs.Add("customer-location", "If someone is or is not within the country");
+            pairs.Add("customer-location", "If someone is or is not within the EU (GDPR)");
+            //pairs.Add("customer-location", "If someone is or is not within the country");
             //pairs.Add("-", "Someone's proximity to a location");
             pairs.Add("customer-group-membership", "If someone is in or not in a list");
             pairs.Add("customer-exclusion", "If someone is or is not suppressed for email");

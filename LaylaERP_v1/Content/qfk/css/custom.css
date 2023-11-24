@@ -846,6 +846,7 @@ textarea {
     -ms-flex-align: center !important;
     align-items: center !important;
     margin-right: 0.5rem !important;
+    height: 32px;
 }
 .cw-125 {
     flex-basis: 125px;
@@ -874,7 +875,13 @@ textarea {
     margin-right: 0.5rem !important;
 }
 .cw-400 {
+    flex-basis: 400px;
     max-width: 400px;
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    display: flow;
+    align-items: flex-start;
+    margin-right: 0.5rem !important;
 }
 
 .cw-300 {

@@ -129,15 +129,18 @@
     display: inline-block;
     vertical-align: top;
     width: 100%;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     padding: 4px 12px 4px 2px;
-    border: 1px solid #ddd;
+    border: 1px solid #91979f;
     border-radius: 2.5px;
     font-size: 14px;
     min-height: 32px;
     overflow: hidden
 }
-
+    .choices__inner:hover {
+        border-color: rgb(145, 151, 159);
+        background: rgb(246, 248, 249);
+    }
 .is-focused .choices__inner, .is-open .choices__inner {
     border-color: #b7b7b7
 }

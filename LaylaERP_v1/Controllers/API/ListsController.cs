@@ -278,6 +278,8 @@
                     x.timeframes = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe(type);
                 else if (type.ToLower().Trim().Equals("customer-location"))
                     x.region = LaylaERP.Models.qfk.Enums.Criteria.CriteriaRegion();
+                else if (type.ToLower().Trim().Equals("customer-distance"))
+                    x.unit = LaylaERP.Models.qfk.Enums.Criteria.CriteriaUnit(type);
 
                 return Ok(x);
             }
@@ -320,8 +322,8 @@
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
-                
-                var value = ProfilesRepository.ProfileActivityFeed("dimensions", 1, statistic, string.Empty, 0, 1000);
+
+                var value = ProfilesRepository.GroupCriteriaMaster("dimensions", 1, statistic, string.Empty);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }
@@ -339,7 +341,43 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
 
-                var value = ProfilesRepository.ProfileActivityFeed("dimension-values", 1, statistic, dimension, 0, 1000);
+                var value = ProfilesRepository.GroupCriteriaMaster("dimension-values", 1, statistic, dimension);
+
+                return Ok(JsonConvert.DeserializeObject<JArray>(value));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("people/property")]
+        public IHttpActionResult PeopleProperty()
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+
+                var value = ProfilesRepository.GroupCriteriaMaster("people-property", 1, 0, string.Empty);
+
+                return Ok(JsonConvert.DeserializeObject<JArray>(value));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("people/property/values")]
+        public IHttpActionResult PeoplePropertyValues(string property)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
+
+                var value = ProfilesRepository.GroupCriteriaMaster("people-property-values", 1, 0, property);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }

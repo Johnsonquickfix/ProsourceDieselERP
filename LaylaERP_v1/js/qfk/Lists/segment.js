@@ -9,6 +9,7 @@
         });
     });
     var r = r || document,
+        __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-attribute', 1002: 'customer-location', 1003: 'customer-distance', 1004: 'customer-group-membership', 1005: 'customer-exclusion' },
         addDefinition = function () {
             let d = r.getElementById("definition"), dr = r.createElement('div', { class: 'definition-row d-flex', }),
                 _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
@@ -37,7 +38,7 @@
         addFilter = function (t) {
             let v = t.value, d = t.closest('.definition-col'), pr = t.closest('.definition__container');
             d.replaceChildren(d.firstElementChild);
-            if (v === 'customer-statistic-value') {
+            if (v === __criteria[1000]) {
                 let _metric = r.createElement('select', { name: "statistic", class: "cw-175", style: "width:100%" }),
                     _operator = r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }),
                     _timeframe = r.createElement('select', { name: "timeframe", class: "select2", style: "width:100%" });
@@ -46,68 +47,80 @@
                 _timeframe.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
 
                 d.append(
-                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'Has')),
+                    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', }, createLabelCol('Has'),
                         r.createElement('div', { class: "InputContainer cw-225" }, _metric),
                         r.createElement('div', { class: "InputContainer cw-175" }, _operator),
                         r.createElement('div', { class: "InputContainer cw-175" }, _timeframe),
                     )
                 ), getMetrics(_metric), getOperator(_operator, _timeframe, v);
             }
-            else if (v === 'customer-attribute') {
-                //d.append(
-                //    r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                //        r.createElement('div', { class: "fix-label" }, '<h6>Location</h6>'),
-                //        r.createElement('div', { class: "cw-175" }, r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }, fillSelect(O))),
-                //        r.createElement('div', { class: "fix-label" }, '<h6>within</h6>'),
-                //        r.createElement('div', { class: "cw-300" }, r.createElement('select', { name: "country", class: "select2", style: "width:100%" }, '<option value=""></option>'))
-                //    )
-                //);
-                //getCountries($(d).find('[name="country"]'));
-                //$(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 }); $(d).find('[name="country"]').select2({ placeholder: "Choose a country..." });
+            else if (v === __criteria[1001]) {
+                let _key = r.createElement('select', { name: "key", style: "width:100%" }),
+                    _operator = r.createElement('select', { name: "operator", style: "width:100%" }),
+                    _value = r.createElement('input', { "type": 'text', name: "value", class: "form-control", disabled: 'disabled' }),
+                    dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
+                _key.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); let v = parseInt(this.value) || 0; createProfilePropertyValue(this); });
+                _operator.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); createOperatorValue(this); });
+
+                createProfileProperty(dr),
+                    dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
+                    dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _value));
+                d.appendChild(dr), getOperator(_operator, null, v);
             }
-            else if (v === 'customer-location') {
+            else if (v === __criteria[1002]) {
                 let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _region = r.createElement('select', { name: "region", style: "width:100%" });
                 d.append(
                     r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'Location')),
-                        r.createElement('div', { class: "cw-175" }, _operator),
-                        r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'within')),
-                        r.createElement('div', { class: "cw-300" }, _region)
+                        createLabelCol('Location'), r.createElement('div', { class: "cw-175" }, _operator),
+                        createLabelCol('within'), r.createElement('div', { class: "cw-300" }, _region)
                     )
                 ), getOperator(_operator, _region, v);
             }
-            else if (v === 'customer-group-membership') {
+            else if (v === __criteria[1003]) {
+                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }),
+                    _unit = r.createElement('select', { name: "units", style: "width:100%" }),
+                    dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
+
+                dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
+                    dr.appendChild(createLabelCol('within')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "distance", class: "form-control", type: "number" }))),
+                    dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _unit)),
+                    dr.appendChild(createLabelCol('of')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, r.createElement('input', { name: "distance", class: "form-control", type: "text", maxlength: 10 }))),
+                    dr.appendChild(createLabelCol('Person')), createCountryCol(dr);
+                d.appendChild(dr), getOperator(_operator, _unit, v);
+            }
+            else if (v === __criteria[1004]) {
                 let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _group = r.createElement('select', { name: "region", style: "width:100%" }),
                     dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
-                dr.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'Person')));
-                dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, _operator));
-                dr.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "in" }, 'Person')));
-                createGroup(dr), d.appendChild(dr), getOperator(_operator, null, v);
-                let btn = r.createElement('button', { class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> By Date Added');
-                d.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, btn));
+                dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, _operator));
+                dr.appendChild(createLabelCol('in')), createGroup(dr);
+                d.appendChild(dr), getOperator(_operator, null, v);
+                // Create date filter
+                const btn_cl = r.createElement('a', { class: "btn fw-bold" }, 'X');
+                btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); evt.target.closest('div.FilterRowContainer').remove(), _dateFilter(d); });
+                const _dateFilter = function (e) {
+                    let btn = r.createElement('button', { class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> By Date Added');
+                    e.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, btn));
+                    btn.addEventListener("click", function (evt) {
+                        evt.preventDefault(), evt.stopPropagation();
+                        let div = this.parentNode, s = r.createElement('select', { style: "width:100%" });
+                        s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
 
-                btn.addEventListener("click", function (evt) {
-                    evt.preventDefault(), evt.stopPropagation();
-                    let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('input', { "type": 'text', style: "width:100%", class: "form-control", disabled: 'disabled' });
-                    s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
-                    div.replaceChildren(r.createElement('div', { class: 'fix-label' }, r.createElement('span', { class: "h4_title" }, 'and was added')));
-                    div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s)), getOperator(null, s, v);
-                    div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
-                    createUnit(div);
-                });
+                        div.replaceChildren(createLabelCol('and was added')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s)), getOperator(null, s, v);
+                        div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
+                        createUnit(div), div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
+                    });
+                }; _dateFilter(d);
             }
-            else if (v === 'customer-exclusion') {
-                d.append(
+            else if (v === __criteria[1005]) {
+                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _region = r.createElement('select', { name: "region", style: "width:100%" });
+                d.appendChild(
                     r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
-                        r.createElement('div', { class: "fix-label" }, '<h6>Person</h6>'),
-                        r.createElement('div', { class: "cw-175" }, r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }, fillSelect(O))),
-                        r.createElement('div', { class: "fix-label" }, '<h6>suppressed</h6>')
+                        createLabelCol('Person'), r.createElement('div', { class: "InputContainer cw-175" }, _operator),
+                        createLabelCol('suppressed')
                     )
-                );
-                $(d).find('[name="operator"]').select2({ minimumResultsForSearch: -1 });
+                ), getOperator(_operator, null, v);
             }
-            
+
             // or condition
             pr.querySelectorAll('a[name="or-definition"]').forEach(e => e.remove());
             let _or = r.createElement('a', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR');
@@ -175,7 +188,10 @@
             let requestOptions = { method: 'GET', headers: {} };
             fetch(`/api/lists/criteria/operator/${type}`, requestOptions).then(response => response.json())
                 .then(result => {
-                    (result.operators && $_operator_ctr) && $_operator_ctr.setChoices(result.operators), (result.timeframes && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.timeframes), (result.region && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.region);
+                    (result.operators && $_operator_ctr) && $_operator_ctr.setChoices(result.operators),
+                        (result.timeframes && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.timeframes),
+                        (result.region && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.region),
+                        (result.unit && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.unit);
                 }).catch(error => console.log('error', error));
         },
         createCriteria = function (e) {
@@ -213,15 +229,15 @@
             if (e.childNodes.length > 2) e.removeChild(e.lastChild);
             let b = r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> Add Filter');
             e.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, b));
+            const btn_cl = r.createElement('a', { class: "btn fw-bold" }, 'X');
+            btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(e, v); });
 
             b.addEventListener("click", function (evt) {
                 evt.preventDefault(), evt.stopPropagation();
                 let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('input', { "type": 'text', style: "width:100%", class: "form-control", disabled: 'disabled' });
-                div.replaceChildren(r.createElement('div', { class: 'fix-label' }, r.createElement('span', { class: "h4_title" }, 'where')));
-                div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
-                div.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'equals')));
-                div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
-                div.appendChild(r.createElement('div', { class: "fix-label" }, '<span>X</span>'));
+                div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+                div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
+                div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
                 (function (a, v) {
                     const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
                         .setChoices(async () => {
@@ -238,9 +254,7 @@
                         while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
                         if (_type === 'list') {
                             let sv = r.createElement('select', { multiple: 'multiple', style: "width:100%" });
-                            p.parentNode.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'contains')));
-                            p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-
+                            p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
                             (function (a, v1, v2) {
                                 new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
                                     .setChoices(async () => {
@@ -255,8 +269,7 @@
                         }
                         else {
                             let sv = r.createElement('select', { style: "width:100%" });
-                            p.parentNode.appendChild(r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, 'equals')));
-                            p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+                            p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
                             (function (a, v1, v2) {
                                 new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
                                     .setChoices(async () => {
@@ -275,23 +288,61 @@
         },
         createGroup = function (e) {
             let s = r.createElement('select', { style: "width:100%" });
-            e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+            e.appendChild(r.createElement('div', { class: "InputContainer cw-300" }, s));
             (function (s) {
                 new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a list…', itemSelectText: '', shouldSort: false })
                     .setChoices(async () => {
                         try {
                             return await fetch('/api/lists/static-group', { method: 'GET' }).then(response => response.json())
-                                .then(function (data) {
-                                    return data ? data.map(function (row) { return { value: row.group_id, label: row.name }; }) : [];
-                                });
+                                .then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name }; }) : []; });
                         } catch (err) { console.error(err); }
                     });
             })(s);
         },
-        getCountries = function (c) {
-            $.get(`/api/lists/countries`, {}).done(function (result) {
-                for (var i in result) { c.append(`<option value="${result[i].code}">${result[i].name}</option>`); }
+        createProfileProperty = function (e) {
+            let s = r.createElement('select', { name: "key", style: "width:100%" });
+            s.addEventListener("change", function (evt) {
+                evt.preventDefault(), evt.stopPropagation();
+                let p = evt.target.closest('.FilterRowContainer'), v = this.value;
+                p.removeChild(p.lastElementChild), createProfilePropertyValue(p, v);
             });
+            e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+            (function (s) {
+                new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a property…', itemSelectText: '', shouldSort: false })
+                    .setChoices(async () => {
+                        try {
+                            return await fetch('/api/lists/people/property', { method: 'GET' }).then(response => response.json());
+                        } catch (err) { console.error(err); }
+                    });
+            })(s);
+        },
+        createProfilePropertyValue = function (e, v) {
+            let sv = r.createElement('select', { style: "width:100%" });
+            e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, sv));
+            (function (s, v) {
+                new Choices(s, { allowHTML: false, itemSelectText: '', shouldSort: false })
+                    .setChoices(async () => {
+                        try {
+                            return await fetch(`/api/lists/people/property/values?property=${v}`, { method: 'GET' }).then(response => response.json());
+                        } catch (err) { console.error(err); }
+                    });
+            })(sv, v);
+        },
+        createLabelCol = function (val) {
+            return r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, val));
+        },
+        createCountryCol = function (e) {
+            let s = r.createElement('select', { name: "key", style: "width:100%" });
+            e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+            (function (s) {
+                new Choices(s, { allowHTML: false, placeholder: true, placeholderValue: 'Choose a country...', itemSelectText: '', shouldSort: false })
+                    .setChoices(async () => {
+                        try {
+                            return await fetch('/api/lists/countries', { method: 'GET' }).then(response => response.json())
+                                .then(function (data) { return data ? data.map(function (row) { return { value: row.code, label: row.name }; }) : []; })
+                        } catch (err) { console.error(err); }
+                    });
+            })(s);
         },
         postDetails = function (t) {
             let s = !0, z = $(t).data('company-key'), _definition = [], _o = { list_id: parseInt($(t).data('id')) || 0, list_name: $('#txtlist-name').val(), group_type_id: 2 };

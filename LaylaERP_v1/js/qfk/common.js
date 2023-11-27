@@ -36,6 +36,21 @@ Document.prototype.createElement = function (type, props, ...children) {
     return element;
 }
 
+/**
+ * Retrieves input data from a form and returns it as a JSON object.
+ * @param  {HTMLFormControlsCollection} elements  the form elements
+ * @return {Object}                               form data as an object literal
+ */
+const formToJSON = (elements) =>
+    [].reduce.call(
+        elements,
+        (data, element) => {
+            data[element.name] = element.value;
+            return data;
+        },
+        {}
+    );
+
 function ApiHelper(url, data = {}, headers = { 'Content-Type': 'application/json' }, method = 'POST') {
     return fetch(url, { method: method, data: data, headers: headers }).then(res => res.json()).then((result) => { return result; }, (error) => { return error; })
 }

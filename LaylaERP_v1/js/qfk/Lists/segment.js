@@ -5,9 +5,43 @@
             evt.preventDefault(), evt.stopPropagation(), removeFilterRow(this);
         });
         $(document).on('click', '#create-Segments', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), postDetails(this);
+            evt.preventDefault(), evt.stopPropagation()//
+            postDetails(this);
+
+            //const form = document.getElementById("form");
+            //const submitter = document.querySelector("#create-Segments");
+            ////const formData = new FormData(form, submitter);
+            //// Call our function to get the form data.
+            //const data = formToJSON(form.elements);
+            //console.log(data);
+            //for (const [key, value] of formData) {
+            //    console.log(`${key}: ${value}\n`);
+            //}
         });
     });
+    function useState(obj) {
+        const isFunction = value => typeof value === 'function';
+        let initialState = obj;
+        const reducer = fn => {
+            let newState;
+            if (isFunction(fn)) { newState = fn(initialState); }
+            else { newState = fn; }
+            Object.assign(initialState, newState);
+        };
+        return [initialState, reducer];
+    }
+    const [segment, setSegment] = useState([]);
+
+    function stringToObj(path, value, obj) {
+        let parts = path.split("."), part;
+        let last = parts.pop();
+        while (part = parts.shift()) {
+            if (typeof obj[part] != "object") obj[part] = {};
+            obj = obj[part]; // update "pointer"
+        }
+        obj[last] = value;
+    }
+
     var r = r || document,
         __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-attribute', 1002: 'customer-location', 1003: 'customer-distance', 1004: 'customer-group-membership', 1005: 'customer-exclusion' },
         addDefinition = function () {
@@ -15,6 +49,7 @@
                 _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
             _and.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); this.disabled = true, addDefinition(); });
             createCriteria(dr), d.appendChild(r.createElement('div', { class: 'definition__container mb-2', }, r.createElement('div', { class: 'boxed_style card card-body my-2' }, dr), _and));
+            //setSegment((val) => ([...val, { criteria: [] }]));
         },
         addOrDefinition = function (c) {
             let pr = c.closest('.definition__container .card-body'), dr = r.createElement('div', { class: 'definition-row d-flex', });
@@ -27,21 +62,31 @@
                 ), pr.append(dr);
         },
         removeDefinition = function (c) {
-            let r = document, t = c.closest('.definition__container'), i = $(t).find('.definition-row').index(c.closest('.definition-row'));
-            $(t).find('div.CriterionDivider').eq(i > 0 ? i - 1 : i).remove();
-            $(t).find('.definition-row').length <= 1 ? t.remove() : c.closest('.definition-row').remove()
-            $('#definition .definition__container').length <= 0 && addDefinition();
-            $(t).find('[name="or-definition"]').remove();
-            $(t).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
-            $('[name="add-definition"]').last().prop('disabled', false);
+            let dc = c.closest('.definition__container'), dc_i = [...dc.parentElement.children].indexOf(dc),
+                dr = c.closest('.definition-row'), dr_i = [...dc.querySelectorAll('.definition-row')].indexOf(dr);
+            //i = $(t).find('.definition-row').index(c.closest('.definition-row'));
+            if (dr_i <= 1) {
+                dc.remove(), segment.splice(dc_i, 1);
+            }
+            else {
+                dr.remove(), segment[dc_i].splice(dr_i, 1);
+            }
+
+            //segment.splice(i, 1), console.log(segment);
+            //$(t).find('div.CriterionDivider').eq(i > 0 ? i - 1 : i).remove();
+            //$(t).find('.definition-row').length <= 1 ? t.remove() : c.closest('.definition-row').remove()
+            //$('#definition .definition__container').length <= 0 && addDefinition();
+            //$(t).find('[name="or-definition"]').remove();
+            //$(t).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
+            //$('[name="add-definition"]').last().prop('disabled', false);
         },
         addFilter = function (t) {
-            let v = t.value, d = t.closest('.definition-col'), pr = t.closest('.definition__container');
+            let dc = t.closest('.definition__container'), di = [...dc.parentElement.children].indexOf(dc),
+                dr = t.closest('.definition-row'), ri = [...dc.querySelectorAll('.definition-row')].indexOf(dr),
+                v = t.value, d = t.closest('.definition-col');
             d.replaceChildren(d.firstElementChild);
             if (v === __criteria[1000]) {
-                let _metric = r.createElement('select', { name: "statistic", class: "cw-175", style: "width:100%" }),
-                    _operator = r.createElement('select', { name: "operator", class: "select2", style: "width:100%" }),
-                    _timeframe = r.createElement('select', { name: "timeframe", class: "select2", style: "width:100%" });
+                let _metric = r.createElement('select', { name: "statistic" }), _operator = r.createElement('select', { name: "operator" }), _timeframe = r.createElement('select', { name: "timeframe" });
                 _metric.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); let v = parseInt(this.value) || 0; createFilterRow(d, v); });
                 _operator.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); createOperatorValue(this); });
                 _timeframe.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
@@ -55,9 +100,7 @@
                 ), getMetrics(_metric), getOperator(_operator, _timeframe, v);
             }
             else if (v === __criteria[1001]) {
-                let _key = r.createElement('select', { name: "key", style: "width:100%" }),
-                    _operator = r.createElement('select', { name: "operator", style: "width:100%" }),
-                    _value = r.createElement('input', { "type": 'text', name: "value", class: "form-control", disabled: 'disabled' }),
+                let _key = r.createElement('select', { name: "key" }), _operator = r.createElement('select', { name: "operator" }), _value = r.createElement('input', { "type": 'text', name: "value", class: "form-control", disabled: 'disabled' }),
                     dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
                 _key.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); let v = parseInt(this.value) || 0; createProfilePropertyValue(this); });
                 _operator.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); createOperatorValue(this); });
@@ -66,31 +109,31 @@
                     dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
                     dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _value));
                 d.appendChild(dr), getOperator(_operator, null, v);
+                //_criteria = { type: v, key_type: 'string', operator: _operator.value, key: '', value: '' };
             }
             else if (v === __criteria[1002]) {
-                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _region = r.createElement('select', { name: "region", style: "width:100%" });
+                let _operator = r.createElement('select', { name: "operator" }), _region = r.createElement('select', { name: "region_id" });
                 d.append(
                     r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
                         createLabelCol('Location'), r.createElement('div', { class: "cw-175" }, _operator),
                         createLabelCol('within'), r.createElement('div', { class: "cw-300" }, _region)
                     )
                 ), getOperator(_operator, _region, v);
+                //_criteria = { type: v, operator: _operator.value, region_id: _region.value };
             }
             else if (v === __criteria[1003]) {
-                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }),
-                    _unit = r.createElement('select', { name: "units", style: "width:100%" }),
+                let _operator = r.createElement('select', { name: "operator"}), _unit = r.createElement('select', { name: "units" }),
                     dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
-
                 dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
                     dr.appendChild(createLabelCol('within')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "distance", class: "form-control", type: "number" }))),
                     dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _unit)),
-                    dr.appendChild(createLabelCol('of')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, r.createElement('input', { name: "distance", class: "form-control", type: "text", maxlength: 10 }))),
-                    dr.appendChild(createLabelCol('Person')), createCountryCol(dr);
+                    dr.appendChild(createLabelCol('of')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, r.createElement('input', { name: "postal_code", class: "form-control", type: "text", placeholder: "Postal/Zip Code", maxlength: 10 }))),
+                    dr.appendChild(createLabelCol('in')), createCountryCol(dr);
                 d.appendChild(dr), getOperator(_operator, _unit, v);
+                //_criteria = { type: v, operator: _operator.value, units: _unit.value, country_code: '', distance: 1, postal_code: '' };
             }
             else if (v === __criteria[1004]) {
-                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _group = r.createElement('select', { name: "region", style: "width:100%" }),
-                    dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
+                let _operator = r.createElement('select', { name: "operator" }), dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
                 dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, _operator));
                 dr.appendChild(createLabelCol('in')), createGroup(dr);
                 d.appendChild(dr), getOperator(_operator, null, v);
@@ -102,64 +145,63 @@
                     e.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, btn));
                     btn.addEventListener("click", function (evt) {
                         evt.preventDefault(), evt.stopPropagation();
-                        let div = this.parentNode, s = r.createElement('select', { style: "width:100%" });
+                        let div = this.parentNode, s = r.createElement('select', { name: "timeframe" });
                         s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
 
                         div.replaceChildren(createLabelCol('and was added')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s)), getOperator(null, s, v);
-                        div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
+                        div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "timeframe_options.quantity", class: "form-control", type: "number", value: "30" })));
                         createUnit(div), div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
                     });
                 }; _dateFilter(d);
+                //_criteria = { type: v, operator: _operator.value, group: '' };
             }
             else if (v === __criteria[1005]) {
-                let _operator = r.createElement('select', { name: "operator", style: "width:100%" }), _region = r.createElement('select', { name: "region", style: "width:100%" });
+                let _operator = r.createElement('select', { name: "operator" });
                 d.appendChild(
                     r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', },
                         createLabelCol('Person'), r.createElement('div', { class: "InputContainer cw-175" }, _operator),
                         createLabelCol('suppressed')
                     )
                 ), getOperator(_operator, null, v);
+                //_criteria = { type: v, operator: _operator.value };
             }
 
+            //setSegment((val) => {
+            //    const copy = val[di].criteria;
+            //    (copy[ri] ? copy[ri] = _criteria : copy.push(_criteria));
+            //}), console.log(segment);
             // or condition
-            pr.querySelectorAll('a[name="or-definition"]').forEach(e => e.remove());
+            dc.querySelectorAll('a[name="or-definition"]').forEach(e => e.remove());
             let _or = r.createElement('a', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR');
-            pr.querySelectorAll(".definition-col-action:last-child").forEach(e => e.append(_or));
+            dc.querySelectorAll(".definition-col-action:last-child").forEach(e => e.append(_or));
             _or.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); addOrDefinition(this); });
         },
         addTimeFrame = function (t) {
             let v = t.value, d = t.closest('.InputContainer'), p = d.parentNode;
             while (!!d.nextElementSibling) { d.nextElementSibling.remove(); }
             if (v === 'in-the-last') {
-                p.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" })));
+                p.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "timeframe_options.quantity", class: "form-control", type: "number", value: "30" })));
                 createUnit(p);
             }
             else if (v === 'more-than' || v === 'at-least') {
-                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "quantity", class: "form-control", type: "number", value: "30" }))), createUnit(p);
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "timeframe_options.quantity", class: "form-control", type: "number", value: "30" }))), createUnit(p);
                 p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'ago')));
-                //p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
             }
             else if (v === 'between') {
-                let _unit = r.createElement('select', { style: "width:100%" });
-                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "start_quantity", class: "form-control", type: "number", value: "0" })));
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "timeframe_options.start", class: "form-control", type: "number", value: "0" })));
                 p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'and')));
-                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "end_quantity", class: "form-control", type: "number", value: "30" })));
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "timeframe_options.end", class: "form-control", type: "number", value: "30" })));
                 createUnit(p);
                 p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'ago')));
-                //d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
 
             }
             else if (v === 'before' || v === 'after') {
-                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
-                //p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                //$(d).find('[name="date"]').inputmask("mm/dd/yyyy");
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
             }
             else if (v === 'between-static') {
-                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "start_date", class: "form-control", type: "text", value: moment().subtract(1, "days").format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.start", class: "form-control", type: "text", value: moment().subtract(1, "days").format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
                 p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'and')));
-                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "end_date", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
-                //d.append(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('button', { name: "close-filter-row", class: "btn btn-outline-primary", type: "button" }, 'X')));
-                //$(d).find('[name="start_date"],[name="end_date"]').inputmask("mm/dd/yyyy");
+                p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.end", class: "form-control", type: "text", value: moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
             }
         },
         removeFilterRow = function (t) {
@@ -195,7 +237,7 @@
                 }).catch(error => console.log('error', error));
         },
         createCriteria = function (e) {
-            let s = r.createElement('select', { style: "width:100%" }), _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
+            let s = r.createElement('select', { name: "type" }), _remove = r.createElement('button', { name: 'remove-definition', class: 'btn btn-outline-dark' }, r.createElement('i', { class: 'fa fa-trash' }));
             s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addFilter(this); });
             _remove.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); removeDefinition(this); });
 
@@ -213,12 +255,12 @@
         createOperatorValue = function (e) {
             let v = e.value, d = e.closest('.InputContainer');
             !v.includes('-zero') ? function (e) {
-                let s = r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "operator_value", class: "form-control", type: "number", value: "1" }));
+                let s = r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "value", class: "form-control", type: "number", value: "1" }));
                 !d.nextElementSibling.querySelector('[name="operator_value"]') && d.insertAdjacentElement("afterEnd", s);
             }(d) : function (e) { d.nextElementSibling.querySelector('[name="operator_value"]') && d.nextElementSibling.querySelector('[name="operator_value"]').parentNode.remove() }(d);
         },
         createUnit = function (e) {
-            let s = r.createElement('select', { style: "width:100%" });
+            let s = r.createElement('select', { name: "timeframe_options.units" });
             e.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, s));
             (function (a) {
                 const u = [{ value: 'hour', label: 'hours' }, { value: 'day', label: 'days', selected: true }, { value: 'week', label: 'weeks' }];
@@ -234,7 +276,7 @@
 
             b.addEventListener("click", function (evt) {
                 evt.preventDefault(), evt.stopPropagation();
-                let div = this.parentNode, s = r.createElement('select', { style: "width:100%" }), i = r.createElement('input', { "type": 'text', style: "width:100%", class: "form-control", disabled: 'disabled' });
+                let div = this.parentNode, s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
                 div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
                 div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
                 div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
@@ -253,7 +295,7 @@
                         let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
                         while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
                         if (_type === 'list') {
-                            let sv = r.createElement('select', { multiple: 'multiple', style: "width:100%" });
+                            let sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" });
                             p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
                             (function (a, v1, v2) {
                                 new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
@@ -268,7 +310,7 @@
                             })(sv, v, this.value);
                         }
                         else {
-                            let sv = r.createElement('select', { style: "width:100%" });
+                            let sv = r.createElement('select', { name: "statistic_filters.value" });
                             p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
                             (function (a, v1, v2) {
                                 new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
@@ -287,7 +329,7 @@
             });
         },
         createGroup = function (e) {
-            let s = r.createElement('select', { style: "width:100%" });
+            let s = r.createElement('select', { name: "group" });
             e.appendChild(r.createElement('div', { class: "InputContainer cw-300" }, s));
             (function (s) {
                 new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a list…', itemSelectText: '', shouldSort: false })
@@ -300,7 +342,7 @@
             })(s);
         },
         createProfileProperty = function (e) {
-            let s = r.createElement('select', { name: "key", style: "width:100%" });
+            let s = r.createElement('select', { name: "key" });
             s.addEventListener("change", function (evt) {
                 evt.preventDefault(), evt.stopPropagation();
                 let p = evt.target.closest('.FilterRowContainer'), v = this.value;
@@ -317,7 +359,7 @@
             })(s);
         },
         createProfilePropertyValue = function (e, v) {
-            let sv = r.createElement('select', { style: "width:100%" });
+            let sv = r.createElement('select', { name: "value" });
             e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, sv));
             (function (s, v) {
                 new Choices(s, { allowHTML: false, itemSelectText: '', shouldSort: false })
@@ -332,7 +374,7 @@
             return r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, val));
         },
         createCountryCol = function (e) {
-            let s = r.createElement('select', { name: "key", style: "width:100%" });
+            let s = r.createElement('select', { name: "country_code" });
             e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
             (function (s) {
                 new Choices(s, { allowHTML: false, placeholder: true, placeholderValue: 'Choose a country...', itemSelectText: '', shouldSort: false })
@@ -349,30 +391,37 @@
             document.querySelectorAll('.definition__container').forEach(e => {
                 let c = { criteria: [] };
                 e.querySelectorAll('.definition-row').forEach(r => {
-                    let sc = { type: r.querySelector('[name="type"]').value, operator: r.querySelector('[name="operator"]').value };
-                    r.querySelector('[name="group"]') ? sc.group = parseInt(r.querySelector('[name="group"]').value) || 0 : void 0;
-                    r.querySelector('[name="country"]') ? sc.country_id = r.querySelector('[name="country"]').value : void 0;
-                    if (sc.group === 0 && !sc.group) { swal('Error!', 'Please select list.', 'error').then(function () { swal.close(); r.querySelector('[name="group"]').focus(); }); return s = !1, false; }
-                    if (sc.country_id === '' && !sc.country_id) { swal('Error!', 'Please select country.', 'error').then(function () { swal.close(); r.querySelector('[name="country"]').focus(); }); return s = !1, false; }
-                    if (r.querySelector('[name="timeframe"]')) {
-                        sc.timeframe = r.querySelector('[name="timeframe"]').value, sc.timeframeOptions = {};
-                        r.querySelector('[name="quantity"]') ? sc.timeframeOptions.quantity = parseInt(r.querySelector('[name="quantity"]').value) || 0 : void 0;
-                        r.querySelector('[name="start_quantity"]') ? sc.timeframeOptions.start = parseInt(r.querySelector('[name="start_quantity"]').value) || 0 : void 0;
-                        r.querySelector('[name="end_quantity"]') ? sc.timeframeOptions.end = parseInt(r.querySelector('[name="end_quantity"]').value) || 0 : void 0;
-                        r.querySelector('[name="units"]') ? sc.timeframeOptions.units = r.querySelector('[name="units"]').value : void 0;
-                        r.querySelector('[name="date"]') ? sc.timeframeOptions.value = r.querySelector('[name="date"]').value : void 0;
-                        r.querySelector('[name="start_date"]') ? sc.timeframeOptions.start = r.querySelector('[name="start_date"]').value : void 0;
-                        r.querySelector('[name="end_date"]') ? sc.timeframeOptions.end = r.querySelector('[name="end_date"]').value : void 0;
+                    let JsonVar = {}, inputElements = r.querySelectorAll('input[type="number"],input[type="text"], select, checkbox, textarea');
+                    inputElements.forEach(r => { stringToObj(r.name, r.value, JsonVar); });
+                    c.criteria.push(JsonVar);
+                    console.log(JsonVar);
 
-                        if (sc.timeframeOptions.value === '' && !sc.timeframeOptions.value) { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="date"]').focus(); }); return s = !1, false; }
-                        if (sc.timeframeOptions.start === '' && !sc.timeframeOptions.start && sc.timeframe === 'between-static') { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="start_date"]').focus(); }); return s = !1, false; }
-                        if (sc.timeframeOptions.end === '' && !sc.timeframeOptions.end && sc.timeframe === 'between-static') { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="end_date"]').focus(); }); return s = !1, false; }
-                    }
-                    c.criteria.push(sc);
+                    //let sc = { type: r.querySelector('[name="type"]').value, operator: r.querySelector('[name="operator"]').value };
+
+                    //r.querySelector('[name="group"]') ? sc.group = parseInt(r.querySelector('[name="group"]').value) || 0 : void 0;
+                    //r.querySelector('[name="country"]') ? sc.country_id = r.querySelector('[name="country"]').value : void 0;
+                    //if (sc.group === 0 && !sc.group) { swal('Error!', 'Please select list.', 'error').then(function () { swal.close(); r.querySelector('[name="group"]').focus(); }); return s = !1, false; }
+                    //if (sc.country_id === '' && !sc.country_id) { swal('Error!', 'Please select country.', 'error').then(function () { swal.close(); r.querySelector('[name="country"]').focus(); }); return s = !1, false; }
+                    //if (r.querySelector('[name="timeframe"]')) {
+                    //    sc.timeframe = r.querySelector('[name="timeframe"]').value, sc.timeframeOptions = {};
+                    //    r.querySelector('[name="quantity"]') ? sc.timeframeOptions.quantity = parseInt(r.querySelector('[name="quantity"]').value) || 0 : void 0;
+                    //    r.querySelector('[name="start_quantity"]') ? sc.timeframeOptions.start = parseInt(r.querySelector('[name="start_quantity"]').value) || 0 : void 0;
+                    //    r.querySelector('[name="end_quantity"]') ? sc.timeframeOptions.end = parseInt(r.querySelector('[name="end_quantity"]').value) || 0 : void 0;
+                    //    r.querySelector('[name="units"]') ? sc.timeframeOptions.units = r.querySelector('[name="units"]').value : void 0;
+                    //    r.querySelector('[name="date"]') ? sc.timeframeOptions.value = r.querySelector('[name="date"]').value : void 0;
+                    //    r.querySelector('[name="start_date"]') ? sc.timeframeOptions.start = r.querySelector('[name="start_date"]').value : void 0;
+                    //    r.querySelector('[name="end_date"]') ? sc.timeframeOptions.end = r.querySelector('[name="end_date"]').value : void 0;
+
+                    //    if (sc.timeframeOptions.value === '' && !sc.timeframeOptions.value) { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="date"]').focus(); }); return s = !1, false; }
+                    //    if (sc.timeframeOptions.start === '' && !sc.timeframeOptions.start && sc.timeframe === 'between-static') { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="start_date"]').focus(); }); return s = !1, false; }
+                    //    if (sc.timeframeOptions.end === '' && !sc.timeframeOptions.end && sc.timeframe === 'between-static') { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="end_date"]').focus(); }); return s = !1, false; }
+                    //}
+                    //c.criteria.push(sc);
 
                 });
                 _definition.push(c);
             });
+            console.log(_definition); return false;
             _o.definition = JSON.stringify(_definition);
             if (s) {
                 $(t).prop('disabled', true);
@@ -389,4 +438,6 @@
             }
         };
     var load = function () { addDefinition(); }();
+
+
 })();

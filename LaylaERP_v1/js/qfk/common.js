@@ -50,6 +50,28 @@ const formToJSON = (elements) =>
         },
         {}
     );
+/**
+ * Checks if an input is a `select` with the `multiple` attribute.
+ * @param  {Element} element  the element to check
+ * @return {Boolean}          true if the element is a multiselect, false if not
+ */
+const isMultiSelect = (element) => element.options && element.multiple;
+/**
+ * Convert string with dot notation to JSON and returns it as a JSON object.
+ * @param  {string} path            the form path
+ * @param  {object} value           the form value
+ * @param  {object} obj             the form obj
+ * @return {Object}                 form data as an object literal
+ */
+const stringToObj = (path, value, obj) =>{
+    let parts = path.split("."), part;
+    let last = parts.pop();
+    while (part = parts.shift()) {
+        if (typeof obj[part] != "object") obj[part] = {};
+        obj = obj[part]; // update "pointer"
+    }
+    obj[last] = value;
+}
 
 function ApiHelper(url, data = {}, headers = { 'Content-Type': 'application/json' }, method = 'POST') {
     return fetch(url, { method: method, data: data, headers: headers }).then(res => res.json()).then((result) => { return result; }, (error) => { return error; })

@@ -32,16 +32,6 @@
     }
     const [segment, setSegment] = useState([]);
 
-    function stringToObj(path, value, obj) {
-        let parts = path.split("."), part;
-        let last = parts.pop();
-        while (part = parts.shift()) {
-            if (typeof obj[part] != "object") obj[part] = {};
-            obj = obj[part]; // update "pointer"
-        }
-        obj[last] = value;
-    }
-
     var r = r || document,
         __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-attribute', 1002: 'customer-location', 1003: 'customer-distance', 1004: 'customer-group-membership', 1005: 'customer-exclusion' },
         addDefinition = function () {

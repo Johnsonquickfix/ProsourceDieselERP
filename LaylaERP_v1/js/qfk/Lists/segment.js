@@ -19,6 +19,7 @@
 
     var r = r || document,
         __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-attribute', 1002: 'customer-location', 1003: 'customer-distance', 1004: 'customer-group-membership', 1005: 'customer-exclusion' },
+        __tags = { t: 'div.definition__container', r: 'div.definition-row', d: 'div.CriterionDivider', a: 'div.definition-col-action' },
         addDefinition = function () {
             let d = r.getElementById("definition"), dr = r.createElement('div', { class: 'definition-row d-flex', }),
                 _and = r.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
@@ -37,27 +38,18 @@
                 ), pr.append(dr);
         },
         removeDefinition = function (c) {
-            let dc = c.closest('.definition__container'), dc_i = [...dc.parentElement.children].indexOf(dc),
-                dr = c.closest('.definition-row'), dr_i = [...dc.querySelectorAll('.definition-row')].indexOf(dr);
-            //i = $(t).find('.definition-row').index(c.closest('.definition-row'));
-            if (dr_i <= 1) {
-                dc.remove(), segment.splice(dc_i, 1);
-            }
-            else {
-                dr.remove(), segment[dc_i].splice(dr_i, 1);
-            }
-
-            //segment.splice(i, 1), console.log(segment);
-            //$(t).find('div.CriterionDivider').eq(i > 0 ? i - 1 : i).remove();
-            //$(t).find('.definition-row').length <= 1 ? t.remove() : c.closest('.definition-row').remove()
-            //$('#definition .definition__container').length <= 0 && addDefinition();
-            //$(t).find('[name="or-definition"]').remove();
-            //$(t).find('.definition-col-action').last().append(r.createElement('button', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR'))
-            //$('[name="add-definition"]').last().prop('disabled', false);
+            let con = c.closest(__tags.t).parentElement, groups = [...con.children], gi = groups.indexOf(c.closest(__tags.t)),
+                rows = [...groups[gi].querySelectorAll(__tags.r)], ri = rows.indexOf(c.closest(__tags.r));
+            if (rows.length <= 1) { groups[gi].remove(), groups.length <= 1 && addDefinition(); }
+            else { rows[ri].remove(), [...groups[gi].querySelectorAll(__tags.d)][ri > 0 ? ri - 1 : ri].remove(); }
+            let col = [...groups[gi].querySelectorAll(__tags.a)], _or = r.createElement('a', { name: 'or-definition', class: 'btn btn-outline-dark' }, 'OR');
+            _or.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); addOrDefinition(this); });
+            if (!col[col.length - 1].querySelector('[name="or-definition"]')) col[col.length - 1].appendChild(_or);
+            let _and = [...con.querySelectorAll('[name="add-definition"]')]; _and[_and.length - 1].disabled = false;
         },
         addFilter = function (t) {
-            let dc = t.closest('.definition__container'), di = [...dc.parentElement.children].indexOf(dc),
-                dr = t.closest('.definition-row'), ri = [...dc.querySelectorAll('.definition-row')].indexOf(dr),
+            let dc = t.closest(__tags.t), di = [...dc.parentElement.children].indexOf(dc),
+                dr = t.closest(__tags.r), ri = [...dc.querySelectorAll(__tags.r)].indexOf(dr),
                 v = t.value, d = t.closest('.definition-col');
             d.replaceChildren(d.firstElementChild);
             if (v === __criteria[1000]) {
@@ -363,9 +355,9 @@
         },
         postDetails = function (t) {
             let s = !0, _o = { list_id: parseInt($(t).data('id')) || 0, list_name: $('#txtlist-name').val(), group_type_id: 2, definition: [] };
-            document.querySelectorAll('.definition__container').forEach(e => {
+            document.querySelectorAll(__tags.t).forEach(e => {
                 let c = { criteria: [] };
-                e.querySelectorAll('.definition-row').forEach(r => {
+                e.querySelectorAll(__tags.r).forEach(r => {
                     let JsonVar = {}, inputElements = r.querySelectorAll('input[type="number"],input[type="text"], select, checkbox, textarea');
                     inputElements.forEach(r => {
                         if (isCheckbox(r)) { stringToObj(r.name, r.value, JsonVar); }

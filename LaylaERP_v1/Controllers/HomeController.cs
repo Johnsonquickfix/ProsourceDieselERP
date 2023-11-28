@@ -23,11 +23,11 @@
             //string cryptedPassword = CryptSharp.Crypter.Phpass.Crypt("Presto55555!");
             //CryptSharp.PhpassCrypter.CheckPassword("Peter@007", "$P$BZC5kG0c9tsOSgVJsXfWt1LzCUvniM1")
             Session.RemoveAll();
-            CommanUtilities.Provider.RemoveCurrent(); 
+            CommanUtilities.Provider.RemoveCurrent();
             dynamic myModel = new ExpandoObject();
             myModel.user_login = null;
             DataTable dt = BAL.SettingRepository.GetDetailscompany(3);
-            myModel.User_Image = dt.Rows[0]["image"]; 
+            myModel.User_Image = dt.Rows[0]["image"];
             return View(myModel);
         }
         [HttpGet]
@@ -69,7 +69,7 @@
                     {
                         mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
                         mailMessage.Subject = "Reset Password";
-                        mailMessage.Body = @"<img src=https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png /><br>" + "<p>We got a reset password request.</p> <p>Please login with a new password and change your password from your profile after logging in with a new password.</p>" + "<p>User name: " + UserName + "</p> <p>New password: " + model1.pwd +"</p>";
+                        mailMessage.Body = @"<img src=https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png /><br>" + "<p>We got a reset password request.</p> <p>Please login with a new password and change your password from your profile after logging in with a new password.</p>" + "<p>User name: " + UserName + "</p> <p>New password: " + model1.pwd + "</p>";
                         mailMessage.IsBodyHtml = true;
 
                         /*string SenderEmailID = "david.quickfix1@gmail.com";
@@ -79,7 +79,7 @@
                         string fileattach = string.Empty;*/
 
                         //SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject,mailMessage.Body, fileattach);
-                        if(model1.ID > 0)
+                        if (model1.ID > 0)
                         {
                             SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject, mailMessage.Body, fileattach);
                             ForgotPasswordRepository.Updateuserpassword(model1);
@@ -145,7 +145,7 @@
         }
 
         public ActionResult Index(string strValue1, string strValue2)
-         {
+        {
             clsUserDetails model = new clsUserDetails();
 
             //ViewBag.id = Session["UserId"];
@@ -157,9 +157,9 @@
             GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
             // if (!string.IsNullOrEmpty(modeldetails.strValue2))
             //GetUsersDetails(strValue1, strValue2);
-            ViewBag.Type = strValue1; 
+            ViewBag.Type = strValue1;
 
-            dynamic myModel = new ExpandoObject(); 
+            dynamic myModel = new ExpandoObject();
             //DataTable dt = BAL.SettingRepository.Getentitylogo(CommanUtilities.Provider.GetCurrent().login_company_id);
             //myModel.User_Image = "/Content/Entity/" + dt.Rows[0]["logo_url"];
             //return View(myModel);
@@ -193,25 +193,25 @@
                 var sale = Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
                 ViewBag.TotalSale = "$" + sale;
                 ViewBag.TotalOrderCounting = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
-                
+
             }
             catch { }
             return View();
         }
 
         public JsonResult GettotalOrders(JqDataTableModel model)
-       {
+        {
             CultureInfo us = new CultureInfo("en-US");
             string JSONresult = string.Empty;
             try
             {
-               
+
                 string startDate = model.strValue5;
                 string endDate = model.strValue6;
                 JSONresult = BAL.DashboardRepository.Total_Orders(startDate, endDate).ToString();
             }
             catch { }
-            return Json(new {data = Convert.ToDecimal(JSONresult).ToString("N0", us)}, 0);
+            return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N0", us) }, 0);
         }
         public JsonResult GettotalSales(JqDataTableModel model)
         {
@@ -224,7 +224,7 @@
                 JSONresult = BAL.DashboardRepository.Total_Sales(startDate, endDate).ToString();
 
             }
-            catch(Exception ex) { throw ex; }
+            catch (Exception ex) { throw ex; }
             return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N2", us) }, 0);
         }
         public JsonResult GettotalCustomer(JqDataTableModel model)
@@ -237,7 +237,7 @@
                 string endDate = model.strValue6;
                 JSONresult = BAL.DashboardRepository.Total_Customer(startDate, endDate).ToString();
             }
-            catch(Exception ex) { throw ex; }
+            catch (Exception ex) { throw ex; }
             return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N0", us) }, 0);
         }
         public JsonResult GetcompletedOrders(JqDataTableModel model)
@@ -421,11 +421,11 @@
             DataTable dt = BAL.SettingRepository.GetDetailscompany(3);
             myModel.User_Image = dt.Rows[0]["image"];
             return View(myModel);
-            
-        }        
+
+        }
 
         [HttpPost]
-        public JsonResult MobileVerification(int OTP , int company_id)
+        public JsonResult MobileVerification(int OTP, int company_id)
         {
             string JSONresult = string.Empty, strURL = string.Empty; ; bool b_status = false;
             try
@@ -677,6 +677,11 @@
                                 op.login_company_id = 1;
                                 op.LoginIPAddress = Net.Ip;
                                 op.LoginMacAddress = string.Empty;
+                                // Klaviyo clone API
+                                if (ds.Tables[3].Rows.Count > 0)
+                                {
+                                    op.public_api_key = ds.Tables[3].Rows[0]["public_api_key"] != DBNull.Value ? ds.Tables[3].Rows[0]["public_api_key"].ToString() : "";
+                                }
                                 CommanUtilities.Provider.AddCurrent(op);
                                 string loginDesc = op.UserName + " Login on " + DateTime.UtcNow.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
                                 UserActivityLog.WriteDbLog(LogType.Login, "Login", loginDesc);
@@ -773,7 +778,7 @@
             if (model.ID > 0)
             {
                 UserProfileRepository.Update_Password(model, model.ID);
-                
+
                 UserActivityLog.WriteDbLog(LogType.Submit, "Password updated by " + CommanUtilities.Provider.GetCurrent().UserName + "", "/Home/Index" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Password updated successfully!!", url = "" }, 0);
             }
@@ -835,7 +840,7 @@
                 //    role = "Supply Chain Manager";
                 //else
                 //    role = role;
-             
+
 
                 LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                 //var _att = serializer.Deserialize(dt.Rows[0]["user_role"].ToString());
@@ -895,14 +900,14 @@
                 DashboardRepository.SalesGraph1(startDate, endDate);
                 return Json(DashboardRepository.chartData);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
         public JsonResult GetSalesOrderChart(string from_date, string to_date)
         {
-           DashboardRepository.GetSalesOrderChart(from_date, to_date);
+            DashboardRepository.GetSalesOrderChart(from_date, to_date);
             var list = DashboardRepository.exportorderlist;
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }

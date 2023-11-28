@@ -1,24 +1,5 @@
 ﻿!(function (r) {
-    "use strict";;
-    $(document).ready(function () {
-        $(document).on('click', '[name="close-filter-row"]', function (evt) {
-            evt.preventDefault(), evt.stopPropagation(), removeFilterRow(this);
-        });
-        $(document).on('click', '#create-Segments', function (evt) {
-            evt.preventDefault(), evt.stopPropagation()//
-            postDetails(this);
-
-            //const form = document.getElementById("form");
-            //const submitter = document.querySelector("#create-Segments");
-            ////const formData = new FormData(form, submitter);
-            //// Call our function to get the form data.
-            //const data = formToJSON(form.elements);
-            //console.log(data);
-            //for (const [key, value] of formData) {
-            //    console.log(`${key}: ${value}\n`);
-            //}
-        });
-    });
+    "use strict";
     function useState(obj) {
         const isFunction = value => typeof value === 'function';
         let initialState = obj;
@@ -31,6 +12,10 @@
         return [initialState, reducer];
     }
     const [segment, setSegment] = useState([]);
+
+    document.querySelector('#create-Segments')?.addEventListener("click", function (evt) {
+        evt.preventDefault(), evt.stopPropagation(); postDetails(this);
+    });
 
     var r = r || document,
         __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-attribute', 1002: 'customer-location', 1003: 'customer-distance', 1004: 'customer-group-membership', 1005: 'customer-exclusion' },
@@ -112,7 +97,7 @@
                 //_criteria = { type: v, operator: _operator.value, region_id: _region.value };
             }
             else if (v === __criteria[1003]) {
-                let _operator = r.createElement('select', { name: "operator"}), _unit = r.createElement('select', { name: "units" }),
+                let _operator = r.createElement('select', { name: "operator" }), _unit = r.createElement('select', { name: "units" }),
                     dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
                 dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
                     dr.appendChild(createLabelCol('within')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "distance", class: "form-control", type: "number" }))),
@@ -377,57 +362,29 @@
             })(s);
         },
         postDetails = function (t) {
-            let s = !0, z = $(t).data('company-key'), _definition = [], _o = { list_id: parseInt($(t).data('id')) || 0, list_name: $('#txtlist-name').val(), group_type_id: 2 };
+            let s = !0, _o = { list_id: parseInt($(t).data('id')) || 0, list_name: $('#txtlist-name').val(), group_type_id: 2, definition: [] };
             document.querySelectorAll('.definition__container').forEach(e => {
                 let c = { criteria: [] };
                 e.querySelectorAll('.definition-row').forEach(r => {
                     let JsonVar = {}, inputElements = r.querySelectorAll('input[type="number"],input[type="text"], select, checkbox, textarea');
-                    inputElements.forEach(r => { stringToObj(r.name, r.value, JsonVar); });
+                    inputElements.forEach(r => {
+                        if (isCheckbox(r)) { stringToObj(r.name, r.value, JsonVar); }
+                        else if (isMultiSelect(r)) { stringToObj(r.name, getSelectValues(r), JsonVar); }
+                        else { stringToObj(r.name, r.value, JsonVar); }
+                    });
                     c.criteria.push(JsonVar);
-                    console.log(JsonVar);
-
-                    //let sc = { type: r.querySelector('[name="type"]').value, operator: r.querySelector('[name="operator"]').value };
-
-                    //r.querySelector('[name="group"]') ? sc.group = parseInt(r.querySelector('[name="group"]').value) || 0 : void 0;
-                    //r.querySelector('[name="country"]') ? sc.country_id = r.querySelector('[name="country"]').value : void 0;
-                    //if (sc.group === 0 && !sc.group) { swal('Error!', 'Please select list.', 'error').then(function () { swal.close(); r.querySelector('[name="group"]').focus(); }); return s = !1, false; }
-                    //if (sc.country_id === '' && !sc.country_id) { swal('Error!', 'Please select country.', 'error').then(function () { swal.close(); r.querySelector('[name="country"]').focus(); }); return s = !1, false; }
-                    //if (r.querySelector('[name="timeframe"]')) {
-                    //    sc.timeframe = r.querySelector('[name="timeframe"]').value, sc.timeframeOptions = {};
-                    //    r.querySelector('[name="quantity"]') ? sc.timeframeOptions.quantity = parseInt(r.querySelector('[name="quantity"]').value) || 0 : void 0;
-                    //    r.querySelector('[name="start_quantity"]') ? sc.timeframeOptions.start = parseInt(r.querySelector('[name="start_quantity"]').value) || 0 : void 0;
-                    //    r.querySelector('[name="end_quantity"]') ? sc.timeframeOptions.end = parseInt(r.querySelector('[name="end_quantity"]').value) || 0 : void 0;
-                    //    r.querySelector('[name="units"]') ? sc.timeframeOptions.units = r.querySelector('[name="units"]').value : void 0;
-                    //    r.querySelector('[name="date"]') ? sc.timeframeOptions.value = r.querySelector('[name="date"]').value : void 0;
-                    //    r.querySelector('[name="start_date"]') ? sc.timeframeOptions.start = r.querySelector('[name="start_date"]').value : void 0;
-                    //    r.querySelector('[name="end_date"]') ? sc.timeframeOptions.end = r.querySelector('[name="end_date"]').value : void 0;
-
-                    //    if (sc.timeframeOptions.value === '' && !sc.timeframeOptions.value) { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="date"]').focus(); }); return s = !1, false; }
-                    //    if (sc.timeframeOptions.start === '' && !sc.timeframeOptions.start && sc.timeframe === 'between-static') { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="start_date"]').focus(); }); return s = !1, false; }
-                    //    if (sc.timeframeOptions.end === '' && !sc.timeframeOptions.end && sc.timeframe === 'between-static') { swal('Error!', 'Please enter date.', 'error').then(function () { swal.close(); r.querySelector('[name="end_date"]').focus(); }); return s = !1, false; }
-                    //}
-                    //c.criteria.push(sc);
-
                 });
-                _definition.push(c);
+                _o.definition.push(c);
             });
-            console.log(_definition); return false;
-            _o.definition = JSON.stringify(_definition);
             if (s) {
-                $(t).prop('disabled', true);
-                //console.log(_o)
-                $.post(`/api/lists?api_key=${z}`, _o, function (result, status, xhr) {
-                    console.log(result);
-                    if (parseInt(result.list_id) > 0) {
-                        window.location = window.location.origin + `/list/${result.list_id}/members`
-                        //var $detailDiv = $('#root'), url = `/lists/listmembers/${result.list_id}`;
-                        //$.get(url, function (data) { $detailDiv.replaceWith(data); });
-                    }
-                    else { swal('Error!', result.message, 'error'); }
-                }).fail(function (xhr, status, error) { $(t).prop('disabled', false); swal('Error!', xhr.responseJSON.message, 'error'); }).always(function () { $(t).prop('disabled', false); });
+                t.disabled = true;
+                fetch(`/api/lists`, { method: 'POST', body: JSON.stringify(_o), headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(response => response.json())
+                    .then(function (result) {
+                        t.disabled = false;
+                        if (parseInt(result.list_id) > 0) window.location = window.location.origin + `/list/${result.list_id}/members`;
+                        else swal('Error!', result.message, 'error');
+                    }).catch(error => { console.log('error', error); t.disabled = false; swal('Error!', error, 'error'); });
             }
         };
     var load = function () { addDefinition(); }();
-
-
 })();

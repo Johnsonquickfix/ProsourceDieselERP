@@ -32,7 +32,7 @@ namespace LaylaERP.Controllers.qfk
             if (om.UserID > 0)
             {
                 Lists request = new Lists() { list_id = id };
-                pairs = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", om.public_api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                pairs = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", 0, om.public_api_key, 0, JsonConvert.SerializeObject(request)).ToString());
             }
             if (Request.Url.PathAndQuery.ToLower().Contains("/clone/"))
                 ViewBag.mode = "Clone";
@@ -62,7 +62,7 @@ namespace LaylaERP.Controllers.qfk
             {
                 string api_key = CommanUtilities.Provider.GetCurrent().public_api_key;
                 Lists request = new Lists() { list_id = id };
-                response = JsonConvert.DeserializeObject<ListResponse>(ProfilesRepository.GroupAdd("listinfo", api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                response = JsonConvert.DeserializeObject<ListResponse>(ProfilesRepository.GroupAdd("listinfo", 0, api_key, 0, JsonConvert.SerializeObject(request)).ToString());
                 response.member_count = ProfilesRepository.GroupMemberCount(id);
             }
             catch { }
@@ -76,7 +76,7 @@ namespace LaylaERP.Controllers.qfk
             {
                 string api_key = CommanUtilities.Provider.GetCurrent().public_api_key;
                 Lists request = new Lists() { list_id = id };
-                response = JsonConvert.DeserializeObject<ListResponse>(ProfilesRepository.GroupAdd("listinfo", api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                response = JsonConvert.DeserializeObject<ListResponse>(ProfilesRepository.GroupAdd("listinfo", 0, api_key, 0, JsonConvert.SerializeObject(request)).ToString());
             }
             catch { }
             return PartialView(response);
@@ -114,7 +114,7 @@ namespace LaylaERP.Controllers.qfk
                     }
                 }
                 string json = JsonConvert.SerializeObject(dt);
-                var response_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("addmember", api_key, list_id, json));
+                var response_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("addmember", 0, api_key, list_id, json));
                 return Json(new { message = "success" }, 0);
             }
             catch { }

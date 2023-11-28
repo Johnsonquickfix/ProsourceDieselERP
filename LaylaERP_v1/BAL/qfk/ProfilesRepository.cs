@@ -28,7 +28,7 @@
             catch { throw; }
             return dt;
         }
-        public static string GroupAdd(string flag, string api_key, long user_id, string json_data)
+        public static string GroupAdd(string flag, int company_id, string api_key, long user_id, string json_data)
         {
             string str = "{}";
             try
@@ -36,6 +36,7 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", flag),
+                    company_id > 0 ? new SqlParameter("@company_id",company_id) : new SqlParameter("@company_id",DBNull.Value),
                     new SqlParameter("@api_key",api_key),
                     new SqlParameter("@user_id",user_id),
                     new SqlParameter("@json_data",json_data)

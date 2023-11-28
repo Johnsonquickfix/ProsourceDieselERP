@@ -20,21 +20,23 @@
     public class ListsController : ApiController
     {
         //[HttpPost, Route("create")]
-        public IHttpActionResult Post([FromUri] string api_key, Lists request)
+        public IHttpActionResult Post(Lists request)
         {
             try
             {
-                if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
-                //if (om.user_id <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                //if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
                 if (string.IsNullOrEmpty(request.list_name)) return Content(HttpStatusCode.BadRequest, new { message = "list_name is required. list_name must be between 1 and 255 characters." });
                 request.list_slug = Regex.Replace(request.list_name.ToLower(), @"[^a-zA-Z0-9|\-]", "-");
                 request.group_type_id = request.group_type_id != 0 ? request.group_type_id : 1;
                 request.is_flagged = false;
-                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("create", api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("create", om.login_company_id, string.Empty, 0, JsonConvert.SerializeObject(request)).ToString());
 
                 if (json_data["status"] != null)
                 {
                     if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
                     else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
                 }
                 else return Ok(json_data);
@@ -53,7 +55,7 @@
                 if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { detail = "list_id is required." });
                 Lists request = new Lists() { list_id = id };
-                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", 0, api_key, 0, JsonConvert.SerializeObject(request)).ToString());
                 if (json_data["status"] != null)
                 {
                     if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
@@ -80,7 +82,7 @@
                 request.list_slug = Regex.Replace(request.list_name.ToLower(), @"[^a-zA-Z0-9|\-]", "-");
                 request.group_type_id = 1;
                 request.is_flagged = false;
-                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("rename", api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("rename", 0, api_key, 0, JsonConvert.SerializeObject(request)).ToString());
 
                 if (json_data["status"] != null)
                 {
@@ -103,7 +105,7 @@
                 if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { detail = "list_id is required." });
                 Lists request = new Lists() { list_id = id };
-                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("delete", api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("delete", 0, api_key, 0, JsonConvert.SerializeObject(request)).ToString());
 
                 if (json_data["status"] != null)
                 {
@@ -168,7 +170,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
                 string send_data = "{\"list_id\":" + id + ",\"profiles_id\":\"" + profile_id + "\"}";
-                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("deletemember", om.public_api_key, 0, send_data));
+                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("deletemember", 0, om.public_api_key, 0, send_data));
 
                 if (json_data["status"] != null)
                 {

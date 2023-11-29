@@ -3422,5 +3422,30 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetProductById(string id)
+        {
+            var dt = new DataTable();
+            try
+            {
+                string query = "select taglotserialno,minpurchasequantity,purchase_price,salestax,shipping_price,Misc_Costs,cost_price,discount,remark from Product_Purchase_Items where fk_product = '" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(query);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static int UpdateProduct(ProductByingPrice obj)
+        {
+            int result = 0;
+            string query = "update Product_Purchase_Items set taglotserialno='" + obj.taglotserialno + "',minpurchasequantity = '" + obj.minpurchasequantity + "',purchase_price = '" + obj.purchase_price + "'," +
+                           "salestax = '" + obj.salestax + "', shipping_price = '" + obj.shipping_price + "',Misc_Costs = '" + obj.Misc_Costs + "',cost_price = '" + obj.cost_price + "',discount = '" + obj.discount + "',remark ='" + obj.remark + "',taxrate = '" + obj.taxrate + "' where fk_product ='" + obj.fk_product + "'";
+            string n = SQLHelper.ExecuteNonQuery(query).ToString();
+            result = Convert.ToInt32(n);
+            return result;
+        }
+
     }
 }

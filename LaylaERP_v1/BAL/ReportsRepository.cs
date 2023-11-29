@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 using LaylaERP.DAL;
 using LaylaERP.Models;
@@ -2347,6 +2348,35 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        //public static void GetForecastSalesLSRChart(string year)
+        //{
+        //    DataTable dt = new DataTable();
+        //    try
+        //    {
+        //        exportorderlistchart.Clear();
+        //        SqlParameter[] parameters =
+        //        {
+        //            new SqlParameter("@flag", "FCM"),
+        //            new SqlParameter("@year", year),
+        //        };
+        //        dt = SQLHelper.ExecuteDataTable("erp_forcastsalemonthly", parameters);
+
+        //        for(int i=0; i<dt.Rows.Count; i++){
+        //            Export_Details uobj = new Export_Details();
+        //            uobj.tax = dt.Rows[i]["month"].ToString();
+        //            uobj.shipping_amount = dt.Rows[i]["month_name"].ToString();
+        //            uobj.handling_amount = dt.Rows[i]["sales"].ToString();
+        //            uobj.total = dt.Rows[i]["forcastSales"].ToString();
+        //            exportorderlistchart.Add(uobj);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+           
+        //}
+
         public static void GetForecastSalesHistoricalChart(string year)
         {
             try
@@ -3391,5 +3421,39 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static void GetQuarterlyComparisonYear(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "MD"),
+                    new SqlParameter("@yearfrom", from_date),
+                     new SqlParameter("@yearto", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_QuarterlyComparisonSalesOrderChart_List", parameters);
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        int rowCountTable0 = ds1.Tables[0].Rows.Count;
+                        int rowCountTable1 = ds1.Tables[1].Rows.Count;
+
+                        uobj.total = (i < rowCountTable0) ? ds1.Tables[0].Rows[i]["TOTAL"].ToString() : string.Empty;
+                        uobj.tax = (i < rowCountTable1) ? ds1.Tables[1].Rows[i]["TOTAL"].ToString() : string.Empty;
+
+                        exportorderlist.Add(uobj);
+                    }
+
+                    
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

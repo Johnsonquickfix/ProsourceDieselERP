@@ -1966,6 +1966,7 @@
     <Content Include="Views\Setting\BulkProductOpeningStock.cshtml" />
     <Content Include="Views\assignvendorandwarehouse\Index.cshtml" />
     <Content Include="Views\Setting\BulkProductwarehouse.cshtml" />
+    <Content Include="Views\Reports\QuarterlyComparisonOrderChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

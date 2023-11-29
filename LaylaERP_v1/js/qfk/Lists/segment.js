@@ -64,6 +64,9 @@ function getProperties() {
 function getGroups() {
     return fetch('/api/lists/static-group', { method: 'GET' }).then(response => response.json());
 }
+function getDimensions(statistic) {
+    return fetch(`/api/lists/metric/dimensions?statistic=${statistic}`, { method: 'GET' }).then(response => response.json());
+}
 const statisticData = new Cache(getStatistic), propertyData = new Cache(getProperties), groupData = new Cache(getGroups);
 
 export function addDefinition() {
@@ -295,64 +298,117 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
     },
     createFilterRow = function (e, v) {
         if (e.childNodes.length > 2) e.removeChild(e.lastChild);
-        let b = r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> Add Filter');
-        e.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, b));
+        let b = r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> Add Filter'),
+            fr = r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" });
+        fr.replaceChildren(b), e.appendChild(fr);
+        b.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(), createFilterRowData(fr, v) });
+        //b.addEventListener("click", function (evt) {
+        //    evt.preventDefault(), evt.stopPropagation();
+        //    let div = this.parentNode, s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
+        //    div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+        //    div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
+        //    div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
+        //    (function (a, v) {
+        //        const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
+        //            .setChoices(async () => {
+        //                try {
+        //                    return await fetch(`/api/lists/metric/dimensions?statistic=${v}`, { method: 'GET' }).then(response => response.json())
+        //                        .then(function (data) {
+        //                            return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type }; }) : [];
+        //                        });
+        //                } catch (err) { console.error(err); }
+        //            });
+        //        a.addEventListener("change", function (evt) {
+        //            evt.preventDefault(), evt.stopPropagation();
+        //            let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
+        //            while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
+        //            if (_type === 'list') {
+        //                let sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" });
+        //                p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+        //                (function (a, v1, v2) {
+        //                    new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
+        //                        .setChoices(async () => {
+        //                            try {
+        //                                return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
+        //                                    .then(function (data) {
+        //                                        return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
+        //                                    });
+        //                            } catch (err) { console.error(err); }
+        //                        });
+        //                })(sv, v, this.value);
+        //            }
+        //            else {
+        //                let sv = r.createElement('select', { name: "statistic_filters.value" });
+        //                p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+        //                (function (a, v1, v2) {
+        //                    new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
+        //                        .setChoices(async () => {
+        //                            try {
+        //                                return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
+        //                                    .then(function (data) {
+        //                                        return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
+        //                                    });
+        //                            } catch (err) { console.error(err); }
+        //                        });
+        //                })(sv, v, this.value);
+        //            }
+        //        });
+        //    })(s, v);
+        //});
+    },
+    createFilterRowData = function (div, v) {
         const btn_cl = r.createElement('a', { class: "btn fw-bold" }, 'X');
-        btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(e, v); });
-
-        b.addEventListener("click", function (evt) {
-            evt.preventDefault(), evt.stopPropagation();
-            let div = this.parentNode, s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
-            div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
-            div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
-            div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
-            (function (a, v) {
-                const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
-                    .setChoices(async () => {
-                        try {
-                            return await fetch(`/api/lists/metric/dimensions?statistic=${v}`, { method: 'GET' }).then(response => response.json())
-                                .then(function (data) {
-                                    return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type }; }) : [];
-                                });
-                        } catch (err) { console.error(err); }
-                    });
-                a.addEventListener("change", function (evt) {
-                    evt.preventDefault(), evt.stopPropagation();
-                    let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
-                    while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
-                    if (_type === 'list') {
-                        let sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" });
-                        p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-                        (function (a, v1, v2) {
-                            new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
-                                .setChoices(async () => {
-                                    try {
-                                        return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
-                                            .then(function (data) {
-                                                return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
-                                            });
-                                    } catch (err) { console.error(err); }
-                                });
-                        })(sv, v, this.value);
-                    }
-                    else {
-                        let sv = r.createElement('select', { name: "statistic_filters.value" });
-                        p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-                        (function (a, v1, v2) {
-                            new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
-                                .setChoices(async () => {
-                                    try {
-                                        return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
-                                            .then(function (data) {
-                                                return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
-                                            });
-                                    } catch (err) { console.error(err); }
-                                });
-                        })(sv, v, this.value);
-                    }
+        btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(div.parentNode, v); });
+        let s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
+        div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+        div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
+        div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
+        (function (a, v) {
+            const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
+                .setChoices(async () => {
+                    try {
+                        return await fetch(`/api/lists/metric/dimensions?statistic=${v}`, { method: 'GET' }).then(response => response.json())
+                            .then(function (data) {
+                                return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type }; }) : [];
+                            });
+                    } catch (err) { console.error(err); }
                 });
-            })(s, v);
-        });
+            a.addEventListener("change", function (evt) {
+                evt.preventDefault(), evt.stopPropagation();
+                let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
+                while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
+                if (_type === 'list') {
+                    let sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" });
+                    p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+                    (function (a, v1, v2) {
+                        new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
+                            .setChoices(async () => {
+                                try {
+                                    return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
+                                        .then(function (data) {
+                                            return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
+                                        });
+                                } catch (err) { console.error(err); }
+                            });
+                    })(sv, v, this.value);
+                }
+                else {
+                    let sv = r.createElement('select', { name: "statistic_filters.value" });
+                    p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
+                    (function (a, v1, v2) {
+                        new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
+                            .setChoices(async () => {
+                                try {
+                                    return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
+                                        .then(function (data) {
+                                            return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
+                                        });
+                                } catch (err) { console.error(err); }
+                            });
+                    })(sv, v, this.value);
+                }
+            });
+        })(s, v);
     },
     createGroup = function (e) {
         let s = r.createElement('select', { name: "group" });

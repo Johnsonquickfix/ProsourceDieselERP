@@ -48,14 +48,16 @@
         }
 
         // Get: api/lists/5
-        public IHttpActionResult Get([FromUri] string api_key, long id)
+        public IHttpActionResult Get(long id)
         {
             try
             {
-                if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                //if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { detail = "list_id is required." });
                 Lists request = new Lists() { list_id = id };
-                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", 0, api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+                var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", om.login_company_id, string.Empty, 0, JsonConvert.SerializeObject(request)).ToString());
                 if (json_data["status"] != null)
                 {
                     if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });

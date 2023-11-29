@@ -339,6 +339,7 @@
     <Compile Include="Controllers\PoemailController.cs" />
     <Compile Include="Controllers\ProductBulkEditController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProductCostPriceController.cs" />
     <Compile Include="Controllers\ProductReviewImportController.cs" />
     <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
@@ -1097,6 +1098,7 @@
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Product\ProductCalculateList.js" />
     <Content Include="js\Product\ProductCategory.js" />
+    <Content Include="js\Product\ProductCostPrice.js" />
     <Content Include="js\Product\ProductList.js" />
     <Content Include="js\Product\ProductOpeningStock.js" />
     <Content Include="js\Product\ShippingClass.js" />
@@ -1967,6 +1969,7 @@
     <Content Include="Views\assignvendorandwarehouse\Index.cshtml" />
     <Content Include="Views\Setting\BulkProductwarehouse.cshtml" />
     <Content Include="Views\Reports\QuarterlyComparisonOrderChart.cshtml" />
+    <Content Include="Views\ProductCostPrice\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

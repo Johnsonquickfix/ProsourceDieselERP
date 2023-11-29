@@ -176,6 +176,8 @@ namespace LaylaERP.Models
         public string taglotserialno { get; set; }
         public string Status { get; set; }
         public string is_setprise { get; set; }
+        public string remark { get; set; }
+        public string taxrate { get; set; }
         public string date_to { get; set; }
         public string fk_vendor { get; set; }
         public string fk_product { get; set; }

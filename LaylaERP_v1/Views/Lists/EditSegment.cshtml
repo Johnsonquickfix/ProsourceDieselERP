@@ -1,31 +1,7 @@
-﻿@using System.Collections.Generic;
-@model Newtonsoft.Json.Linq.JObject
-@{
-    ViewBag.Title = "EditSegment";
+﻿@{
+    ViewBag.Title = "Lists & Segments";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
-    LaylaERP.UTILITIES.OperatorModel om = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
-    if (om.UserID <= 0) { Response.Redirect("~/user/sign_in"); }
-
-    Dictionary<string, string> _type = LaylaERP.Models.qfk.Enums.Criteria.CriteriaType();
-
-    Dictionary<string, string> _operator = new Dictionary<string, string>();
-    Dictionary<string, string> _timeframe = new Dictionary<string, string>();
-    Dictionary<string, string> _unit = new Dictionary<string, string>();
-
-
-    //Dictionary<string, string> _operator = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator();
-    //Dictionary<string, string> _timeframe = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe();
-    //Dictionary<string, string> _unit = LaylaERP.Models.qfk.Enums.Criteria.CriteriaUnit();
-    //System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(om.company_id, 1);
-    System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(1, 1);
-    System.Data.DataTable cl = LaylaERP.BAL.qfk.ProfilesRepository.GetCountries();
 }
-<!-- DataTables -->
-<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-<!-- datatables js -->
-<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 
 <div id="root">
     <!-- start page title -->
@@ -36,7 +12,7 @@
                     <ol class="breadcrumb m-0 font-size-18">
                         <li class="breadcrumb-item"><a href="/lists/index">Lists & Segments</a></li>
                         <li class="breadcrumb-item">
-                            @Model.GetValue("list_name")
+
                             <span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-bolt me-2"></i>Segment</span>
                         </li>
                         <li class="breadcrumb-item">@ViewBag.mode Definition</li>
@@ -57,233 +33,103 @@
                         <label class="form-label">
                             Name
                         </label>
-                        <input id="txtlist-name" class="form-control" type="text" placeholder="Segment Name" value="@Model.GetValue("list_name")">
+                        <input id="txtlist-name" class="form-control" type="text" placeholder="Segment Name" value="">
                     </div>
                 </div>
             </div>
 
             <div>
-                <h5>Definition</h5>
+                <span class="h4_title">Definition</span>
                 <div id="definition">
-
-                    @foreach (Newtonsoft.Json.Linq.JObject item in @Model.GetValue("definition"))
-                    {
-                        <div class="definition__container mb-2">
-                            <div class="card card-body mb-2">
-                                @{
-                                    int i = 0, l = item["criteria"].Count();
-                                }
-                                @foreach (Newtonsoft.Json.Linq.JObject subitem in item.GetValue("criteria"))
-                                {
-                                    i = i + 1;
-                                    <div class="definition-row d-flex">
-                                        <div class="definition-col flex-grow-1">
-                                            <div class="CriterionTypeSelectm cw-400 mb-2">
-                                                <select name="type" class="select2" style="width:100%">
-                                                    <option value="" selected>Select a condition…</option>
-                                                    @foreach (var t in _type)
-                                                    {
-                                                        <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("type").ToString()) ? " selected " : "")>@t.Value</option>
-                                                    }
-                                                </select>
-                                            </div>
-                                            @if (@subitem.GetValue("type").ToString() == "customer-group-membership")
-                                            {
-                                                <div class="FilterRowContainer d-flex mb-2">
-                                                    <div class="fix-label"><h6>Person</h6></div>
-                                                    <div class="cw-175">
-                                                        <select name="operator" class="select2" style="width:100%">
-                                                            @foreach (var t in _operator)
-                                                            {
-                                                                <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("operator").ToString()) ? " selected " : "")>@t.Value</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                    <div class="fix-label"><h6>in</h6></div>
-                                                    <div class="cw-300">
-                                                        <select name="group" class="select2-search" style="width:100%">
-                                                            <option value="0"></option>
-                                                            @foreach (System.Data.DataRow r in gl.Rows)
-                                                            {
-                                                                <option value="@r["group_id"]" @(r["group_id"].ToString().Equals(subitem.GetValue("group").ToString()) ? " selected " : "")>@r["name"]</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                if (@subitem["timeframe"] != null)
-                                                {
-                                                    <div data-filterid="filter-row" class="FilterRowContainer d-flex mb-2" style="margin-left: 52px;">
-                                                        <div class="fix-label"><h6>and was added</h6></div>
-                                                        <div class="cw-175">
-                                                            <select name="timeframe" class="select2" style="width:100%">
-                                                                @foreach (var t in _timeframe)
-                                                                {
-                                                                    <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("timeframe").ToString()) ? " selected " : "")>@t.Value</option>
-                                                                }
-                                                            </select>
-                                                        </div>
-                                                        @if (subitem.GetValue("timeframe").ToString().Equals("in-the-last"))
-                                                        {
-                                                            <div class="InputContainer cw-75">
-                                                                <input name="quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["quantity"]">
-                                                            </div>
-                                                            <div class="InputContainer cw-80">
-                                                                <select name="units" class="select2" style="width:100%">
-                                                                    @foreach (var t in _unit)
-                                                                    {
-                                                                        <option value="@t.Key" @(t.Key.Equals(subitem["timeframeOptions"]["units"].ToString()) ? " selected " : "")>@t.Value</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-                                                        }
-                                                        else if (subitem.GetValue("timeframe").ToString().Equals("more-than") || subitem.GetValue("timeframe").ToString().Equals("at-least"))
-                                                        {
-                                                            <div class="InputContainer cw-75">
-                                                                <input name="quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["quantity"]">
-                                                            </div>
-                                                            <div class="InputContainer cw-80">
-                                                                <select name="units" class="select2" style="width:100%">
-                                                                    @foreach (var t in _unit)
-                                                                    {
-                                                                        <option value="@t.Key" @(t.Key.Equals(subitem["timeframeOptions"]["units"].ToString()) ? " selected " : "")>@t.Value</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-                                                            <div class="fix-label"><h6>ago</h6></div>
-                                                        }
-                                                        else if (subitem.GetValue("timeframe").ToString().Equals("between"))
-                                                        {
-                                                            <div class="InputContainer cw-75">
-                                                                <input name="start_quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["start"]">
-                                                            </div>
-                                                            <div class="fix-label"><h6>and</h6></div>
-                                                            <div class="InputContainer cw-75">
-                                                                <input name="end_quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["end"]">
-                                                            </div>
-                                                            <div class="InputContainer cw-80">
-                                                                <select name="units" class="select2" style="width:100%">
-                                                                    @foreach (var t in _unit)
-                                                                    {
-                                                                        <option value="@t.Key" @(t.Key.Equals(subitem["timeframeOptions"]["units"].ToString()) ? " selected " : "")>@t.Value</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-                                                            <div class="fix-label"><h6>ago</h6></div>
-                                                        }
-                                                        else if (subitem.GetValue("timeframe").ToString().Equals("before") || subitem.GetValue("timeframe").ToString().Equals("after"))
-                                                        {
-                                                            <div class="fix-label">
-                                                                <input name="date" class="form-control" type="text" value="@subitem["timeframeOptions"]["value"]" placeholder="mm/dd/yyyy">
-                                                            </div>
-                                                        }
-                                                        else if (subitem.GetValue("timeframe").ToString().Equals("between-static"))
-                                                        {
-                                                            <div class="fix-label">
-                                                                <input name="start_date" class="form-control" type="text" value="@subitem["timeframeOptions"]["start"]" placeholder="mm/dd/yyyy">
-                                                            </div>
-                                                            <div class="fix-label"><h6>and</h6></div>
-                                                            <div class="fix-label">
-                                                                <input name="end_date" class="form-control" type="text" value="@subitem["timeframeOptions"]["end"]" placeholder="mm/dd/yyyy">
-                                                            </div>
-                                                        }
-                                                        <div class="InputContainer cw-75">
-                                                            <button name="close-filter-row" class="btn btn-outline-primary" type="button">X</button>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="FilterRowContainer d-flex mb-2">
-                                                        <button name="add-filter-row" class="btn btn-outline-primary" style="margin-left: 52px; grid-column: span 1 / auto;"><i class="fas fa-filter"></i> By Date Added</button>
-                                                    </div>
-                                                }
-                                            }
-                                            else if (@subitem.GetValue("type").ToString() == "customer-exclusion")
-                                            {
-                                                <div class="FilterRowContainer d-flex mb-2">
-                                                    <div class="fix-label"><h6>Person</h6></div>
-                                                    <div class="cw-175">
-                                                        <select name="operator" class="select2" style="width:100%">
-                                                            @foreach (var t in _operator)
-                                                            {
-                                                                <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("operator").ToString()) ? " selected " : "")>@t.Value</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                    <div class="fix-label"><h6>suppressed</h6></div>
-                                                </div>
-                                            }
-                                            else if (@subitem.GetValue("type").ToString() == "customer-location")
-                                            {
-                                                <div class="FilterRowContainer d-flex mb-2">
-                                                    <div class="fix-label"><h6>Person</h6></div>
-                                                    <div class="cw-175">
-                                                        <select name="operator" class="select2" style="width:100%">
-                                                            @foreach (var t in _operator)
-                                                            {
-                                                                <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("operator").ToString()) ? " selected " : "")>@t.Value</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                    <div class="fix-label"><h6>within</h6></div>
-                                                    <div class="cw-300">
-                                                        <select name="country" class="select2-search" style="width:100%">
-                                                            <option value="0"></option>
-                                                            @foreach (System.Data.DataRow r in cl.Rows)
-                                                            {
-                                                                <option value="@r["code"]" @(r["code"].ToString().Equals(subitem.GetValue("country_id").ToString()) ? " selected " : "")>@r["name"]</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        <div class="definition-col-action">
-                                            <button name="remove-definition" type="button" class="btn btn-outline-primary waves-effect waves-light"><i class="fa fa-trash"></i></button>
-                                            @if (l == i)
-                                            {
-                                                <button name="or-definition" class="btn btn-outline-primary">OR</button>
-                                            }
-                                        </div>
-                                    </div>
-                                    if (l != i)
-                                    {
-                                        <div class="CriterionDivider">
-                                            <div class="BoxedPlaceholder__Container me-3">
-                                                <div>OR</div>
-                                            </div>
-                                            <div class="CriterionDivider__LineContainer flex-grow-1">
-                                                <div></div><div></div>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                            <button name="add-definition" class="btn btn-outline-primary waves-effect waves-light"><i class="fas fa-plus"></i> AND</button>
-                        </div>
-                    }
-
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-lg-12 text-end">
                     <a data-add="true" href="~/lists/index" class="btn btn-primary">Cancel</a>
-                    @if (ViewBag.mode == "Edit")
-                    {
-                        <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="@Model.GetValue("list_id")">Create Segment</button>
-                    }
-                    else if (ViewBag.mode == "Clone")
-                    {
-                        <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="0">Clone Segment</button>
-                    }
+                    @*@if (ViewBag.mode == "Edit")
+                        {
+                            <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="@ViewBag.id">Create Segment</button>
+                        }
+                        else if (ViewBag.mode == "Clone")
+                        {
+                            <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="0">Clone Segment</button>
+                        }*@
                 </div>
             </div>
         </div>
     </form>
 
 </div>
-
 <script src="~/js/qfk/common.js"></script>
-<script async src="@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+<script type="module">
+    import segments, { __criteria, __tags, createCriteria, addFilter, createFilterRow, createOperatorValue, addTimeFrame } from '@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))';
+    //segments();
 
+
+
+    let _d = document, loadData = function () {
+        //console.log('start');
+        //console.log('end');
+        fetch(`/api/lists/@ViewBag.id`, { method: 'GET', headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(response => response.json())
+            .then(function (result) {
+                console.log(result);
+                _d.getElementById("txtlist-name").value = result.list_name;
+                let $def = _d.getElementById("definition"), groups = [], $type = null, $statistic = null, $operator = null, $timeFrame = null;
+                _d.getElementById("definition").replaceChildren();
+                result.definition.forEach((container, iContainer) => {
+
+                    //__criteria
+                    container.criteria.forEach((row, iRow) => {
+                        if (iRow <= 0) {
+                            let dr = _d.createElement('div', { class: 'definition-row d-flex', }),
+                                _and = _d.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
+                            _and.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); this.disabled = true, addDefinition(); });
+                            createCriteria(dr, row.type), $def.appendChild(_d.createElement('div', { class: 'definition__container mb-2', }, _d.createElement('div', { class: 'boxed_style card card-body my-2' }, dr), _and));
+                            $type = dr.querySelector('[name="type"]'), addFilter($type, row);
+                            $statistic = dr.querySelector('.definition-col'), ($statistic) && createFilterRow($statistic, row.type);
+                            $operator = dr.querySelector('[name="operator"]'), ($operator && __tags[1000] == row.type) && createOperatorValue($operator, row);
+                            $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
+                            console.log($statistic)
+
+                            //addDefinition();
+                            //groups = [..._d.getElementById("definition").children];
+                            //const _type = groups[iRow].querySelector('[name="type"]');
+                            //if (_type.tagName == 'SELECT') {
+                            //    const choiceItems = _type.closest(".choices").querySelectorAll(".choices__item--selectable");
+                            //    for (let i = 0; i < choiceItems.length; i++) {
+                            //        if (choiceItems[i].dataset.value === row.type) {
+                            //            //choiceItems[i].dispatchEvent(new Event('mousedown'));
+                            //            choiceItems[i].dispatchEvent(new Event('change', { bubbles: true }));
+                            //        }
+                            //    }
+                            //}
+                            //groups[0].querySelector('[name="type"]').setChoiceByValue('customer-attribute')
+                        }
+                        else {
+                            let _row = [...$def.children][iContainer],pr = _row.querySelector('.definition__container .card-body'), dr = _d.createElement('div', { class: 'definition-row d-flex', });
+                            createCriteria(dr, row.type),
+                                pr.append(
+                                    _d.createElement('div', { class: 'CriterionDivider' },
+                                        _d.createElement('div', { class: 'BoxedPlaceholder__Container me-3' }, _d.createElement('div', null, _d.createElement('span', { class: "h4_title" }, 'OR'))),
+                                        _d.createElement('div', { class: 'CriterionDivider__LineContainer flex-grow-1' }, _d.createElement('div'), _d.createElement('div'))
+                                    )
+                                ), pr.append(dr);
+                            $type = dr.querySelector('[name="type"]'), addFilter($type, row);
+                            $operator = dr.querySelector('[name="operator"]'), ($operator && __tags[1000] == row.type) && createOperatorValue($operator, row);
+                            $timeFrame = dr.querySelector('[name="timeFrame"]'), $timeFrame && addTimeFrame($timeFrame, row);
+
+                        }
+                        //console.log(groups)
+                    });
+                    //console.log(criteria);
+                });
+                //t.disabled = false;
+                //if (parseInt(result.list_id) > 0) window.location = window.location.origin + `/list/${result.list_id}/members`;
+                //else swal('Error!', result.message, 'error');
+            }).catch(error => {
+                console.log('error', error); //swal('Error!', error, 'error');
+            });
+    };
+    var load = function () { loadData(); }();
+</script>

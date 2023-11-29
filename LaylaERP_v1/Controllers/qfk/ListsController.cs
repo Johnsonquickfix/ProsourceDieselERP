@@ -27,20 +27,17 @@ namespace LaylaERP.Controllers.qfk
         [Route("{id}/edit/{slug}"), Route("{id}/clone/{slug}")]
         public ActionResult EditSegment(long id, string slug)
         {
-            JObject pairs = new JObject();
-            OperatorModel om = CommanUtilities.Provider.GetCurrent();
-            if (om.UserID > 0)
-            {
-                Lists request = new Lists() { list_id = id };
-                pairs = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", 0, om.public_api_key, 0, JsonConvert.SerializeObject(request)).ToString());
-            }
-            if (Request.Url.PathAndQuery.ToLower().Contains("/clone/"))
-                ViewBag.mode = "Clone";
-            else
-                ViewBag.mode = "Edit";
+            //JObject pairs = new JObject();
             //OperatorModel om = CommanUtilities.Provider.GetCurrent();
-            //ProfileResponse profile = JsonConvert.DeserializeObject<ProfileResponse>(ProfilesRepository.ProfileDetails(om.company_id, id));
-            return View(pairs);
+            //if (om.UserID > 0)
+            //{
+            //    Lists request = new Lists() { list_id = id };
+            //    pairs = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", 0, om.public_api_key, 0, JsonConvert.SerializeObject(request)).ToString());
+            //}
+            ViewBag.id = id; ViewBag.mode = "Edit";
+            //if (Request.Url.PathAndQuery.ToLower().Contains("/clone/")) ViewBag.mode = "Clone";
+            //else ViewBag.mode = "Edit";
+            return View();
         }
         // GET: Lists & Segments create start 
         public ActionResult GroupCreate()

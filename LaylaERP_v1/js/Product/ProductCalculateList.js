@@ -153,7 +153,7 @@ function dataGridLoad(order_type) {
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> Print',
                 title: function () {
-                    return "Layla Sleep Inc - Products Margin List";
+                    return "ERP - Products Margin List";
                 },
                 footer: true,
                 exportOptions: {
@@ -180,7 +180,7 @@ function dataGridLoad(order_type) {
                     // doc.styles.tableHeader[2].alignment = 'right';
                     // doc.content[1].alignment = ['left', 'right', 'right'];
 
-                    doc.content[0].text = "Layla Sleep Inc - Products Margin List";
+                    doc.content[0].text = "ERP - Products Margin List";
                     doc.content[0].text.alignment = 'left';
 
                     var rowCountd = table.rows().count() + 1;

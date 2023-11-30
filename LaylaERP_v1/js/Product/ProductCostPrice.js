@@ -1,9 +1,9 @@
 ﻿
-
 $(document).ready(function () {
-
+    $(".select2").select2();
     getProducts();
     getVendor();
+    
 
     $("#ddlProduct").change(function () {
         //debugger;
@@ -20,7 +20,9 @@ $(document).ready(function () {
                // debugger;
                 var data = JSON.parse(result);
                 data = data[0];
+               // var cost_price = purchase_price + salestax + shipping_price + Misc_Costs;
                 //console.log(data);
+                $("#ddlVendor").val(data.fk_vendor).trigger('change');
                 $("#txttaglotno").val(data.taglotserialno);
                 $("#txtminpurchasequantity").val(data.minpurchasequantity);
                 $("#txtcurrencyconversionrate").val(data.purchase_price);
@@ -31,16 +33,19 @@ $(document).ready(function () {
                 $("#txtDiscountqty").val(data.discount);
                 $("#txtRemarks").val(data.remark);
 
+                CostPriceList();
+
             }
         });
 
     });
+
 });
 
     $("#btnsave").click(function () {
-        //debugger;
+        debugger;
         var product = $("#ddlProduct").val();
-
+        var fk_vendor = $("#ddlVendor").val();
         var taglotserialno      =  $("#txttaglotno").val();
         var minpurchasequantity =  $("#txtminpurchasequantity").val();
         var purchase_price      =  $("#txtcurrencyconversionrate").val();
@@ -52,8 +57,8 @@ $(document).ready(function () {
         var remark              =  $("#txtRemarks").val();
         var taxrate             =  $("#ddltaxrate").val();
 
-        var obj = { fk_product: product,taglotserialno: taglotserialno, minpurchasequantity: minpurchasequantity, purchase_price: purchase_price, salestax: salestax, shipping_price: shipping_price, Misc_Costs: Misc_Costs, cost_price: cost_price, discount: discount, remark: remark, taxrate: taxrate }
-        if (product == null) {
+        var obj = { fk_product: product, taglotserialno: taglotserialno, minpurchasequantity: minpurchasequantity, purchase_price: purchase_price, salestax: salestax, shipping_price: shipping_price, Misc_Costs: Misc_Costs, cost_price: cost_price, discount: discount, remark: remark, taxrate: taxrate, fk_vendor: fk_vendor }
+        if (product == null || product == '0') {
             swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
         }
         else {
@@ -79,9 +84,22 @@ $(document).ready(function () {
    
  });
 
-
-
-
+function removeInput() {
+    //debugger;
+    $("#ddlProduct").val('0').trigger('change');
+    $("#ddlVendor").val('-1').trigger('change');
+     $("#txttaglotno").val('');
+     $("#txtminpurchasequantity").val('');
+     $("#txtcurrencyconversionrate").val('');
+     $("#txtSaletax").val('');
+     $("#txtshippingprice").val('');
+     $("#txtMisccosts").val('');
+     $("#txtcostprice").val('');
+     $("#txtDiscountqty").val('');
+     $("#txtRemarks").val('');
+    $("#ddltaxrate").val('0').trigger('change');
+    $("#txttaglotno").focus();
+}
 
 function getProducts() {
     $("#loader1").show();
@@ -115,3 +133,75 @@ function getVendor() {
     });
 }
 
+ 
+$("#txtcurrencyconversionrate").change(function () {
+
+    var cost_price =parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtSaletax").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val());
+    $("#txtcostprice").val(cost_price.toFixed(2));
+});
+$("#txtSaletax").change(function () {
+    //debugger;
+    var cost_price =  parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtSaletax").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val());
+    $("#txtcostprice").val(cost_price.toFixed(2));
+});
+$("#txtshippingprice").change(function () {
+    //debugger;
+    var cost_price = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtSaletax").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val());
+    $("#txtcostprice").val(cost_price.toFixed(2));
+});
+$("#txtMisccosts").change(function () {
+
+    var cost_price = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtSaletax").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val());
+    $("#txtcostprice").val(cost_price.toFixed(2));
+});
+
+
+function CostPriceList() {
+    var product = $("#ddlProduct").val();
+ 
+    var obj = { id: product }
+    $.ajax({
+        url: '/ProductCostPrice/GetProductList/',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader1").show(); },
+        success: function (data) {
+            //debugger;
+            var q = JSON.parse(data);
+            //debugger;
+           //$('#dtdataVendor').dataTable();
+            $('#dtdataVendor').dataTable({
+                destroy: true,
+                scrollX: false,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'product', title: 'Product', sWidth: "15%" },
+                    { data: 'vendor', title: 'Vendor', sWidth: "10%" },
+                    { data: 'taglotserialno', title: 'Tag/Lot/Serial No.', sWidth: "10%" },
+                    { data: 'minpurchasequantity', title: 'Purchase quantity', sWidth: "10%" },
+                    { data: 'purchase_price', title: 'Price', sWidth: "10%",  },
+                    { data: 'salestax', title: 'Sales Tax', sWidth: "10%",},
+                    { data: 'shipping_price', title: 'Shipping Price', sWidth: "10%" },
+                    { data: 'Misc_Costs', title: 'Misc. Price', sWidth: "10%", },
+                    { data: 'cost_price', title: 'Cost Price', sWidth: "10%", },
+                    { data: 'discount', title: 'Discount %', sWidth: "10%", },
+                   // { data: 'remark', title: 'remark', sWidth: "10%",  },
+                    //{ data: 'month_velocity', title: 'Date To', sWidth: "10%",  },
+                    //{ data: 'month_velocity', title: 'Status', sWidth: "10%",  },
+                    //{ data: 'month_velocity', title: 'Action', sWidth: "10%", },
+                    //{ data: 'month_velocity', title: 'Active/InActive', sWidth: "10%",  },
+                    //{ data: 'month_velocity', title: 'View All Price', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
+                ],
+                "order": [[0, 'asc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        },
+        complete: function () { $("#loader1").hide(); }
+    });
+
+}

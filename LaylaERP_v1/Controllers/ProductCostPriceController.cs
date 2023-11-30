@@ -25,6 +25,12 @@ namespace LaylaERP_v1.Controllers
             var result = JsonConvert.SerializeObject(dt);
             return Json(result,0);
         }
+        public ActionResult GetProductList(string id)
+        {
+            DataTable dt = ProductRepository.GetProductList(id);
+            var result = JsonConvert.SerializeObject(dt);
+            return Json(result,0);
+        }
 
         public ActionResult UpdateProduct(ProductByingPrice obj)
         {

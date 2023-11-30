@@ -3427,7 +3427,25 @@ namespace LaylaERP.BAL
             var dt = new DataTable();
             try
             {
-                string query = "select taglotserialno,minpurchasequantity,purchase_price,salestax,shipping_price,Misc_Costs,cost_price,discount,remark from Product_Purchase_Items where fk_product = '" + id + "'";
+                string query = "select taglotserialno,fk_vendor,minpurchasequantity,purchase_price,salestax,shipping_price,Misc_Costs,cost_price,discount,remark from Product_Purchase_Items where fk_product = '" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(query);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static DataTable GetProductList(string id)
+        {
+            var dt = new DataTable();
+            try
+            {
+                string query = "select taglotserialno,v.name vendor,post_title product,minpurchasequantity,purchase_price,salestax,shipping_price,Misc_Costs,cost_price,ppi.discount,remark " +
+                                "from Product_Purchase_Items ppi" +
+                                " left join wp_vendor v on v.rowid = ppi.fk_vendor" +
+                                " left join wp_posts p on p.Id = ppi.fk_product where fk_product ='" + id + "'";
                 dt = SQLHelper.ExecuteDataTable(query);
             }
             catch (Exception ex)
@@ -3441,7 +3459,7 @@ namespace LaylaERP.BAL
         {
             int result = 0;
             string query = "update Product_Purchase_Items set taglotserialno='" + obj.taglotserialno + "',minpurchasequantity = '" + obj.minpurchasequantity + "',purchase_price = '" + obj.purchase_price + "'," +
-                           "salestax = '" + obj.salestax + "', shipping_price = '" + obj.shipping_price + "',Misc_Costs = '" + obj.Misc_Costs + "',cost_price = '" + obj.cost_price + "',discount = '" + obj.discount + "',remark ='" + obj.remark + "',taxrate = '" + obj.taxrate + "' where fk_product ='" + obj.fk_product + "'";
+                           "salestax = '" + obj.salestax + "', shipping_price = '" + obj.shipping_price + "',Misc_Costs = '" + obj.Misc_Costs + "',cost_price = '" + obj.cost_price + "',discount = '" + obj.discount + "',remark ='" + obj.remark + "',taxrate = '" + obj.taxrate + "',fk_vendor = '" + obj.fk_vendor + "' where fk_product ='" + obj.fk_product + "'";
             string n = SQLHelper.ExecuteNonQuery(query).ToString();
             result = Convert.ToInt32(n);
             return result;

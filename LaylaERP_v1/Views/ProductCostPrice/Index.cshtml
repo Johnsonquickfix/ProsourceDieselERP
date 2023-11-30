@@ -1,10 +1,12 @@
 ﻿
 @{
-    ViewBag.Title = "Purchase Information";
+    ViewBag.Title = "Product Cost Prices ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="~/css/order_style.css?v=1.0.0" rel="stylesheet" />
+
+
+@*<link href="~/css/order_style.css?v=1.0.0" rel="stylesheet" />*@
 <style>
     .ml-auto {
         margin-left: auto;
@@ -36,27 +38,27 @@
                 <div class="box-header">
                     <div class="d-flex proposal-top">
                         <div class="back-to-list">-->
-                            @*<div class="d-flex align-items-center">
-                                    <input type="hidden" id="hfbuyingid" />
-                                    <input type="hidden" id="hfwarehouseid" />
-                                    <label class="control-label ws_nowrap">Select Variation:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                    <select name="ddlproductchild" id="ddlproductchild" class="form-control">
-                                    </select>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <button id="btnRefresh" title="Click here to refresh" data-toggle="tooltip" class="fa-refresh">Refresh</button>
-                                </div>*@
-                            @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
-                        <!--</div>
-                        <div class="edit-proposal-box">-->
-                            @*<div class="proposal-box" style="display:none">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fa fa-edit"></i></label>
-                                </div>
-                                <div class="edit-proposal-texts" style="display:none">
-                                    <h3 class="box-title" id="txtprosutname"></h3>
+            @*<div class="d-flex align-items-center">
+                    <input type="hidden" id="hfbuyingid" />
+                    <input type="hidden" id="hfwarehouseid" />
+                    <label class="control-label ws_nowrap">Select Variation:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <select name="ddlproductchild" id="ddlproductchild" class="form-control">
+                    </select>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button id="btnRefresh" title="Click here to refresh" data-toggle="tooltip" class="fa-refresh">Refresh</button>
+                </div>*@
+            @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
+            <!--</div>
+            <div class="edit-proposal-box">-->
+            @*<div class="proposal-box" style="display:none">
+                    <input type="file" name="file" id="proposal" class="inputfile">
+                    <label for="proposal"><i class="fa fa-edit"></i></label>
+                </div>
+                <div class="edit-proposal-texts" style="display:none">
+                    <h3 class="box-title" id="txtprosutname"></h3>
 
-                                </div>*@
-                        <!--</div>
+                </div>*@
+            <!--</div>
 
                     </div>
                 </div>
@@ -79,14 +81,13 @@
                                         <p id="txtCostprice"></p>
                                     </div>
                                 </div>-->
-
-                                @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Weighted average price</label>
-                                        <div class="col-md-8">
-                                            <p id="txtaverageprice"></p>
-                                        </div>
-                                    </div>*@
-                                <!--<div class="form-group">
+                @*<div class="form-group">
+                        <label class="col-md-4 control-label">Weighted average price</label>
+                        <div class="col-md-8">
+                            <p id="txtaverageprice"></p>
+                        </div>
+                    </div>*@
+                <!--<div class="form-group">
                                     <label class="col-md-4 control-label">Best buying price</label>
                                     <div class="col-md-8">
                                         <p id="txtbestbying"></p>
@@ -101,12 +102,12 @@
                 </div>-->
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
-                        <button id="btnbuying" class="btn btn-danger" title="Click here to see buying price" data-toggle="tooltip" data-placement="right" style="margin-bottom:20px;">Add buying price</button>
+                      @*  <button id="btnbuying" class="btn btn-danger" title="Click here to see buying price" data-toggle="tooltip" data-placement="right" style="margin-bottom:20px;">Add buying price</button>*@
                         <div id="dvbuysing">
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-group d-flex">
-                                        <label class="col-sm-3 control-label">Product</label>
+                                        <label class="col-sm-3 control-label ">Product</label>
                                         <div class="col-sm-9">
                                             @* <input type="text" id="txtvendersku" readonly class="form-control">*@
                                             <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
@@ -119,14 +120,14 @@
                                             <select class="form-control select2" id="ddlVendor" placeholder="Select warehouse" style="width: 100%;"></select>
                                         </div>
                                         @*<label id="lblcopyto" class="col-sm-1 control-label">Copy To</label>
-                                        <div class="col-sm-3 ql-align-right">
-                                            <select id="ddlvendercopy" class="form-control">
-                                                <option value="">Select Vendor</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button id="btncopybuying" class="btn btn-danger" title="Click here to copy to another vendor" data-toggle="tooltip" style="margin-bottom:20px;">Copy To</button>
-                                        </div>*@
+                                            <div class="col-sm-3 ql-align-right">
+                                                <select id="ddlvendercopy" class="form-control">
+                                                    <option value="">Select Vendor</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button id="btncopybuying" class="btn btn-danger" title="Click here to copy to another vendor" data-toggle="tooltip" style="margin-bottom:20px;">Copy To</button>
+                                            </div>*@
                                     </div>
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Tag/Lot/Serial No.</label>
@@ -156,7 +157,7 @@
                                         </div>
 
                                         <div class="col-sm-6">
-                                            <select id="ddltaxrate" class="form-control">
+                                            <select id="ddltaxrate " class="form-control select2">
                                                 <option value="0" selected="">Excl. tax</option>
                                                 <option value="1">Inc. tax</option>
                                             </select>
@@ -208,7 +209,7 @@
                                             <button id="btnsave" title="Click here to add buying price" data-toggle="tooltip" class="btn btn-danger">Update</button>
                                         </div>
                                         <div class="col-sm-1 text-right">
-                                            <button id="btnbuyingcl" title="Click here to cancel" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
+                                            <button id="btnbuyingcl" title="Click here to remove value" data-toggle="tooltip" onclick="removeInput();" class="btn btn-danger">Refresh </button>
                                         </div>
                                     </div>
                                 </div>
@@ -216,21 +217,21 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="row rowbox proposal-row">
+                <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
-                            <div class="box-header">
+                            @*<div class="box-header">
                                 <h2 class="box-title">Vendor prices</h2>
                                 <input type="submit" name="setprice" id="setprice" title="Click here to set default" data-toggle="tooltip" class="btn btn-danger" value="Set default">
-                            </div>-->
-                            @*<div class="box-body">
+                            </div>*@
+                            <div class="box-body">
                                 <div class="form-group d-flex">
                                     <div class="col-sm-12">
                                         <div class="table-responsive" id="divVendor">
                                             <table id="dtdataVendor" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th>#</th>
+                                                        <th>Product</th>
                                                         <th class="text-left">Vendor</th>
                                                         <th>Tag/Lot/Serial No.</th>
                                                         <th>Purchase quantity</th>
@@ -240,12 +241,13 @@
                                                         <th>Misc. Price</th>
                                                         <th>Cost Price</th>
                                                         <th>Discount %</th>
-                                                        <th>Date From</th>
-                                                        <th>Date To</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                        <th>Active/InActive</th>
-                                                        <th>View All Price</th>
+                                                       @* <th>remark </th>*@
+                                                        @*<th>Date From</th>
+                                        <th>Date To</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                        <th>Active/InActive</th>
+                                        <th>View All Price</th>*@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="Vendor_services"></tbody>
@@ -253,605 +255,610 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>*@
-                        <!--</div>
-                    </div>
-                </div>-->
+                            </div>
+                            <!--</div>
             </div>
-            <!--<div class="tab-pane active" style="display:none" id="tab_22">
+        </div>-->
+                        </div>
+                        <!--<div class="tab-pane active" style="display:none" id="tab_22">
 
-            <div class="row rowbox proposal-row">
-                <div class="col-md-6">
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Stock quantity</label>
-                                <div class="col-md-8">
-                                    <p id="txtstockquantity"></p>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Allow backorders</label>
-                                <div class="col-md-8">
-                                    <p id="txtAllowbackorders"></p>
-                                </div>
-                            </div>-->
-            @*<div class="form-group">
-                    <label class="col-md-4 control-label">Shipping Class</label>
-                    <div class="col-md-8">
-                        <p id="txtShippingClass"></p>
-                    </div>
-                </div>*@
-            <!--<div class="form-group">
-                                    <label class="col-md-4 control-label">Tax Class</label>
-                                    <div class="col-md-8">
-                                        <p id="txtTaxClass"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Description</label>
-                                    <div class="col-md-8">
-                                        <p id="txtDescription"></p>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="row rowbox proposal-row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Stock quantity</label>
+                        <div class="col-md-8">
+                            <p id="txtstockquantity"></p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
-                                    <div class="col-md-6">
-                                        <p id="txtDimensions"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Virtual</label>
-                                    <div class="col-md-6">
-                                        <p id="txtVirtual"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Manage Stock</label>
-                                    <div class="col-md-6">
-                                        <p id="txtManage"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="tab-pane" style="display:none" id="tab_23">
-
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">SKU</label>
-                                    <div class="col-md-8">
-                                        <p id="txtSku"></p>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Regular Price($)</label>
-                                    <div class="col-md-8">
-                                        <p id="txtRegularprice"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Sale Price</label>
-                                    <div class="col-md-8">
-                                        <p id="txtsaleprice"></p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>-->
-
-
-
-            <!--<div class="tab-pane" id="tab_24">
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-body">-->
-                                @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Nature of product (material/finished)</label>
-                                        <div class="col-md-8">
-                                            <p id="txtNatureofproduct"></p>
-                                        </div>
-                                    </div>*@
-                                <!--<div class="form-group">
-                                    <label id="lblRegularPrice" class="lblRegularPrice col-md-4 control-label">Regular Price($)</label>
-                                    <div class="col-md-8">
-                                        <p id="txtRegularpricekit"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Sale Price</label>
-                                    <div class="col-md-8">
-                                        <p id="txtsalepricekit"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">List of related products with the product.</h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group d-flex">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive" id="divParent">
-                                            <table id="dtdatakits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">Parent products</th>
-                                                        <th>Label</th>
-                                                        <th>Qty</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="Product_Parent"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">
-                                    List of products/services.
-                                </h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group d-flex">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive" id="divAddservices">
-                                            <table id="dtAddservices" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-
-                                                        <th class="text-left">Child products</th>
-                                                        <th>Label</th>
-                                                        <th>Buying price</th>
-                                                        <th>Sell price</th>
-                                                        <th>Stock</th>
-                                                        <th>Product Type</th>
-                                                        <th>Qty</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="Product_services"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-footer text-right">
-                                <button id="btnservicessave" title="Click here to update quantity " data-toggle="tooltip" data-placement="left" class="btn btn-danger">Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <div class="user-top-section">
-                                    <div class="tablenav top">
-                                        <div class="alignleft actions bulkactions">
-                                            <label class=" control-label ws_nowrap">Keyword filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                            <input type="text" id="txtkeewordfilter" class="form-control">
-                                            <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>-->
-                                            @*<input type="text" id="txtCategoryfilter" class="form-control">*@
-                                            <!--<select name="ddlCategoryfilter" id="ddlCategoryfilter" class="form-control">
-                                            </select>
-                                            <input type="button" id="filtersrchexp" value="Search" class="button" />-->
-                                            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-                                        <!--</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-header">
-                                <h3 class="box-title">
-                                    Search product to add
-                                </h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group d-flex">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive" id="divAddItemFinal">
-                                            <table id="dtdatachildkits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">Child products</th>
-                                                        <th>Label</th>
-                                                        <th>Qty</th>-->
-                                                        @*<th>Increase/Decrease stock</th>*@
-                                                    <!--</tr>
-                                                </thead>
-                                                <tbody id="order_line_items"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="form-group d-flex">
-                            <div class="col-sm-12 text-right">
-
-
-                                <button id="btnaddupdatechild" title="Click here to Add/Update child products" data-toggle="tooltip" data-placement="left" class="btn btn-danger">Add/Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>-->
-            <!--<div class="tab-pane" id="tab_27">
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">List of component with this product</h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group d-flex">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive" id="divcomponentParent">
-                                            <table id="dtcomponentdatakits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">Parent products</th>
-                                                        <th>Label</th>
-                                                        <th>Qty</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="Productcomponent_Parent"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">
-                                    List of products/services that are component(s)
-                                </h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group d-flex">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive" id="divAddcomponentservices">
-                                            <table id="dtAddcomponentservices" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-
-                                                        <th class="text-left">Child products</th>
-                                                        <th>Label</th>
-                                                        <th>Buying price</th>
-                                                        <th>Sell price</th>
-                                                        <th>Stock</th>
-                                                        <th>Qty</th>
-                                                    <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="Productcomponent_services"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-footer text-right">
-                                <button id="btncomponentservicessave" title="Click here to update quantity " data-toggle="tooltip" data-placement="left" class="btn btn-danger">Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <div class="user-top-section">
-                                    <div class="tablenav top">
-                                        <div class="alignleft actions bulkactions">
-                                            <label class=" control-label ws_nowrap">Keyword filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                            <input type="text" id="txtcomponentkeewordfilter" class="form-control">
-                                            <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>-->
-            @*<input type="text" id="txtCategoryfilter" class="form-control">*@
-            <!--<select name="ddlcomponentCategoryfilter" id="ddlcomponentCategoryfilter" class="form-control">
-            </select>
-            <input type="button" id="componentfiltersrchexp" value="Search" class="button" />-->
-            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-            <!--</div>
-                    </div>
-                </div>
-            </div>
-            <div class="box-header">
-                <h3 class="box-title">
-                    Search product to add
-                </h3>
-            </div>
-            <div class="box-body">
-                <div class="form-group d-flex">
-                    <div class="col-sm-12">
-                        <div class="table-responsive" id="divcomponentAddItemFinal">
-                            <table id="dtcomponentdatachildkits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-left">Child products</th>
-                                        <th>Label</th>-->
-            @*<th>Qty</th>*@
-            <!--<th>Add</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="ordercomponent_line_items"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="form-group d-flex">
-                            <div class="col-sm-12 text-right">
-
-
-                                <button id="btncomponentaddupdatechild" title="Click here to Add/Update child products" data-toggle="tooltip" data-placement="left" class="btn btn-danger">Add/Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>-->
-            <!--<div class="tab-pane" id="tab_23">
-
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="control-label ws_nowrap">Warehouse:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                    <select name="ddlwarehouse" id="ddlwarehouse" class="form-control">
-                                        <option value="">Select Warehouse</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <button id="btnWarehouse" title="Click here to add warehouse" data-toggle="tooltip" data-placement="right" class="btn btn-danger">Add</button>
-                                </div>
-                                <div class="form-group">
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h2 class="box-title">Warehouse</h2>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group d-flex">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive" id="divwarehouse">
-                                            <table id="dtdatawarehouser" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">Warehouse</th>
-                                                        <th class="text-left">Product</th>
-                                                        <th>Status</th>
-                                                        <th>Active/InActive</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="warehouse_services"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="tab-pane" id="tab_25">
-                <div class="box box-primary direct-chat">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Notes</h3>
-                    </div>
-                    <!-- /.box-header -->
-                    <!--<div class="box-body" style="">
-                        <ul class="order_notes">
-                        </ul>
-                    </div>-->
-                    <!-- /.box-body -->
-                    <!--<div class="box-footer" style="">
-                        <div class="form-group">
-                            <label>Add note</label>
-                            <textarea type="text" name="order_note" id="add_order_note" class="form-control billnote" rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Note type</label>
-                            <div class="input-group">
-                                <select class="form-control select2 billnote" id="order_note_type" placeholder="Select Status" style="width: 100%;">
-                                    <option value="Private">Private note</option>
-                                    <option value="Public">Public Note</option>
-                                </select>
-                                <span class="input-group-btn"><button type="button" id="btnAddnote" class="btn btn-danger btn-flat billnote">Add</button></span>
-                            </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Allow backorders</label>
+                        <div class="col-md-8">
+                            <p id="txtAllowbackorders"></p>
                         </div>
                     </div>-->
-                    <!-- /.box-footer-->
-                <!--</div>
-                <div class="box box-primary" style="display:none">
+                        @*<div class="form-group">
+            <label class="col-md-4 control-label">Shipping Class</label>
+            <div class="col-md-8">
+                <p id="txtShippingClass"></p>
+            </div>
+        </div>*@
+                        <!--<div class="form-group">
+                            <label class="col-md-4 control-label">Tax Class</label>
+                            <div class="col-md-8">
+                                <p id="txtTaxClass"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Description</label>
+                            <div class="col-md-8">
+                                <p id="txtDescription"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="box box-primary">
                     <div class="box-body">
-                        <div class="form-group mx-0">
-                            <label class="control-label">Private</label>
-                            <textarea id="txtPrivate" class="form-control"></textarea>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
+                            <div class="col-md-6">
+                                <p id="txtDimensions"></p>
+                            </div>
                         </div>
-                        <div class="form-group mx-0">
-                            <label class="control-label">Public</label>
-                            <textarea id="txtPublic" class="form-control"></textarea>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Virtual</label>
+                            <div class="col-md-6">
+                                <p id="txtVirtual"></p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group right">
-                        <button id="btnNotes" title="Click here to add notes" data-toggle="tooltip" class="btn btn-danger">Add</button>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Manage Stock</label>
+                            <div class="col-md-6">
+                                <p id="txtManage"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="tab_26">
-                <div class="box box-primary">-->
-                    @*<div class="box-header">
-                            <div class="d-flex proposal-top">
-                                <div class="edit-proposal-box">
-                                    <div class="proposal-box">
-                                        <input type="file" name="file" id="proposal" class="inputfile">
-                                        <label for="proposal"><i class="fas fa-landmark"></i></label>
-                                    </div>
-                                    <div class="edit-proposal-texts">
-                                        <h3 class="box-title">#101</h3>
-                                        <p>Capital One</p>
-                                        <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
-                                    </div>
-                                </div>
-                                <div class="back-to-list">
-                                    <p><button class="btn btn-danger">Back to list</button></p>
-                                    <p><button class="btn btn-danger">Open</button></p>
-                                </div>
+        </div>
+
+    </div>
+    <div class="tab-pane" style="display:none" id="tab_23">
+
+        <div class="row rowbox proposal-row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">SKU</label>
+                            <div class="col-md-8">
+                                <p id="txtSku"></p>
                             </div>
-                        </div>*@
-                    <!--<div class="box-body">
-                        <table class="table-blue table check-table table-bordered inventory-table fixed-table">
-                            <tbody>
-                                <tr>
-                                    <td class="titlefield">Number of attached files/documents</td>
-                                    <td class="text-left" colspan="3"><p id="txtnumattached"></p></td>
-                                </tr>-->
-                                @*<tr>
-                                        <td class="titlefield">Total size of attached files/documents</td>
-                                        <td class="text-left" colspan="3">0 b.</td>
-                                    </tr>*@
-                            <!--</tbody>
-                        </table>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Regular Price($)</label>
+                            <div class="col-md-8">
+                                <p id="txtRegularprice"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Sale Price</label>
+                            <div class="col-md-8">
+                                <p id="txtsaleprice"></p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <label class="control-label">Attach a new file/document</label>
-                                <div class="col-sm-12">-->
+            </div>
 
-                                    @*@using (Html.BeginForm("FileUploade", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                        {*@
-
-                                    <!--<div class="form-group">
-                                        <div class="col-md-6">
-                                            <input type="file" name="ImageFileproductlink" id="ImageFileproductlink" />
-                                        </div>
-                                        <div class="col-md-6 left">
-                                            <input type="button" class="billinfofo" id="btnuploade" value="Upload" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
-                            @*<div class="box-header">
-                                    <label class="control-label">Link a new file/document</label>
-                                    <div class="col-sm-12">
-                                        <form class="form-inline">
-                                            <div class="form-group align-items-center file-group">
-                                                <input type="text" class="form-control" " placeholder="Url to Link">
-                                                <input type="text" class="form-control" placeholder="Label">
-                                                <button type="submit" class="btn btn-danger">Link</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>*@
-                            <!--<div class="box-body">
-                                <div class="mb-35">
-                                    <label class="control-label">Attached files and documents</label>
-                                    <div class="table-responsive bank-table-wrapper">
-                                        <div class="table-responsive" id="divfileupload">
-                                            <table id="dtfileupload" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">Documents</th>
-                                                        <th>Size</th>
-                                                        <th>Date</th>
-                                                        <th>View</th>
-                                                        <th class="text-right">Delete</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="divfileupload_services"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>-->
-                                @*<div class="mb-35">
-                                        <label class="control-label">Linked files and documents</label>
-                                        <div class="table-responsive bank-table-wrapper">
-                                            <table class="inventory-table table-blue table check-table table-bordered table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Linked</th>
-                                                        <th>Date</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
-                                    </div>*@
-                            @*</div>
+        </div>
+    </div>-->
+                        <!--<div class="tab-pane" id="tab_24">
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-body">-->
+                        @*<div class="form-group">
+            <label class="col-md-4 control-label">Nature of product (material/finished)</label>
+            <div class="col-md-8">
+                <p id="txtNatureofproduct"></p>
+            </div>
+        </div>*@
+                        <!--<div class="form-group">
+                        <label id="lblRegularPrice" class="lblRegularPrice col-md-4 control-label">Regular Price($)</label>
+                        <div class="col-md-8">
+                            <p id="txtRegularpricekit"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Sale Price</label>
+                        <div class="col-md-8">
+                            <p id="txtsalepricekit"></p>
                         </div>
                     </div>
                 </div>
-            </div>-->*@
+            </div>
         </div>
     </div>
+    <div class="row rowbox proposal-row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">List of related products with the product.</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group d-flex">
+                        <div class="col-sm-12">
+                            <div class="table-responsive" id="divParent">
+                                <table id="dtdatakits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left">Parent products</th>
+                                            <th>Label</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Product_Parent"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rowbox proposal-row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        List of products/services.
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group d-flex">
+                        <div class="col-sm-12">
+                            <div class="table-responsive" id="divAddservices">
+                                <table id="dtAddservices" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th class="text-left">Child products</th>
+                                            <th>Label</th>
+                                            <th>Buying price</th>
+                                            <th>Sell price</th>
+                                            <th>Stock</th>
+                                            <th>Product Type</th>
+                                            <th>Qty</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Product_services"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer text-right">
+                    <button id="btnservicessave" title="Click here to update quantity " data-toggle="tooltip" data-placement="left" class="btn btn-danger">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rowbox proposal-row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div class="user-top-section">
+                        <div class="tablenav top">
+                            <div class="alignleft actions bulkactions">
+                                <label class=" control-label ws_nowrap">Keyword filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                <input type="text" id="txtkeewordfilter" class="form-control">
+                                <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>-->
+                        @*<input type="text" id="txtCategoryfilter" class="form-control">*@
+                        <!--<select name="ddlCategoryfilter" id="ddlCategoryfilter" class="form-control">
+    </select>
+    <input type="button" id="filtersrchexp" value="Search" class="button" />-->
+                        @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                        <!--</div>
+            </div>
+        </div>
+    </div>
+    <div class="box-header">
+        <h3 class="box-title">
+            Search product to add
+        </h3>
+    </div>
+    <div class="box-body">
+        <div class="form-group d-flex">
+            <div class="col-sm-12">
+                <div class="table-responsive" id="divAddItemFinal">
+                    <table id="dtdatachildkits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Child products</th>
+                                <th>Label</th>
+                                <th>Qty</th>-->
+                        @*<th>Increase/Decrease stock</th>*@
+                        <!--</tr>
+                                        </thead>
+                                        <tbody id="order_line_items"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="form-group d-flex">
+                    <div class="col-sm-12 text-right">
+
+
+                        <button id="btnaddupdatechild" title="Click here to Add/Update child products" data-toggle="tooltip" data-placement="left" class="btn btn-danger">Add/Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>-->
+                        <!--<div class="tab-pane" id="tab_27">
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">List of component with this product</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group d-flex">
+                            <div class="col-sm-12">
+                                <div class="table-responsive" id="divcomponentParent">
+                                    <table id="dtcomponentdatakits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Parent products</th>
+                                                <th>Label</th>
+                                                <th>Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="Productcomponent_Parent"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            List of products/services that are component(s)
+                        </h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group d-flex">
+                            <div class="col-sm-12">
+                                <div class="table-responsive" id="divAddcomponentservices">
+                                    <table id="dtAddcomponentservices" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="text-left">Child products</th>
+                                                <th>Label</th>
+                                                <th>Buying price</th>
+                                                <th>Sell price</th>
+                                                <th>Stock</th>
+                                                <th>Qty</th>
+                                            <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="Productcomponent_services"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer text-right">
+                        <button id="btncomponentservicessave" title="Click here to update quantity " data-toggle="tooltip" data-placement="left" class="btn btn-danger">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <div class="user-top-section">
+                            <div class="tablenav top">
+                                <div class="alignleft actions bulkactions">
+                                    <label class=" control-label ws_nowrap">Keyword filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                    <input type="text" id="txtcomponentkeewordfilter" class="form-control">
+                                    <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>-->
+                        @*<input type="text" id="txtCategoryfilter" class="form-control">*@
+                        <!--<select name="ddlcomponentCategoryfilter" id="ddlcomponentCategoryfilter" class="form-control">
+    </select>
+    <input type="button" id="componentfiltersrchexp" value="Search" class="button" />-->
+                        @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                        <!--</div>
+            </div>
+        </div>
+    </div>
+    <div class="box-header">
+        <h3 class="box-title">
+            Search product to add
+        </h3>
+    </div>
+    <div class="box-body">
+        <div class="form-group d-flex">
+            <div class="col-sm-12">
+                <div class="table-responsive" id="divcomponentAddItemFinal">
+                    <table id="dtcomponentdatachildkits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Child products</th>
+                                <th>Label</th>-->
+                        @*<th>Qty</th>*@
+                        <!--<th>Add</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ordercomponent_line_items"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="form-group d-flex">
+                    <div class="col-sm-12 text-right">
+
+
+                        <button id="btncomponentaddupdatechild" title="Click here to Add/Update child products" data-toggle="tooltip" data-placement="left" class="btn btn-danger">Add/Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>-->
+                        <!--<div class="tab-pane" id="tab_23">
+
+        <div class="row rowbox proposal-row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="control-label ws_nowrap">Warehouse:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <select name="ddlwarehouse" id="ddlwarehouse" class="form-control">
+                                <option value="">Select Warehouse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <button id="btnWarehouse" title="Click here to add warehouse" data-toggle="tooltip" data-placement="right" class="btn btn-danger">Add</button>
+                        </div>
+                        <div class="form-group">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row rowbox proposal-row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h2 class="box-title">Warehouse</h2>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group d-flex">
+                            <div class="col-sm-12">
+                                <div class="table-responsive" id="divwarehouse">
+                                    <table id="dtdatawarehouser" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Warehouse</th>
+                                                <th class="text-left">Product</th>
+                                                <th>Status</th>
+                                                <th>Active/InActive</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="warehouse_services"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tab-pane" id="tab_25">
+        <div class="box box-primary direct-chat">
+            <div class="box-header with-border">
+                <h3 class="box-title">Notes</h3>
+            </div>
+            <!-- /.box-header -->
+                        <!--<div class="box-body" style="">
+        <ul class="order_notes">
+        </ul>
+    </div>-->
+                        <!-- /.box-body -->
+                        <!--<div class="box-footer" style="">
+        <div class="form-group">
+            <label>Add note</label>
+            <textarea type="text" name="order_note" id="add_order_note" class="form-control billnote" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Note type</label>
+            <div class="input-group">
+                <select class="form-control select2 billnote" id="order_note_type" placeholder="Select Status" style="width: 100%;">
+                    <option value="Private">Private note</option>
+                    <option value="Public">Public Note</option>
+                </select>
+                <span class="input-group-btn"><button type="button" id="btnAddnote" class="btn btn-danger btn-flat billnote">Add</button></span>
+            </div>
+        </div>
+    </div>-->
+                        <!-- /.box-footer-->
+                        <!--</div>
+        <div class="box box-primary" style="display:none">
+            <div class="box-body">
+                <div class="form-group mx-0">
+                    <label class="control-label">Private</label>
+                    <textarea id="txtPrivate" class="form-control"></textarea>
+                </div>
+                <div class="form-group mx-0">
+                    <label class="control-label">Public</label>
+                    <textarea id="txtPublic" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group right">
+                <button id="btnNotes" title="Click here to add notes" data-toggle="tooltip" class="btn btn-danger">Add</button>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="tab_26">
+        <div class="box box-primary">-->
+                        @*<div class="box-header">
+            <div class="d-flex proposal-top">
+                <div class="edit-proposal-box">
+                    <div class="proposal-box">
+                        <input type="file" name="file" id="proposal" class="inputfile">
+                        <label for="proposal"><i class="fas fa-landmark"></i></label>
+                    </div>
+                    <div class="edit-proposal-texts">
+                        <h3 class="box-title">#101</h3>
+                        <p>Capital One</p>
+                        <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
+                    </div>
+                </div>
+                <div class="back-to-list">
+                    <p><button class="btn btn-danger">Back to list</button></p>
+                    <p><button class="btn btn-danger">Open</button></p>
+                </div>
+            </div>
+        </div>*@
+                        <!--<div class="box-body">
+        <table class="table-blue table check-table table-bordered inventory-table fixed-table">
+            <tbody>
+                <tr>
+                    <td class="titlefield">Number of attached files/documents</td>
+                    <td class="text-left" colspan="3"><p id="txtnumattached"></p></td>
+                </tr>-->
+                        @*<tr>
+            <td class="titlefield">Total size of attached files/documents</td>
+            <td class="text-left" colspan="3">0 b.</td>
+        </tr>*@
+                        <!--</tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row rowbox proposal-row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <label class="control-label">Attach a new file/document</label>
+                    <div class="col-sm-12">-->
+                        @*@using (Html.BeginForm("FileUploade", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {*@
+
+                        <!--<div class="form-group">
+                <div class="col-md-6">
+                    <input type="file" name="ImageFileproductlink" id="ImageFileproductlink" />
+                </div>
+                <div class="col-md-6 left">
+                    <input type="button" class="billinfofo" id="btnuploade" value="Upload" />
+                </div>
+            </div>
+        </div>
+    </div>-->
+                        @*<div class="box-header">
+            <label class="control-label">Link a new file/document</label>
+            <div class="col-sm-12">
+                <form class="form-inline">
+                    <div class="form-group align-items-center file-group">
+                        <input type="text" class="form-control" " placeholder="Url to Link">
+                        <input type="text" class="form-control" placeholder="Label">
+                        <button type="submit" class="btn btn-danger">Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>*@
+                        <!--<div class="box-body">
+        <div class="mb-35">
+            <label class="control-label">Attached files and documents</label>
+            <div class="table-responsive bank-table-wrapper">
+                <div class="table-responsive" id="divfileupload">
+                    <table id="dtfileupload" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Documents</th>
+                                <th>Size</th>
+                                <th>Date</th>
+                                <th>View</th>
+                                <th class="text-right">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divfileupload_services"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>-->
+                        @*<div class="mb-35">
+            <label class="control-label">Linked files and documents</label>
+            <div class="table-responsive bank-table-wrapper">
+                <table class="inventory-table table-blue table check-table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Linked</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>*@
+                        @*</div>
+        </div>*@
+                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
 </section>
 <body>
     <img src="">
 </body>
+<!-- Bootstrap 4 -->
+        <script src="/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
 @*<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>*@
 <script src="@Url.Content("~/js/Product/ProductCostPrice.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 @*<script src="@Url.Content("~/js/Product/PriceDetails.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>*@

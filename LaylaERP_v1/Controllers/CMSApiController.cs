@@ -1245,8 +1245,12 @@
                             {
                                 _child = serializer.Deserialize(dr["children"].ToString()) as System.Collections.ArrayList;
                                 double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
-                                obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
-                                obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                                if (parsed.Length > 0)
+                                {
+                                    obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                                    obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                                }
+                                else obj.price = 0;
                             }
                             else
                             {

@@ -81,16 +81,13 @@
 
                     //__criteria
                     container.criteria.forEach((row, iRow) => {
+                        let dr = null;
                         if (iRow <= 0) {
-                            let dr = _d.createElement('div', { class: 'definition-row d-flex', }),
-                                _and = _d.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
+                            let _and = _d.createElement('button', { name: 'add-definition', class: 'btn btn-outline-dark fw-bold' }, '<i class="fa fa-plus"></i> AND');
                             _and.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); this.disabled = true, addDefinition(); });
+                            dr = _d.createElement('div', { class: 'definition-row d-flex', });
                             createCriteria(dr, row.type), $def.appendChild(_d.createElement('div', { class: 'definition__container mb-2', }, _d.createElement('div', { class: 'boxed_style card card-body my-2' }, dr), _and));
-                            $type = dr.querySelector('[name="type"]'), addFilter($type, row);
-                            $statistic = dr.querySelector('.definition-col'), ($statistic) && createFilterRow($statistic, row.statistic);
-                            $operator = dr.querySelector('[name="operator"]'), ($operator && __tags[1000] == row.type) && createOperatorValue($operator, row);
-                            $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
-                            console.log($statistic)
+
 
                             //addDefinition();
                             //groups = [..._d.getElementById("definition").children];
@@ -107,7 +104,8 @@
                             //groups[0].querySelector('[name="type"]').setChoiceByValue('customer-attribute')
                         }
                         else {
-                            let _row = [...$def.children][iContainer],pr = _row.querySelector('.definition__container .card-body'), dr = _d.createElement('div', { class: 'definition-row d-flex', });
+                            let _row = [...$def.children][iContainer],pr = _row.querySelector('.definition__container .card-body');
+                            dr = _d.createElement('div', { class: 'definition-row d-flex', }),
                             createCriteria(dr, row.type),
                                 pr.append(
                                     _d.createElement('div', { class: 'CriterionDivider' },
@@ -115,11 +113,15 @@
                                         _d.createElement('div', { class: 'CriterionDivider__LineContainer flex-grow-1' }, _d.createElement('div'), _d.createElement('div'))
                                     )
                                 ), pr.append(dr);
-                            $type = dr.querySelector('[name="type"]'), addFilter($type, row);
-                            $operator = dr.querySelector('[name="operator"]'), ($operator && __tags[1000] == row.type) && createOperatorValue($operator, row);
-                            $timeFrame = dr.querySelector('[name="timeFrame"]'), $timeFrame && addTimeFrame($timeFrame, row);
-
                         }
+                        $type = dr.querySelector('[name="type"]'), addFilter($type, row);
+                        if (__criteria[1000] == row.type) {
+                            if (row.statistic_filters) { $statistic = dr.querySelector('.definition-col'), $statistic && createFilterRow($statistic, row, false); }
+                            $operator = dr.querySelector('[name="operator"]'), $operator && createOperatorValue($operator, row);
+                        }
+                        $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
+
+
                         //console.log(groups)
                     });
                     //console.log(criteria);

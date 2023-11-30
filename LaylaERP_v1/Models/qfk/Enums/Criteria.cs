@@ -54,7 +54,12 @@
                 pairs.Add(new KeySets { value = "exists", label = "is set" });
                 pairs.Add(new KeySets { value = "nexists", label = "is not set" });
             }
-            else if (CriteriaType.ToLower().Trim().Equals("customer-location") || CriteriaType.ToLower().Trim().Equals("customer-group-membership"))
+            else if (CriteriaType.ToLower().Trim().Equals("customer-location"))
+            {
+                pairs.Add(new KeySets { value = "in", label = "is", selected = true });
+                pairs.Add(new KeySets { value = "nin", label = "is not" });
+            }
+            else if (CriteriaType.ToLower().Trim().Equals("customer-group-membership"))
             {
                 pairs.Add(new KeySets { value = "eq", label = "is", selected = true });
                 pairs.Add(new KeySets { value = "neq", label = "is not" });

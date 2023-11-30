@@ -30,14 +30,10 @@ export class Cache {
         this.fetchDate = new Date(0)
     }
 
-    isCacheExpired() {
-        return (
-            this.fetchDate.getTime() + this.millisecondsToLive < new Date().getTime()
-        )
-    }
-
+    isCacheExpired() { return (this.fetchDate.getTime() + this.millisecondsToLive < new Date().getTime()) }
+    resetCache() { this.fetchDate = new Date(0) }
     async getData() {
-        if (!this.cache) {// || this.isCacheExpired()
+        if (!this.cache || this.isCacheExpired()) {// 
             try {
                 const data = await this.fetchFunction()
                 this.cache = data
@@ -50,24 +46,13 @@ export class Cache {
             return Promise.resolve(this.cache)
         }
     }
-    resetCache() {
-        this.fetchDate = new Date(0)
-    }
 }
 
-function getStatistic() {
-    return fetch('/api/lists/metrics', { method: 'GET' }).then(response => response.json());
-}
-function getProperties() {
-    return fetch('/api/lists/people/property', { method: 'GET' }).then(response => response.json());
-}
-function getGroups() {
-    return fetch('/api/lists/static-group', { method: 'GET' }).then(response => response.json());
-}
-function getDimensions(statistic) {
-    return fetch(`/api/lists/metric/dimensions?statistic=${statistic}`, { method: 'GET' }).then(response => response.json());
-}
-const statisticData = new Cache(getStatistic), propertyData = new Cache(getProperties), groupData = new Cache(getGroups);
+function getStatistic() { return fetch('/api/lists/metrics', { method: 'GET' }).then(response => response.json()); }
+function getProperties() { return fetch('/api/lists/people/property', { method: 'GET' }).then(response => response.json()); }
+function getGroups() { return fetch('/api/lists/static-group', { method: 'GET' }).then(response => response.json()); }
+function getCountry() { return fetch(`/api/lists/countries`, { method: 'GET' }).then(response => response.json()); }
+const statisticData = new Cache(getStatistic), propertyData = new Cache(getProperties), groupData = new Cache(getGroups), countryData = new Cache(getCountry);
 
 export function addDefinition() {
     let d = r.getElementById("definition"), dr = r.createElement('div', { class: 'definition-row d-flex', }),
@@ -105,7 +90,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
         (!o && (o = {}, o.type = v)), d.replaceChildren(d.firstElementChild);
         if (v === __criteria[1000]) {
             let _metric = r.createElement('select', { name: "statistic" }), _operator = r.createElement('select', { name: "operator" }), _timeframe = r.createElement('select', { name: "timeframe" });
-            _metric.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); let v = parseInt(this.value) || 0; createFilterRow(d, v); });
+            _metric.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); o.statistic = parseInt(this.value) || 0, createFilterRow(d, o); });
             _operator.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); createOperatorValue(this); });
             _timeframe.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
 
@@ -136,8 +121,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
                     createLabelCol('Location'), r.createElement('div', { class: "cw-175" }, _operator),
                     createLabelCol('within'), r.createElement('div', { class: "cw-300" }, _region)
                 )
-            ), getOperator(_operator, _region, o);
-            //_criteria = { type: v, operator: _operator.value, region_id: _region.value };
+            ), getOperator(_operator, _region, o); 
         }
         else if (v === __criteria[1003]) {
             let _operator = r.createElement('select', { name: "operator" }), _unit = r.createElement('select', { name: "units" }),
@@ -205,15 +189,14 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             p.appendChild(r.createElement('div', { class: 'InputContainer cw-75', }, r.createElement('input', { name: "timeframe_options.end", class: "form-control", type: "number", value: (o && o.timeframe_options?.end) || 30 })));
             createUnit(p);
             p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'ago')));
-
         }
         else if (v === 'before' || v === 'after') {
-            p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.date", class: "form-control", type: "text", value: (o && o.timeframe_options?.date) || moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+            p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.value", class: "form-control", type: "text", value: (o && new Date(o.timeframe_options?.value).toLocaleDateString()) || moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
         }
         else if (v === 'between-static') {
-            p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.start", class: "form-control", type: "text", value: (o && o.timeframe_options?.date) || moment().subtract(1, "days").format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+            p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.start", class: "form-control", type: "text", value: (o && new Date(o.timeframe_options?.start).toLocaleDateString()) || moment().subtract(1, "days").format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
             p.appendChild(r.createElement('div', { class: 'fix-label', }, r.createElement('span', { class: "h4_title" }, 'and')));
-            p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.end", class: "form-control", type: "text", value: (o && o.timeframe_options?.date) || moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
+            p.appendChild(r.createElement('div', { class: 'InputContainer cw-125', }, r.createElement('input', { name: "timeframe_options.end", class: "form-control", type: "text", value: (o && new Date(o.timeframe_options?.end).toLocaleDateString()) || moment().format('MM/DD/YYYY'), placeholder: "mm/dd/yyyy" })));
         }
     },
     removeFilterRow = function (t) {
@@ -246,16 +229,16 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
         fetch(`/api/lists/criteria/operator/${(o && o.type)}`, requestOptions).then(response => response.json())
             .then(result => {
                 if (result.operators && $_operator_ctr) {
-                    $_operator_ctr.setChoices(result.operators.map(row => { return { value: row.value, label: row.label, selected: row.value == (o && o.operator) || row.selected ? true : false } }));
+                    $_operator_ctr.setChoices(result.operators.map(row => { return { value: row.value, label: row.label, selected: (o.operator ? row.value == o.operator : row.selected) } }));
                 }
                 if (result.timeframes && $_timeframe_ctr) {
-                    $_timeframe_ctr.setChoices(result.timeframes.map(row => { return { value: row.value, label: row.label, selected: row.value == (o && o.timeframe) || row.selected ? true : false } }));
+                    $_timeframe_ctr.setChoices(result.timeframes.map(row => { return { value: row.value, label: row.label, selected: (o.timeframe ? row.value == o.timeframe : row.selected) } }));
                 }
                 if (result.region && $_timeframe_ctr) {
-                    $_timeframe_ctr.setChoices(result.region.map(row => { return { value: row.value, label: row.label, selected: row.value == (o && o.region_id) || row.selected ? true : false } }));
+                    $_timeframe_ctr.setChoices(result.region.map(row => { return { value: row.value, label: row.label, selected: (o.region_id ? row.value == o.region_id : row.selected) } }));
                 }
                 if (result.unit && $_timeframe_ctr) {
-                    $_timeframe_ctr.setChoices(result.unit.map(row => { return { value: row.value, label: row.label, selected: row.value == (o && o.unit) || row.selected ? true : false } }));
+                    $_timeframe_ctr.setChoices(result.unit.map(row => { return { value: row.value, label: row.label, selected: (o.unit ? row.value == o.unit : row.selected) } }));
                 }
                 //(result.operators && $_operator_ctr) && $_operator_ctr.setChoices(result.operators),
                 //    (result.timeframes && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.timeframes),
@@ -296,84 +279,31 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             new Choices(a, { allowHTML: true, searchEnabled: false, itemSelectText: '', shouldSort: false }).setChoices(u.map(row => { return { value: row.value, label: row.label, selected: row.value == setValue || row.selected ? true : false } }));
         })(s);
     },
-    createFilterRow = function (e, v) {
+    createFilterRow = function (e, o, showButton = true) {
         if (e.childNodes.length > 2) e.removeChild(e.lastChild);
         let b = r.createElement('button', { name: "add-filter-row", class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> Add Filter'),
             fr = r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" });
         fr.replaceChildren(b), e.appendChild(fr);
-        b.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(), createFilterRowData(fr, v) });
-        //b.addEventListener("click", function (evt) {
-        //    evt.preventDefault(), evt.stopPropagation();
-        //    let div = this.parentNode, s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
-        //    div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
-        //    div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
-        //    div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
-        //    (function (a, v) {
-        //        const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
-        //            .setChoices(async () => {
-        //                try {
-        //                    return await fetch(`/api/lists/metric/dimensions?statistic=${v}`, { method: 'GET' }).then(response => response.json())
-        //                        .then(function (data) {
-        //                            return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type }; }) : [];
-        //                        });
-        //                } catch (err) { console.error(err); }
-        //            });
-        //        a.addEventListener("change", function (evt) {
-        //            evt.preventDefault(), evt.stopPropagation();
-        //            let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
-        //            while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
-        //            if (_type === 'list') {
-        //                let sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" });
-        //                p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-        //                (function (a, v1, v2) {
-        //                    new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
-        //                        .setChoices(async () => {
-        //                            try {
-        //                                return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
-        //                                    .then(function (data) {
-        //                                        return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
-        //                                    });
-        //                            } catch (err) { console.error(err); }
-        //                        });
-        //                })(sv, v, this.value);
-        //            }
-        //            else {
-        //                let sv = r.createElement('select', { name: "statistic_filters.value" });
-        //                p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-        //                (function (a, v1, v2) {
-        //                    new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
-        //                        .setChoices(async () => {
-        //                            try {
-        //                                return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
-        //                                    .then(function (data) {
-        //                                        return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
-        //                                    });
-        //                            } catch (err) { console.error(err); }
-        //                        });
-        //                })(sv, v, this.value);
-        //            }
-        //        });
-        //    })(s, v);
-        //});
+        showButton ? b.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(), createFilterRowData(fr, o) }) : createFilterRowData(fr, o);
     },
-    createFilterRowData = function (div, v) {
+    createFilterRowData = function (div, o) {
         const btn_cl = r.createElement('a', { class: "btn fw-bold" }, 'X');
-        btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(div.parentNode, v); });
+        btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(div.parentNode, o); });
         let s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
         div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
         div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
         div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
-        (function (a, v) {
-            const dimensions = new Choices(a, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false })
-                .setChoices(async () => {
-                    try {
-                        return await fetch(`/api/lists/metric/dimensions?statistic=${v}`, { method: 'GET' }).then(response => response.json())
-                            .then(function (data) {
-                                return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type }; }) : [];
-                            });
-                    } catch (err) { console.error(err); }
-                });
-            a.addEventListener("change", function (evt) {
+        (function (e, o) {
+            const dimensions = new Choices(e, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false });
+            dimensions.setChoices(async () => {
+                try {
+                    return await fetch(`/api/lists/metric/dimensions?statistic=${o.statistic}`, { method: 'GET' }).then(response => response.json())
+                        .then(function (data) {
+                            return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type, selected: row.meta_key == (o.statistic_filters && o.statistic_filters.dimension) ? true : false }; }) : [];
+                        });
+                } catch (err) { console.error(err); }
+            });
+            e.addEventListener("change", function (evt) {
                 evt.preventDefault(), evt.stopPropagation();
                 let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
                 while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
@@ -408,7 +338,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
                     })(sv, v, this.value);
                 }
             });
-        })(s, v);
+        })(s, o);
     },
     createGroup = function (e) {
         let s = r.createElement('select', { name: "group" });
@@ -456,18 +386,17 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
     createLabelCol = function (val) {
         return r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, val));
     },
-    createCountryCol = function (e) {
+    createCountryCol = function (e, o) {
         let s = r.createElement('select', { name: "country_code" });
         e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
-        (function (s) {
-            new Choices(s, { allowHTML: false, placeholder: true, placeholderValue: 'Choose a country...', itemSelectText: '', shouldSort: false })
+        (function (e, o) {
+            new Choices(e, { allowHTML: false, placeholder: true, placeholderValue: 'Choose a country...', itemSelectText: '', shouldSort: false })
                 .setChoices(async () => {
                     try {
-                        return await fetch('/api/lists/countries', { method: 'GET' }).then(response => response.json())
-                            .then(function (data) { return data ? data.map(function (row) { return { value: row.code, label: row.name }; }) : []; })
+                        return await countryData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.code, label: row.name }; }) : []; })
                     } catch (err) { console.error(err); }
                 });
-        })(s);
+        })(s, o);
     },
     postDetails = function (t) {
         let s = !0, _o = { list_id: parseInt($(t).data('id')) || 0, list_name: $('#txtlist-name').val(), group_type_id: 2, definition: [] };

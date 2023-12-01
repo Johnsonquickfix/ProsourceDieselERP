@@ -60,10 +60,10 @@
                 var json_data = JsonConvert.DeserializeObject<JObject>(ProfilesRepository.GroupAdd("get", om.login_company_id, string.Empty, 0, JsonConvert.SerializeObject(request)).ToString());
                 if (json_data["status"] != null)
                 {
-                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
-                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { status = 401, message = json_data["message"] });
+                    else return Content(HttpStatusCode.BadRequest, new { status = 400, message = json_data["message"] });
                 }
-                else return Ok(json_data);
+                else return Content(HttpStatusCode.OK, new { status = 200, message = "Success!", data = json_data });
             }
             catch (Exception ex)
             {
@@ -327,7 +327,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
 
-                var value = ProfilesRepository.GroupCriteriaMaster("dimensions", 1, statistic, string.Empty);
+                var value = ProfilesRepository.GroupCriteriaMaster("dimensions", 1, statistic, string.Empty, string.Empty);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }
@@ -337,15 +337,15 @@
             }
         }
 
-        [HttpGet, Route("metric/dimension-values")]
-        public IHttpActionResult dimensions(int statistic, string dimension)
+        [HttpPost, Route("metric/dimension-values")]
+        public IHttpActionResult DimensionValues(Criterion request)
         {
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
 
-                var value = ProfilesRepository.GroupCriteriaMaster("dimension-values", 1, statistic, dimension);
+                var value = ProfilesRepository.GroupCriteriaMaster("dimension-values", 1, request.statistic.Value, request.statisticFilters.dimension, JsonConvert.SerializeObject(request.statisticFilters.value));
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }
@@ -363,7 +363,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
 
-                var value = ProfilesRepository.GroupCriteriaMaster("people-property", 1, 0, string.Empty);
+                var value = ProfilesRepository.GroupCriteriaMaster("people-property", 1, 0, string.Empty, string.Empty);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }
@@ -381,7 +381,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
 
-                var value = ProfilesRepository.GroupCriteriaMaster("people-property-values", 1, 0, property);
+                var value = ProfilesRepository.GroupCriteriaMaster("people-property-values", 1, 0, property, string.Empty);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }

@@ -1036,6 +1036,7 @@
     <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
+    <Content Include="js\http\index.js" />
     <Content Include="js\ImportOrderinvoice\CompareSalesPO.js" />
     <Content Include="js\ImportOrderinvoice\ImportBankcheckstatement.js" />
     <Content Include="js\ImportOrderinvoice\orderinvoice.js" />
@@ -2003,6 +2004,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="js\http\index.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

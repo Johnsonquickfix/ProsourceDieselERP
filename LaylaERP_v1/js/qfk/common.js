@@ -75,6 +75,13 @@ const isCheckbox = (element) => element.type === 'checkbox';
 const isMultiSelect = (element) => element.options && element.multiple;
 
 /**
+ * Checks if an input is a `select` with the `multiple` attribute.
+ * @param  {Element} element  the element to check
+ * @return {Boolean}          true if the element is a multiselect, false if not
+ */
+const isSelect = (element) => element.options && element.single;
+
+/**
  * Retrieves the selected options from a multi-select as an array.
  * @param  {HTMLOptionsCollection} options  the options for the select
  * @return {Array}                          an array of selected option values

@@ -1,4 +1,5 @@
-﻿var r = r || document;
+﻿import Http from '../../http/index.js';
+var r = r || document;
 const segments = function (r) {
     "use strict";
     function useState(obj) {
@@ -48,11 +49,15 @@ export class Cache {
     }
 }
 
-function getStatistic() { return fetch('/api/lists/metrics', { method: 'GET' }).then(response => response.json()); }
-function getProperties() { return fetch('/api/lists/people/property', { method: 'GET' }).then(response => response.json()); }
-function getGroups() { return fetch('/api/lists/static-group', { method: 'GET' }).then(response => response.json()); }
-function getCountry() { return fetch(`/api/lists/countries`, { method: 'GET' }).then(response => response.json()); }
-const statisticData = new Cache(getStatistic), propertyData = new Cache(getProperties), groupData = new Cache(getGroups), countryData = new Cache(getCountry);
+function getCriteria() { return Http.get('/api/lists/criteria/type').then(response => response.json()); }
+function getStatistic() { return Http.get('/api/lists/metrics').then(response => response.json()); }
+function getProperties() { return Http.get('/api/lists/people/property').then(response => response.json()); }
+function getGroups() { return Http.get('/api/lists/static-group').then(response => response.json()); }
+function getCountry() { return Http.get(`/api/lists/countries`).then(response => response.json()); }
+function getDimensions(_statistic) { return Http.get(`/api/lists/metric/dimensions`, { params: { statistic: _statistic } }).then(response => response.json()); }
+function getDimensionsValues(_statistic, _dimension, value) { return Http.post(`/api/lists/metric/dimension-values`, { params: {}, body: { statistic: _statistic, statistic_filters: { dimension: _dimension, value: value } } }).then(response => response.json()); }
+
+const criteriaData = new Cache(getCriteria), statisticData = new Cache(getStatistic), propertyData = new Cache(getProperties), groupData = new Cache(getGroups), countryData = new Cache(getCountry);
 
 export function addDefinition() {
     let d = r.getElementById("definition"), dr = r.createElement('div', { class: 'definition-row d-flex', }),
@@ -121,7 +126,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
                     createLabelCol('Location'), r.createElement('div', { class: "cw-175" }, _operator),
                     createLabelCol('within'), r.createElement('div', { class: "cw-300" }, _region)
                 )
-            ), getOperator(_operator, _region, o); 
+            ), getOperator(_operator, _region, o);
         }
         else if (v === __criteria[1003]) {
             let _operator = r.createElement('select', { name: "operator" }), _unit = r.createElement('select', { name: "units" }),
@@ -257,11 +262,9 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             const _ = new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a condition…', itemSelectText: '', shouldSort: false });
             _.setChoices(async () => {
                 try {
-                    return await fetch('/api/lists/criteria/type', { method: 'GET' }).then(response => response.json())
-                        .then(function (data) { return data ? data.map(function (row) { return { value: row.value, label: row.label, selected: row.value == setValue ? true : false } }) : []; });
+                    return await criteriaData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.value, label: row.label, selected: row.value == setValue ? true : false } }) : []; });
                 } catch (err) { console.error(err); }
-            });//, _.setChoiceByValue(setVal);
-            //if (setValue != '') { console.log(setValue); _._triggerChange('change', s); }
+            });
         })(s, setValue);
     },
     createOperatorValue = function (e, o) {
@@ -288,57 +291,56 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
     },
     createFilterRowData = function (div, o) {
         const btn_cl = r.createElement('a', { class: "btn fw-bold" }, 'X');
-        btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(div.parentNode, o); });
-        let s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
-        div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
+        btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); createFilterRow(div.parentNode, { type: o.type, statistic: o.statistic }); });
+        let $s = r.createElement('select', { name: "statistic_filters.dimension" }), i = r.createElement('input', { "type": 'text', name: "statistic_filters.value", class: "form-control", disabled: 'disabled' });
+        div.replaceChildren(createLabelCol('where')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, $s));
+        div.appendChild(r.createElement('input', { type: "hidden", name: "statistic_filters.operator", value: 'eq' }), r.createElement('input', { type: "hidden", name: "statistic_filters.dimension_type", value: 'string' }));
         div.appendChild(createLabelCol('equals')), div.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, i));
         div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
-        (function (e, o) {
-            const dimensions = new Choices(e, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false });
-            dimensions.setChoices(async () => {
+        //bind dimensions
+        const dimensions = new Choices($s, { allowHTML: false, placeholder: true, placeholderValue: 'Choose property', itemSelectText: '', shouldSort: false });
+        dimensions.setChoices(async () => {
+            try {
+                return await getDimensions(o.statistic).then(function (data) {
+                    return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type, selected: row.meta_key == (o.statistic_filters && o.statistic_filters.dimension) ? true : false }; }) : [];
+                });
+            } catch (err) { console.error(err); }
+        });
+        const set = ($e, dimension_type, dimension, value) => {
+            console.log($e, dimension_type, dimension, value)
+            //let $sv = null, config = {}, p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
+            let $sv = null, config = {}, p = $e.closest('.InputContainer');
+            while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
+            if (dimension_type === 'list') {
+                $sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" }),
+                    config = { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } };
+                p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, $sv));
+                p.parentNode.appendChild(r.createElement('input', { type: "hidden", name: "statistic_filters.operator", value: 'contains' }));
+                p.parentNode.appendChild(r.createElement('input', { type: "hidden", name: "statistic_filters.dimension_type", value: 'list' }));
+            }
+            else {
+                $sv = r.createElement('select', { name: "statistic_filters.value" }),
+                    config = { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } };
+                p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, $sv));
+                p.parentNode.appendChild(r.createElement('input', { type: "hidden", name: "statistic_filters.operator", value: 'eq' }));
+                p.parentNode.appendChild(r.createElement('input', { type: "hidden", name: "statistic_filters.dimension_type", value: dimension_type }));
+            }
+            p.parentNode.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
+            let _ = new Choices($sv, config).setChoices(async () => {
                 try {
-                    return await fetch(`/api/lists/metric/dimensions?statistic=${o.statistic}`, { method: 'GET' }).then(response => response.json())
-                        .then(function (data) {
-                            return data ? data.map(function (row) { return { value: row.meta_key, label: row.meta_key, customProperties: row.meta_type, selected: row.meta_key == (o.statistic_filters && o.statistic_filters.dimension) ? true : false }; }) : [];
-                        });
+                    return await getDimensionsValues(o.statistic, dimension, value).then(function (data) {
+                        return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value, selected: row.selected }; }) : [];
+                    });
                 } catch (err) { console.error(err); }
             });
-            e.addEventListener("change", function (evt) {
-                evt.preventDefault(), evt.stopPropagation();
-                let p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
-                while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
-                if (_type === 'list') {
-                    let sv = r.createElement('select', { multiple: 'multiple', name: "statistic_filters.value" });
-                    p.parentNode.appendChild(createLabelCol('contains')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-                    (function (a, v1, v2) {
-                        new Choices(a, { allowHTML: false, placeholder: true, delimiter: ',', editItems: true, maxItemCount: 5, removeItemButton: true, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
-                            .setChoices(async () => {
-                                try {
-                                    return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
-                                        .then(function (data) {
-                                            return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
-                                        });
-                                } catch (err) { console.error(err); }
-                            });
-                    })(sv, v, this.value);
-                }
-                else {
-                    let sv = r.createElement('select', { name: "statistic_filters.value" });
-                    p.parentNode.appendChild(createLabelCol('equals')), p.parentNode.appendChild(r.createElement('div', { class: "InputContainer cw-400" }, sv));
-                    (function (a, v1, v2) {
-                        new Choices(a, { allowHTML: false, shouldSort: false, itemSelectText: '', classNames: { containerOuter: 'choices cw-400', } })
-                            .setChoices(async () => {
-                                try {
-                                    return await fetch(`/api/lists/metric/dimension-values?statistic=${v1}&dimension=${v2}`, { method: 'GET' }).then(response => response.json())
-                                        .then(function (data) {
-                                            return data ? data.map(function (row) { return { value: row.meta_value, label: row.meta_value }; }) : [];
-                                        });
-                                } catch (err) { console.error(err); }
-                            });
-                    })(sv, v, this.value);
-                }
-            });
-        })(s, o);
+        }
+        $s.addEventListener("change", function (evt) {
+            evt.preventDefault(), evt.stopPropagation();
+            let _type = evt.target[0]?.getAttribute('data-custom-properties');
+            set($s, _type, this.value, []);
+        });
+        //console.log(!showButton && o.statistic_filters)
+        if (o.statistic_filters) set($s, o.statistic_filters.dimension_type, o.statistic_filters.dimension, o.statistic_filters.value);
     },
     createGroup = function (e) {
         let s = r.createElement('select', { name: "group" });
@@ -403,10 +405,10 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
         document.querySelectorAll(__tags.t).forEach(e => {
             let c = { criteria: [] };
             e.querySelectorAll(__tags.r).forEach(r => {
-                let JsonVar = {}, inputElements = r.querySelectorAll('input[type="number"],input[type="text"], select, checkbox, textarea');
+                let JsonVar = {}, inputElements = r.querySelectorAll('input[type="number"],input[type="text"],input[type="hidden"], select, checkbox, textarea');
                 inputElements.forEach(r => {
                     if (isCheckbox(r)) { stringToObj(r.name, r.value, JsonVar); }
-                    else if (isMultiSelect(r)) { stringToObj(r.name, getSelectValues(r), JsonVar); }
+                    else if (isSelect(r) || isMultiSelect(r)) { stringToObj(r.name, getSelectValues(r), JsonVar); }
                     else { stringToObj(r.name, r.value, JsonVar); }
                 });
                 c.criteria.push(JsonVar);
@@ -415,7 +417,8 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
         });
         if (s) {
             t.disabled = true;
-            fetch(`/api/lists`, { method: 'POST', body: JSON.stringify(_o), headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(response => response.json())
+            Http.post(`/api/lists`, { body: _o }).then(response => response.json())
+                //fetch(`/api/lists`, { method: 'POST', body: JSON.stringify(_o), headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(response => response.json())
                 .then(function (result) {
                     t.disabled = false;
                     if (parseInt(result.list_id) > 0) window.location = window.location.origin + `/list/${result.list_id}/members`;

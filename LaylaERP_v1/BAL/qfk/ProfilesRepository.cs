@@ -137,9 +137,8 @@
             return dt;
         }
 
-        public static string GroupCriteriaMaster(string flag, long company_id, long metric_id, string key)
+        public static string GroupCriteriaMaster(string flag, long company_id, long metric_id, string key, string json_data)
         {
-            string json_data = string.Empty;
             try
             {
                 SqlParameter[] parameters =
@@ -147,7 +146,8 @@
                     new SqlParameter("@flag",flag),
                     new SqlParameter("@company_id", company_id),
                     metric_id > 0 ? new SqlParameter("@metric_id", metric_id) : new SqlParameter("@metric_id", DBNull.Value),
-                    new SqlParameter("@key", key)
+                    new SqlParameter("@key", key),
+                    new SqlParameter("@json_data", json_data)
                 };
                 json_data = SQLHelper.ExecuteReaderReturnJSON("qfk_group_criteria", parameters).ToString();
             }

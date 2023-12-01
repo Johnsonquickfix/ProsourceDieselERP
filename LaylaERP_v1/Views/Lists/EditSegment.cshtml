@@ -47,14 +47,14 @@
             <div class="row">
                 <div class="col-lg-12 text-end">
                     <a data-add="true" href="~/lists/index" class="btn btn-primary">Cancel</a>
-                    @*@if (ViewBag.mode == "Edit")
-                        {
-                            <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="@ViewBag.id">Create Segment</button>
-                        }
-                        else if (ViewBag.mode == "Clone")
-                        {
-                            <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="0">Clone Segment</button>
-                        }*@
+                    @if (ViewBag.mode == "Edit")
+                    {
+                        <button id="create-Segments" class="btn btn-primary" data-id="@ViewBag.id">Update Segment</button>
+                    }
+                    else if (ViewBag.mode == "Clone")
+                    {
+                        <button id="create-Segments" class="btn btn-primary" data-id="0">Clone Segment</button>
+                    }
                 </div>
             </div>
         </div>
@@ -63,22 +63,18 @@
 </div>
 <script src="~/js/qfk/common.js"></script>
 <script type="module">
-    import segments, { __criteria, __tags, createCriteria, addFilter, createFilterRow, createOperatorValue, addTimeFrame } from '@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))';
-    //segments();
-
-
+    import Http from '@Url.Content("~/js/http/index.js")';
+    import segments, { __criteria, __tags, addDefinition, createCriteria, addFilter, createFilterRow, createOperatorValue, addTimeFrame, postDetails } from '@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))';
 
     let _d = document, loadData = function () {
-        //console.log('start');
-        //console.log('end');
-        fetch(`/api/lists/@ViewBag.id`, { method: 'GET', headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(response => response.json())
+        Http.get(`/api/lists/@ViewBag.id`).then(response => response.json())
             .then(function (result) {
                 console.log(result);
-                _d.getElementById("txtlist-name").value = result.list_name;
-                let $def = _d.getElementById("definition"), groups = [], $type = null, $statistic = null, $operator = null, $timeFrame = null;
+                if (result.status != 200) { return swal('Error!', result.message, 'error'); }
+                _d.getElementById("txtlist-name").value = result.data.list_name;
+                let $def = _d.getElementById("definition"), $type = null, $statistic = null, $operator = null, $timeFrame = null;
                 _d.getElementById("definition").replaceChildren();
-                result.definition.forEach((container, iContainer) => {
-
+                result.data.definition.forEach((container, iContainer) => {
                     //__criteria
                     container.criteria.forEach((row, iRow) => {
                         let dr = null;
@@ -116,22 +112,22 @@
                         }
                         $type = dr.querySelector('[name="type"]'), addFilter($type, row);
                         if (__criteria[1000] == row.type) {
-                            if (row.statistic_filters) { $statistic = dr.querySelector('.definition-col'), $statistic && createFilterRow($statistic, row, false); }
+                            $statistic = dr.querySelector('.definition-col'), $statistic && createFilterRow($statistic, row, !row.statistic_filters);
+                            if (row.statistic_filters) {  $statistic && createFilterRow($statistic, row, false); }
                             $operator = dr.querySelector('[name="operator"]'), $operator && createOperatorValue($operator, row);
                         }
                         $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
-
-
-                        //console.log(groups)
                     });
-                    //console.log(criteria);
                 });
                 //t.disabled = false;
                 //if (parseInt(result.list_id) > 0) window.location = window.location.origin + `/list/${result.list_id}/members`;
                 //else swal('Error!', result.message, 'error');
             }).catch(error => {
-                console.log('error', error); //swal('Error!', error, 'error');
+                console.log('error', error),swal('Error!', error.message, 'error');
             });
     };
     var load = function () { loadData(); }();
+    _d.querySelector('#create-Segments')?.addEventListener("click", function (evt) {
+        evt.preventDefault(), evt.stopPropagation(); postDetails(this);
+    });
 </script>

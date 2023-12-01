@@ -43,7 +43,7 @@ $(document).ready(function () {
 });
 
     $("#btnsave").click(function () {
-        debugger;
+        //debugger;
         var product = $("#ddlProduct").val();
         var fk_vendor = $("#ddlVendor").val();
         var taglotserialno      =  $("#txttaglotno").val();
@@ -75,7 +75,7 @@ $(document).ready(function () {
                   
                     if (result == '1')
                     {
-                        swal('Success', 'Product Update Successfully', 'success').then(function () { swal.close();});
+                        swal('Success', 'Product Update Successfully', 'success').then(function () { swal.close(); CostPriceList(); });
                     }
                 }
 
@@ -86,8 +86,8 @@ $(document).ready(function () {
 
 function removeInput() {
     //debugger;
-    $("#ddlProduct").val('0').trigger('change');
-    $("#ddlVendor").val('-1').trigger('change');
+   // $("#ddlProduct").val('0').trigger('change');
+   // $("#ddlVendor").val('-1').trigger('change');
      $("#txttaglotno").val('');
      $("#txtminpurchasequantity").val('');
      $("#txtcurrencyconversionrate").val('');

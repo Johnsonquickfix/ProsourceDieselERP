@@ -1971,6 +1971,7 @@
     <Content Include="Views\Setting\BulkProductwarehouse.cshtml" />
     <Content Include="Views\Reports\QuarterlyComparisonOrderChart.cshtml" />
     <Content Include="Views\ProductCostPrice\Index.cshtml" />
+    <Content Include="Views\Setup\MerchantFee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -115,8 +115,9 @@
                             $statistic = dr.querySelector('.definition-col'), $statistic && createFilterRow($statistic, row, !row.statistic_filters);
                             if (row.statistic_filters) {  $statistic && createFilterRow($statistic, row, false); }
                             $operator = dr.querySelector('[name="operator"]'), $operator && createOperatorValue($operator, row);
+                            $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
                         }
-                        $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
+                        
                     });
                 });
                 //t.disabled = false;

@@ -76,7 +76,7 @@
         [JsonProperty("units", NullValueHandling = NullValueHandling.Ignore)]
         public string units { get; set; }
 
-        [JsonProperty("countryCode", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("country_code", NullValueHandling = NullValueHandling.Ignore)]
         public string countryCode { get; set; }
 
         [JsonProperty("distance", NullValueHandling = NullValueHandling.Ignore)]

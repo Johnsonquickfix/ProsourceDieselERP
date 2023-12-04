@@ -373,15 +373,16 @@
             }
         }
 
-        [HttpGet, Route("people/property/values")]
-        public IHttpActionResult PeoplePropertyValues(string property)
+        [HttpPost, Route("people/property/values")]
+        public IHttpActionResult PeoplePropertyValues(Criterion request)
         {
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
 
-                var value = ProfilesRepository.GroupCriteriaMaster("people-property-values", 1, 0, property, string.Empty);
+                var value = ProfilesRepository.GroupCriteriaMaster("people-property-values", 1, 0, request.key, request.value?.ToString());
+                //var value = ProfilesRepository.GroupCriteriaMaster("people-property-values", 1, 0, property, string.Empty);
 
                 return Ok(JsonConvert.DeserializeObject<JArray>(value));
             }

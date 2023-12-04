@@ -52,6 +52,7 @@ export class Cache {
 function getCriteria() { return Http.get('/api/lists/criteria/type').then(response => response.json()); }
 function getStatistic() { return Http.get('/api/lists/metrics').then(response => response.json()); }
 function getProperties() { return Http.get('/api/lists/people/property').then(response => response.json()); }
+function getPropertyValue(_key, _value) { return Http.post('/api/lists/people/property/values', { params: {},body: { key: _key, value: _value } }).then(response => response.json()); }
 function getGroups() { return Http.get('/api/lists/static-group').then(response => response.json()); }
 function getCountry() { return Http.get(`/api/lists/countries`).then(response => response.json()); }
 function getDimensions(_statistic) { return Http.get(`/api/lists/metric/dimensions`, { params: { statistic: _statistic } }).then(response => response.json()); }
@@ -108,16 +109,11 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             ), getMetrics(_metric, (o && o.statistic)), getOperator(_operator, _timeframe, o);
         }
         else if (v === __criteria[1001]) {
-            let _key = r.createElement('select', { name: "key" }), _operator = r.createElement('select', { name: "operator" }), _value = r.createElement('input', { "type": 'text', name: "value", class: "form-control", disabled: 'disabled' }),
-                dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
-            _key.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); let v = parseInt(this.value) || 0; createProfilePropertyValue(this); });
+            let _operator = r.createElement('select', { name: "operator" }), dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
             _operator.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); createOperatorValue(this); });
 
-            createProfileProperty(dr, (o && o.key)),
-                dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
-                dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _value));
-            d.appendChild(dr), getOperator(_operator, null, o);
-            //_criteria = { type: v, key_type: 'string', operator: _operator.value, key: '', value: '' };
+            createProfileProperty(dr, o), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator));
+            createProfilePropertyValue(dr, o), d.appendChild(dr), getOperator(_operator, null, o);
         }
         else if (v === __criteria[1002]) {
             let _operator = r.createElement('select', { name: "operator" }), _region = r.createElement('select', { name: "region_id" });
@@ -132,35 +128,44 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             let _operator = r.createElement('select', { name: "operator" }), _unit = r.createElement('select', { name: "units" }),
                 dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
             dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _operator)),
-                dr.appendChild(createLabelCol('within')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "distance", class: "form-control", type: "number" }))),
+                dr.appendChild(createLabelCol('within')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "distance", class: "form-control", type: "number", value: o.distance }))),
                 dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, _unit)),
-                dr.appendChild(createLabelCol('of')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, r.createElement('input', { name: "postal_code", class: "form-control", type: "text", placeholder: "Postal/Zip Code", maxlength: 10 }))),
-                dr.appendChild(createLabelCol('in')), createCountryCol(dr);
+                dr.appendChild(createLabelCol('of')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-175" }, r.createElement('input', { name: "postal_code", class: "form-control", type: "text", placeholder: "Postal/Zip Code", maxlength: 10, value: o.postal_code }))),
+                dr.appendChild(createLabelCol('in')), createCountryCol(dr, o);
             d.appendChild(dr), getOperator(_operator, _unit, o);
             //_criteria = { type: v, operator: _operator.value, units: _unit.value, country_code: '', distance: 1, postal_code: '' };
         }
         else if (v === __criteria[1004]) {
             let _operator = r.createElement('select', { name: "operator" }), dr = r.createElement('div', { class: 'FilterRowContainer d-flex mb-2', });
             dr.appendChild(createLabelCol('Person')), dr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, _operator));
-            dr.appendChild(createLabelCol('in')), createGroup(dr);
+            dr.appendChild(createLabelCol('in')), createGroup(dr, o);
             d.appendChild(dr), getOperator(_operator, null, o);
             // Create date filter
-            const btn_cl = r.createElement('a', { class: "btn fw-bold" }, 'X');
-            btn_cl.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(); evt.target.closest('div.FilterRowContainer').remove(), _dateFilter(d); });
-            const _dateFilter = function (e) {
-                let btn = r.createElement('button', { class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> By Date Added');
-                e.appendChild(r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }, btn));
-                btn.addEventListener("click", function (evt) {
-                    evt.preventDefault(), evt.stopPropagation();
-                    let div = this.parentNode, s = r.createElement('select', { name: "timeframe" });
-                    s.addEventListener("change", function (evt) { evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this); });
-
-                    div.replaceChildren(createLabelCol('and was added')), div.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s)), getOperator(null, s, o);
-                    div.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "timeframe_options.quantity", class: "form-control", type: "number", value: "30" })));
-                    createUnit(div), div.appendChild(r.createElement('div', { class: "fix-label" }, btn_cl));
-                });
-            }; _dateFilter(d);
-            //_criteria = { type: v, operator: _operator.value, group: '' };
+            const $bAdd = r.createElement('button', { class: "btn btn-outline-dark fw-bold" }, '<i class="fas fa-filter"></i> By Date Added'),
+                $fr = r.createElement('div', { "data-filterid": "filter-row", class: "FilterRowContainer d-flex mb-2", style: "margin-left: 38px;" }),
+                closeOption = function ($fr) {
+                    let $bClose = r.createElement('a', { class: "btn fw-bold" }, 'X');
+                    $bClose.addEventListener("click", function (evt) { evt.preventDefault(), evt.stopPropagation(), o.timeframe = null, createDateOption(d); });
+                    $fr.appendChild(r.createElement('div', { class: "fix-label" }, $bClose));
+                },
+                dateOption = function ($fr) {
+                    let $s = r.createElement('select', { name: "timeframe" });
+                    $s.addEventListener("change", function (evt) {
+                        console.log('dateOption => change')
+                        evt.preventDefault(), evt.stopPropagation(); addTimeFrame(this), closeOption($fr);
+                    });
+                    $fr.replaceChildren(createLabelCol('and was added')), $fr.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, $s)), getOperator(null, $s, o);
+                    if (o.timeframe) { addTimeFrame($s, o), closeOption($fr) };
+                },
+                createDateOption = function (e) {
+                    $fr.replaceChildren($bAdd), e.appendChild($fr);
+                    $bAdd.addEventListener("click", function (evt) {
+                        evt.preventDefault(), evt.stopPropagation(), dateOption($fr);
+                        $fr.appendChild(r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "timeframe_options.quantity", class: "form-control", type: "number", value: "30" })));
+                        createUnit($fr), closeOption($fr);
+                    });
+                    o.timeframe && dateOption($fr);
+                }; createDateOption(d);
         }
         else if (v === __criteria[1005]) {
             let _operator = r.createElement('select', { name: "operator" });
@@ -243,12 +248,8 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
                     $_timeframe_ctr.setChoices(result.region.map(row => { return { value: row.value, label: row.label, selected: (o.region_id ? row.value == o.region_id : row.selected) } }));
                 }
                 if (result.unit && $_timeframe_ctr) {
-                    $_timeframe_ctr.setChoices(result.unit.map(row => { return { value: row.value, label: row.label, selected: (o.unit ? row.value == o.unit : row.selected) } }));
+                    $_timeframe_ctr.setChoices(result.unit.map(row => { return { value: row.value, label: row.label, selected: (o.units ? row.value == o.units : row.selected) } }));
                 }
-                //(result.operators && $_operator_ctr) && $_operator_ctr.setChoices(result.operators),
-                //    (result.timeframes && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.timeframes),
-                //    (result.region && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.region),
-                //    (result.unit && $_timeframe_ctr) && $_timeframe_ctr.setChoices(result.unit);
             }).catch(error => console.log('error', error));
     },
     createCriteria = function (e, setValue = '') {
@@ -307,8 +308,6 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             } catch (err) { console.error(err); }
         });
         const set = ($e, dimension_type, dimension, value) => {
-            console.log($e, dimension_type, dimension, value)
-            //let $sv = null, config = {}, p = evt.target.closest('.InputContainer'), _type = evt.target[0]?.getAttribute('data-custom-properties');
             let $sv = null, config = {}, p = $e.closest('.InputContainer');
             while (!!p.nextElementSibling) { p.nextElementSibling.remove(); }
             if (dimension_type === 'list') {
@@ -339,51 +338,42 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             let _type = evt.target[0]?.getAttribute('data-custom-properties');
             set($s, _type, this.value, []);
         });
-        //console.log(!showButton && o.statistic_filters)
         if (o.statistic_filters) set($s, o.statistic_filters.dimension_type, o.statistic_filters.dimension, o.statistic_filters.value);
     },
-    createGroup = function (e) {
-        let s = r.createElement('select', { name: "group" });
-        e.appendChild(r.createElement('div', { class: "InputContainer cw-300" }, s));
-        (function (s) {
-            new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a list…', itemSelectText: '', shouldSort: false })
-                .setChoices(async () => {
-                    try {
-                        return await groupData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name }; }) : []; });
-                    } catch (err) { console.error(err); }
-                });
-        })(s);
+    createGroup = function (e, o) {
+        let $s = r.createElement('select', { name: "group" });
+        e.appendChild(r.createElement('div', { class: "InputContainer cw-300" }, $s));
+        new Choices($s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a list…', itemSelectText: '', shouldSort: false })
+            .setChoices(async () => {
+                try {
+                    return await groupData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name, selected: row.group_id == (o && o.group) ? true : false }; }) : []; });
+                } catch (err) { console.error(err); }
+            });
     },
-    createProfileProperty = function (e, setValue = '') {
-        let s = r.createElement('select', { name: "key" });
-        s.addEventListener("change", function (evt) {
+    createProfileProperty = function (e, o) {
+        let $s = r.createElement('select', { name: "key" });
+        $s.addEventListener("change", function (evt) {
             evt.preventDefault(), evt.stopPropagation();
-            let p = evt.target.closest('.FilterRowContainer'), v = this.value;
-            p.removeChild(p.lastElementChild), createProfilePropertyValue(p, v);
+            e.removeChild(e.lastElementChild), createProfilePropertyValue(e, { key: this.value });
         });
-        e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, s));
-        (function (s, setValue) {
-            new Choices(s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a property…', itemSelectText: '', shouldSort: false })
-                .setChoices(async () => {
-                    try {
-                        return await propertyData.getData().then(function (data) {
-                            return data.map(function (row) { return { value: row.value, label: row.label, selected: row.value == setValue ? true : false }; });
-                        });
-                    } catch (err) { console.error(err); }
-                });
-        })(s, setValue);
+        e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, $s));
+
+        let _ = new Choices($s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: 'Select a property…', itemSelectText: '', shouldSort: false });
+        _.setChoices(async () => {
+            try {
+                return await propertyData.getData().then(function (data) { return data.map(function (row) { return { value: row.value, label: row.label, selected: row.value == o.key ? true : false } }) });
+            } catch (err) { console.error(err); }
+        });
     },
-    createProfilePropertyValue = function (e, v) {
-        let sv = r.createElement('select', { name: "value" });
-        e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, sv));
-        (function (s, v) {
-            new Choices(s, { allowHTML: false, itemSelectText: '', shouldSort: false })
-                .setChoices(async () => {
-                    try {
-                        return await fetch(`/api/lists/people/property/values?property=${v}`, { method: 'GET' }).then(response => response.json());
-                    } catch (err) { console.error(err); }
-                });
-        })(sv, v);
+    createProfilePropertyValue = function (e, o) {
+        let $s = r.createElement('select', { name: "value" });
+        e.appendChild(r.createElement('div', { class: "InputContainer cw-225" }, $s));
+        new Choices($s, { allowHTML: false, placeholder: true, placeholderValue: 'Select a value…', itemSelectText: '', shouldSort: false })
+            .setChoices(async () => {
+                try {
+                    return await getPropertyValue(o.key, o.value);
+                } catch (err) { console.error(err); }
+            });
     },
     createLabelCol = function (val) {
         return r.createElement('div', { class: "fix-label" }, r.createElement('span', { class: "h4_title" }, val));
@@ -395,7 +385,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             new Choices(e, { allowHTML: false, placeholder: true, placeholderValue: 'Choose a country...', itemSelectText: '', shouldSort: false })
                 .setChoices(async () => {
                     try {
-                        return await countryData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.code, label: row.name }; }) : []; })
+                        return await countryData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.code, label: row.name, selected: row.code == (o && o.country_code) ? true : false }; }) : []; })
                     } catch (err) { console.error(err); }
                 });
         })(s, o);

@@ -50,6 +50,14 @@ const formToJSON = (elements) =>
         },
         {}
     );
+/**
+ * Checks that an element has a non-empty `name` and `value` property.
+ * @param  {Element} element  the element to check
+ * @return {Bool}             true if the element is an input, false if not
+ */
+const isValidElement = (element) => {
+    return element.name && element.value;
+};
 
 /**
  * Checks if an element’s value can be saved (e.g. not an unselected checkbox).
@@ -79,7 +87,7 @@ const isMultiSelect = (element) => element.options && element.multiple;
  * @param  {Element} element  the element to check
  * @return {Boolean}          true if the element is a multiselect, false if not
  */
-const isSelect = (element) => element.options && element.single;
+const isSelect = (element) => element.options && !element.multiple;;
 
 /**
  * Retrieves the selected options from a multi-select as an array.

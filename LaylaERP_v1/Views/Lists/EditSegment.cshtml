@@ -2,7 +2,6 @@
     ViewBag.Title = "Lists & Segments";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
-
 <div id="root">
     <!-- start page title -->
     <div class="row border-bottom">
@@ -64,9 +63,10 @@
 <script src="~/js/qfk/common.js"></script>
 <script type="module">
     import Http from '@Url.Content("~/js/http/index.js")';
-    import segments, { __criteria, __tags, addDefinition, createCriteria, addFilter, createFilterRow, createOperatorValue, addTimeFrame, postDetails } from '@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))';
+    import segments, { __criteria, __tags, addDefinition, createCriteria, addFilter, createFilterRow, createOperatorValue, addTimeFrame, postDetails, showLoader } from '@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))';
 
     let _d = document, loadData = function () {
+        showLoader();
         Http.get(`/api/lists/@ViewBag.id`).then(response => response.json())
             .then(function (result) {
                 console.log(result);
@@ -117,14 +117,14 @@
                             $operator = dr.querySelector('[name="operator"]'), $operator && createOperatorValue($operator, row);
                             $timeFrame = dr.querySelector('[name="timeframe"]'), $timeFrame && addTimeFrame($timeFrame, row);
                         }
-                        
+
                     });
                 });
                 //t.disabled = false;
                 //if (parseInt(result.list_id) > 0) window.location = window.location.origin + `/list/${result.list_id}/members`;
                 //else swal('Error!', result.message, 'error');
-            }).catch(error => {
-                console.log('error', error),swal('Error!', error.message, 'error');
+            }).then(function () { showLoader() }).catch(error => {
+                showLoader(),console.log('error', error),swal('Error!', error.message, 'error');
             });
     };
     var load = function () { loadData(); }();

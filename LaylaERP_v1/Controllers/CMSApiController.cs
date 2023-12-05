@@ -784,6 +784,7 @@
                             name = item["file_name"].ToString(),
                             filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
                         };
+                        //obj.term_main.bannar = !string.IsNullOrEmpty(item["bannar"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(item["bannar"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}");
                     }
                     if (obj.page_type == "product_cat")
                     {
@@ -818,6 +819,8 @@
                                 }
                             }
                             row.Add("image", img);
+                            //if (dr["bannar"] != DBNull.Value)
+                            //    row.Add("bannar", JsonConvert.DeserializeObject(dr["bannar"].ToString()));
                             //Dictionary<String, Object> img = new Dictionary<String, Object>();
                             //img.Add("name", dr["file_name"]);
                             //img.Add("height", dr["file_height"]);

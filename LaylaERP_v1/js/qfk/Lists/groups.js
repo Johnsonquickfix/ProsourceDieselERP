@@ -95,7 +95,7 @@ var $tb = $('#datatable'), bm = 'modalEdit',
     },
     countMember = function () {
         $('a[data-member-count="true"]').each(function (key, val) {
-            Http.get(`/api/lists/${$(val).attr('id')}/member_count`).then(response => response.json()).then(response => { console.log(response) })
+            Http.get(`/api/lists/${$(val).attr('id')}/member_count`).then(response => response.json()).then(response => { val.text = response; })
             //$.get(`/api/lists/${$(val).attr('id')}/member_count`, {}).done(function (result) { $(val).html(result); });
         });
     },

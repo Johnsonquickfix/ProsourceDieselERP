@@ -243,11 +243,12 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
         })(s, setValue);
     },
     createOperatorValue = function (e, o) {
+        //debugger
         let v = (o && o.operator) || e.value, d = e.closest('.InputContainer');
         d && !v.includes('-zero') ? function (e) {
             let s = r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "value", class: "form-control", type: "number", value: (o && o.value) || 1 }));
-            !d.nextElementSibling?.querySelector('[name="operator_value"]') && d.insertAdjacentElement("afterEnd", s);
-        }(d) : function (e) { d?.nextElementSibling?.querySelector('[name="operator_value"]') && d?.nextElementSibling?.querySelector('[name="operator_value"]').parentNode.remove() }(d);
+            !d.nextElementSibling?.querySelector('[name="value"]') && d.insertAdjacentElement("afterEnd", s);
+        }(d) : function (e) { d?.nextElementSibling?.querySelector('[name="value"]') && d?.nextElementSibling?.querySelector('[name="value"]').parentNode.remove() }(d);
     },
     createUnit = function (e, setValue = '') {
         let s = r.createElement('select', { name: "timeframe_options.units" });
@@ -388,7 +389,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
                     if (isCheckbox(r) && r.value != '') { stringToObj(r.name, r.value, JsonVar); }
                     else if (isSelect(r)) {
                         if (!isValidElement(r)) { s = 0; return addError(r) };
-                        removeError(r), stringToObj(r.name, r.value, JsonVar);
+                        removeError(r), (r.name === 'statistic_filters.value' ? stringToObj(r.name, getSelectValues(r), JsonVar) : stringToObj(r.name, r.value, JsonVar));
                     }
                     else if (isMultiSelect(r)) {
                         let _values = getSelectValues(r);
@@ -404,6 +405,7 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             });
             _o.definition.push(c);
         });
+        console.log(_o); return;
         if (s) {
             showLoader(), t.disabled = true;
             Http.post(`/api/lists`, { body: _o }).then(response => response.json())

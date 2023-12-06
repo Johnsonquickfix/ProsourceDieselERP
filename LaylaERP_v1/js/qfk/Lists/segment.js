@@ -405,7 +405,6 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             });
             _o.definition.push(c);
         });
-        console.log(_o); return;
         if (s) {
             showLoader(), t.disabled = true;
             Http.post(`/api/lists`, { body: _o }).then(response => response.json())

@@ -127,11 +127,8 @@ var $tb = $('#datatable'), bm = 'modalEdit',
         let g = null, c = null;
 
         j.forEach((container, iContainer) => {
-            //$.each(j, function (i, row) {
             let _li = r.createElement('li', { class: '' });
             container.criteria.forEach((row, iRow) => {
-                //$.each(row.criteria, function (si, s) {
-                console.log(row.type, row)
                 let $span = r.createElement('span', { class: '' });
                 iRow > 0 && $span.appendChild(r.createElement('span', {}, `OR `));
                 if (row.type === 'customer-statistic-value') {

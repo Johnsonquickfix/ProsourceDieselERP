@@ -2739,7 +2739,71 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
+        public JsonResult Getvariationdetailsbyid(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            List<dynamic> mainRecords = new List<dynamic>();
 
+            try
+            {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                DataSet ds = ProductRepository.getvariationdetailsbyid(model);
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dynamic obj = new ExpandoObject();
+                    obj.cast_prise = dr["cast_prise"];
+                    obj.id = dr["id"];
+                    obj.post_title = dr["post_title"];
+                    obj.post_content = dr["post_content"];
+                    obj.post_name = dr["post_name"];
+                    obj.guid = dr["guid"];
+                    obj.meta_data = dr["meta_data"];
+                    obj.shippingclass = dr["shippingclass"];
+                    obj.thumbnails = dr["thumbnails"];
+                    obj.image = dr["image"];
+                    obj.saleamount = dr["saleamount"];
+                    obj.regularamount = dr["regularamount"];
+                    obj.Margin = dr["Margin"];
+                    obj.regularMargin = dr["regularMargin"];
+                    obj.marginpersantage = dr["marginpersantage"];
+                    obj.regularmarginpersantage = dr["regularmarginpersantage"];
+
+                    List<dynamic> attributesList = new List<dynamic>();
+
+                    foreach (DataRow dr_v in ds.Tables[1].Rows)
+                    {
+                        if (!string.IsNullOrEmpty(dr_v["attributes"].ToString()))
+                        {
+                            System.Collections.Hashtable _att = serializer.Deserialize(dr_v["attributes"].ToString()) as System.Collections.Hashtable;
+                            foreach (System.Collections.DictionaryEntry att in _att)
+                            {
+                                System.Collections.Hashtable _att_value = (System.Collections.Hashtable)att.Value;
+                                DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
+                                if (_att_value["is_taxonomy"].ToString().Equals("0"))
+                                {
+                                    attributesList.Add(new { is_taxonomy = false, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
+                                }
+                                else
+                                {
+                                    if (rows.Length > 0) attributesList.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                    else attributesList.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                }
+                            }
+                        }
+                    }
+
+                    obj.attributes = attributesList;
+                    mainRecords.Add(obj);
+                }
+
+                JSONresult = JsonConvert.SerializeObject(mainRecords);
+            }
+            catch { }
+
+            return Json(JSONresult, 0);
+        }
+        
 
     }
 

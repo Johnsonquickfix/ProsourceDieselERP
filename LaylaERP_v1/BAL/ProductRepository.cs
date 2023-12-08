@@ -3265,8 +3265,16 @@ namespace LaylaERP.BAL
                     new SqlParameter("@taxonomy", taxonomy),
                     new SqlParameter("@query", query),
                 };
-
-                dt = SQLHelper.ExecuteDataTable("SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id WHERE tt1.taxonomy = @taxonomy and tt2.name like '%@query%' order by name", parameters);
+                string sqlQuery = "SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug " +
+                          "FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id " +
+                          "WHERE tt1.taxonomy = @taxonomy"; 
+                if (!string.IsNullOrEmpty(query))
+                {
+                    sqlQuery += " AND tt2.name LIKE '%' + @query + '%'";
+                } 
+                sqlQuery += " ORDER BY name";
+                dt = SQLHelper.ExecuteDataTable(sqlQuery, parameters);
+                //dt = SQLHelper.ExecuteDataTable("SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id WHERE tt1.taxonomy = @taxonomy and tt2.name like '%@query%' order by name", parameters);
             }
             catch (Exception ex)
             {
@@ -3495,6 +3503,24 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataSet getvariationdetailsbyid(OrderPostStatusModel model)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] para = { new SqlParameter("@strVal", model.strVal), };
+                string strSql = "cms_getvariationdetailsbyid";
+
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
 
 

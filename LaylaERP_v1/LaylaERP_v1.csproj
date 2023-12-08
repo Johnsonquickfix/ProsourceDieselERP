@@ -1036,6 +1036,7 @@
     <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
+    <Content Include="js\http\cache.js" />
     <Content Include="js\http\index.js" />
     <Content Include="js\ImportOrderinvoice\CompareSalesPO.js" />
     <Content Include="js\ImportOrderinvoice\ImportBankcheckstatement.js" />

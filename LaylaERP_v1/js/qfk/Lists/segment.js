@@ -1,4 +1,5 @@
 ﻿import Http from '../../http/index.js';
+import Cache from '../../http/cache.js';
 var r = r || document;
 const segments = function (r) {
     "use strict";
@@ -20,39 +21,12 @@ const segments = function (r) {
     });
     addDefinition();
 };
-export class Cache {
-    constructor(fetchFunction, minutesToLive = 10) {
-        this.millisecondsToLive = minutesToLive * 60 * 1000
-        this.fetchFunction = fetchFunction
-        this.cache = null
-        this.getData = this.getData.bind(this)
-        this.resetCache = this.resetCache.bind(this)
-        this.isCacheExpired = this.isCacheExpired.bind(this)
-        this.fetchDate = new Date(0)
-    }
 
-    isCacheExpired() { return (this.fetchDate.getTime() + this.millisecondsToLive < new Date().getTime()) }
-    resetCache() { this.fetchDate = new Date(0) }
-    async getData() {
-        if (!this.cache || this.isCacheExpired()) {// 
-            try {
-                const data = await this.fetchFunction()
-                this.cache = data
-                this.fetchDate = new Date()
-                return data
-            } catch (error) {
-                return undefined
-            }
-        } else {
-            return Promise.resolve(this.cache)
-        }
-    }
-}
 
 function getCriteria() { return Http.get('/api/lists/criteria/type').then(response => response.json()); }
 function getStatistic() { return Http.get('/api/lists/metrics').then(response => response.json()); }
 function getProperties() { return Http.get('/api/lists/people/property').then(response => response.json()); }
-function getPropertyValue(_key, _value) { return Http.post('/api/lists/people/property/values', { params: {},body: { key: _key, value: _value } }).then(response => response.json()); }
+function getPropertyValue(_key, _value) { return Http.post('/api/lists/people/property/values', { params: {}, body: { key: _key, value: _value } }).then(response => response.json()); }
 function getGroups() { return Http.get('/api/lists/static-group').then(response => response.json()); }
 function getCountry() { return Http.get(`/api/lists/countries`).then(response => response.json()); }
 function getDimensions(_statistic) { return Http.get(`/api/lists/metric/dimensions`, { params: { statistic: _statistic } }).then(response => response.json()); }
@@ -269,11 +243,12 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
         })(s, setValue);
     },
     createOperatorValue = function (e, o) {
+        //debugger
         let v = (o && o.operator) || e.value, d = e.closest('.InputContainer');
         d && !v.includes('-zero') ? function (e) {
             let s = r.createElement('div', { class: "InputContainer cw-75" }, r.createElement('input', { name: "value", class: "form-control", type: "number", value: (o && o.value) || 1 }));
-            !d.nextElementSibling?.querySelector('[name="operator_value"]') && d.insertAdjacentElement("afterEnd", s);
-        }(d) : function (e) { d?.nextElementSibling?.querySelector('[name="operator_value"]') && d?.nextElementSibling?.querySelector('[name="operator_value"]').parentNode.remove() }(d);
+            !d.nextElementSibling?.querySelector('[name="value"]') && d.insertAdjacentElement("afterEnd", s);
+        }(d) : function (e) { d?.nextElementSibling?.querySelector('[name="value"]') && d?.nextElementSibling?.querySelector('[name="value"]').parentNode.remove() }(d);
     },
     createUnit = function (e, setValue = '') {
         let s = r.createElement('select', { name: "timeframe_options.units" });
@@ -390,6 +365,20 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
                 });
         })(s, o);
     },
+    showLoader = function () {
+        let x = r.getElementById("loader");
+        if (x.style.display === "none") { x.style.display = "block"; }
+        else { x.style.display = "none"; }
+    },
+    addError = function (e) {
+        let classesToAdd = ['parsley-error'], t = e.closest('div.choices');
+        e.closest('div.choices').focus(), e.closest('div.choices__inner').classList.add(...classesToAdd);
+        return false;
+    },
+    removeError = function (e) {
+        let classesToAdd = ['parsley-error'];
+        e.closest('div.choices__inner').classList.remove(...classesToAdd);
+    },
     postDetails = function (t) {
         let s = !0, _o = { list_id: parseInt($(t).data('id')) || 0, list_name: $('#txtlist-name').val(), group_type_id: 2, definition: [] };
         document.querySelectorAll(__tags.t).forEach(e => {
@@ -397,23 +386,33 @@ export const __criteria = { 1000: 'customer-statistic-value', 1001: 'customer-at
             e.querySelectorAll(__tags.r).forEach(r => {
                 let JsonVar = {}, inputElements = r.querySelectorAll('input[type="number"],input[type="text"],input[type="hidden"], select, checkbox, textarea');
                 inputElements.forEach(r => {
-                    if (isCheckbox(r)) { stringToObj(r.name, r.value, JsonVar); }
-                    else if (isSelect(r) || isMultiSelect(r)) { stringToObj(r.name, getSelectValues(r), JsonVar); }
-                    else { stringToObj(r.name, r.value, JsonVar); }
+                    if (isCheckbox(r) && r.value != '') { stringToObj(r.name, r.value, JsonVar); }
+                    else if (isSelect(r)) {
+                        if (!isValidElement(r)) { s = 0; return addError(r) };
+                        removeError(r), (r.name === 'statistic_filters.value' ? stringToObj(r.name, getSelectValues(r), JsonVar) : stringToObj(r.name, r.value, JsonVar));
+                    }
+                    else if (isMultiSelect(r)) {
+                        let _values = getSelectValues(r);
+                        if (_values.length === 0) { s = 0; return addError(r) };
+                        removeError(r), stringToObj(r.name, getSelectValues(r), JsonVar);
+                    }
+                    else {
+                        if (!isValidElement(r)) { s = 0; r.classList.add('parsley-error'), r.focus(); return; }
+                        r.classList.remove('parsley-error'), stringToObj(r.name, r.value, JsonVar);
+                    }
                 });
                 c.criteria.push(JsonVar);
             });
             _o.definition.push(c);
         });
         if (s) {
-            t.disabled = true;
+            showLoader(), t.disabled = true;
             Http.post(`/api/lists`, { body: _o }).then(response => response.json())
-                //fetch(`/api/lists`, { method: 'POST', body: JSON.stringify(_o), headers: { 'Content-Type': 'application/json;charset=UTF-8' } }).then(response => response.json())
                 .then(function (result) {
                     t.disabled = false;
                     if (parseInt(result.list_id) > 0) window.location = window.location.origin + `/list/${result.list_id}/members`;
                     else swal('Error!', result.message, 'error');
-                }).catch(error => { console.log('error', error); t.disabled = false; swal('Error!', error, 'error'); });
+                }).then(() => { showLoader(); }).catch(error => { console.log('error', error); showLoader(), t.disabled = false; swal('Error!', error, 'error'); });
         }
     };
 

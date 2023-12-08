@@ -45,8 +45,8 @@
                 pairs.Add(new KeySets { value = "neq", label = "doesn't equal" });
                 pairs.Add(new KeySets { value = "contains", label = "contains" });
                 pairs.Add(new KeySets { value = "ncontains", label = "doesn't contain" });
-                pairs.Add(new KeySets { value = "in", label = "is in" });
-                pairs.Add(new KeySets { value = "nin", label = "is not in" });
+                //pairs.Add(new KeySets { value = "in", label = "is in" });
+                //pairs.Add(new KeySets { value = "nin", label = "is not in" });
                 pairs.Add(new KeySets { value = "starts-with", label = "starts with" });
                 pairs.Add(new KeySets { value = "nstarts-with", label = "doesn't start with" });
                 pairs.Add(new KeySets { value = "ends-with", label = "ends with" });

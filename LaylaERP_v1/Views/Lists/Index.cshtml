@@ -15,7 +15,7 @@
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <div>
-                    <h4 class="mb-sm-0 font-size-18">Lists & Segments</h4>
+                    <h4 class="title">Lists & Segments</h4>
                 </div>
                 <div class="page-title-right">
                     <a data-add="true" data-url='@Url.Action("groupcreate","lists", new {  } )' href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Create List / Segment</a>
@@ -27,7 +27,7 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card boxed_style">
                 <div class="card-body">
                     <table id="datatable" class="table dt-responsive w-100 align-middle">
                     </table>
@@ -58,4 +58,4 @@
 </div>
 
 <script src="~/js/qfk/common.js"></script>
-<script async src="@Url.Content("~/js/qfk/lists/groups.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+<script async type="module" src="@Url.Content("~/js/qfk/lists/groups.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

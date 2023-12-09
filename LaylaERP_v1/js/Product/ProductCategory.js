@@ -617,7 +617,7 @@ function MediaLibrary(load)
             var fromColom = data.FromColom;
             var TotalData = data.recordsFiltered;
             $(".totalData").text("Showing " + fromColom + " of " + TotalData + " media items");
-            var url = window.location.origin;
+            var url = window.location.origin + "/Content/Media/";
             var v = JSON.parse(data.aaData);
            // var p = v[0].ID;
             for (i = 0; i < v.length; i++) {

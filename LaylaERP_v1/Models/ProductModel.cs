@@ -201,11 +201,12 @@ namespace LaylaERP.Models
         public string strVal { get; set; }
         public string display_type { get; set; }
         public string thumbnail_id { get; set; }
+        public string banner_id { get; set; }
         public HttpPostedFileBase ImageFile { get; set; }
         public byte[] ImageFiledata { get; set; }
         public string ImagePath { get; set; }
         public string ImagePathOut { get; set; }
-
+        public List<ProductModelMetaModel> meta { get; set; }
     }
 
     public class ProductOpendingStock

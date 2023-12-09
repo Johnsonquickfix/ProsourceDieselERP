@@ -3523,6 +3523,104 @@ namespace LaylaERP.BAL
             return ds;
         }
 
+        public static DataTable AddCategoriesImg(string qflag, string ID, string FileName, string entity_id, string height, string width, string file_size, string FileExtension, string thumbFileName, string mediumfilename, string largefilename, string post_title)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@ID", ID),
+                    new SqlParameter("@file_name",FileName),
+                     new SqlParameter("@entity_id",entity_id),
+                     new SqlParameter("@height",height),
+                     new SqlParameter("@width",width),
+                     new SqlParameter("@file_size ",file_size),
+                     new SqlParameter("@FileExtension ",FileExtension),
+                     new SqlParameter("@thumb_file_name  ",thumbFileName),
+                     new SqlParameter("@medium_file_name ",mediumfilename),
+                     new SqlParameter("@large_file_name ",largefilename),
+                     new SqlParameter("@post_title ",post_title)
+                };
+                dt = SQLHelper.ExecuteDataTable("cms_media_add", para);
+                return dt;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public int AddProductCategoryWithImage(ProductCategoryModel model)
+        {
+
+            try
+            {
+                string strsql = "";
+                strsql = "erp_ProductCategoryNew";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "AddProductCategory"),
+                    new SqlParameter("@name", model.name),
+                    new SqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "-")),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
+
+        public int AddProductCategoryDescWithImage(ProductCategoryModel model, int term_id)
+        {
+            string strsql = "";
+            strsql = "erp_ProductCategoryNew";
+            SqlParameter[] para =
+            {
+                    new SqlParameter("@Flag", "AddProductCategoryDescription"),
+                    new SqlParameter("@term_id", term_id),
+                    new SqlParameter("@taxonomy", "product_cat"),
+                    new SqlParameter("@parent", model.parent),
+                    new SqlParameter("@description", model.description == null ? "" : model.description),
+                    new SqlParameter("@banner_id", model.banner_id),
+                    new SqlParameter("@thumbnail_id",model.thumbnail_id),
+
+                };
+            int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+            return result;
+        }
+
+        public int EditAddProductCategoryWithImage(ProductCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "erp_ProductCategoryNew";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@Flag", "EditProductCategory"),
+                    new SqlParameter("@term_id", model.term_id),
+                     new SqlParameter("@name", model.name),
+                    new SqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "-")),
+                    new SqlParameter("@parent", model.parent),
+                    new SqlParameter("@description", model.description == null ? "" : model.description),
+                    new SqlParameter("@banner_id", model.banner_id),
+                    new SqlParameter("@thumbnail_id",model.thumbnail_id),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
     }
 }

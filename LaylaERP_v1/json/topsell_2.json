@@ -1,0 +1,98 @@
+[
+  {
+    "term_id": 70379,
+    "name": "SPOOLOGIC Turbochargers and Cartridges",
+    "slug": "spoologic-turbochargers-and-cartridges",
+    "products": [
+      {
+        "ID": 30434,
+        "post_name": "gtp38-high-performance-turbocharger-55-billet-wheel-red",
+        "post_title": "SPOOLOGIC Stock Plus Performance Turbo Red for 1999.5-2003 7.3L Ford Powerstroke",
+        "yoast_title": "gtp38-high-performance-turbocharger-55-billet-wheel-red",
+        "yoast_description": "",
+        "sku": "SL-GTP38-FTR16-F-Red",
+        "price": "879.95",
+        "regular_price": "879.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "0",
+        "stock_status": "outofstock",
+        "children": null,
+        "core_price": "",
+        "weight": "40",
+        "length": "16",
+        "width": "40",
+        "height": "16",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  },
+  {
+    "term_id": 70380,
+    "name": "SPOOLOGIC Rebuild Kits",
+    "slug": "spoologic-rebuild-kits",
+    "products": [
+      {
+        "ID": 29067,
+        "post_name": "gt3782va-basic-turbo-rebuild-kit",
+        "post_title": "SPOOLOGIC GT3782VA Basic Turbo Rebuild Kit for 2003-2010 6.0L Ford Powerstroke",
+        "yoast_title": "gt3782va-basic-turbo-rebuild-kit",
+        "yoast_description": "",
+        "sku": "SL-GT3782VA-FTRK3",
+        "price": "99.95",
+        "regular_price": "99.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "53",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "1",
+        "length": "10",
+        "width": "8",
+        "height": "4",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  }  
+]

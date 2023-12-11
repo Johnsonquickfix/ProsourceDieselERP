@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -2838,6 +2839,7 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, ToColom = model.iDisplayStart, FromColom = model.iSortCol_0, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
+
         public JsonResult CreateProductCategoriesImg(IEnumerable<HttpPostedFileBase> ImageFiles, string ID, string entity_id)
         {
             var ImagePath = "";
@@ -2862,6 +2864,7 @@ namespace LaylaERP.Controllers
                     using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
                     {
                         // Get the height and width
+
                         height = image.Height;
                         width = image.Width;
                         long sizeInBytes = ImageFile.ContentLength;
@@ -2899,6 +2902,7 @@ namespace LaylaERP.Controllers
 
                         //string UploadPath = Path.Combine(Server.MapPath("~/Content/Media"));
                         string UploadPath = monthFolderPath + "\\";
+                        //string UploadPath = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
                         pathimage = UploadPath + FileName;
                         // model.ImagePathOut = UploadPath + FileNamethumb; 
                         if (FileName == "")
@@ -2910,47 +2914,98 @@ namespace LaylaERP.Controllers
                         string fileNamethumb = UploadPath + "thumb_" + FileName;
                         string fileNameMedium = UploadPath + "medium_" + FileName;
                         string fileNameLarge = UploadPath + "large_" + FileName;
+                        string Namethumb = currentYear.ToString() + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName;
+                        string NameMedium = currentYear.ToString() + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName;
+                        string NameLarge = currentYear.ToString() + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName;
 
                         //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
                         ImageFile.SaveAs(pathimage);
 
+
+                        // save ftp server
+                        //  string filePath = System.IO.Path.Combine(Server.MapPath("~/Media"), dt.Rows[0]["image_url"].ToString());
+
+                        string localImagePath = pathimage;
+                        string remoteFolder = "wp-content/uploads";
+                        // string remoteFileName = dt.Rows[0]["image_url"].ToString();
+                        string remoteFileName = currentYear.ToString() + "/" + currentMonth.ToString("00") + "/" + FileName;
+
+                        string ftpServer = "ftp://editor.prosourcediesel.com";
+                        string ftpUsername = "editor";
+                        string ftpPassword = "rb5945cZ%";
+
+                        // Create a URI for the FTP server
+                        Uri serverUri = new Uri($"{ftpServer}/{remoteFolder}/{remoteFileName}");
+
+                        // Create an FTP request
+                        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(serverUri);
+                        request.Method = WebRequestMethods.Ftp.UploadFile;
+                        request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+
+                        // Read the local image file as binary data
+                        byte[] fileContents;
+                        using (FileStream localFileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
+                        {
+                            fileContents = new byte[localFileStream.Length];
+                            localFileStream.Read(fileContents, 0, fileContents.Length);
+                        }
+
+                        // Set the content length and write the binary data to the request stream
+                        request.ContentLength = fileContents.Length;
+                        using (Stream requestStream = request.GetRequestStream())
+                        {
+                            requestStream.Write(fileContents, 0, fileContents.Length);
+                        }
+
                         // Create thumbnail and save it
                         string thumbnailPath = Path.Combine(UploadPath, fileNamethumb);
-                        CreateThumbnail(pathimage, thumbnailPath, 1024, 1024);
+                        CreateThumbnail(Namethumb, pathimage, thumbnailPath, 1024, 1024);
 
                         // Create medium-sized image and save it
                         string mediumPath = Path.Combine(UploadPath, fileNameMedium);
-                        CreateResizedImage(pathimage, mediumPath, 2048, 2048);
+                        CreateResizedImage(NameMedium, pathimage, mediumPath, 2048, 2048);
 
                         // Create large-sized image and save it
                         string largePath = Path.Combine(UploadPath, fileNameLarge);
-                        CreateResizedImage(pathimage, largePath, 4096, 4096);
+                        CreateResizedImage(NameLarge, pathimage, largePath, 4096, 4096);
 
-                        if (Convert.ToInt32(ID) > 0)
+
+
+                        //if (Convert.ToInt32(ID) > 0)
+                        //{
+                        //   // entity = CMSRepository.AddMedia("U", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                        //    //if (entity > 0)
+                        //    //{
+                        //    //    return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                        //    //}
+                        //    //else
+                        //    //{
+                        //    //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        //    //}
+                        //}
+                        //else
+                        //{
+
+                        DataTable data = ProductRepository.AddCategoriesImg("I", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                        result = JsonConvert.SerializeObject(data);
+
+                        // Delete Directory Month
+                        string directoryPath = UploadPath;
+                        if (Directory.Exists(directoryPath))
                         {
-                           // entity = CMSRepository.AddMedia("U", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
-                            //if (entity > 0)
-                            //{
-                            //    return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
-                            //}
-                            //else
-                            //{
-                            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                            //}
+                            Directory.Delete(directoryPath, true); // The second parameter indicates whether to delete subdirectories and files
+                            Console.WriteLine("Directory deleted successfully.");
                         }
-                        else
-                        {
-                            DataTable data = ProductRepository.AddCategoriesImg("I", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
-                            result = JsonConvert.SerializeObject(data);
-                            //if (entity > 0)
-                            //{
-                            //    return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
-                            //}
-                            //else
-                            //{
-                            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                            //}
-                        }
+                        //if (entity > 0)
+                        //{
+                        //    return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                        //}
+                        //else
+                        //{
+                        //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        //}
+                        //Directory.Delete(monthFolderPath);
+                        // }
                     }
                     else
                     {
@@ -2970,17 +3025,53 @@ namespace LaylaERP.Controllers
         }
 
         // Helper method to create a thumbnail of the image
-        private void CreateThumbnail(string sourceImagePath, string destinationImagePath, int width, int height)
+        private void CreateThumbnail(string Namethumb, string sourceImagePath, string destinationImagePath, int width, int height)
         {
             using (Image image = Image.FromFile(sourceImagePath))
             using (Image thumbnail = image.GetThumbnailImage(width, height, () => false, IntPtr.Zero))
             {
                 thumbnail.Save(destinationImagePath);
+
+                // save ftp server
+                //  string filePath = System.IO.Path.Combine(Server.MapPath("~/Media"), dt.Rows[0]["image_url"].ToString());
+
+                string localImagePath = destinationImagePath;
+                string remoteFolder = "wp-content/uploads";
+                // string remoteFileName = dt.Rows[0]["image_url"].ToString();
+                string remoteFileName = Namethumb;
+
+                string ftpServer = "ftp://editor.prosourcediesel.com";
+                string ftpUsername = "editor";
+                string ftpPassword = "rb5945cZ%";
+
+                // Create a URI for the FTP server
+                Uri serverUri = new Uri($"{ftpServer}/{remoteFolder}/{remoteFileName}");
+
+                // Create an FTP request
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(serverUri);
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+
+                // Read the local image file as binary data
+                byte[] fileContents;
+                using (FileStream localFileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
+                {
+                    fileContents = new byte[localFileStream.Length];
+                    localFileStream.Read(fileContents, 0, fileContents.Length);
+                }
+
+                // Set the content length and write the binary data to the request stream
+                request.ContentLength = fileContents.Length;
+                using (Stream requestStream = request.GetRequestStream())
+                {
+                    requestStream.Write(fileContents, 0, fileContents.Length);
+                }
+
             }
         }
 
         // Helper method to create a resized version of the image
-        private void CreateResizedImage(string sourceImagePath, string destinationImagePath, int maxWidth, int maxHeight)
+        private void CreateResizedImage(string fileName, string sourceImagePath, string destinationImagePath, int maxWidth, int maxHeight)
         {
             using (Image image = Image.FromFile(sourceImagePath))
             {
@@ -3005,6 +3096,43 @@ namespace LaylaERP.Controllers
                     graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                     graphics.DrawImage(image, 0, 0, newWidth, newHeight);
                     resizedImage.Save(destinationImagePath);
+
+                    // save ftp server
+                    //  string filePath = System.IO.Path.Combine(Server.MapPath("~/Media"), dt.Rows[0]["image_url"].ToString());
+
+                    string localImagePath = destinationImagePath;
+                    string remoteFolder = "wp-content/uploads";
+                    // string remoteFileName = dt.Rows[0]["image_url"].ToString();
+                    string remoteFileName = fileName;
+
+                    string ftpServer = "ftp://editor.prosourcediesel.com";
+                    string ftpUsername = "editor";
+                    string ftpPassword = "rb5945cZ%";
+
+                    // Create a URI for the FTP server
+                    Uri serverUri = new Uri($"{ftpServer}/{remoteFolder}/{remoteFileName}");
+
+                    // Create an FTP request
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(serverUri);
+                    request.Method = WebRequestMethods.Ftp.UploadFile;
+                    request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+
+                    // Read the local image file as binary data
+                    byte[] fileContents;
+                    using (FileStream localFileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
+                    {
+                        fileContents = new byte[localFileStream.Length];
+                        localFileStream.Read(fileContents, 0, fileContents.Length);
+                    }
+
+                    // Set the content length and write the binary data to the request stream
+                    request.ContentLength = fileContents.Length;
+                    using (Stream requestStream = request.GetRequestStream())
+                    {
+                        requestStream.Write(fileContents, 0, fileContents.Length);
+                    }
+
+
                 }
             }
         }

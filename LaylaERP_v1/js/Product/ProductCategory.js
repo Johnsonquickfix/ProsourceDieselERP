@@ -616,8 +616,8 @@ function MediaLibrary(load)
             $("#fromcolom").val(data.FromColom);
             var fromColom = data.FromColom;
             var TotalData = data.recordsFiltered;
-            $(".totalData").text("Showing " + fromColom + " of " + TotalData +" media items");
-            
+            $(".totalData").text("Showing " + fromColom + " of " + TotalData + " media items");
+            var url = window.location.origin + "/Content/Media/";
             var v = JSON.parse(data.aaData);
            // var p = v[0].ID;
             for (i = 0; i < v.length; i++) {
@@ -626,14 +626,15 @@ function MediaLibrary(load)
                     var p = i % 4;
                     if (p == 0) {
                         for (j = i; j < i + 1; j++) {
-                            var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                         //   var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
                             var image = url + v[i].file_name;
                             var html = "<li tabindex='0' aria-label='trim' role='checkbox' aria-checked='true' data-id='" + v[i].ID + "'> <div style=' margin:5px;'><input type='checkbox' name='check' class='categories' onclick='SingleClick(this); value=" + v[i].ID + "," + image +"/><img src=" + image + "  height='150' width='150' value='1' /></div></li>";
                             $(".MLibraryThumb").append(html);
                         }
                     }
                 }
-                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+               // var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+          
                 var image = url + v[i].file_name;
                 var html = "<li tabindex='0' aria-label='trim' role='checkbox' aria-checked='true' data-id='" + v[i].ID + "'><div style=' float:left; margin:5px;'><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image +" /><img src=" + image + "  height='150' width='150' value='1' /></div></li>";
               

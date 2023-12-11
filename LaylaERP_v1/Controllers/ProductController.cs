@@ -2928,7 +2928,7 @@ namespace LaylaERP.Controllers
 
                         if (Convert.ToInt32(ID) > 0)
                         {
-                            entity = CMSRepository.AddMedia("U", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                           // entity = CMSRepository.AddMedia("U", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
                             //if (entity > 0)
                             //{
                             //    return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);

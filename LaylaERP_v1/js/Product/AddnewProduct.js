@@ -29,7 +29,10 @@
     });
 
     $('#chkgiftcard').change();
-    Getsimpalproducttype(), bindCategory(id);
+    Getsimpalproducttype(),
+        //bindCategory(id);
+         setTimeout(function () { bindCategory(); }, 15000);
+  
     $("#ddlproducttypesimpal").val(1);
     if (id != "" && id != "AddNewProduct") {
         $("#target :input").prop("disabled", true);
@@ -1448,19 +1451,60 @@ function GetProductvariationID(ProductID) {
             data = JSON.parse(data);
             console.log(data);
 
+            //var variationAttributes = data[0].attributes.filter(function (attribute) {
+            //    return attribute.is_variation === 1;
+            //});
+
+            //// Loop through each variation attribute
+            //variationAttributes.forEach(function (attribute) {
+            //    console.log(attribute);
+                
+            //    var selectHTML = '<select  class="inputddl">';
+            //    selectHTML += '<option value="">' + 'No default ' +attribute.display_name + '</option>';
+            //    // Loop through options for the current attribute
+            //    attribute.option.forEach(function (option) {
+            //        // Create an option element for each option                
+            //        selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+            //    });
+
+            //    // Close the select element
+            //    selectHTML += '</select>';
+
+            //    // Append the select element to the product_variations div
+            //    $("#product_variations").append(selectHTML);
+            //});
             var variationAttributes = data[0].attributes.filter(function (attribute) {
                 return attribute.is_variation === 1;
             });
 
             // Loop through each variation attribute
-            variationAttributes.forEach(function (attribute) {                
-                var selectHTML = '<select  class="inputddl">';
-                selectHTML += '<option value="">' + 'No default ' +attribute.display_name + '</option>';
-                // Loop through options for the current attribute
-                attribute.option.forEach(function (option) {
-                    // Create an option element for each option                
-                    selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-                });
+            variationAttributes.forEach(function (attribute) {
+                console.log(attribute);
+
+                var selectHTML = '<select class="inputddl">';
+                selectHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
+
+                // Check if the options are provided as a string or an array
+                if (typeof attribute.option === 'string') {
+                    // Split the string into an array using the pipe (|) as the delimiter
+                    var optionsArray = attribute.option.split('|');
+
+                    // Trim each option to remove leading and trailing whitespaces
+                    optionsArray = optionsArray.map(function (option) {
+                        return option.trim();
+                    });
+
+                    // Loop through the options and create option elements
+                    optionsArray.forEach(function (option) {
+                        selectHTML += '<option value="' + option + '">' + option + '</option>';
+                    });
+                } else if (Array.isArray(attribute.option)) {
+                    // Loop through options for the current attribute
+                    attribute.option.forEach(function (option) {
+                        // Create an option element for each option
+                        selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                    });
+                }
 
                 // Close the select element
                 selectHTML += '</select>';
@@ -1470,7 +1514,8 @@ function GetProductvariationID(ProductID) {
             });
             let varHTML = '', attHTML = '';
             for (let i = 0; i < data.length; i++) {
-                let v_data = JSON.parse(data[i].meta_data); 
+                let v_data = JSON.parse(data[i].meta_data);
+                console.log('6666',v_data);
                 let allowwebsite = '';
                 if (v_data['_allowwebsite'] != "" && v_data['_allowwebsite'] != undefined)
                     allowwebsite = v_data['_allowwebsite']; 
@@ -1522,23 +1567,58 @@ function GetProductvariationID(ProductID) {
                 varHTML += '<div class="alignleft actions bulkactions">';
                 varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                 //console.log(v_data);
-                //var vAttributes = data[i].attributes.filter(function (attribute) {
-                //    return attribute.is_variation === 1;
-                //});
+                var vAttributes = data[i].attributes.filter(function (attribute) {
+                    return attribute.is_variation === 1;
+                });
+                //let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
+               
+                variationAttributes.forEach(function (attribute) {
+                    //varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
+                    //varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
+                    //// Loop through options for the current attribute
+                    //attribute.option.forEach(function (option) {
+                    //    // Create an option element for each option                
+                    //    varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                    //});
 
-                //variationAttributes.forEach(function (attribute) {
-                //    varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
-                //    varHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
-                //    // Loop through options for the current attribute
-                //    attribute.option.forEach(function (option) {
-                //        // Create an option element for each option                
-                //        varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-                //    });
+                    // Close the select element
+                  
 
-                //    // Close the select element
-                //    varHTML += '</select></tr>';
+                    varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
+                   varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
+                    let sel_val = v_data['attribute_' + attribute.display_name.trim().toLowerCase()];
+                    console.log(sel_val);
+                    // Check if the options are provided as a string or an array
+                    if (typeof attribute.option === 'string') {
+                        // Split the string into an array using the pipe (|) as the delimiter
+                        var optionsArray = attribute.option.split('|');
+
+                        // Trim each option to remove leading and trailing whitespaces
+                        optionsArray = optionsArray.map(function (option) {
+                            return option.trim();
+                        });
+
+                        // Loop through the options and create option elements
+                        optionsArray.forEach(function (option) {
+
+                            //varHTML += '<option value="' + option + '">' + option + '</option>';
+                            varHTML += '<option value="' + option + '" ' + (sel_val === option ? 'selected' : '') + '>' + option + '</option>';
+
+                        });
+                    } else if (Array.isArray(attribute.option)) {
+                        // Loop through options for the current attribute
+                        attribute.option.forEach(function (option) {
+                            // Create an option element for each option
+                           // varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                            varHTML += '<option value="' + option.term_id + '" ' + (sel_val === option.term_id ? 'selected' : '') + '>' + option.name + '</option>';
+
+                        });
+                    }
+
+                    // Close the select element
+                    varHTML += '</select></tr>';
  
-                //});
+                });
 
                 //$.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
                 //    let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
@@ -1605,14 +1685,25 @@ function GetProductvariationID(ProductID) {
                         varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
                 };
                 varHTML += '</select></div> ';
-                varHTML += '        <div class="col-md-6"><label class="control-label">Product Type</label>';
-                varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Product Type</option>';
-                for (var j = 0; j < _producttype.length; j++) {
-                    if (v_data['_product_type_id'] == _producttype[j].rowid)
-                        varHTML += '<option value="' + _producttype[j].rowid + '" selected> ' + _producttype[j].name + '</option>';
-                    else
-                        varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
-                };
+                //varHTML += '        <div class="col-md-6"><label class="control-label">Product Type</label>';
+                //varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Product Type</option>';
+                //for (var j = 0; j < _producttype.length; j++) {
+                //    if (v_data['_product_type_id'] == _producttype[j].rowid)
+                //        varHTML += '<option value="' + _producttype[j].rowid + '" selected> ' + _producttype[j].name + '</option>';
+                //    else
+                //        varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
+                //};
+                //varHTML += '</select></div> ';
+                varHTML += '        <div class="col-md-8"><label class="control-label">Stock status</label>';
+                varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Stock status</option>';
+                //for (var j = 0; j < _producttype.length; j++) {
+                //    if (v_data['_product_type_id'] == _producttype[j].rowid)
+                varHTML += '<option value="instock" selected="selected">In stock</option>';
+                varHTML += '<option value="outofstock">Out of stock</option>';
+                varHTML += '<option value="onbackorder">On backorder</option>';
+                   // else
+                        //varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
+                //};
                 varHTML += '</select></div> ';
                 varHTML += '    </div>';
                 varHTML += '    <div class="form-group d-flex">';

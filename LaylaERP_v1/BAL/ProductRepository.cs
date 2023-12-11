@@ -3622,5 +3622,18 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable GetProductVariantID(int ProductID)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ID,Post_title+'-'+ CONVERT(varchar,ID)  Post_title from wp_posts WHERE post_status = 'publish' and post_parent = " + ProductID + "";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
     }
 }

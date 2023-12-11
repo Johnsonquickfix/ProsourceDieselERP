@@ -3009,6 +3009,31 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult GetProductVariantID(int ID)
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetProductVariantID(ID);
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = dt.Rows[i]["Post_title"].ToString()
+
+                });
+            }
+            if (usertype.Count == 0)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = ID.ToString(),
+                    Text = "No Variation".ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
 
     }
 

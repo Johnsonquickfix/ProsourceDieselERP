@@ -45,16 +45,16 @@
 
      if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {
 
-         setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 9000);
-         setTimeout(function () { bindbuyingprice(); }, 10000);
-         //setTimeout(function () { bindChildproductsservices(); }, 12000);
-         //setTimeout(function () { bindparentproductsservices(); }, 13000);
-         //setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
-         //setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
-        setTimeout(function () { bindwarehouse(); }, 11000);
+        // setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 13000);
+        // setTimeout(function () { bindbuyingprice(); },14000);
+        // //setTimeout(function () { bindChildproductsservices(); }, 12000);
+        // //setTimeout(function () { bindparentproductsservices(); }, 13000);
+        // //setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
+        // //setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
+        //setTimeout(function () { bindwarehouse(); }, 15000);
 
-         setTimeout(function () { bindfileuploade(); }, 12000);
-        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 13000);
+        // setTimeout(function () { bindfileuploade(); }, 16000);
+        //setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 17000);
          //GetDataPurchaseByID($("#ddlproductchild").val()); 
          //bindbuyingprice(); 
          //bindChildproductsservices();
@@ -63,6 +63,13 @@
          //getNotesList($("#ddlproductchild").val()); 
          //bindfileuploade(); 
 
+
+         $.get('/Product/GetProductVariantID/' + id, function (data) {
+             var items = "";
+             $.each(data, function (index, value) {
+                 items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
+             })
+         });
 
          $('#dvbuysing').hide();
          $(document).on('click', "#btnbuying", function () {

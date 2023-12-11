@@ -2070,6 +2070,27 @@ namespace LaylaERP.Controllers
             }
 
         }
+
+        public JsonResult AddProductCategoryWithImage(ProductCategoryModel model)
+        {
+
+            if (model.term_id > 0)
+            {
+                int result = new ProductRepository().EditAddProductCategoryWithImage(model);
+
+                return Json(new { status = true, message = "Product category updated successfully!!", url = "", id = model.term_id }, 0);
+            }
+            else
+            {
+
+                int TermId = new ProductRepository().AddProductCategoryWithImage(model);
+
+                new ProductRepository().AddProductCategoryDescWithImage(model, TermId);
+
+                return Json(new { status = true, message = "Product category saved successfully!!", url = "" }, 0);
+            }
+
+        }
         public JsonResult ProductCategoryList(ProductCategoryModel model)
         {
             string result = string.Empty;
@@ -2739,7 +2760,280 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
+        public JsonResult Getvariationdetailsbyid(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            List<dynamic> mainRecords = new List<dynamic>();
 
+            try
+            {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                DataSet ds = ProductRepository.getvariationdetailsbyid(model);
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dynamic obj = new ExpandoObject();
+                    obj.cast_prise = dr["cast_prise"];
+                    obj.id = dr["id"];
+                    obj.post_title = dr["post_title"];
+                    obj.post_content = dr["post_content"];
+                    obj.post_name = dr["post_name"];
+                    obj.guid = dr["guid"];
+                    obj.meta_data = dr["meta_data"];
+                    obj.shippingclass = dr["shippingclass"];
+                    obj.thumbnails = dr["thumbnails"];
+                    obj.image = dr["image"];
+                    obj.saleamount = dr["saleamount"];
+                    obj.regularamount = dr["regularamount"];
+                    obj.Margin = dr["Margin"];
+                    obj.regularMargin = dr["regularMargin"];
+                    obj.marginpersantage = dr["marginpersantage"];
+                    obj.regularmarginpersantage = dr["regularmarginpersantage"];
+
+                    List<dynamic> attributesList = new List<dynamic>();
+
+                    foreach (DataRow dr_v in ds.Tables[1].Rows)
+                    {
+                        if (!string.IsNullOrEmpty(dr_v["attributes"].ToString()))
+                        {
+                            System.Collections.Hashtable _att = serializer.Deserialize(dr_v["attributes"].ToString()) as System.Collections.Hashtable;
+                            foreach (System.Collections.DictionaryEntry att in _att)
+                            {
+                                System.Collections.Hashtable _att_value = (System.Collections.Hashtable)att.Value;
+                                DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
+                                if (_att_value["is_taxonomy"].ToString().Equals("0"))
+                                {
+                                    attributesList.Add(new { is_taxonomy = false, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
+                                }
+                                else
+                                {
+                                    if (rows.Length > 0) attributesList.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                    else attributesList.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                }
+                            }
+                        }
+                    }
+
+                    obj.attributes = attributesList;
+                    mainRecords.Add(obj);
+                }
+
+                JSONresult = JsonConvert.SerializeObject(mainRecords);
+            }
+            catch { }
+
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetMediaLibrary(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = CMSRepository.GetMediaList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, null, model.iDisplayStart, model.iSortCol_0, out TotalRecord, "post_date", "desc");
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, ToColom = model.iDisplayStart, FromColom = model.iSortCol_0, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult CreateProductCategoriesImg(IEnumerable<HttpPostedFileBase> ImageFiles, string ID, string entity_id)
+        {
+            var ImagePath = "";
+            //var ImagePaththum = "";
+            var result = "";
+            int entity = 0;
+            string FileName = "";
+            string featuerimg = "";
+            string pathimage = "";
+            string futherpathimage = "";
+            //string FileNamethumb = "";
+            string FileExtension = "";
+            string FeatuerFileExtension = "";
+            int height = 0;
+            int width = 0;
+            double sizeInKB = 0;
+            string dimensions = "";
+            foreach (var ImageFile in ImageFiles)
+            {
+                if (ImageFile != null && ImageFile.ContentLength > 0)
+                {
+                    using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
+                    {
+                        // Get the height and width
+                        height = image.Height;
+                        width = image.Width;
+                        long sizeInBytes = ImageFile.ContentLength;
+                        sizeInKB = sizeInBytes / 1024.0;
+                        //dimensions = $"{width} by {height} pixels";
+                    }
+
+                    FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    string file_size = sizeInKB.ToString();
+                    FileExtension = Path.GetExtension(ImageFile.FileName);
+                    // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                    if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                    {
+                        //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
+                        FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+                        int currentYear = DateTime.Now.Year;
+                        int currentMonth = DateTime.Now.Month;
+                        string yearFolderPath = Path.Combine(Server.MapPath("~/Content/Media"), currentYear.ToString());
+                        string monthFolderPath = Path.Combine(yearFolderPath, currentMonth.ToString("00"));
+
+                        // Check if the year folder exists, if not, create it
+                        if (!Directory.Exists(yearFolderPath))
+                        {
+                            Directory.CreateDirectory(yearFolderPath);
+                        }
+
+                        // Check if the month folder exists, if not, create it
+                        if (!Directory.Exists(monthFolderPath))
+                        {
+                            Directory.CreateDirectory(monthFolderPath);
+                        }
+
+                        //string UploadPath = Path.Combine(Server.MapPath("~/Content/Media"));
+                        string UploadPath = monthFolderPath + "\\";
+                        pathimage = UploadPath + FileName;
+                        // model.ImagePathOut = UploadPath + FileNamethumb; 
+                        if (FileName == "")
+                        {
+                            FileName = "default.png";
+                        }
+                        ImagePath = "~/Content/Media/" + FileName;
+
+                        string fileNamethumb = UploadPath + "thumb_" + FileName;
+                        string fileNameMedium = UploadPath + "medium_" + FileName;
+                        string fileNameLarge = UploadPath + "large_" + FileName;
+
+                        //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
+                        ImageFile.SaveAs(pathimage);
+
+                        // Create thumbnail and save it
+                        string thumbnailPath = Path.Combine(UploadPath, fileNamethumb);
+                        CreateThumbnail(pathimage, thumbnailPath, 1024, 1024);
+
+                        // Create medium-sized image and save it
+                        string mediumPath = Path.Combine(UploadPath, fileNameMedium);
+                        CreateResizedImage(pathimage, mediumPath, 2048, 2048);
+
+                        // Create large-sized image and save it
+                        string largePath = Path.Combine(UploadPath, fileNameLarge);
+                        CreateResizedImage(pathimage, largePath, 4096, 4096);
+
+                        if (Convert.ToInt32(ID) > 0)
+                        {
+                           // entity = CMSRepository.AddMedia("U", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                            //if (entity > 0)
+                            //{
+                            //    return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                            //}
+                            //else
+                            //{
+                            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            //}
+                        }
+                        else
+                        {
+                            DataTable data = ProductRepository.AddCategoriesImg("I", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                            result = JsonConvert.SerializeObject(data);
+                            //if (entity > 0)
+                            //{
+                            //    return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                            //}
+                            //else
+                            //{
+                            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            //}
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Upload media file", url = "" }, 0);
+                }
+            }
+            if (Convert.ToInt16(ID) > 0)
+                return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+            else
+                return Json(new { status = true, message = "Save successfully.", url = "", id = ID, Result = result }, 0);
+        }
+
+        // Helper method to create a thumbnail of the image
+        private void CreateThumbnail(string sourceImagePath, string destinationImagePath, int width, int height)
+        {
+            using (Image image = Image.FromFile(sourceImagePath))
+            using (Image thumbnail = image.GetThumbnailImage(width, height, () => false, IntPtr.Zero))
+            {
+                thumbnail.Save(destinationImagePath);
+            }
+        }
+
+        // Helper method to create a resized version of the image
+        private void CreateResizedImage(string sourceImagePath, string destinationImagePath, int maxWidth, int maxHeight)
+        {
+            using (Image image = Image.FromFile(sourceImagePath))
+            {
+                int newWidth, newHeight;
+
+                if (image.Width > image.Height)
+                {
+                    newWidth = maxWidth;
+                    newHeight = (int)((float)image.Height / image.Width * maxWidth);
+                }
+                else
+                {
+                    newHeight = maxHeight;
+                    newWidth = (int)((float)image.Width / image.Height * maxHeight);
+                }
+
+                using (Image resizedImage = new Bitmap(newWidth, newHeight))
+                using (Graphics graphics = Graphics.FromImage(resizedImage))
+                {
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+                    resizedImage.Save(destinationImagePath);
+                }
+            }
+        }
+
+        public JsonResult GetProductVariantID(int ID)
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetProductVariantID(ID);
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = dt.Rows[i]["Post_title"].ToString()
+
+                });
+            }
+            if (usertype.Count == 0)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = ID.ToString(),
+                    Text = "No Variation".ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
 
     }
 

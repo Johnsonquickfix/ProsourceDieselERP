@@ -86,11 +86,14 @@ function getParentCategory(id) {
 
 }
 $('#btnAddNewCategory').click(function () {
+    debugger;
     ID = $("#hfid").val();
     Meta_id = $("#hfMetaid").val();
     CategoryName = $("#txtCategoryName").val().trim();
     CategorySlug = $("#txtCategorySlug").val();
     ParentCategory = $("#ddlParentCategory").val();
+    Thumb = $("#getImageFileThumbnail").attr("value");
+    Banner = $("#getImageFileBanner").attr("value");
     var data = $('#ddlParentCategory').select2('data');
     var ParentText;
     if (data !== null && data.length > 0) {
@@ -101,28 +104,32 @@ $('#btnAddNewCategory').click(function () {
     //ParentText = data[0].text;
     Description = $("#txtDescription").val();
     DisplayType = $("#ddlDisplayType").val();
-    var file = document.getElementById("ImageFile").files[0];
+    //var file = document.getElementById("ImageFile").files[0];
   
     if (CategoryName == "") { swal('Alert', 'Please enter category name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
     else if (CategorySlug == "") { swal('Alert', 'Please enter category slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
     else {
-        var obj = new FormData();
-        obj.append("ImageFile", file);
-        obj.append("term_id", ID);
-        obj.append("name", CategoryName);
-        obj.append("slug", CategorySlug);
-        obj.append("parent", ParentCategory);
-        obj.append("ParentText", ParentText);
-        obj.append("description", Description);
-        obj.append("display_type", DisplayType);
-        obj.append("Meta_id", Meta_id);
+        var obj = { term_id: ID, name: CategoryName, slug: CategorySlug, parent: ParentCategory, ParentText: '', description: Description, display_type: DisplayType, thumbnail_id: Thumb, banner_id: Banner }
+        obj.meta = [{ meta_key: 'banner_id', meta_value: Banner }, { meta_key: 'thumbnail_id', meta_value: Thumb }]
+        //var obj = new FormData();
+        //obj.append("ImageFile", file);
+        //obj.append("term_id", ID);
+        //obj.append("name", CategoryName);
+        //obj.append("slug", CategorySlug);
+        //obj.append("parent", ParentCategory);
+        //obj.append("ParentText", ParentText);
+        //obj.append("description", Description);
+        //obj.append("display_type", DisplayType);
+        //obj.append("Meta_id", Meta_id);
          
         $.ajax({
-            url: '/Product/AddProductCategory/', dataType: 'json', type: 'Post',
+           // url: '/Product/AddProductCategory/', dataType: 'json', type: 'Post',
+            url: '/Product/AddProductCategoryWithImage/',
+            dataType: 'json',
+            type: 'Post',
             contentType: "application/json; charset=utf-8",
-            data: obj,
-            processData: false,
-            contentType: false,
+            data: JSON.stringify(obj),
+            dataType: "json",
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
@@ -298,7 +305,7 @@ function CategoryList() {
         },
         aoColumns: [
             {
-                'data': 'ID', sWidth: "10%",
+                'data': 'ID', sWidth: "5%",
                 'render': function (data, type, full, meta) {
                     if (data == 80) {
                         return '<input type="checkbox" data-placement="left" title="Uncategories category can not edit and delete. it is a default category" data-toggle="tooltip" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
@@ -322,7 +329,7 @@ function CategoryList() {
                 }
             },
             {
-                data: 'name', title: 'Name', sWidth: "15%",
+                data: 'name', title: 'Name', sWidth: "10%",
                 'render': function (id, type, full, meta) {
                     /*  return  id;*/
                     if (full.parent == 0)
@@ -331,11 +338,11 @@ function CategoryList() {
                         return ' ' + space(full.level) + id + '';
                 }
             },
-            { data: 'description', title: 'Description', sWidth: "15%" },
-            { data: 'slug', title: 'Slug', sWidth: "15%" },
-            { data: 'count', title: 'Count', sWidth: "10%" },
+            { data: 'description', title: 'Description', sWidth: "45%" },
+            { data: 'slug', title: 'Slug', sWidth: "10%" },
+            { data: 'count', title: 'Count', sWidth: "5%" },
             {
-                'data': 'ID', sWidth: "10%",
+                'data': 'ID', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
                         if (id == 80) {
@@ -461,7 +468,7 @@ function DeleteCategory(id) {
     });
 }
 function GetCategoryByID(id) {
-   // getParentCategory(id);
+    // getParentCategory(id);
     var obj =
         $.ajax({
             url: "/Product/GetCategoryByID/" + id,
@@ -483,6 +490,7 @@ function GetCategoryByID(id) {
                     {
                         $("#ddlParentCategory").empty();
                     }
+                    let url = 'https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/';
                     $("#btnAddNewCategory").text('Update category');
                     $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', '');
                     $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Update category');
@@ -497,7 +505,21 @@ function GetCategoryByID(id) {
 
                     $("#ddlDisplayType").val(d[0].DisplayType);
                     $("#txtDescription").val(d[0].description);
-                    
+                    if (d[0].ThumbnailID != null) {
+                        $("#getImageFileThumbnail").attr("src", url + d[0].thumurl);
+                        $("#getImageFileThumbnail").attr("value", d[0].ThumbnailID);
+                    } else {
+                        $("#getImageFileThumbnail").attr("src", "/Images/varient_pic.png");
+                   // $("#getImageFileThumbnail").attr("value", d[0].ThumbnailID);
+                    }
+                    if (d[0].banner_id != null) {
+                        $("#getImageFileBanner").attr("src", url + d[0].bannerurl);
+                        $("#getImageFileBanner").attr("value", d[0].banner_id);
+                    } else {
+                        $("#getImageFileBanner").attr("src", "/Images/varient_pic.png");
+                        //$("#getImageFileBanner").attr("value", d[0].banner_id);
+                    }
+                 
                 }
                 $("#ProdCatAdd *").children().prop('disabled', false);
             },
@@ -513,6 +535,8 @@ $('#btnReset').click(function () {
     $("#hfMetaid").val('');
     $("#btnAddNewCategory").text('Add new category');
     $("#lblNewCategory").text('Add new category');
+    $("#getImageFileThumbnail").attr("src", "/Images/varient_pic.png");
+    $("#getImageFileBanner").attr("src", "/Images/varient_pic.png");
     $("#ProdCat").find(":input").each(function () {
         switch (this.type) {
             case "text": case "email": case "textarea": case "tel": $(this).val(''); case "file": $(this).val(''); break;
@@ -533,4 +557,209 @@ function checkFileExist(urlToFile) {
     } else {
         return true;
     }
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+}             
+
+function UploadFile()
+{
+    $(".MLibrary").hide();
+    $(".Upload").show();
+    $("#useImgThumb").attr('onclick', 'UseImagemyFitureThumbnailFile()');
+    $("#useImgThumb").text('Upload Image');
+    $("#useImgBanner").attr('onclick', 'UseImagemyBannerFile()');
+    $("#useImgBanner").text('Upload Image');
+}
+function MediaLibrary(load)
+{
+    //debugger;
+    let obj = {};
+    $(".Upload").hide();
+    $("#useImgThumb").attr('onclick', 'UseImagemyFitureThumbnail()');
+    $("#useImgThumb").text('Use Image');
+    $("#useImgBanner").attr('onclick', 'UseImagemyBanner()');
+    $("#useImgBanner").text('Use Image');
+    if (load == '0') {
+       
+        var company = null;
+        let prodctype = '0';
+        let stockstatus = '0';
+        let order_type = '';
+        let iDisplayStart = 0;
+        let iSortCol_0 = 80;
+         obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
+
+    }
+    else {
+       
+        var company = null;
+        let prodctype = '0';
+        let stockstatus = '0';
+        let order_type = '';
+        let iDisplayStart = $("#fromcolom").val();
+        let iSortCol_0 = Number(iDisplayStart) +80;
+         obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
+
+    }
+
+    //let obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
+    $.ajax({
+        url: '/Product/GetMediaLibrary/',
+        dataType: 'json',
+        type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+          //  debugger;
+            // var data = [];
+            $("#tocolom").val(data.ToColom);
+            $("#fromcolom").val(data.FromColom);
+            var fromColom = data.FromColom;
+            var TotalData = data.recordsFiltered;
+            $(".totalData").text("Showing " + fromColom + " of " + TotalData + " media items");
+            var url = window.location.origin + "/Content/Media/";
+            var v = JSON.parse(data.aaData);
+           // var p = v[0].ID;
+            for (i = 0; i < v.length; i++) {
+                //console.log(v[i].file_name);
+                if (i != 0) {
+                    var p = i % 4;
+                    if (p == 0) {
+                        for (j = i; j < i + 1; j++) {
+                         //   var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                            var image = url + v[i].file_name;
+                            var html = "<li tabindex='0' aria-label='trim' role='checkbox' aria-checked='true' data-id='" + v[i].ID + "'> <div style=' margin:5px;'><input type='checkbox' name='check' class='categories' onclick='SingleClick(this); value=" + v[i].ID + "," + image +"/><img src=" + image + "  height='150' width='150' value='1' /></div></li>";
+                            $(".MLibraryThumb").append(html);
+                        }
+                    }
+                }
+               // var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+          
+                var image = url + v[i].file_name;
+                var html = "<li tabindex='0' aria-label='trim' role='checkbox' aria-checked='true' data-id='" + v[i].ID + "'><div style=' float:left; margin:5px;'><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image +" /><img src=" + image + "  height='150' width='150' value='1' /></div></li>";
+              
+                $(".MLibraryThumb").append(html);
+            }
+        }
+    });
+    $(".MLibrary").show();
+    $("#loader").hide();
+
+}
+
+function SingleClick(checkbox) {
+    var checkboxes = document.getElementsByName('check')
+    checkboxes.forEach((item) => {
+        if (item !== checkbox) item.checked = false
+    })
+}
+
+function UseImagemyBanner() {
+   // debugger;
+    var imgData = [];
+    var value = $("input[name='check']:checked").val();
+    imgData = value.split(',');
+    var imgId = imgData[0];
+    var imgName = imgData[1];
+    $("#getImageFileBanner").attr("src", imgName);
+    $("#getImageFileBanner").attr("value", imgId);
+    
+}
+
+function UseImagemyFitureThumbnail() {
+   // debugger;
+    var value = $("input[name='check']:checked").val();
+    imgData = value.split(',');
+    var imgId = imgData[0];
+    var imgName = imgData[1];
+    $("#getImageFileThumbnail").attr("src", imgName);
+    $("#getImageFileThumbnail").attr("value", imgId);
+}
+
+function UseImagemyFitureThumbnailFile() {
+    //debugger;
+    var input = document.getElementById("FileUploadThumbnail");
+    Add(input);
+}
+
+function UseImagemyBannerFile() {
+   // debugger;
+    var input = document.getElementById("FileUploadBanner");
+    Add(input);
+}
+
+function Add(input) {
+    //debugger;
+    entity = 1;
+    ID = 0;
+    if (entity == 0) {
+        swal('Alert', 'Please select store!', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
+    }
+    else {
+        //debugger;
+        var obj = new FormData();
+
+        // Get the first selected file
+        var file = input.files[0];
+
+        if (input.files && input.files.length > 1) {
+            // If multiple files are selected, append all selected files
+            for (var i = 0; i < input.files.length; i++) {
+                obj.append("ImageFiles", input.files[i]);
+            }
+        } else if (file) {
+            // If only one file is selected, append the single file
+            obj.append("ImageFiles", file);
+        }
+
+        obj.append("ID", parseInt(ID) || 0);
+        obj.append("entity_id", entity);
+        debugger;
+        $.ajax({
+            url: '/Product/CreateProductCategoriesImg/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: obj,
+            processData: false,
+            contentType: false,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                debugger;
+                if (data.status == true) {
+                    var data = JSON.parse(data.Result);
+                    var img = data[0].img;
+                    var id = data[0].id;
+                    //var filethumb = document.getElementById("FileUploadThumbnail");
+                    var thumb = $("#FileUploadThumbnail").val();
+                    //var fileBanner = document.getElementById("FileUploadBanner");
+                    //var Banner = fileBanner.files[0];
+                   // var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                    var url = "../Content/Media/";
+                    if (thumb == '')
+                    {
+                        $("#getImageFileBanner").attr("src", url+img);
+                        $("#getImageFileBanner").attr("value", id);
+                        $("#FileUploadBanner").val('');
+                    }
+                    else
+                    {
+                        $("#getImageFileThumbnail").attr("src",url+img);
+                        $("#getImageFileThumbnail").attr("value", id);
+                        $("#FileUploadThumbnail").val('');
+                    }
+
+                    if (data.url == "Pages") {
+                       // swal('Success!', data.message, 'success').then((result) => { location.href = '../Mediagallery'; });
+                        swal('Success!', data.message, 'success');
+                    }
+                    else {
+                        //swal('Success!', data.message, 'success').then((result) => { location.href = '../Mediagallery'; });
+                        swal('Success!', data.message, 'success');
+                    }
+                }
+                else { swal('Alert!', data.message, 'error') }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', error.message, 'error'); },
+        })
+    }
+}

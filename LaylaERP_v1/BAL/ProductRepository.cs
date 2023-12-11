@@ -3265,8 +3265,16 @@ namespace LaylaERP.BAL
                     new SqlParameter("@taxonomy", taxonomy),
                     new SqlParameter("@query", query),
                 };
-
-                dt = SQLHelper.ExecuteDataTable("SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id WHERE tt1.taxonomy = @taxonomy and tt2.name like '%@query%' order by name", parameters);
+                string sqlQuery = "SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug " +
+                          "FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id " +
+                          "WHERE tt1.taxonomy = @taxonomy"; 
+                if (!string.IsNullOrEmpty(query))
+                {
+                    sqlQuery += " AND tt2.name LIKE '%' + @query + '%'";
+                } 
+                sqlQuery += " ORDER BY name";
+                dt = SQLHelper.ExecuteDataTable(sqlQuery, parameters);
+                //dt = SQLHelper.ExecuteDataTable("SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id WHERE tt1.taxonomy = @taxonomy and tt2.name like '%@query%' order by name", parameters);
             }
             catch (Exception ex)
             {
@@ -3497,6 +3505,135 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataSet getvariationdetailsbyid(OrderPostStatusModel model)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] para = { new SqlParameter("@strVal", model.strVal), };
+                string strSql = "cms_getvariationdetailsbyid";
+
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataTable AddCategoriesImg(string qflag, string ID, string FileName, string entity_id, string height, string width, string file_size, string FileExtension, string thumbFileName, string mediumfilename, string largefilename, string post_title)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@ID", ID),
+                    new SqlParameter("@file_name",FileName),
+                     new SqlParameter("@entity_id",entity_id),
+                     new SqlParameter("@height",height),
+                     new SqlParameter("@width",width),
+                     new SqlParameter("@file_size ",file_size),
+                     new SqlParameter("@FileExtension ",FileExtension),
+                     new SqlParameter("@thumb_file_name  ",thumbFileName),
+                     new SqlParameter("@medium_file_name ",mediumfilename),
+                     new SqlParameter("@large_file_name ",largefilename),
+                     new SqlParameter("@post_title ",post_title)
+                };
+                dt = SQLHelper.ExecuteDataTable("cms_media_add", para);
+                return dt;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public int AddProductCategoryWithImage(ProductCategoryModel model)
+        {
+
+            try
+            {
+                string strsql = "";
+                strsql = "erp_ProductCategoryNew";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "AddProductCategory"),
+                    new SqlParameter("@name", model.name),
+                    new SqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "-")),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
+
+        public int AddProductCategoryDescWithImage(ProductCategoryModel model, int term_id)
+        {
+            string strsql = "";
+            strsql = "erp_ProductCategoryNew";
+            SqlParameter[] para =
+            {
+                    new SqlParameter("@Flag", "AddProductCategoryDescription"),
+                    new SqlParameter("@term_id", term_id),
+                    new SqlParameter("@taxonomy", "product_cat"),
+                    new SqlParameter("@parent", model.parent),
+                    new SqlParameter("@description", model.description == null ? "" : model.description),
+                    new SqlParameter("@banner_id", model.banner_id),
+                    new SqlParameter("@thumbnail_id",model.thumbnail_id),
+
+                };
+            int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+            return result;
+        }
+
+        public int EditAddProductCategoryWithImage(ProductCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "erp_ProductCategoryNew";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@Flag", "EditProductCategory"),
+                    new SqlParameter("@term_id", model.term_id),
+                     new SqlParameter("@name", model.name),
+                    new SqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "-")),
+                    new SqlParameter("@parent", model.parent),
+                    new SqlParameter("@description", model.description == null ? "" : model.description),
+                    new SqlParameter("@banner_id", model.banner_id),
+                    new SqlParameter("@thumbnail_id",model.thumbnail_id),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetProductVariantID(int ProductID)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ID,Post_title+'-'+ CONVERT(varchar,ID)  Post_title from wp_posts WHERE post_status = 'publish' and post_parent = " + ProductID + "";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
 
     }
 }

@@ -32,7 +32,12 @@
     Getsimpalproducttype(),
         //bindCategory(id);
          setTimeout(function () { bindCategory(); }, 15000);
-  
+    $.get('/Product/GetProductVariantID/' + id, function (data) {
+        var items = "";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
+        })
+    });
     $("#ddlproducttypesimpal").val(1);
     if (id != "" && id != "AddNewProduct") {
         $("#target :input").prop("disabled", true);

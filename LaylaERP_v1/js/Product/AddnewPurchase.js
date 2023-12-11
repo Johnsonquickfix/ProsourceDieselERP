@@ -44,6 +44,7 @@
     });
 
      if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {
+
          setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 9000);
          setTimeout(function () { bindbuyingprice(); }, 10000);
          //setTimeout(function () { bindChildproductsservices(); }, 12000);
@@ -76,12 +77,7 @@
              ClearControl();
          })
 
-         $.get('/Product/GetProductVariantID/' + id, function (data) {
-             var items = "";
-             $.each(data, function (index, value) {
-                 items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
-             })
-         });
+       
         // getParentCategory();
          //$.get('/Product/GetProductCategory/' + id, function (data) {
          //    var items = "";

@@ -882,6 +882,7 @@
     <Content Include="Content\qfk\choices\choices.min.js" />
     <Content Include="Content\qfk\css\app.min.css" />
     <Content Include="Content\qfk\css\bootstrap.min.css" />
+    <Content Include="Content\qfk\css\flow-layout.css" />
     <Content Include="Content\qfk\css\custom.css" />
     <Content Include="Content\qfk\css\icons.min.css" />
     <Content Include="Content\qfk\fonts\demo.html" />
@@ -1134,6 +1135,11 @@
     <Content Include="js\qfk\catalog\sources.js" />
     <Content Include="js\qfk\common.js" />
     <Content Include="js\qfk\EmailTemplates\templates.js" />
+    <Content Include="js\qfk\flows\createflow.js" />
+    <Content Include="js\qfk\flows\flowy.min.css" />
+    <Content Include="js\qfk\flows\flowy.min.js" />
+    <Content Include="js\qfk\flows\main.js" />
+    <Content Include="js\qfk\flows\styles.css" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\contentEditor.chunk.js" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\editor.html" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\editor.js" />
@@ -1973,6 +1979,7 @@
     <Content Include="Views\Reports\QuarterlyComparisonOrderChart.cshtml" />
     <Content Include="Views\ProductCostPrice\Index.cshtml" />
     <Content Include="Views\Setup\MerchantFee.cshtml" />
+    <Content Include="Views\Flows\CreateFlow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

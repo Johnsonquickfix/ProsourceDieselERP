@@ -1,7 +1,14 @@
 ﻿!(function () {
     "use strict"; var e = document;
+    const $group = new Choices(e.querySelector('#send_to'), { allowHTML: false, searchEnabled: true, placeholder: true, placeholderValue: 'Choose a list or segment', removeItemButton: true, itemSelectText: '', shouldSort: false });
+    //.setChoices(async () => {
+    //    try {
+    //        return await groupData.getData().then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name, selected: row.group_id == (o && o.group) ? true : false }; }) : []; });
+    //    } catch (err) { console.error(err); }
+    //});
+
     //e.addEventListener("DOMContentLoaded", function (event) {
-    $('.select2').select2({ placeholder: "Choose a list or segment", allowClear: true });
+    //$('.select2').select2({ placeholder: "Choose a list or segment", allowClear: true });
     $('#campaign_date').daterangepicker({ singleDatePicker: true, autoApply: true, locale: { format: "MM/DD/YYYY", } });
     getdata(e);
     //})
@@ -95,11 +102,14 @@
         else {
             $.ajaxSetup({ async: true });
             $.get(`/api/campaigns/${i}`, {}).done(function (result) {
-                console.log(result)
                 e.getElementById('campaign_name').value = result.campaign_name;
                 e.getElementById('campaign_date').value = moment(result.campaign_date).format('MM/DD/YYYY');
                 e.getElementById('is_smart_sending').checked = result.is_smart_sending;
-                $('#send_to').val(result.audiences.group_ids).trigger('change');
+                console.log(result.audiences.group_ids)
+                result.audiences.group_ids.forEach((v, i) => {
+                    $group.setChoiceByValue(v.toString());
+                });
+                //$('#send_to').val(result.audiences.group_ids).trigger('change');
                 e.getElementById('is_smart_sending').checked = result.is_add_utm;
                 if (!result.is_add_utm) e.getElementById("utm_para").replaceChildren();
                 else {

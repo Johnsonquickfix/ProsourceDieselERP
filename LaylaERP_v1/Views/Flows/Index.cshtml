@@ -4,5 +4,39 @@
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
 
-<h2>Flows</h2>
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div id="root">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <h4 class="title">Flows</h4>
+                </div>
+                <div class="page-title-right">
+                    <a data-add="true" data-url='@Url.Action("create","flows", new {  } )' href="@Url.Action("create","flows", new {  } )" class="btn black_btn">Create flow</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card boxed_style">
+                <div class="card-body">
+                    <table id="datatable" class="table dt-responsive w-100 align-middle">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/qfk/common.js"></script>
+
 

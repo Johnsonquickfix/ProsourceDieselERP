@@ -4,7 +4,7 @@ $(document).ready(function () {
     $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
 
 
-
+    getcompany();
 
     $('#txtOrderDate').daterangepicker({
         ranges: {
@@ -87,7 +87,26 @@ $(document).ready(function () {
         $('#atnemail').show(); $("#atnemail").attr("href", "../EmailProfile/Compose/" + cmail_id + "?entiid=1");
 
     }
+
+    $("#ddlcompany").change(function () {
+        dataGridLoad('');
+    })
 });
+function getcompany() {
+    console.log('as');
+    $.ajax({
+        url: "/Setting/GetCompany",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="">Please Select Store</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlcompany').html(opt);
+        }
+
+    });
+}
 function UpdateOrders() {
     $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
     $.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });
@@ -184,10 +203,11 @@ function dataGridLoad(order_type) {
                 if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/order/queckorder-list",
+        sAjaxSource: "/order/queckstoreviseorder-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
-            aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') }, { name: "strValue4", value: order_type });
+            aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') }, { name: "strValue4", value: order_type }, aoData.push({ name: "strValue5", value: parseInt($('#ddlcompany').val()) || 0 }));
+
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
@@ -324,6 +344,16 @@ function dataGridLoad(order_type) {
             },
             { data: 'Suborder', title: 'Suborder', sWidth: "10%" },
             { data: 'Exported', title: 'Exported', sWidth: "10%" },
+
+            {
+                data: '_website_id', title: 'Wesite', sWidth: "10%", render: function (data, type, row) {
+                    if (data == '') return 'Prosource';
+                    else if (data == '1') return 'Prosource';
+                    else if (data == '2') return 'Spoologic';
+                    else return '-';
+                }
+            },
+
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     let refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;;

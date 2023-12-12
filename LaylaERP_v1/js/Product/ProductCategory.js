@@ -617,7 +617,8 @@ function MediaLibrary(load)
             var fromColom = data.FromColom;
             var TotalData = data.recordsFiltered;
             $(".totalData").text("Showing " + fromColom + " of " + TotalData + " media items");
-            var url = window.location.origin + "/Content/Media/";
+           // var url = window.location.origin + "/Content/Media/";
+            var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
             var v = JSON.parse(data.aaData);
            // var p = v[0].ID;
             for (i = 0; i < v.length; i++) {
@@ -714,7 +715,7 @@ function Add(input) {
 
         obj.append("ID", parseInt(ID) || 0);
         obj.append("entity_id", entity);
-        debugger;
+
         $.ajax({
             url: '/Product/CreateProductCategoriesImg/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -723,7 +724,7 @@ function Add(input) {
             contentType: false,
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
-                debugger;
+            
                 if (data.status == true) {
                     var data = JSON.parse(data.Result);
                     var img = data[0].img;
@@ -732,19 +733,35 @@ function Add(input) {
                     var thumb = $("#FileUploadThumbnail").val();
                     //var fileBanner = document.getElementById("FileUploadBanner");
                     //var Banner = fileBanner.files[0];
-                   // var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
-                    var url = "../Content/Media/";
+                    var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                   // var url = "../Content/Media/";
                     if (thumb == '')
                     {
-                        $("#getImageFileBanner").attr("src", url+img);
-                        $("#getImageFileBanner").attr("value", id);
-                        $("#FileUploadBanner").val('');
+                       // if (img != null) {
+                            $("#getImageFileBanner").attr("src", url + img);
+                            $("#getImageFileBanner").attr("value", id);
+                            $("#FileUploadBanner").val('');
+                        //}
+                        //else
+                        //{
+                        //    $("#getImageFileBanner").attr("src", "/Images/varient_pic.png");
+                        //    $("#FileUploadBanner").val('');
+                        //}
+                     
                     }
                     else
                     {
-                        $("#getImageFileThumbnail").attr("src",url+img);
-                        $("#getImageFileThumbnail").attr("value", id);
-                        $("#FileUploadThumbnail").val('');
+                       // if (img != null) {
+                            $("#getImageFileThumbnail").attr("src", url + img);
+                            $("#getImageFileThumbnail").attr("value", id);
+                            $("#FileUploadThumbnail").val('');
+                        //}
+                        //else {
+                        //    $("#getImageFileThumbnail").attr("src", "/Images/varient_pic.png");
+
+                        //    $("#FileUploadThumbnail").val('');
+                        //}
+                      
                     }
 
                     if (data.url == "Pages") {

@@ -38,85 +38,91 @@
     <h2 class="page-heading">Order History</h2>
     <a class="btn btn-danger" id="atncustlist" style="display:none" href="../../Customer/Customer"><span title="Click here to back to customer's list" data-placement="bottom" data-toggle="tooltip">Back to List</span></a>
     <a class="btn btn-danger" id="atnemail" style="display:none"><span title="Click here to back to mail" data-placement="bottom" data-toggle="tooltip">Back to Email</span></a>
-
+    <div class="active text-right" style="margin-left: auto; min-width: 280px;">        
+    </div> 
+    <div class="active text-right" style="margin-left:auto;min-width:280px;">
+        <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:90%;"></select>
+    </div>
     <div class="active text-right" style="margin-left:auto;min-width:280px;">
         <button type="button" class="btn btn-danger" id="btnUpdateOrder" data-toggle="tooltip" title="" data-placement="left" data-original-title="Get new orders"><i class="fas fa-sync"></i> Update Orders</button>
+        
     </div>
 </div>
-<section class="content section-content neworder-section table-design">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="user_subCrumbs">
-                <input type="hidden" id="hfOrderType" value="" data-userid="@ViewBag.userid" data-iseditable="@ViewBag.iseditable" />
-                <ul class="subsubsub">
-                    <li class="all" data-toggle="tooltip" title="Click search all order."><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
-                    <li class="mine" data-toggle="tooltip" title="Click search mine order."><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
-                    <li class="draft" data-toggle="tooltip" title="Click search draft order."><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-pending" data-toggle="tooltip" title="Click search pending order."><a href="javascript:void(0);" id="wc-pending">Pending payment (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-processing" data-toggle="tooltip" title="Click search processing order."><a href="javascript:void(0);" id="wc-processing">Processing (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-on-hold" data-toggle="tooltip" title="Click search on-hold order."><a href="javascript:void(0);" id="wc-on-hold">On hold (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-completed" data-toggle="tooltip" title="Click search completed order."><a href="javascript:void(0);" id="wc-completed">Completed (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-cancelled" data-toggle="tooltip" title="Click search cancelled order."><a href="javascript:void(0);" id="wc-cancelled">Cancelled (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-refunded" data-toggle="tooltip" title="Click search refunded order."><a href="javascript:void(0);" id="wc-refunded">Refunded (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-failed" data-toggle="tooltip" title="Click search failed order."><a href="javascript:void(0);" id="wc-failed">Failed (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-cancelnopay" data-toggle="tooltip" title="Click search cancel no payment order."><a href="javascript:void(0);" id="wc-cancelnopay">Cancelled - No Payment (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-pendingpodiuminv" data-toggle="tooltip" title="Click search Pending Podium Invoice order."><a href="javascript:void(0);" id="wc-pendingpodiuminv">Pending Podium Invoice (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-podium" data-toggle="tooltip" title="Click search Order via Podium."><a href="javascript:void(0);" id="wc-podium">Order via Podium (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-podiumrefund" data-toggle="tooltip" title="Click search Order via Podium."><a href="javascript:void(0);" id="wc-podiumrefund">Podium Refunded (<span class="count">0</span>)</a> </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-1">
-        <div class="col-md-4">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;">
-            </select>
-        </div>
-        <div class="col-md-4">
-            <a id="btnOtherFilter" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Search order by selection criteria."><i class="fa fa-search"></i> Filter</a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary table-design not-fixed">
-                <div class="box-header">
-                    @*<div class="table-responsive">  *@
-                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
-                        <thead>
-                            <tr>
-                                <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
-                                <th width="8%">Order ID</th>
-                                <th width="14%">Name</th>
-                                @*<th width="12%">Last Name</th>*@
-                                <th width="10%">Phone No.</th>
-                                <th width="10%">No. of Items</th>
-                                <th width="10%">Order Total</th>
-                                <th width="14%">Status</th>
-                                <th width="12%">Creation Date</th>
-                                <th width="10%">Payment Method</th>
-                                <th width="10%">Payment Method</th>
-                                <th width="10%">Payment Method</th>
-                                <th width="10%">Suborder</th>
-                                <th width="10%">Exported</th>
-                                <th width="5%"></th>
-                            </tr>
-                        </thead>
-                    </table>
-                    @*</div>*@
+    <section class="content section-content neworder-section table-design">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="user_subCrumbs">
+                    <input type="hidden" id="hfOrderType" value="" data-userid="@ViewBag.userid" data-iseditable="@ViewBag.iseditable" />
+                    <ul class="subsubsub">
+                        <li class="all" data-toggle="tooltip" title="Click search all order."><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
+                        <li class="mine" data-toggle="tooltip" title="Click search mine order."><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
+                        <li class="draft" data-toggle="tooltip" title="Click search draft order."><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-pending" data-toggle="tooltip" title="Click search pending order."><a href="javascript:void(0);" id="wc-pending">Pending payment (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-processing" data-toggle="tooltip" title="Click search processing order."><a href="javascript:void(0);" id="wc-processing">Processing (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-on-hold" data-toggle="tooltip" title="Click search on-hold order."><a href="javascript:void(0);" id="wc-on-hold">On hold (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-completed" data-toggle="tooltip" title="Click search completed order."><a href="javascript:void(0);" id="wc-completed">Completed (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-cancelled" data-toggle="tooltip" title="Click search cancelled order."><a href="javascript:void(0);" id="wc-cancelled">Cancelled (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-refunded" data-toggle="tooltip" title="Click search refunded order."><a href="javascript:void(0);" id="wc-refunded">Refunded (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-failed" data-toggle="tooltip" title="Click search failed order."><a href="javascript:void(0);" id="wc-failed">Failed (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-cancelnopay" data-toggle="tooltip" title="Click search cancel no payment order."><a href="javascript:void(0);" id="wc-cancelnopay">Cancelled - No Payment (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-pendingpodiuminv" data-toggle="tooltip" title="Click search Pending Podium Invoice order."><a href="javascript:void(0);" id="wc-pendingpodiuminv">Pending Podium Invoice (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-podium" data-toggle="tooltip" title="Click search Order via Podium."><a href="javascript:void(0);" id="wc-podium">Order via Podium (<span class="count">0</span>)</a> |</li>
+                        <li class="wc-podiumrefund" data-toggle="tooltip" title="Click search Order via Podium."><a href="javascript:void(0);" id="wc-podiumrefund">Podium Refunded (<span class="count">0</span>)</a> </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
-<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
-<script src="~/js/common.js"></script>
-<script src="@Url.Content("~/js/Orders/OrderCoupons.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/OrdersMySQL/OrderHistoryMySQL.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+        <div class="row mb-1">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;">
+                </select>
+            </div>
+            <div class="col-md-4">
+                <a id="btnOtherFilter" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Search order by selection criteria."><i class="fa fa-search"></i> Filter</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary table-design not-fixed">
+                    <div class="box-header">
+                        @*<div class="table-responsive">  *@
+                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
+                                    <th width="8%">Order ID</th>
+                                    <th width="14%">Name</th>
+                                    @*<th width="12%">Last Name</th>*@
+                                    <th width="10%">Phone No.</th>
+                                    <th width="10%">No. of Items</th>
+                                    <th width="10%">Order Total</th>
+                                    <th width="14%">Status</th>
+                                    <th width="12%">Creation Date</th>
+                                    <th width="10%">Payment Method</th>
+                                    <th width="10%">Payment Method</th>
+                                    <th width="10%">Payment Method</th>
+                                    <th width="10%">Suborder</th>
+                                    <th width="10%">Exported</th>
+                                    <th width="10%">Wesite</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                        @*</div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+    <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="@Url.Content("~/js/Orders/OrderCoupons.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/js/OrdersMySQL/OrderHistoryMySQL.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

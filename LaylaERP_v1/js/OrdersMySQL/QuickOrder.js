@@ -13,6 +13,7 @@
             error: function (xhr, status, err) { }, cache: true
         }
     });
+    getcompany();
     let productData = {};
     $("#ddlProduct").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
@@ -1586,6 +1587,21 @@ function removeItemsInTable(id) {
             }
         });
 }
+function getcompany() {
+    console.log('as');
+    $.ajax({
+        url: "/Setting/GetCompany",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="">Please Select Store</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlcompany').html(opt);
+        }
+
+    });
+}
 function calcFinalTotals() {
     //calculateStateRecyclingFee();
     FinalTotalControl([]);
@@ -2777,7 +2793,8 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: $('#discountTotal').text().replace('$', '') },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: $('#shippingTotal').text().replace('$', '')  },
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: $('#salesTaxTotal').text().replace('$', '') },
-        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift, post_id: oid, meta_key: 'total_gcamt', meta_value: _gift }
+        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift, post_id: oid, meta_key: 'total_gcamt', meta_value: _gift },
+        { post_id: oid, meta_key: '_website_id', meta_value: parseInt($('#ddlcompany').val()) || 0 }
     );
     if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
     if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
@@ -3400,6 +3417,7 @@ function saveCO() {
                 },
                 order_notes: $("#add_order_note").val(),
                 session_id: $("#hfsession_id").val(),
+                website_id: $("#ddlcompany").val(),
                 //user_id: '',
                 //payment_method: 'authorize_net_cim_credit_card',
                 //  payment_method_title: 'Credit Card',

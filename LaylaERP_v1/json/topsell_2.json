@@ -29,14 +29,14 @@
         "dimension_unit": "",
         "tax_status": "taxable",
         "image": {
-          "name": "",
+          "name": "2019/09/SL-GTP38-FTR16-1.jpg",
           "height": null,
           "width": null,
           "size": null
         },
         "total_review": null,
         "average_score": null,
-        "brand": "",
+        "brand": "spoologic",
         "cat_wholesale": {
           "price": null
         },
@@ -77,14 +77,14 @@
         "dimension_unit": "",
         "tax_status": "taxable",
         "image": {
-          "name": "",
+          "name": "2019/05/GT3782VA-Basic-Turbo-Rebuild-Kit-For-03-07-6.0L-Ford-Powerstroke-Diesel.jpg",
           "height": null,
           "width": null,
           "size": null
         },
         "total_review": null,
         "average_score": null,
-        "brand": "",
+        "brand": "spoologic",
         "cat_wholesale": {
           "price": null
         },
@@ -94,5 +94,293 @@
         }
       }
     ]
-  }  
+  },
+  {
+    "term_id": 70381,
+    "name": "SPOOLOGIC Compressor Wheels And Housings",
+    "slug": "spoologic-compressor-wheels",
+    "products": [
+      {
+        "ID": 30172,
+        "post_name": "tp38-gtp38-77-blade-billet-compressor-wheel",
+        "post_title": "SPOOLOGIC TP38 GTP38 7+7 Blade Billet Wheel for 1994-2003 7.3L Ford Powerstroke",
+        "yoast_title": "tp38-gtp38-77-blade-billet-compressor-wheel",
+        "yoast_description": "",
+        "sku": "SL-GTP38-FBW773",
+        "price": "129.95",
+        "regular_price": "129.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "0",
+        "stock_status": "outofstock",
+        "children": null,
+        "core_price": "",
+        "weight": "0.5",
+        "length": "5",
+        "width": "5",
+        "height": "5",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2019/10/P1140748-FBW773-1000X1000.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  },
+  {
+    "term_id": 70382,
+    "name": "SPOOLOGIC Turbine Shaft And Housings",
+    "slug": "spoologic-turbine-shaft",
+    "products": [
+      {
+        "ID": 29294,
+        "post_name": "gtp38-billet-cartridge-chra",
+        "post_title": "SPOOLOGIC GTP38 Billet Wheel Cartridge CHRA for 1999.5-2003 7.3L Ford Powerstroke",
+        "yoast_title": "gtp38-billet-cartridge-chra",
+        "yoast_description": "",
+        "sku": "SL-99.503-GTP38-FB06",
+        "price": "379.95",
+        "regular_price": "379.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "notify",
+        "stock": "0",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "22.00",
+        "length": "16",
+        "width": "12",
+        "height": "12",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2017/06/P1140074-1000X1000.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  },
+  {
+    "term_id": 70383,
+    "name": "SPOOLOGIC Mounting Hardware, Gaskets, and Accessories",
+    "slug": "spoologic-gaskets-hardwares",
+    "products": [
+      {
+        "ID": 30001,
+        "post_name": "7-3l-99-5-03-ford-powerstroke-diesel-turbo-pedestal-ebp-delete-kit",
+        "post_title": "SPOOLOGIC GTP38 Non-EBPV Turbo Pedestal Kit for 1999.5-2003 7.3L Ford Powerstroke",
+        "yoast_title": "7-3l-99-5-03-ford-powerstroke-diesel-turbo-pedestal-ebp-delete-kit",
+        "yoast_description": "",
+        "sku": "SL-GTP38-EBPVD-9903-FKIT",
+        "price": "159.95",
+        "regular_price": "159.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "41",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "10",
+        "length": "10",
+        "width": "10",
+        "height": "7",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2018/12/DSC_1018-Copy-2.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  },
+  {
+    "term_id": 70384,
+    "name": "SPOOLOGIC Charge Air Cooler System",
+    "slug": "spoologic-clamps-hoses",
+    "products": [
+      {
+        "ID": 30998,
+        "post_name": "tp38-compressor-inlet-boot",
+        "post_title": "SPOOLOGIC TP38 Compressor Inlet Boot for 1994-1997 7.3L Ford Powerstroke",
+        "yoast_title": "tp38-compressor-inlet-boot",
+        "yoast_description": "",
+        "sku": "SL-9497-TP38-INLET",
+        "price": "54.95",
+        "regular_price": "54.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "53",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "75",
+        "length": "9",
+        "width": "5",
+        "height": "5",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2019/05/TP38-Compressor-Inlet-Boot-For-94-97-7.3L-Ford-Powerstroke-Diesel.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  },
+  {
+    "term_id": 70385,
+    "name": "SPOOLOGIC Exhaust System",
+    "slug": "spoologic-exhaust-manifold-up-pipe-down-pipe",
+    "products": [
+      {
+        "ID": 28562,
+        "post_name": "7-3l-ford-powerstroke-99-5-03-turbo-diesel-exhaust-up-pipes-gaskets",
+        "post_title": "SPOOLOGIC 304 Stainless Steel Bellowed Up-pipes and gaskets 1999.5-2003 7.3L Ford Powerstroke",
+        "yoast_title": "7-3l-ford-powerstroke-99-5-03-turbo-diesel-exhaust-up-pipes-gaskets",
+        "yoast_description": "",
+        "sku": "SL-7.3L 99-03 304SS UP-PIPES",
+        "price": "209.95",
+        "regular_price": "209.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "29",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "11",
+        "length": "24",
+        "width": "9",
+        "height": "4",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "2019/09/Ford-7.3L-99-03-up-pipe-kit-scaled.jpg",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  },
+  {
+    "term_id": 70387,
+    "name": "SPOOLOGIC (VGT) Variable Geometry System",
+    "slug": "spoologic-housings-and-pedestals",
+    "products": [
+      {
+        "ID": 28538,
+        "post_name": "6-6l-turbo-vane-position-sensor-kit",
+        "post_title": "SPOOLOGIC Turbo Vane Position Sensor Kit for 2004.5-2016 6.6L Chevrolet Duramax LLY LBZ LMM LML",
+        "yoast_title": "6-6l-turbo-vane-position-sensor-kit",
+        "yoast_description": "",
+        "sku": "SL-04516-DTVS",
+        "price": "119.95",
+        "regular_price": "119.95",
+        "sale_price": null,
+        "product_type": "simple",
+        "manage_stock": "yes",
+        "backorders": "no",
+        "stock": "76",
+        "stock_status": "instock",
+        "children": null,
+        "core_price": "",
+        "weight": "95",
+        "length": "5",
+        "width": "4",
+        "height": "2",
+        "weight_unit": "",
+        "dimension_unit": "",
+        "tax_status": "taxable",
+        "image": {
+          "name": "imported/5/95/66L-Duramax-Turbo-Vane-Position-Sensor-KIT-2004-thru-2015-LLY-LBZ-LMM-LML-272033193495.JPG",
+          "height": null,
+          "width": null,
+          "size": null
+        },
+        "total_review": null,
+        "average_score": null,
+        "brand": "spoologic",
+        "cat_wholesale": {
+          "price": null
+        },
+        "wholesale": {
+          "price": null,
+          "role": ""
+        }
+      }
+    ]
+  } 
 ]

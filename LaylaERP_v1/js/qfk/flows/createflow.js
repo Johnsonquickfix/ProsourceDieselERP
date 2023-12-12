@@ -1,134 +1,165 @@
-﻿var doc = doc || document;
+﻿var doc = doc || document, lt = { id: 1000, loaded: !1, exports: {} };
 doc.addEventListener("DOMContentLoaded", function () {
-    var c = {
-        id: 1000,
-        loaded: !1,
-        exports: {}
-    }; fnENUM(c)
-    console.log('ENUM => ', c)
-    let spacing_x = 40, spacing_y = 100;
-    // Initialize Flowy
-    flowy(doc.getElementById("canvas"), onGrab, onRelease, onSnap, onRearrange, spacing_x, spacing_y);
-    function onGrab(block) {
-        // When the user grabs a block
-    }
-    function onRelease() {
-        // When the user releases a block
-    }
-    function onSnap(block, first, parent) {
-        // When a block snaps with another one
-    }
-    function onRearrange(block, parent) {
-        // When a block is rearranged
+    fnENUM(lt);
+    console.log('ENUM => ', lt)
+
+
+
+    addEventListenerMulti("dragover", (event) => { dropAction(event) }, true, ".droppable-target");
+    //addEventListenerMulti("drop", (event) => { dropAction(event) }, true, ".droppable-target");
+    function dropAction(evt) {
+        console.log(evt, this)
+        let e = { canDrop: true, pending: false, actionType: 'send_message' };
+        evt.target.parentElement.parentElement.parentElement.insertBefore(draw(e), evt.target.parentElement.parentElement);
     }
 
-    let output = {
-        "html": "\n    <div class=\"indicator invisible\"></div><div class=\"blockelem noselect block\" style=\"left: 367px; top: 22px;\"><input type=\"hidden\" name=\"blockelemtype\" class=\"blockelemtype\" value=\"11\"><input type=\"hidden\" name=\"blockid\" class=\"blockid\" value=\"0\"><div class=\"blockyleft\"><img src=\"assets/errorred.svg\"><p class=\"blockyname\">Prompt an error</p></div><div class=\"blockyright\"><img src=\"assets/more.svg\"></div><div class=\"blockydiv\"></div><div class=\"blockyinfo\">Trigger <span>Error 1</span></div></div>",
-        //"html": '<div class="placed-component-container trigger"><div role="button" tabindex="-1"><div role="button" tabindex="-1" class="placed-component trigger logic"><div class="placed-component-body"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl-icon-trigger-bolt"></i></div></div><div class="placed-component-content"><div class="placed-component-header"><div class="placed-component-title"><span>Trigger</span></div><div class="placed-component-dropdown-container"></div></div><div class="placed-component-main" data-actionid="XF24Fe"><p class=""><span class="TextStyleTemplate-sc-1jbnw9u-0 iGIlQp utilities__InlineBody-sc-1og1v64-0 kMXaEU">When someone </span><span class="highlighted-text">Started Checkout</span><span class="TextStyleTemplate-sc-1jbnw9u-0 iGIlQp utilities__InlineBody-sc-1og1v64-0 kMXaEU">.</span></p></div></div></div><div class="placed-component-footer"><button class="btn btn-small btn-alt icon-btn " type="button"><i class="kl-icon kl-icon-show-trigger-summary"></i></button><ul class="filter-descriptions"><li class="filter-description">Flow Filters (1)</li></ul></div></div></div></div>',
-        "blockarr": [
-            {
-                "parent": -1,
-                "childwidth": 0,
-                "id": 0,
-                "x": 526,
-                "y": 82,
-                "width": 318,
-                "height": 120
-            }
-        ],
-        "blocks": [
-            {
-                "id": 0,
-                "parent": -1,
-                "data": [
-                    {
-                        "name": "blockelemtype",
-                        "value": "11"
-                    },
-                    {
-                        "name": "blockid",
-                        "value": "0"
-                    }
-                ],
-                "attr": [
-                    {
-                        "class": "blockelem noselect block"
-                    },
-                    {
-                        "style": "left: 367px; top: 22px;"
-                    }
-                ]
-            }
-        ]
-    }
-    flowy.import(output)
-
-
-    // add a new node to the canvas
-
-    //const node = flowy.addNode({
-    //    text: "New Node",
-    //    x: 100,
-    //    y: 100,
-    //    draggable: true,
-    //    resizable: true,
-    //    deletable: true,
-    //});
-
-
-
-    let tempblock, tempblock2, rightcard = false;
-    //flowy(doc.getElementById("canvas"));
-    //flowy(doc.getElementById("canvas"), drag, release, snapping);
-
-
-
-    //function snapping(drag, first) {
-    //    let grab = drag.querySelector(".grabme"), blockin = drag.querySelector(".blockin");
-    //    grab.parentNode.removeChild(grab);
-    //    blockin.parentNode.removeChild(blockin);
-    //    if (drag.querySelector(".blockelemtype").value == "1") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/eyeblue.svg'><p class='blockyname'>New visitor</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>When a <span>new visitor</span> goes to <span>Site 1</span></div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "2") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/actionblue.svg'><p class='blockyname'>Action is performed</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>When <span>Action 1</span> is performed</div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "3") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/timeblue.svg'><p class='blockyname'>Time has passed</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>When <span>10 seconds</span> have passed</div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "4") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/errorblue.svg'><p class='blockyname'>Error prompt</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>When <span>Error 1</span> is triggered</div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "5") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/databaseorange.svg'><p class='blockyname'>New database entry</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Add <span>Data object</span> to <span>Database 1</span></div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "6") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/databaseorange.svg'><p class='blockyname'>Update database</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Update <span>Database 1</span></div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "7") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/actionorange.svg'><p class='blockyname'>Perform an action</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Perform <span>Action 1</span></div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "8") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/twitterorange.svg'><p class='blockyname'>Make a tweet</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Tweet <span>Query 1</span> with the account <span>-</span></div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "9") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/logred.svg'><p class='blockyname'>Add new log entry</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Add new <span>success</span> log entry</div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "10") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/logred.svg'><p class='blockyname'>Update logs</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Edit <span>Log Entry 1</span></div>";
-    //    } else if (drag.querySelector(".blockelemtype").value == "11") {
-    //        drag.innerHTML += "<div class='blockyleft'><img src='assets/errorred.svg'><p class='blockyname'>Prompt an error</p></div><div class='blockyright'><img src='assets/more.svg'></div><div class='blockydiv'></div><div class='blockyinfo'>Trigger <span>Error 1</span></div>";
-    //    }
-    //    return true;
-    //}
-    //function drag(block) {
-    //    block.classList.add("blockdisabled");
-    //    tempblock2 = block;
-    //}
-    //function release() { tempblock2 && tempblock2.classList.remove("blockdisabled"); }
+    //addEventListenerMulti("dragstart", onDragStart, false, ".draggable-flow-action-component");
+    //addEventListenerMulti("dragend", onDragStart, false, ".draggable-flow-action-component");
+    //addEventListenerMulti("mousedown", () => { dropActive(true); }, false, ".draggable-flow-action-component");
+    //addEventListenerMulti("mouseup", () => { dropActive(false); }, false, ".draggable-flow-action-component");
+    //addEventListenerMulti("drop", () => { dropActive(false); }, false, ".draggable-flow-action-component");
 });
 
-export const trigger_initial = () => {
-    let $div = r.createElement("div", { class: "placed-component-container blockelem block trigger" },
-        r.createElement('input', {}),
-        r.createElement()
-    );
-    //<div class=\"indicator invisible\"></div>
-    return r.createElement("div", {
-        class: "placed-component-container blockelem block trigger"
-    });
-};
+export const addEventListenerMulti = function (type, listener, capture, selector) {
+    let nodes = doc.querySelectorAll(selector); console.log(type, nodes)
+    for (let i = 0; i < nodes.length; i++) { nodes[i].addEventListener(type, listener, capture); }
+},
+    onDragStart = (ev) => {
+        const rect = ev.target.getBoundingClientRect();
+        console.log(rect)
+        dropActive(true);
+        //offsetX = ev.clientX - rect.x;
+        //offsetY = ev.clientY - rect.y;
+    },
+    onDragEnd = (ev) => {
+        const rect = ev.target.getBoundingClientRect();
+        console.log(rect)
+        //dropActive(false);
+    },
+    dropTarget = () => {
+        return doc.createElement('div', { class: "droppable-target droppable-node" },
+            doc.createElement('div', { class: "component-node-container" },
+                doc.createElement('div', { class: "add-component-node" }, doc.createElement('i', { class: "fas fa-plus" }))
+            )
+        );
+    },
+    dropActive = (v) => {
+        let nodes = doc.querySelectorAll('.flow-canvas .droppable-target'),
+            panel = doc.createElement('div', { class: 'placed-component-container placeholder' }, doc.createElement('div', { class: 'placed-component send-email action' }));
+
+        nodes.forEach((e, i) => {
+            e.addEventListener("dragover", event => {
+                // prevent default to allow drop
+                event.preventDefault();
+                //if (!event.target.querySelector('.placed-component-container')) {
+                //event.target.appendChild(doc.createElement('div', { class: 'placed-component-container placeholder' }, doc.createElement('div', { class: 'placed-component send-email action' })));
+                //event.target.appendChild(doc.createElement('div', { class: 'component-node-container  ' }));
+                //}
+            });
+            e.addEventListener("drop", event => {
+                // prevent default action (open as link for some elements)
+                event.preventDefault();
+                // move dragged element to the selected drop target
+                //if (event.target.className == "dropzone") {
+                //    dragged.parentNode.removeChild(dragged);
+                //    event.target.appendChild(dragged);
+                //}
+                console.log("drop", event);
+
+            });
+
+            let addNode = e.querySelector('.add-component-node');
+            addNode && addNode.replaceChildren();
+
+
+            if (v && addNode) {
+                e.classList.add('droppable-node'), addNode.replaceChildren(doc.createElement('i', { class: "fas fa-plus" }));
+                //addNode.addEventListener("mouseover", (evt) => {
+                //    evt.target.replaceChildren();
+                //    e.appendChild(doc.createElement('div', { class: 'placed-component-container placeholder' }, doc.createElement('div', { class: 'placed-component send-email action' })));
+                //    e.appendChild(doc.createElement('div', { class: 'component-node-container  ' }));
+                //});
+            }
+            else {
+                e.classList.remove('droppable-node');
+            }
+            //if (v) { e.classList.add('droppable-node'), addNode && addNode.replaceChildren(doc.createElement('i', { class: "fas fa-plus" })); }
+            //else e.classList.remove('droppable-node'), addNode && addNode.replaceChildren();
+        });
+    },
+    icon = () => {
+        return doc.createElement('div', { class: "placed-component-icon-container" },
+            doc.createElement('div', { class: "placed-component-icon-background" },
+                doc.createElement('i', { class: "kl-icon kl-icon-send-email" })
+            ),
+        );
+    };
+function draw(e) {
+    let { actionType: t, pending: n, canDrop: i } = e;
+    const o = t === lt.Jn.REJOIN, r = o ? "path-exit" : "placed-component-container", l = lt.pc[t];
+    let container = doc.createElement('div', { class: `${r} ${t}` });
+    container.appendChild(dropTarget());
+
+    let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `placed-component ${l}`.trim() },
+        doc.createElement('div', { class: 'placed-component-body' }, icon(),
+            doc.createElement('div', { class: 'placed-component-content' },
+                doc.createElement('div', { class: 'placed-component-header' },
+                    doc.createElement('div', { class: 'placed-component-title' }, '-'),
+                    doc.createElement('div', { class: 'placed-component-dropdown-container' }, '-')
+                ),
+                doc.createElement('div', { class: 'placed-component-main' })
+            ),
+            doc.createElement('div', { class: 'placed-component-footer' })
+        )
+    )
+    if (i === true) container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, doc.createElement('div', { class: lt.i_[t], draggable: "true" }, b)))
+    else container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, b));
+    //console.log(container);
+    return container;
+    //let b = r.createElement("div", {
+    //    role: "button",
+    //    tabIndex: "-1",
+    //    className: `${ T? "": y }`.trim(),
+    //    onClick: w,
+    //    onKeyPress: function (e) {
+    //        "Enter" === e.key && w(e)
+    //    }
+    //}, r.createElement("div", {
+    //    className: "placed-component-body"
+    //}, n, r.createElement("div", {
+    //    className: "placed-component-content"
+    //}, r.createElement("div", {
+    //    className: "placed-component-header"
+    //}, a, r.createElement("div", {
+    //    className: "placed-component-dropdown-container"
+    //}, S || !h.includes(v.r.FLOWS_COMPONENTS_CLONE_DELETE) || P ? "" : l)), null !== i ? r.createElement("div", {
+    //    className: "placed-component-main",
+    //    "data-actionid": g
+    //}, i) : null, null !== o ? o : null)), P ? null : s);
+
+
+
+    //return i || n ? [a.createElement(mi, {
+    //    key: (0,
+    //        La.Z)(),
+    //    doShowDropTarget: !1
+    //}), a.createElement("div", {
+    //    key: (0,
+    //        La.Z)(),
+    //    className: `${r} placeholder`
+    //}, a.createElement("div", {
+    //    className: `${o ? "" : "placed-component"} ${l}`.trim()
+    //}, n ? a.createElement("div", {
+    //    className: "loader"
+    //}) : "")), a.createElement(mi, {
+    //    key: (0,
+    //        La.Z)(),
+    //    doShowDropTarget: !1
+    //})] : a.createElement(mi, {
+    //    key: (0,
+    //        La.Z)()
+    //})
+}
 
 
 export const checkArray = (e, a) => Object.prototype.hasOwnProperty.call(e, a),
@@ -539,23 +570,23 @@ export const fnENUM = function (t, n) {
             LOGIC: "logic"
         }
         , _ = {
-            [T.SEND_PUSH_NOTIFICATION]: `push-notification ${P.ACTION}`,
-            [T.EMAIL]: `send-email ${P.ACTION}`,
-            [T.SEND_SMS_MESSAGE]: `send-sms ${P.ACTION}`,
-            [T.TIME_DELTA]: `time-delta ${P.TIMING.COLLAPSED}`,
-            [T.BACK_IN_STOCK_DELAY]: `back-in-stock ${P.TIMING.EXPANDED}`,
-            [T.COUNTDOWN_DELAY]: `countdown-delay ${P.TIMING.COLLAPSED}`,
-            [T.DATE_TRIGGER]: `countdown-delay ${P.TIMING.COLLAPSED}`,
-            [T.SUPPRESS_CUSTOMER]: `suppress-customer ${P.ACTION}`,
+            [T.SEND_PUSH_NOTIFICATION]: `push - notification ${P.ACTION}`,
+            [T.EMAIL]: `send - email ${P.ACTION}`,
+            [T.SEND_SMS_MESSAGE]: `send - sms ${P.ACTION}`,
+            [T.TIME_DELTA]: `time - delta ${P.TIMING.COLLAPSED}`,
+            [T.BACK_IN_STOCK_DELAY]: `back -in -stock ${P.TIMING.EXPANDED}`,
+            [T.COUNTDOWN_DELAY]: `countdown - delay ${P.TIMING.COLLAPSED}`,
+            [T.DATE_TRIGGER]: `countdown - delay ${P.TIMING.COLLAPSED}`,
+            [T.SUPPRESS_CUSTOMER]: `suppress - customer ${P.ACTION}`,
             [T.BRANCH]: `branch ${P.LOGIC}`,
             [T.TRIGGER_SPLIT]: `branch ${P.LOGIC}`,
             [T.CONDITIONAL_SPLIT]: `branch ${P.LOGIC}`,
-            [T.UPDATE_CUSTOMER]: `update-customer ${P.ACTION}`,
+            [T.UPDATE_CUSTOMER]: `update - customer ${P.ACTION}`,
             [T.REJOIN]: "rejoin-node exit-node",
-            [T.NOTIFICATION]: `send-notification ${P.ACTION}`,
+            [T.NOTIFICATION]: `send - notification ${P.ACTION}`,
             [T.WEBHOOK]: `webhook ${P.ACTION}`,
-            [T.INTERNAL_SERVICE]: `internal-service ${P.ACTION}`,
-            [T.AB_TEST]: `ab-test ${P.ACTION}`
+            [T.INTERNAL_SERVICE]: `internal - service ${P.ACTION}`,
+            [T.AB_TEST]: `ab - test ${P.ACTION}`
         }
         , w = {
             PLACED_COMPONENT: "PLACED_COMPONENT",

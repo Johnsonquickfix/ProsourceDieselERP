@@ -4,7 +4,7 @@ doc.addEventListener("DOMContentLoaded", function () {
     getEnum(c);
     //doc.getElementById("blocklist").innerHTML = '<div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="1"><div class="grabme"><img src="assets/grabme.svg"></div><div class="blockin">                  <div class="blockico"><span></span><img src="assets/eye.svg"></div><div class="blocktext">                        <p class="blocktitle">New visitor</p><p class="blockdesc">Triggers when somebody visits a specified page</p>        </div></div></div><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="2"><div class="grabme"><img src="assets/grabme.svg"></div><div class="blockin">                    <div class="blockico"><span></span><img src="assets/action.svg"></div><div class="blocktext">                        <p class="blocktitle">Action is performed</p><p class="blockdesc">Triggers when somebody performs a specified action</p></div></div></div><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="3"><div class="grabme"><img src="assets/grabme.svg"></div><div class="blockin">                    <div class="blockico"><span></span><img src="assets/time.svg"></div><div class="blocktext">                        <p class="blocktitle">Time has passed</p><p class="blockdesc">Triggers after a specified amount of time</p>          </div></div></div><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="4"><div class="grabme"><img src="assets/grabme.svg"></div><div class="blockin">                    <div class="blockico"><span></span><img src="assets/error.svg"></div><div class="blocktext">                        <p class="blocktitle">Error prompt</p><p class="blockdesc">Triggers when a specified error happens</p>              </div></div></div>';
     flowy(document.getElementById("canvas"), drag, release, snapping);
-
+    flowy.import(createPanel(c.fa.TRIGGER));
     function addEventListenerMulti(type, listener, capture, selector) {
         var nodes = doc.querySelectorAll(selector);
         for (var i = 0; i < nodes.length; i++) {
@@ -96,8 +96,8 @@ function createPanel(_type) {
     let _ctr = '';
 
     if (c.fa.TRIGGER === _type) {
-        let _json = {
-            "html": "\n            <div class=\"indicator invisible\"></div><div class=\"blockelem noselect block\" style=\"left: 329px; top: 16px;\">\n                        <input type=\"hidden\" name=\"blockelemtype\" class=\"blockelemtype\" value=\"send_message\">\n                        \n                        \n                    <input type=\"hidden\" name=\"blockid\" class=\"blockid\" value=\"0\"><div class=\"blockyleft\"><div class=\"blockico\"><i class=\"fas fa-envelope\"></i></div><p class=\"blockyname\">Email #1</p></div><div class=\"blockyright\"></div><div class=\"blockydiv\"></div><div class=\"blockyinfo\">Email #1 Subject</div></div>",
+        return {
+            html: `<div class="indicator invisible"></div><div class="blockelem noselect block" style="left: 329px; top: 16px;"><input type="hidden" name="blockelemtype" class="blockelemtype" value="${_type}"><input type="hidden" name="blockid" class="blockid" value="0"><div class="blockyleft"><div class="blockico"><i class="fas fa-bolt"></i></div><p class="blockyname">Trigger</p></div><div class="blockyright"></div><div class="blockydiv"></div><div class="blockyinfo">Select a flow trigger on the left to get started.</div></div>`,
             blockarr: [{ parent: -1, childwidth: 0, id: 0, x: 488, y: 72.5, width: 318, height: 113 }],
             blocks: [
                 {

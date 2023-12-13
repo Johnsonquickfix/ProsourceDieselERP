@@ -1,17 +1,15 @@
-﻿var doc = doc || document, lt = { id: 1000, loaded: !1, exports: {} };
+﻿var doc = doc || document, dragged = null, lt = { id: 1000, loaded: !1 };
 doc.addEventListener("DOMContentLoaded", function () {
-    fnENUM(lt);
+    enums(lt);
     console.log('ENUM => ', lt)
+    initTrigger();
 
+    //config_panel({ actionType: lt.panel.TRIGGER_AND_FILTERS_INITIAL, title: 'Trigger Setup', displayFooter: false });
+    //config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, title: '', displayFooter: false });
 
+    //addEventListenerMulti("dragover", (event) => { event.preventDefault(); }, true, ".droppable-target");
+    //addEventListenerMulti("drop", (event) => { console.log(event, dragged); dropAction(event) }, true, ".droppable-target");
 
-    addEventListenerMulti("dragover", (event) => { dropAction(event) }, true, ".droppable-target");
-    //addEventListenerMulti("drop", (event) => { dropAction(event) }, true, ".droppable-target");
-    function dropAction(evt) {
-        console.log(evt, this)
-        let e = { canDrop: true, pending: false, actionType: 'send_message' };
-        evt.target.parentElement.parentElement.parentElement.insertBefore(draw(e), evt.target.parentElement.parentElement);
-    }
 
     //addEventListenerMulti("dragstart", onDragStart, false, ".draggable-flow-action-component");
     //addEventListenerMulti("dragend", onDragStart, false, ".draggable-flow-action-component");
@@ -21,145 +19,138 @@ doc.addEventListener("DOMContentLoaded", function () {
 });
 
 export const addEventListenerMulti = function (type, listener, capture, selector) {
-    let nodes = doc.querySelectorAll(selector); console.log(type, nodes)
+    let nodes = doc.querySelectorAll(selector);
     for (let i = 0; i < nodes.length; i++) { nodes[i].addEventListener(type, listener, capture); }
 },
-    onDragStart = (ev) => {
-        const rect = ev.target.getBoundingClientRect();
-        console.log(rect)
-        dropActive(true);
-        //offsetX = ev.clientX - rect.x;
-        //offsetY = ev.clientY - rect.y;
+    dropAction = (evt) => {
+        let e = { canDrop: true, pending: false, actionType: 'send_message' };
+        evt.target.parentElement.parentElement.parentElement.insertBefore(drawComponent(e), evt.target.parentElement.parentElement);
     },
-    onDragEnd = (ev) => {
-        const rect = ev.target.getBoundingClientRect();
-        console.log(rect)
-        //dropActive(false);
+    onDrag = (event) => {
+        console.log("dragging");
     },
-    dropTarget = () => {
-        return doc.createElement('div', { class: "droppable-target droppable-node" },
-            doc.createElement('div', { class: "component-node-container" },
-                doc.createElement('div', { class: "add-component-node" }, doc.createElement('i', { class: "fas fa-plus" }))
-            )
-        );
+    onDragStart = (event) => {
+        // store a ref. on the dragged elem
+        dragged = event.target; console.log("dragstart");
+        // make it half transparent
+        //event.target.classList.add("dragging");
     },
-    dropActive = (v) => {
-        let nodes = doc.querySelectorAll('.flow-canvas .droppable-target'),
-            panel = doc.createElement('div', { class: 'placed-component-container placeholder' }, doc.createElement('div', { class: 'placed-component send-email action' }));
-
-        nodes.forEach((e, i) => {
-            e.addEventListener("dragover", event => {
-                // prevent default to allow drop
-                event.preventDefault();
-                //if (!event.target.querySelector('.placed-component-container')) {
-                //event.target.appendChild(doc.createElement('div', { class: 'placed-component-container placeholder' }, doc.createElement('div', { class: 'placed-component send-email action' })));
-                //event.target.appendChild(doc.createElement('div', { class: 'component-node-container  ' }));
-                //}
-            });
-            e.addEventListener("drop", event => {
-                // prevent default action (open as link for some elements)
-                event.preventDefault();
-                // move dragged element to the selected drop target
-                //if (event.target.className == "dropzone") {
-                //    dragged.parentNode.removeChild(dragged);
-                //    event.target.appendChild(dragged);
-                //}
-                console.log("drop", event);
-
-            });
-
-            let addNode = e.querySelector('.add-component-node');
-            addNode && addNode.replaceChildren();
-
-
-            if (v && addNode) {
-                e.classList.add('droppable-node'), addNode.replaceChildren(doc.createElement('i', { class: "fas fa-plus" }));
-                //addNode.addEventListener("mouseover", (evt) => {
-                //    evt.target.replaceChildren();
-                //    e.appendChild(doc.createElement('div', { class: 'placed-component-container placeholder' }, doc.createElement('div', { class: 'placed-component send-email action' })));
-                //    e.appendChild(doc.createElement('div', { class: 'component-node-container  ' }));
-                //});
-            }
-            else {
-                e.classList.remove('droppable-node');
-            }
-            //if (v) { e.classList.add('droppable-node'), addNode && addNode.replaceChildren(doc.createElement('i', { class: "fas fa-plus" })); }
-            //else e.classList.remove('droppable-node'), addNode && addNode.replaceChildren();
-        });
-    },
-    icon = () => {
-        return doc.createElement('div', { class: "placed-component-icon-container" },
-            doc.createElement('div', { class: "placed-component-icon-background" },
-                doc.createElement('i', { class: "kl-icon kl-icon-send-email" })
-            ),
-        );
+    onDragEnd = (event) => {
+        //console.log(dragged)
+        console.log("dragend");
+        // reset the transparency
+        //event.target.classList.remove("dragging");
     };
-function draw(e) {
-    let { actionType: t, pending: n, canDrop: i } = e;
-    const o = t === lt.Jn.REJOIN, r = o ? "path-exit" : "placed-component-container", l = lt.pc[t];
-    let container = doc.createElement('div', { class: `${r} ${t}` });
-    container.appendChild(dropTarget());
 
-    let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `placed-component ${l}`.trim() },
-        doc.createElement('div', { class: 'placed-component-body' }, icon(),
-            doc.createElement('div', { class: 'placed-component-content' },
-                doc.createElement('div', { class: 'placed-component-header' },
-                    doc.createElement('div', { class: 'placed-component-title' }, '-'),
-                    doc.createElement('div', { class: 'placed-component-dropdown-container' }, '-')
-                ),
-                doc.createElement('div', { class: 'placed-component-main' })
-            ),
-            doc.createElement('div', { class: 'placed-component-footer' })
-        )
-    )
-    if (i === true) container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, doc.createElement('div', { class: lt.i_[t], draggable: "true" }, b)))
-    else container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, b));
-    //console.log(container);
-    return container;
-    //let b = r.createElement("div", {
-    //    role: "button",
-    //    tabIndex: "-1",
-    //    className: `${ T? "": y }`.trim(),
-    //    onClick: w,
-    //    onKeyPress: function (e) {
-    //        "Enter" === e.key && w(e)
-    //    }
-    //}, r.createElement("div", {
-    //    className: "placed-component-body"
-    //}, n, r.createElement("div", {
-    //    className: "placed-component-content"
-    //}, r.createElement("div", {
-    //    className: "placed-component-header"
-    //}, a, r.createElement("div", {
-    //    className: "placed-component-dropdown-container"
-    //}, S || !h.includes(v.r.FLOWS_COMPONENTS_CLONE_DELETE) || P ? "" : l)), null !== i ? r.createElement("div", {
-    //    className: "placed-component-main",
-    //    "data-actionid": g
-    //}, i) : null, null !== o ? o : null)), P ? null : s);
+function config_panel(e) {
+    let { actionType: a, title: t, displayFooter: f } = e;
+    let _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body, _footer;
+    _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t));
+    _body = doc.createElement('div', { class: `${_class}-body ${!f ? 'no-footer' : ''} `.trim() });
+    _footer = doc.createElement('div', { class: `${_class}-footer`.trim() });
+    if (lt.panel.TRIGGER_AND_FILTERS_INITIAL === a) {
+        let _p = doc.createElement("div", { class: "trigger-select-panel" }, doc.createElement("p", null, "What will trigger this flow?"), triggerInitial({ triggers: lt.triggers }));
+        _body.replaceChildren(_p);
+    }
+    else if (lt.panel.FLOWS_COMPONENTS_PANEL === a) {
+        _body.replaceChildren(flowComponentsInitial({ flowAction: lt.flowAction }));
+    }
+    else if (lt.panel.TRIGGER_LIST_PANEL === a) {
+        let _p = doc.createElement("div", { class: "trigger-setup-panel" }, `<div><button class="btn-link back-link" type="button"><i ></i><strong>Back</strong></button></div>`);
+        _body.replaceChildren(_p);
+        //_body.replaceChildren(flowComponentsInitial({ flowAction: lt.flowAction }));
+    }
+    else if (lt.panel.TRIGGER_SEGMENT_PANEL === a) {
+        //_body.replaceChildren(flowComponentsInitial({ flowAction: lt.flowAction }));
+    }
+    f && _body.appendChild(_footer);
 
-
-
-    //return i || n ? [a.createElement(mi, {
-    //    key: (0,
-    //        La.Z)(),
-    //    doShowDropTarget: !1
-    //}), a.createElement("div", {
-    //    key: (0,
-    //        La.Z)(),
-    //    className: `${r} placeholder`
-    //}, a.createElement("div", {
-    //    className: `${o ? "" : "placed-component"} ${l}`.trim()
-    //}, n ? a.createElement("div", {
-    //    className: "loader"
-    //}) : "")), a.createElement(mi, {
-    //    key: (0,
-    //        La.Z)(),
-    //    doShowDropTarget: !1
-    //})] : a.createElement(mi, {
-    //    key: (0,
-    //        La.Z)()
-    //})
+    //_header && _config.replaceChildren(_header);
+    _config.replaceChildren(_header), _config.appendChild(_body);
+    //_config && (_config.replaceChildren(_header), _config.appendChild(_body));
 }
+function triggerInitial(e) {
+    let { triggers: t = [] } = e, $ul = doc.createElement("ul", { class: "trigger-type-buttons" });
+    t.map(e => {
+        let _b = doc.createElement("button", { class: "trigger-type-button", 'data-type': e.triggerType },
+            doc.createElement("div", { class: "icon-container" }, doc.createElement("i", { class: e.icon })),
+            doc.createElement("div", null, doc.createElement("span", null, doc.createElement("h2", null, e.text)), doc.createElement("p", null, e.description))
+        );
+        _b.addEventListener('click', (event) => { console.log(e) });
+        $ul.appendChild(doc.createElement("li", null, _b));
+    });
+    return $ul;
+}
+function flowComponentsInitial(e) {
+    let { flowAction: t = [] } = e;
+    let $ul = doc.createElement("ul", { class: "flow-action-panel" });
+    t.map(e => {
+        let $li = doc.createElement("li", { class: `component-section ${e.type}` }, doc.createElement("div", { class: `component-section-title` }, e.text));
+        e.group.map(g => {
+            let $ch = doc.createElement("div", { class: "draggable-flow-action-component", draggable: true },
+                doc.createElement("div", { class: "flow-action-component", 'data-type': g.type },
+                    doc.createElement("div", { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${g.icon}"></i></div>`),
+                    doc.createElement("div", { class: 'flow-action-component-title' }, g.text)
+                )
+            );
+            $ch.addEventListener('drag', onDrag);
+            $ch.addEventListener('dragstart', onDragStart);
+            $ch.addEventListener('dragend', onDragEnd);
+            $li.appendChild($ch);
+        });
+        $ul.appendChild($li);
+    });
+    return $ul;
+}
+
+const dropTarget = () => {
+    let target = doc.createElement('div', { class: "droppable-target droppable-node" });
+    target.replaceChildren(doc.createElement('div', { class: "component-node-container" }, doc.createElement('div', { class: "add-component-node" }, doc.createElement('i', { class: "fas fa-plus" }))));
+    target.addEventListener("dragover", (event) => { event.preventDefault(); });
+    target.addEventListener("drop", (event) => { event.preventDefault(); dropAction(event); });
+    return target;
+},
+    ComponentIcon = (_icon) => {
+        return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`);
+    },
+    drawComponent = (e) => {
+        let { actionType: t, pending: n, canDrop: i } = e; console.log(e, t)
+        const o = t === lt.events.REJOIN, r = o ? "path-exit" : "placed-component-container", l = lt.events_action[t];
+        let container = doc.createElement('div', { class: `${r} ${t}` });
+        container.appendChild(dropTarget());
+
+        let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `placed-component ${l}`.trim() },
+            doc.createElement('div', { class: 'placed-component-body' }, ComponentIcon('fa fa-bolt'),
+                doc.createElement('div', { class: 'placed-component-content' },
+                    doc.createElement('div', { class: 'placed-component-header' },
+                        doc.createElement('div', { class: 'placed-component-title' }, '-'),
+                        doc.createElement('div', { class: 'placed-component-dropdown-container' }, '-')
+                    ),
+                    doc.createElement('div', { class: 'placed-component-main' })
+                ),
+                doc.createElement('div', { class: 'placed-component-footer' })
+            )
+        )
+        if (i === true) container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, doc.createElement('div', { class: lt.draggable[t], draggable: "true" }, b)))
+        else container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, b));
+        return container;
+    },
+    initTrigger = () => {
+        let root = doc.querySelector('.root-branch');
+        let j = { actionType: lt.panel.TRIGGER_AND_FILTERS_INITIAL, title: 'Trigger Setup', displayFooter: false };
+        config_panel(j);
+        let container = doc.createElement('div', { class: `placed-component-container ${lt.events.TRIGGER} unconfigured` }),
+            b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `placed-component ${lt.events.TRIGGER} logic selected`.trim() },
+                doc.createElement('div', { class: 'placed-component-body' }, ComponentIcon('fa fa-bolt'),
+                    doc.createElement('div', { class: 'placed-component-content' },
+                        doc.createElement('div', { class: 'placed-component-header' }, doc.createElement('div', { class: 'placed-component-title' }, 'Trigger')),
+                        doc.createElement('div', { class: 'placed-component-main' }, doc.createElement('p', null, doc.createElement('span', null, 'Select a flow trigger on the left to get started.')))
+                    )
+                )
+            );
+        container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, b));
+        root.replaceChildren(container);
+    };
 
 
 export const checkArray = (e, a) => Object.prototype.hasOwnProperty.call(e, a),
@@ -170,6 +161,174 @@ export const checkArray = (e, a) => Object.prototype.hasOwnProperty.call(e, a),
                 get: a[c]
             })
     };
+export const enums = function (t) {
+    getArray(t, {
+        events: () => _events,
+        events_action: () => _action,
+        panel: () => _panel,
+        triggers: () => _triggers,
+        flowAction: () => _flowAction,
+        draggable: () => _draggable
+    });
+    const _events = {
+        EMAIL: "send_message",
+        SEND_PUSH_NOTIFICATION: "send_push_notification",
+        SEND_SMS_MESSAGE: "send_sms",
+        BRANCH: "branch_boolean",
+        TIME_DELTA: "time_delay",
+        BACK_IN_STOCK_DELAY: "back_in_stock_delay",
+        SUPPRESS_CUSTOMER: "suppress_customer",
+        UPDATE_CUSTOMER: "update_customer",
+        COUNTDOWN_DELAY: "countdown_delay",
+        DATE_TRIGGER: "date_trigger",
+        NOTIFICATION: "send_notification_message",
+        WEBHOOK: "webhook",
+        INTERNAL_SERVICE: "internal_service",
+        AB_TEST: "ab_test",
+        TRIGGER_SPLIT: "trigger_split",
+        CONDITIONAL_SPLIT: "conditional_split",
+        SPLIT: "branch_boolean",
+        TRIGGER: "trigger",
+        EXIT_NODE: "exit_node",
+        REJOIN: "rejoin_node"
+    },
+        P = {
+            ACTION: "action",
+            TIMING: {
+                get COLLAPSED() { return `${this.base} collapsed` },
+                get EXPANDED() { return `${this.base} expanded` },
+                base: "timing"
+            },
+            LOGIC: "logic"
+        },
+        _action = {
+            [_events.SEND_PUSH_NOTIFICATION]: `push-notification ${P.ACTION}`,
+            [_events.EMAIL]: `send-email ${P.ACTION}`,
+            [_events.SEND_SMS_MESSAGE]: `send-sms ${P.ACTION}`,
+            [_events.TIME_DELTA]: `time-delta ${P.TIMING.COLLAPSED}`,
+            [_events.BACK_IN_STOCK_DELAY]: `back-in-stock ${P.TIMING.EXPANDED}`,
+            [_events.COUNTDOWN_DELAY]: `countdown-delay ${P.TIMING.COLLAPSED}`,
+            [_events.DATE_TRIGGER]: `countdown-delay ${P.TIMING.COLLAPSED}`,
+            [_events.SUPPRESS_CUSTOMER]: `suppress-customer ${P.ACTION}`,
+            [_events.BRANCH]: `branch ${P.LOGIC}`,
+            [_events.TRIGGER_SPLIT]: `branch ${P.LOGIC}`,
+            [_events.CONDITIONAL_SPLIT]: `branch ${P.LOGIC}`,
+            [_events.UPDATE_CUSTOMER]: `update-customer ${P.ACTION}`,
+            [_events.REJOIN]: "rejoin-node exit-node",
+            [_events.NOTIFICATION]: `send-notification ${P.ACTION}`,
+            [_events.WEBHOOK]: `webhook ${P.ACTION}`,
+            [_events.INTERNAL_SERVICE]: `internal-service ${P.ACTION}`,
+            [_events.AB_TEST]: `ab-test ${P.ACTION}`
+        },
+        _panel = {
+            FLOWS_COMPONENTS_PANEL: "FLOWS_COMPONENTS_PANEL",
+            TRIGGER_AND_FILTERS_INITIAL: "TRIGGER_AND_FILTERS_INITIAL",
+            TRIGGER_LIST_PANEL: "TRIGGER_LIST_PANEL",
+            TRIGGER_SEGMENT_PANEL: "TRIGGER_SEGMENT_PANEL",
+            TRIGGER_ACTION_PANEL: "TRIGGER_ACTION_PANEL",
+            TRIGGER_DATE_PANEL: "TRIGGER_DATE_PANEL",
+            TRIGGER_PRICE_DROP_PANEL: "TRIGGER_PRICE_DROP_PANEL",
+            TRIGGER_SETUP_PANEL: "TRIGGER_SETUP_PANEL",
+            FILTER_BUILDER: "FILTER_BUILDER",
+            REQUEST_TRIGGER_OPTIONS: "REQUEST_TRIGGER_OPTIONS",
+            RECEIVE_TRIGGER_OPTIONS: "RECEIVE_TRIGGER_OPTIONS",
+            UPDATE_CONFIGURATION_PANEL: "UPDATE_CONFIGURATION_PANEL",
+            PREVIOUS_CONFIGURATION_PANEL: "PREVIOUS_CONFIGURATION_PANEL",
+            HIDE_CONFIGURATION_PANEL: "HIDE_CONFIGURATION_PANEL",
+            SHOW_CONFIGURATION_PANEL: "SHOW_CONFIGURATION_PANEL",
+            SEND_EMAIL_PANEL: "SEND_EMAIL_PANEL",
+            SEND_PUSH_PANEL: "SEND_PUSH_PANEL",
+            SEND_SMS_PANEL: "SEND_SMS_PANEL",
+            BRANCH_PANEL: "BRANCH_PANEL",
+            CONDITIONAL_SPLIT_PANEL: "CONDITIONAL_SPLIT_PANEL",
+            TRIGGER_SPLIT_PANEL: "TRIGGER_SPLIT_PANEL",
+            SCHEDULE_PANEL: "SCHEDULE_PANEL",
+            COUNTDOWN_DELAY_PANEL: "COUNTDOWN_DELAY_PANEL",
+            DATE_TRIGGER_PANEL: "DATE_TRIGGER_PANEL",
+            BACK_IN_STOCK_PANEL: "BACK_IN_STOCK_PANEL",
+            SUPPRESS_CUSTOMER_PANEL: "SUPPRESS_CUSTOMER_PANEL",
+            UPDATE_CUSTOMER_PANEL: "UPDATE_CUSTOMER_PANEL",
+            NOTIFICATION_PANEL: "NOTIFICATION_PANEL",
+            PRICE_DROP_TRIGGER_PANEL: "PRICE_DROP_TRIGGER_PANEL",
+            WEBHOOK_PANEL: "WEBHOOK_PANEL",
+            INTERNAL_SERVICE_PANEL: "INTERNAL_SERVICE_PANEL",
+            AB_TEST_PANEL: "AB_TEST_PANEL"
+        },
+        _triggerType = { EVENT: 0, ADDED_TO_LIST: 1, UNCONFIGURED: 2, DATE_BASED: 3, PRICE_DROP: 4 },
+        _triggerName = { Actions: 'actions', Date: 'date', Lists: 'lists', PriceDrop: 'priceDrop', Segments: 'segments' },
+        _triggers = [{
+            triggerName: _triggerName.Lists,
+            triggerType: _triggerType.ADDED_TO_LIST,
+            icon: "fas fa-list",
+            text: "List",
+            description: "People will enter when they are added to a specific list.",
+            state: _panel.TRIGGER_LIST_PANEL,
+        }, {
+            triggerName: _triggerName.Segments,
+            triggerType: _triggerType.ADDED_TO_LIST,
+            icon: "fas fa-list",
+            text: "Segment",
+            description: "People will enter when they join a specific dynamic segment.",
+            state: _panel.TRIGGER_SEGMENT_PANEL,
+        }, {
+            triggerName: _triggerName.Actions,
+            triggerType: _triggerType.EVENT,
+            icon: "fas fa-list",
+            text: "Metric",
+            description: "People will enter when they take a specific action (e.g. Placed Order).",
+            state: _panel.TRIGGER_ACTION_PANEL,
+        }, {
+            triggerName: _triggerName.PriceDrop,
+            triggerType: _triggerType.PRICE_DROP,
+            icon: "fas fa-list",
+            text: "Price Drop",
+            description: "People will enter when the price drops on any item they engaged with.",
+            state: _panel.TRIGGER_PRICE_DROP_PANEL,
+        }, {
+            triggerName: _triggerName.Date,
+            triggerType: _triggerType.DATE_BASED,
+            icon: "fas fa-list",
+            isNewIcon: !0,
+            text: "Date Property",
+            description: "People will enter if they have a specific date property set (e.g. Birthday).",
+            state: _panel.TRIGGER_DATE_PANEL,
+        }],
+        _flowAction = [{
+            type: P.ACTION, text: 'Actions',
+            group: [
+                { type: _events.EMAIL, text: "Email", icon: "fas fa-list" },
+                { type: _events.SEND_SMS_MESSAGE, text: "SMS", icon: "fas fa-list" },
+                { type: _events.UPDATE_CUSTOMER, text: "Update Profile Property", icon: "fas fa-list" },
+                { type: _events.NOTIFICATION, text: "Notification", icon: "fas fa-list" },
+                { type: _events.WEBHOOK, text: "Webhook", icon: "fas fa-list" }
+            ]
+        }, {
+            type: P.TIMING.base, text: 'Timing',
+            group: [{ type: _events.TIME_DELTA, text: "Time Delay", icon: "fas fa-list" },]
+        }, {
+            type: P.LOGIC, text: 'Logic',
+            group: [
+                { type: _events.CONDITIONAL_SPLIT, text: "Conditional Split", icon: "fas fa-list" },
+                { type: _events.TRIGGER_SPLIT, text: "Trigger Split", icon: "fas fa-list" },
+            ]
+        }],
+        _draggable = {
+            [_events.SEND_PUSH_NOTIFICATION]: "draggable-push-notification-component",
+            [_events.EMAIL]: "draggable-email-placed-component",
+            [_events.SEND_SMS_MESSAGE]: "draggable-sms-placed-component",
+            [_events.TIME_DELTA]: "draggable-time-delta-component",
+            [_events.COUNTDOWN_DELAY]: "draggable-countdown-delay-component",
+            [_events.BACK_IN_STOCK_DELAY]: "draggable-back-in-stock-component",
+            [_events.SUPPRESS_CUSTOMER]: "draggable-suppress-customer-component",
+            [_events.UPDATE_CUSTOMER]: "draggable-update-customer-component",
+            [_events.REJOIN]: "",
+            [_events.NOTIFICATION]: "draggable-notification-placed-component",
+            [_events.WEBHOOK]: "draggable-webhook-placed-component",
+            [_events.INTERNAL_SERVICE]: "draggable-internal-service-placed-component",
+            [_events.AB_TEST]: "draggable-ab-test-placed-component"
+        };
+
+}
 
 export const fnENUM = function (t, n) {
     //t = {};

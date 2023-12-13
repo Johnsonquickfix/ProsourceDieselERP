@@ -22,6 +22,7 @@ namespace LaylaERP_v1.Models.Product
         public string user_id { get; set; }
         public string payment_method { get; set; }
         public string payment_method_title { get; set; }
+        public string _website_id { get; set; }
         public CardData card_data { get; set; }
     }
     public class BillingInfo

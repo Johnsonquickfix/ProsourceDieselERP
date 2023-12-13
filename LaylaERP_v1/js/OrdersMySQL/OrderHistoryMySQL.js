@@ -346,7 +346,7 @@ function dataGridLoad(order_type) {
             { data: 'Exported', title: 'Exported', sWidth: "10%" },
 
             {
-                data: '_website_id', title: 'Wesite', sWidth: "10%", render: function (data, type, row) {
+                data: '_website_id', title: 'Website', sWidth: "10%", render: function (data, type, row) {
                     if (data == '') return 'Prosource';
                     else if (data == '1') return 'Prosource';
                     else if (data == '2') return 'Spoologic';

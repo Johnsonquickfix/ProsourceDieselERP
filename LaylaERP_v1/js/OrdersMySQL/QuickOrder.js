@@ -13,7 +13,7 @@
             error: function (xhr, status, err) { }, cache: true
         }
     });
-    getcompany();
+  
     let productData = {};
     $("#ddlProduct").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
@@ -143,8 +143,10 @@
         });
     });
     //$.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
-    $.when(getOrderInfo()).done(function () {
+    $.when(getcompany()).done(function () {
         //getProducts(24);
+        setTimeout(function () { getOrderInfo(); }, 2000);
+         
     });
     //$('.billinfo').prop("disabled", true);
 
@@ -892,7 +894,14 @@ function getOrderInfo() {
         ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             try {
                 var data = JSON.parse(result); //console.log(data);
+                console.log('ss');
+                
+                
                 if (data.length > 0) {
+                    let website_id = data[0].website_id;
+                    if (website_id != '2') {
+                        website_id = '1';
+                    }
                     $('#lblOrderNo').data('pay_by', data[0].payment_method);
                     if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                     else if (data[0].payment_method == 'podium') $('#lblOrderNo').data('pay_id', data[0].podium_id);
@@ -917,7 +926,7 @@ function getOrderInfo() {
                     $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
                     $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
                     $('#txtCustomerNotes').val(data[0].post_excerpt);
-
+                    $('#ddlcompany').val(website_id).trigger('change');
                     if (data[0].is_edit == '1') {
                         if (data[0].is_shiped > 0) {
                             $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
@@ -1598,6 +1607,7 @@ function getcompany() {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlcompany').html(opt);
+            
         }
 
     });

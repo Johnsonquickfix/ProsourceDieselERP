@@ -4,8 +4,8 @@
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
 <link href="~/Content/qfk/css/flow-layout.css" rel="stylesheet" />
-<link href="~/js/qfk/flows/flowy.min.css" rel="stylesheet" />
-<link href="~/js/qfk/flows/styles.css" rel="stylesheet" />
+<!--<link href="~/js/qfk/flows/flowy.min.css" rel="stylesheet" />
+<link href="~/js/qfk/flows/styles.css" rel="stylesheet" />-->
 <div id="root">
     <div class="flows-body">
         <!-- start page title -->
@@ -27,190 +27,316 @@
         </div>
         <!-- end page title -->
         <div class="flows-main">
-            <div id="leftcard">
-                <div id="blocklist">
-                    <p id="header">Actions</p>
-                    <div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_message">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-envelope"></i>
+            @*<div id="leftcard">
+                    <div id="blocklist">
+                        <p id="header">Actions</p>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_message">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Email</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_sms">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-sms"></i>
-                            </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">SMS</p>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Email</p>
+                                </div>
                             </div>
                         </div>
-                    </div>-->
-                    <div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="update_customer">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-user"></i>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_sms">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Update Profile Property</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_notification_message">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-bell"></i>
-                            </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Notification</p>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-sms"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">SMS</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="webhook">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-link"></i>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="update_customer">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Webhook</p>
-                            </div>
-                        </div>
-                    </div>-->
-                    <p id="header">Timing</p>
-                    <div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="time_delay">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Time Delay</p>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Update Profile Property</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <p id="header">Logic</p>
-                    <div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="conditional_split">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-clock"></i>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_notification_message">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Conditional Split</p>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Notification</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="blockelem create-flowy noselect">
-                        <input type="hidden" name='blockelemtype' class="blockelemtype" value="trigger_split">
-                        <div class="grabme">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-                        <div class="blockin">
-                            <div class="blockico">
-                                <span></span>
-                                <i class="fas fa-clock"></i>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="webhook">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
                             </div>
-                            <div class="blocktext">
-                                <p class="blocktitle">Trigger Split</p>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-link"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Webhook</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="header">Timing</p>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="time_delay">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
+                            </div>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Time Delay</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="header">Logic</p>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="conditional_split">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
+                            </div>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Conditional Split</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="blockelem create-flowy noselect">
+                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="trigger_split">
+                            <div class="grabme">
+                                <i class="fas fa-grip-vertical"></i>
+                            </div>
+                            <div class="blockin">
+                                <div class="blockico">
+                                    <span></span>
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="blocktext">
+                                    <p class="blocktitle">Trigger Split</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div id="propwrap">
+                    <div id="properties">
+                        <div id="close">
+                            <i class="fa fa-times"></i>
+                        </div>
+                        <p id="header2">Properties</p>
+                        <div id="propswitch">
+                            <div id="dataprop">Data</div>
+                            <div id="alertprop">Alerts</div>
+                            <div id="logsprop">Logs</div>
+                        </div>
+                        <div id="proplist">
+                            <p class="inputlabel">Select database</p>
+                            <div class="dropme">Database 1 <img src="assets/dropdown.svg"></div>
+                            <p class="inputlabel">Check properties</p>
+                            <div class="dropme">All<img src="assets/dropdown.svg"></div>
+                            <div class="checkus"><img src="assets/checkon.svg"><p>Log on successful performance</p></div>
+                            <div class="checkus"><img src="assets/checkoff.svg"><p>Give priority to this block</p></div>
+                        </div>
+                        <div id="divisionthing"></div>
+                        <div id="removeblock">Delete blocks</div>
+                    </div>
+                </div>
+                <div id="canvas" class="flow-canvas">
+                </div>*@
+
+
+            <div id="leftcard" class="configuration-panel">
+                <div class="configuration-panel-header">
+                    <div class="configuration-panel-title">
+                        Trigger Setup
+                    </div>
+                </div>
+                <div class="configuration-panel-body no-footer">
+                    <div class="trigger-select-panel">
+                        <p>What will trigger this flow?</p>
+                        <ul class="trigger-type-buttons">
+                            <li><button class="btn trigger-type-button mb-3" data-type="1" type="button"><div class="icon-container"><i class="kl-icon kl-icon-trigger-list"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">List</h2></span><p>People will enter when they are added to a specific list.</p></div></button></li>
+                            <li><button class="btn trigger-type-button mb-3" data-type="1" type="button"><div class="icon-container"><i class="kl-icon kl-icon-trigger-segment"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Segment</h2></span><p>People will enter when they join a specific dynamic segment.</p></div></button></li>
+                            <li><button class="btn trigger-type-button mb-3" data-type="0" type="button"><div class="icon-container"><i class="kl-icon kl-icon-trigger-action"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Metric</h2></span><p>People will enter when they take a specific action (e.g. Placed Order).</p></div></button></li>
+                            <li><button class="btn trigger-type-button mb-3" data-type="4" type="button"><div class="icon-container"><i class="kl-icon kl kl-shopping-cart-o" aria-hidden="true"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Price Drop</h2></span><p>People will enter when the price drops on any item they engaged with.</p></div></button></li>
+                            <li><button class="btn trigger-type-button mb-3" data-type="3" type="button"><div class="icon-container"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 jBtBsB kl kl-countdown-delay" aria-hidden="true"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Date Property</h2></span><p>People will enter if they have a specific date property set (e.g. Birthday).</p></div></button></li>
+                        </ul>
+
+                        <ul class="flow-action-panel">
+                            <li class="component-section actions"><div class="component-section-title">Actions</div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="send_message"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl-icon-send-email"></i></div></div><div class="flow-action-component-title">Email</div></div></div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="send_sms"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 jZfFmR kl kl-sms-20" aria-hidden="true"></i></div></div><div class="flow-action-component-title">SMS</div></div></div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="update_customer"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl-icon-update-custom-property"></i></div></div><div class="flow-action-component-title">Update Profile Property</div></div></div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="send_notification_message"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl kl-bell" aria-hidden="true"></i></div></div><div class="flow-action-component-title">Notification</div></div></div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="webhook"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl kl-connection-points" aria-hidden="true"></i></div></div><div class="flow-action-component-title">Webhook</div></div></div></li>
+                            <li class="component-section timing"><div class="component-section-title">Timing</div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="time_delay"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl-icon-clock"></i></div></div><div class="flow-action-component-title">Time Delay</div></div></div></li>
+                            <li class="component-section logic"><div class="component-section-title">Logic</div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="conditional_split"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl-icon-conditional-split"></i></div></div><div class="flow-action-component-title">Conditional Split</div></div></div><div class="draggable-flow-action-component " draggable="true"><div class="flow-action-component " data-type="trigger_split"><div class="placed-component-icon-container"><div class="placed-component-icon-background"><i class="kl-icon kl-icon-trigger-split"></i></div></div><div class="flow-action-component-title">Trigger Split</div></div></div></li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
-            <div id="propwrap">
-                <div id="properties">
-                    <div id="close">
-                        <i class="fa fa-times"></i>
+            <div class="flows-center" style="display: flex; flex-direction: column; width: 100%; max-width: calc(100% - 350px);">
+                <div class="flow-canvas" style="user-select: unset;">
+                    <div class="kl-zoom-container" style="position: relative;">
+                        <div class="kl-zoom" style="transform: scale(1); transform-origin: left top;">
+                            <div class="placed-components">
+                                <div class="root-branch ">
+                                    <div class="placed-component-container trigger logic">
+                                        <!--unconfigured-->
+                                        <div role="button" tabindex="-1">
+                                            <div role="button" tabindex="-1" class="placed-component trigger logic selected">
+                                                <div class="placed-component-body">
+                                                    <div class="placed-component-icon-container">
+                                                        <div class="placed-component-icon-background">
+                                                            <i class="kl-icon kl-icon-trigger-bolt"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="placed-component-content">
+                                                        <div class="placed-component-header">
+                                                            <div class="placed-component-title"><span>Trigger</span></div>
+                                                            <div class="placed-component-dropdown-container"></div>
+                                                        </div>
+                                                        <div class="placed-component-main" data-actionid="_FAKE_">
+                                                            <p class=""><span class="TextStyleTemplate-sc-1jbnw9u-0 iGIlQp utilities__InlineBody-sc-1og1v64-0 kMXaEU">Select a flow trigger on the left to get started.</span></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="placed-component-footer"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="placed-component-container time_delay">
+                                        <div class="droppable-target droppable-node" draggable="true">
+                                            <div class="component-node-container">
+                                                <div class="add-component-node"><i class="fas fa-plus"></i></div>
+                                            </div>
+                                        </div>
+                                        <div role="button" tabindex="-1">
+                                            <div class="draggable-time-delta-component" draggable="true">
+                                                <div role="button" tabindex="-1" class="placed-component time-delta timing collapsed">
+                                                    <div class="placed-component-body">
+                                                        <div class="placed-component-icon-container">
+                                                            <div class="placed-component-icon-background">
+                                                                <i class="kl-icon kl-icon-clock"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="placed-component-content">
+                                                            <div class="placed-component-header">
+                                                                <div class="placed-component-title">
+                                                                    <span class="scheduled-time-component"><span class="scheduled-time"><span class="readable-time">Wait 4 hours</span></span></span>
+                                                                </div>
+                                                                <div class="placed-component-dropdown-container">
+                                                                    <div class="header-settings "><ul class=" pull-right"><li class="dropdown"><a href="#" class="dropdown-toggle settings-dropdown"><i data-testid="flow-canvas-placed-action-component-action-dropdown" class="kl-icon kl-icon-menu-dots"></i></a><ul class="dropdown-menu  "><li><a href="#" style="padding: 0px 5px;"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 bndzyx kl kl-clone-email" aria-hidden="true" style="padding-right: 5px;"></i>Clone</a></li><li><a href="#" style="padding: 0px 5px;"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 bndzyx kl kl-trash-filled" aria-hidden="true" style="padding-right: 5px;"></i>Delete</a></li></ul></li></ul></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="placed-component-container send_message">
+                                        <div class="droppable-target droppable-node" draggable="true">
+                                            <div class="component-node-container">
+                                                <div class="add-component-node"><i class="fas fa-plus"></i></div>
+                                            </div>
+                                        </div>
+                                        <div role="button" tabindex="-1">
+                                            <div class="draggable-email-placed-component" draggable="true">
+                                                <div class="absolute-timing-hint-wrapper">
+                                                    <div role="button" tabindex="-1" class="placed-component send-email action">
+                                                        <div class="placed-component-body">
+                                                            <div class="placed-component-icon-container">
+                                                                <div class="placed-component-icon-background">
+                                                                    <i class="kl-icon kl-icon-send-email"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="placed-component-content">
+                                                                <div class="placed-component-header">
+                                                                    <div class="placed-component-title"><span>Abandoned Cart: Email 1</span></div>
+                                                                    <div class="placed-component-dropdown-container">
+                                                                        <div class="header-settings ">
+                                                                            <ul class=" pull-right"><li class="dropdown"><a href="#" class="dropdown-toggle settings-dropdown"><i data-testid="flow-canvas-placed-action-component-action-dropdown" class="kl-icon kl-icon-menu-dots"></i></a><ul class="dropdown-menu  "><li><a href="#" style="padding: 0px 5px;"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 bndzyx kl kl-pencil" aria-hidden="true" style="padding-right: 5px;"></i>Edit</a></li><li><a href="#" style="padding: 0px 5px;"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 bndzyx kl kl-eye" aria-hidden="true" style="padding-right: 5px;"></i>Preview</a></li><li><a href="#" style="padding: 0px 5px;"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 bndzyx kl kl-clone-email" aria-hidden="true" style="padding-right: 5px;"></i>Clone</a></li><li><a href="#" style="padding: 0px 5px;"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 bndzyx kl kl-trash-filled" aria-hidden="true" style="padding-right: 5px;"></i>Delete</a></li></ul></li></ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="placed-component-main" data-actionid="56433540">It looks like you left something behind...</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="placed-component-footer">
+                                                            <div class="card-status-switcher-wrapper">
+                                                                <span class="card-status-switcher  draft"><ul class=" "><li class="dropdown"><a href="#" class="dropdown-toggle "><div class="dropdown-text-with-caret">Draft<i class="fa fa-caret-down" aria-hidden="true"></i></div></a><ul class="dropdown-menu  "><li><span role="button" tabindex="-1" class="status-switcher-dropdown-item draft"><i class="fa fa-circle"></i>Draft</span></li><li><span role="button" tabindex="-1" class="status-switcher-dropdown-item manual"><i class="fa fa-circle"></i>Manual</span></li><li><span role="button" tabindex="-1" class="status-switcher-dropdown-item live"><i class="fa fa-circle"></i>Live</span></li></ul></li></ul></span>
+                                                            </div>
+                                                            <div class="Box__StyledBox-sc-16nrscc-0 kENtZq action-settings">
+                                                                <i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 hWKypy draft ADS-24-Fill ADS-24-Fill-mail-checkmark-24-fill" data-testid="flow-canvas-placed-component-setting-0" data-rh="Smart Sending is OFF" data-rh-at="top" aria-hidden="true"></i><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 hWKypy live ADS-24-Fill ADS-24-Fill-utm-24-fill" data-testid="flow-canvas-placed-component-setting-1" data-rh="UTM Tracking is ON" data-rh-at="top" aria-hidden="true"></i><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 hWKypy draft ADS-24-Fill ADS-24-Fill-filter-24-fill" data-testid="flow-canvas-placed-component-setting-filter-setting" data-rh="No Additional Filters" data-rh-at="top" aria-hidden="true"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <span class="absolute-timing-hint" data-rh="This email will send on the same day as the trigger" data-rh-at="top"><i class="kl-icon kl-icon-trigger-bolt"></i>Day 0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="placed-component-container exit_node">
+                                        <div class="droppable-target droppable-node" draggable="true">
+                                            <div class="component-node-container">
+                                                <div class="add-component-node"><i class="fas fa-plus"></i></div>
+                                            </div>
+                                        </div>
+                                        <div role="button" tabindex="-1">
+                                            <div class="path-exit">
+                                                <div class="flow-exit-node exit-node">
+                                                    <span>Exit</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="kl-zoom-controls" style="position: fixed; width: 32px; left: calc(100% - 56px); bottom: 24px;"><div>100%</div><div><a class="btn btn-default"><i class="fa fa-plus"></i></a><a class="btn btn-default"><i class="fa fa-minus"></i></a></div></div>
                     </div>
-                    <p id="header2">Properties</p>
-                    <div id="propswitch">
-                        <div id="dataprop">Data</div>
-                        <div id="alertprop">Alerts</div>
-                        <div id="logsprop">Logs</div>
-                    </div>
-                    <div id="proplist">
-                        <p class="inputlabel">Select database</p>
-                        <div class="dropme">Database 1 <img src="assets/dropdown.svg"></div>
-                        <p class="inputlabel">Check properties</p>
-                        <div class="dropme">All<img src="assets/dropdown.svg"></div>
-                        <div class="checkus"><img src="assets/checkon.svg"><p>Log on successful performance</p></div>
-                        <div class="checkus"><img src="assets/checkoff.svg"><p>Give priority to this block</p></div>
-                    </div>
-                    <div id="divisionthing"></div>
-                    <div id="removeblock">Delete blocks</div>
                 </div>
             </div>
-            <div id="canvas">
-            </div>
-
-
-            @*<div id="leftcard" class="configuration-panel">
-                    <div class="configuration-panel-header">
-                        <div class="configuration-panel-title">
-                            Trigger Setup
-                        </div>
-                    </div>
-                    <div class="configuration-panel-body no-footer">
-                        <div class="trigger-select-panel">
-                            <p>What will trigger this flow?</p>
-                            <ul class="trigger-type-buttons">
-                                <li><button class="btn trigger-type-button mb-3" data-type="1" type="button"><div class="icon-container"><i class="kl-icon kl-icon-trigger-list"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">List</h2></span><p>People will enter when they are added to a specific list.</p></div></button></li>
-                                <li><button class="btn trigger-type-button mb-3" data-type="1" type="button"><div class="icon-container"><i class="kl-icon kl-icon-trigger-segment"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Segment</h2></span><p>People will enter when they join a specific dynamic segment.</p></div></button></li>
-                                <li><button class="btn trigger-type-button mb-3" data-type="0" type="button"><div class="icon-container"><i class="kl-icon kl-icon-trigger-action"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Metric</h2></span><p>People will enter when they take a specific action (e.g. Placed Order).</p></div></button></li>
-                                <li><button class="btn trigger-type-button mb-3" data-type="4" type="button"><div class="icon-container"><i class="kl-icon kl kl-shopping-cart-o" aria-hidden="true"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Price Drop</h2></span><p>People will enter when the price drops on any item they engaged with.</p></div></button></li>
-                                <li><button class="btn trigger-type-button mb-3" data-type="3" type="button"><div class="icon-container"><i role="img" class="LegacyIcon__StyledIcon-sc-1rq4n18-0 jBtBsB kl kl-countdown-delay" aria-hidden="true"></i></div><div><span class="Tooltipstyles__StyledTriggerWrapper-sc-1uvo3gu-1 cxHKmV Truncated__StyledTooltip-sc-ei9ggy-0 kIZjVL"><h2 class="Heading__GeneratedStyledHeading-sc-j562as-0 chFOLG" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Date Property</h2></span><p>People will enter if they have a specific date property set (e.g. Birthday).</p></div></button></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-                    <div class="flows-center" style="display: flex; flex-direction: column; width: 100%; max-width: calc(100% - 350px);">
-                        <div id="canvas" class="flow-canvas">
-                        </div>
-                    </div>*@
         </div>
     </div>
 </div>
-<script src="~/js/qfk/flows/flowy.min.js"></script>
-<script type="module" src="~/js/qfk/flows/main.js"></script>
-<!--<script type="module" src="~/js/qfk/flows/createflow.js"></script>-->
+<script src="~/js/qfk/common.js"></script>
+<!--<script src="~/js/qfk/flows/flowy.min.js"></script>
+<script type="module" src="~/js/qfk/flows/main.js"></script>-->
+<script type="module" src="~/js/qfk/flows/createflow.js"></script>
 <script type="module">
 
 </script>

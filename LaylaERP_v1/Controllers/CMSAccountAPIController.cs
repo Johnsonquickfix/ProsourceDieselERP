@@ -230,8 +230,8 @@
             }
         }
 
-        [HttpGet, Route("getorders")]
-        public IHttpActionResult GetOrders(long user_id = 0, int page = 1, int page_size = 10)
+        [HttpGet, Route("getorders/{entity_id}")]
+        public IHttpActionResult GetOrders(long entity_id, long user_id = 0, int page = 1, int page_size = 10)
         {
             try
             {
@@ -241,7 +241,7 @@
                 if (string.IsNullOrEmpty(utoken)) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new { } });
                 if (string.IsNullOrEmpty(utoken) && user_id <= 0) return Ok(new { message = "Required query param 'user_id'", status = 403, code = "Forbidden", data = new { } });
 
-                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.GetOrders(utoken, user_id, page, page_size));
+                var balResult = JsonConvert.DeserializeObject<dynamic>(CartRepository.GetOrdersByentity(entity_id,utoken, user_id, page, page_size));
                 if (balResult == null) return Ok(new { message = "Not Found", status = 404, code = "not_found", data = new { } });
                 return Ok(balResult);
             }

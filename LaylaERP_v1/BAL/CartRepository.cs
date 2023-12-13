@@ -321,6 +321,26 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
+
+        public static string GetOrdersByentity(long entity_id, string utoken, long user_id, int page, int page_size)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "ODLEN"),
+                    new SqlParameter("@utoken", utoken),
+                    new SqlParameter("@customer_id", user_id),
+                    new SqlParameter("@pageno", page),
+                    new SqlParameter("@pagesize", page_size),
+                    new SqlParameter("@entity_id", entity_id),
+                };
+                result = SQLHelper.ExecuteReaderReturnJSON("api_user_details", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
         #endregion
     }
 }

@@ -407,11 +407,11 @@ namespace LaylaERP.BAL
                             + " when 'wc-podium' then 'Order via Podium'"
                             + " when 'draft' then 'Draft'"
                             + " else '-' end) as status,"
-                            + " convert(varchar,p.post_date,101) date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName" 
+                            + " convert(varchar,p.post_date,101) date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,case when pmweb.meta_value = 2 then 'Spoologic' else 'Prosource' end website "
                             + " FROM wp_posts p inner join wp_postmeta pmfot on p.id = pmfot.post_id and pmfot.meta_key = '_order_total' "
                             + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'" 
-                            + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id'"
+                            + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' left join wp_postmeta pmweb ON p.id = pmweb.post_id AND pmweb.meta_key = '_website_id' "
                             + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString() + " order by p.id desc ";
                 //+ " limit 10 ";
 
@@ -419,7 +419,7 @@ namespace LaylaERP.BAL
                         + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                         + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
                         + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
-                        + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id'"
+                        + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' left join wp_postmeta pmweb ON p.id = pmweb.post_id AND pmweb.meta_key = '_website_id' "
                         + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

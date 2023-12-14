@@ -94,6 +94,7 @@ $(document).ready(function () {
 });
 function getcompany() {
     console.log('as');
+    $(".select2").select2();
     $.ajax({
         url: "/Setting/GetCompany",
         type: "Get",

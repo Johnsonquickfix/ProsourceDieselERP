@@ -38,16 +38,18 @@
     <h2 class="page-heading">Order History</h2>
     <a class="btn btn-danger" id="atncustlist" style="display:none" href="../../Customer/Customer"><span title="Click here to back to customer's list" data-placement="bottom" data-toggle="tooltip">Back to List</span></a>
     <a class="btn btn-danger" id="atnemail" style="display:none"><span title="Click here to back to mail" data-placement="bottom" data-toggle="tooltip">Back to Email</span></a>
-    <div class="active text-right" style="margin-left: auto; min-width: 280px;">        
-    </div> 
+     
+    
     <div class="active text-right" style="margin-left:auto;min-width:280px;">
-        <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:90%;"></select>
+        <div class="active text-left" style="margin-left: auto; display: inline-block;">
+            <select class="form-control select2" data-placement="left" id="ddlcompany" style="width:100%;"></select>
+        </div>
+        <div class="active text-left" style="margin-left:auto;display: inline-block;">
+            <button type="button" class="btn btn-danger" id="btnUpdateOrder" data-toggle="tooltip" title="" data-placement="left" data-original-title="Get new orders"><i class="fas fa-sync"></i> Update Orders</button>
+        </div>
+
     </div>
-    <div class="active text-right" style="margin-left:auto;min-width:280px;">
-        <button type="button" class="btn btn-danger" id="btnUpdateOrder" data-toggle="tooltip" title="" data-placement="left" data-original-title="Get new orders"><i class="fas fa-sync"></i> Update Orders</button>
-        
     </div>
-</div>
     <section class="content section-content neworder-section table-design">
         <div class="row">
             <div class="col-md-12">

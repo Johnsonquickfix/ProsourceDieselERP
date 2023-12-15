@@ -577,6 +577,7 @@ function MediaLibrary(load)
     $("#useImgThumb").text('Use Image');
     $("#useImgBanner").attr('onclick', 'UseImagemyBanner()');
     $("#useImgBanner").text('Use Image');
+    $(".ViewImgThumb").remove();
     if (load == '0') {
        
         var company = null;
@@ -586,67 +587,352 @@ function MediaLibrary(load)
         let iDisplayStart = 0;
         let iSortCol_0 = 80;
          obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
-
+        $.ajax({
+           // url: '/Product/GetMediaLibrary/',
+            url: '/Product/GetcategoriesMedia/',
+            dataType: 'json',
+            type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                  //debugger;
+                // var data = [];
+                var v = JSON.parse(data.aaData);
+                $("#tocolomThumb").val(data.ToColom);
+                $("#fromcolomThumb").val(data.FromColom);
+                var fromColom = data.FromColom;
+                var TotalData = v[0].Total;
+                $("#totalDataThumb").text("Showing " + fromColom + " of " + TotalData + " media items");
+                // var url = window.location.origin + "/Content/Media/";
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                
+                // var p = v[0].ID;
+                for (i = 0; i < v.length; i++) {
+                    //console.log(v[i].file_name);
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i; j < i + 1; j++) {                            
+                                var image = url + v[j].file_name;
+                                var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryThumb").append(html);
+                            }
+                            i++
+                        }
+                     
+                    }
+                    var image = url + v[i].file_name;
+                    var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryThumb").append(html);
+                }
+            }
+        });
+        $("#Thumb").show();
+        $("#loader").hide();
     }
     else {
-       
         var company = null;
         let prodctype = '0';
         let stockstatus = '0';
         let order_type = '';
-        let iDisplayStart = $("#fromcolom").val();
-        let iSortCol_0 = Number(iDisplayStart) +80;
-         obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
-
+        let iDisplayStart = 0;
+        let iSortCol_0 = 80;
+        obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
+        $.ajax({
+           // url: '/Product/GetMediaLibrary/',
+            url: '/Product/GetcategoriesMedia/',
+            dataType: 'json',
+            type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                  //debugger;
+                // var data = [];
+                var v = JSON.parse(data.aaData);
+                $("#tocolomBanner").val(data.ToColom);
+                $("#fromcolomBanner").val(data.FromColom);
+                var fromColom = data.FromColom;
+                var TotalData = v[0].Total;
+                $("#totalDataBanner").text("Showing " + fromColom + " of " + TotalData + " media items");
+                // var url = window.location.origin + "/Content/Media/";
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+              
+                // var p = v[0].ID;
+                for (i = 0; i < v.length; i++) {
+                    //console.log(v[i].file_name);
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i+1; j < i + 2; j++) {
+                               
+                                var image = url + v[i].file_name;
+                                var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryBanner").append(html);
+                            }
+                            i++
+                        }
+                    }
+                    var image = url + v[i].file_name;
+                    var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryBanner").append(html);
+                }
+            }
+        });
+        $("#Banner").show();
+        $("#loader").hide();
     }
 
     //let obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
-    $.ajax({
-        url: '/Product/GetMediaLibrary/',
-        dataType: 'json',
-        type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-          //  debugger;
-            // var data = [];
-            $("#tocolom").val(data.ToColom);
-            $("#fromcolom").val(data.FromColom);
-            var fromColom = data.FromColom;
-            var TotalData = data.recordsFiltered;
-            $(".totalData").text("Showing " + fromColom + " of " + TotalData + " media items");
-           // var url = window.location.origin + "/Content/Media/";
-            var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
-            var v = JSON.parse(data.aaData);
-           // var p = v[0].ID;
-            for (i = 0; i < v.length; i++) {
-                //console.log(v[i].file_name);
-                if (i != 0) {
-                    var p = i % 4;
-                    if (p == 0) {
-                        for (j = i; j < i + 1; j++) {
-                         //   var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
-                            var image = url + v[i].file_name;
-                            var html = "<li tabindex='0' aria-label='trim' role='checkbox' aria-checked='true' data-id='" + v[i].ID + "'> <div style=' margin:5px;'><input type='checkbox' name='check' class='categories' onclick='SingleClick(this); value=" + v[i].ID + "," + image +"/><img src=" + image + "  height='150' width='150' value='1' /></div></li>";
-                            $(".MLibraryThumb").append(html);
-                        }
-                    }
-                }
-               // var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
-          
-                var image = url + v[i].file_name;
-                var html = "<li tabindex='0' aria-label='trim' role='checkbox' aria-checked='true' data-id='" + v[i].ID + "'><div style=' float:left; margin:5px;'><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image +" /><img src=" + image + "  height='150' width='150' value='1' /></div></li>";
-              
-                $(".MLibraryThumb").append(html);
-            }
-        }
-    });
-    $(".MLibrary").show();
-    $("#loader").hide();
+   
 
 }
+
+function loadMore(load) {
+    //debugger;
+    if (load == 'B') {
+        var company = null;
+        let prodctype = '0';
+        let stockstatus = '0';
+        let order_type = '';
+        let iDisplayStart = $("#fromcolomBanner").val();
+        let iSortCol_0 = Number(iDisplayStart) + 80;
+        obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
+        $.ajax({
+           // url: '/Product/GetMediaLibrary/',
+            url: '/Product/GetcategoriesMedia/',
+            dataType: 'json',
+            type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                //debugger;
+                // var data = [];
+                var v = JSON.parse(data.aaData);
+                $("#tocolomBanner").val(data.ToColom);
+                $("#fromcolomBanner").val(data.FromColom);
+                var fromColom = data.FromColom;
+                var TotalData = v[0].Total;
+                $("#totalDataBanner").text("Showing " + fromColom + " of " + TotalData + " media items");
+                // var url = window.location.origin + "/Content/Media/";
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                // var p = v[0].ID;
+                if (v.length >= 80) {
+                    $("#loadMoreBanner").show();
+                } else {
+                    $("#loadMoreBanner").attr("style", "display:none");
+                }
+                for (i = 0; i < v.length; i++) {
+                    //console.log(v[i].file_name);
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i; j < i + 1; j++) {                     
+                                var image = url + v[i].file_name;
+                                var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryBanner").append(html);
+                            }
+                            i++
+                        }
+                    }
+                    var image = url + v[i].file_name;
+                    var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryBanner").append(html);
+                }
+            }
+        });
+        $("#Banner").show();
+        $("#loader").hide();
+    }
+    else
+    {  
+        var company = null;
+        let prodctype = '0';
+        let stockstatus = '0';
+        let order_type = '';
+        let iDisplayStart = $("#fromcolomThumb").val();
+        let iSortCol_0 = Number(iDisplayStart) + 80;
+        obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus, iSortCol_0: iSortCol_0, iDisplayStart: iDisplayStart };
+        $.ajax({
+           // url: '/Product/GetMediaLibrary/',
+            url: '/Product/GetcategoriesMedia/',
+            dataType: 'json',
+            type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                //  debugger;
+                // var data = [];
+                var v = JSON.parse(data.aaData);
+                $("#tocolomThumb").val(data.ToColom);
+                $("#fromcolomThumb").val(data.FromColom);
+                var fromColom = data.FromColom;
+                var TotalData = v[0].Total;
+                $("#totalDataThumb").text("Showing " + fromColom + " of " + TotalData + " media items");
+                // var url = window.location.origin + "/Content/Media/";
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                
+                // var p = v[0].ID;
+                if (v.length >= 80) {
+                    $("#loadMoreThumb").show();
+                } else {
+                    $("#loadMoreThumb").attr("style", "display:none");
+                }
+                for (i = 0; i < v.length; i++) {
+                    //console.log(v[i].file_name);
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i; j < i + 1; j++) {
+                                
+                                var image = url + v[i].file_name;
+                                var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryThumb").append(html);
+                            }
+                            i++
+                        }
+                    }           
+                    var image = url + v[i].file_name;
+                    var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryThumb").append(html);
+                }
+            }
+        });
+        $("#Thumb").show();
+        $("#loader").hide();
+    }
+}
+
+function loadMorebydate(load) {
+    //debugger;
+    if (load == 'B') {
+        //var company = null;
+        //let prodctype = '0';
+        //let stockstatus = '0';
+        //let order_type = '';
+
+        let input = $("#categoriesDateBanner").val();
+        let iDisplayStart = $("#fromcolomBanner").val();
+        let iSortCol_0 = Number(iDisplayStart) + 80;
+        obj = { strValue1: input, strValue2: iDisplayStart, strValue3: iSortCol_0 };
+        $.ajax({
+            url: '/Product/Searchcategories/',
+            dataType: 'json',
+            type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                //debugger;
+                // var data = [];
+              //  $("#todate").val(input)
+                $("#tocolomBanner").val(data.ToColom);
+                $("#fromcolomBanner").val(data.FromColom);
+               
+                // var url = window.location.origin + "/Content/Media/";
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                var v = JSON.parse(data.aaData);
+                var fromColom = data.FromColom;
+                var TotalData = v[0].Total;
+                $("#totalDataBannerbydate").text("Showing " + fromColom + " of " + TotalData + " media items");
+                    if (v.length >= 80) {
+                        $("#loadMoreBanner").attr("style", "display:none");
+                        $("#loadMoreBannerbydate").show();
+                    }
+                    else {
+                        $("#loadMoreBannerbydate").attr("style", "display:none");
+                    }
+                // var p = v[0].ID;
+                for (i = 0; i < v.length; i++) {   
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i; j < i + 1; j++) {    
+                                var image = url + v[i].file_name;
+                                var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryBanner").append(html);
+                            }
+                            i++
+                        }
+                    }                   
+                    var image = url + v[i].file_name;
+                    var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryBanner").append(html);
+                }
+            }
+        });
+        $("#Banner").show();
+        $("#loader").hide();
+    }
+    else {
+        //var company = null;
+        //let prodctype = '0';
+        //let stockstatus = '0';
+        //let order_type = '';
+        let input = $("#categoriesDateThumb").val();
+        let iDisplayStart = $("#fromcolomThumb").val();
+        let iSortCol_0 = Number(iDisplayStart) + 80;
+        obj = { strValue1: input, strValue2: iDisplayStart, strValue3: iSortCol_0 };
+        $.ajax({
+            url: '/Product/Searchcategories/',
+            dataType: 'json',
+            type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                  //debugger;
+                // var data = [];
+                $("#tocolomThumb").val(data.ToColom);
+                $("#fromcolomThumb").val(data.FromColom);
+               
+                // var url = window.location.origin + "/Content/Media/";
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                var v = JSON.parse(data.aaData);
+                var fromColom = data.FromColom;
+                var TotalData = v[0].Total;
+                $("#totalDataThumbbydate").text("Showing " + fromColom + " of " + TotalData + " media items");
+                // var p = v[0].ID;
+                if (v.length >= 80) {
+                    $("#loadMoreThumb").attr("style", "display:none");
+                    $("#loadMoreThumbbydate").show();
+                }
+                else {
+                    $("#loadMoreThumbbydate").attr("style", "display:none");
+                }
+                for (i = 0; i < v.length; i++) {
+                    //console.log(v[i].file_name);
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i; j < i + 1; j++) {
+                                var image = url + v[i].file_name;
+                                var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryThumb").append(html);
+                            }
+                            i++
+                        }
+                    }
+                    var image = url + v[i].file_name;
+                    var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryThumb").append(html);
+                }
+            }
+        });
+        $("#Thumb").show();
+        $("#loader").hide();
+    }
+}
+
 
 function SingleClick(checkbox) {
     var checkboxes = document.getElementsByName('check')
@@ -656,41 +942,65 @@ function SingleClick(checkbox) {
 }
 
 function UseImagemyBanner() {
-   // debugger;
+    //debugger;
     var imgData = [];
     var value = $("input[name='check']:checked").val();
-    imgData = value.split(',');
-    var imgId = imgData[0];
-    var imgName = imgData[1];
-    $("#getImageFileBanner").attr("src", imgName);
-    $("#getImageFileBanner").attr("value", imgId);
-    
+    if (value == null || value == "" || value == "undefined")
+    {
+        swal('Alert', 'Please Choose Banner Image ', 'error');
+    }
+    else {
+        imgData = value.split(',');
+        var imgId = imgData[0];
+        var imgName = imgData[1];
+        $("#getImageFileBanner").attr("src", imgName);
+        $("#getImageFileBanner").attr("value", imgId);
+    }
 }
 
 function UseImagemyFitureThumbnail() {
-   // debugger;
+    //debugger;
     var value = $("input[name='check']:checked").val();
-    imgData = value.split(',');
-    var imgId = imgData[0];
-    var imgName = imgData[1];
-    $("#getImageFileThumbnail").attr("src", imgName);
-    $("#getImageFileThumbnail").attr("value", imgId);
+    if (value == null || value == "" || value == "undefined")
+    {
+        swal('Alert', 'Please Choose Thumbnail Image ', 'error');
+    }
+    else {
+        imgData = value.split(',');
+        var imgId = imgData[0];
+        var imgName = imgData[1];
+        $("#getImageFileThumbnail").attr("src", imgName);
+        $("#getImageFileThumbnail").attr("value", imgId);
+    }
+    
 }
 
 function UseImagemyFitureThumbnailFile() {
     //debugger;
     var input = document.getElementById("FileUploadThumbnail");
-    Add(input);
+    if (input.files.length > 0) {
+        Add(input);
+    }
+    else {
+        swal('Alert', 'Please Choose Thumbnail File ', 'error').then(function () { swal.close(); $('#useImgThumb').removeAttr("data-dismiss") })
+    }
 }
 
 function UseImagemyBannerFile() {
-   // debugger;
+    //debugger;
     var input = document.getElementById("FileUploadBanner");
-    Add(input);
+    if (input.files.length > 0) {
+        Add(input);
+    }
+    else
+    {
+        swal('Alert', 'Please Choose Banner File ', 'error').then(function () { swal.close(); $('#useImgBanner').removeAttr("data-dismiss") })
+    }
+   
 }
 
 function Add(input) {
-    //debugger;
+   // debugger;
     entity = 1;
     ID = 0;
     if (entity == 0) {
@@ -747,7 +1057,6 @@ function Add(input) {
                         //    $("#getImageFileBanner").attr("src", "/Images/varient_pic.png");
                         //    $("#FileUploadBanner").val('');
                         //}
-                     
                     }
                     else
                     {
@@ -760,10 +1069,8 @@ function Add(input) {
                         //    $("#getImageFileThumbnail").attr("src", "/Images/varient_pic.png");
 
                         //    $("#FileUploadThumbnail").val('');
-                        //}
-                      
+                        //}  
                     }
-
                     if (data.url == "Pages") {
                        // swal('Success!', data.message, 'success').then((result) => { location.href = '../Mediagallery'; });
                         swal('Success!', data.message, 'success');
@@ -780,3 +1087,175 @@ function Add(input) {
         })
     }
 }
+
+//Search Categories By Date
+function categoriesDateThumb() {
+    //debugger;
+    $("#tocolomThumb").val('');
+    $("#fromcolomThumb").val('');
+    var search = $("#categoriesDateThumb").val();
+    SearchCategories('Thumb','yes', search);
+}
+
+function categoriesDateBanner() {
+    //debugger;
+    $("#tocolomBanner").val('');
+    $("#fromcolombanner").val('');
+    var search = $("#categoriesDateBanner").val();
+    SearchCategories('Banner', 'yes', search);
+}
+
+
+$("#SearchBanner").change(function () {
+    //debugger;
+    var search = $("#SearchBanner").val();
+    SearchCategories('Banner', 'no', search);
+   // console.log(Search);
+});
+
+$("#SearchThumbnail").change(function () {
+    //debugger;
+    var search = $("#SearchThumbnail").val();
+    SearchCategories('Thumb','no',search);
+});
+
+
+
+function SearchCategories(val, bydate, input) {
+    //debugger;
+    if (val == 'Thumb') {
+        //debugger;
+        
+
+            //debugger;
+            let iDisplayStart = 0;
+            let iSortCol_0 = 80;
+            var obj = { strValue1: input, strValue2: iDisplayStart, strValue3: iSortCol_0 };
+            $.ajax({
+                url: '/Product/Searchcategories/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    //debugger;
+                    //console.log(data);
+                    
+                    var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                    var v = JSON.parse(data.aaData);
+                    $(".ViewImgThumb").remove();
+                    if (v.length >= 80) {
+                        var fromColom = data.FromColom;
+                        $("#fromcolomThumb").val(fromColom);
+                        var TotalData = v[0].Total;
+                        if (bydate == 'yes') {
+                            //debugger;
+                            $("#totalDataThumbbydate").text("Showing " + fromColom + " of " + TotalData + " media items");
+                            $("#loadMoreThumb").attr("style", "display:none");
+                            $("#loadMoreThumbbydate").show();
+
+                        }
+                        else {
+                            $("#totalDataThumb").text("Showing " + fromColom + " of " + TotalData + " media items");
+                            $("#loadMoreThumbbydate").attr("style", "display:none");
+                            $("#loadMoreThumb").show();
+                        }  
+                    }
+                    else {
+                      //  $(".ViewImgThumb").remove();
+                        $("#loadMoreThumb").attr("style", "display:none");
+                        $("#loadMoreThumbbydate").attr("style", "display:none");
+                    }
+                    // var p = v[0].ID;
+                    for (i = 0; i < v.length; i++) {
+                        //console.log(v[i].file_name);
+                        if (i != 0) {
+                            var p = i % 4;
+                            if (p == 0) {
+                                for (j = i; j < i + 1; j++) {
+                                    var image = url + v[i].img;
+                                    var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                    $("#MLibraryThumb").append(html);
+                                }
+                                i++
+                            }
+                        }
+                        var image = url + v[i].img;
+                        var html = "<li class='ViewImgThumb'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                        $("#MLibraryThumb").append(html);
+                    }
+                }
+            });
+            $("#Thumb").show();
+            $("#loader").hide();
+    }
+    else
+    {
+        let iDisplayStart = 0;
+        let iSortCol_0 = 80;
+        var obj = { strValue1: input, strValue2: iDisplayStart, strValue3: iSortCol_0 };
+        $.ajax({
+            url: '/Product/Searchcategories/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                //debugger;
+                //console.log(data);
+                $(".ViewImgBanner").remove();
+                var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                var v = JSON.parse(data.aaData);
+                if (v.length >= 80) {
+                    var fromColom = data.FromColom;
+                    $("#fromcolomBanner").val(fromColom);
+                    var TotalData = v[0].Total;
+                    if (bydate == 'yes') {
+                        //debugger;
+                    
+                        $("#totalDataBannerbydate").text("Showing " + fromColom + " of " + TotalData + " media items");
+                        $("#loadMoreBanner").attr("style", "display:none");
+                        $("#loadMoreBannerbydate").show();
+
+                    }
+                    else {
+                        $("#totalDataBanner").text("Showing " + fromColom + " of " + TotalData + " media items");
+                        $("#loadMoreBannerbydate").attr("style", "display:none");
+                        $("#loadMoreBanner").show();
+                    }  
+                }
+                else {
+                    $("#loadMoreBanner").attr("style", "display:none");
+                    $("#loadMoreBannerbydate").attr("style", "display:none");
+                }
+                // var p = v[0].ID;
+                for (i = 0; i < v.length; i++) {
+                    //console.log(v[i].file_name);
+                    if (i != 0) {
+                        var p = i % 4;
+                        if (p == 0) {
+                            for (j = i; j < i + 1; j++) {
+                                //   var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+                                var image = url + v[i].img;
+                                var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                                $("#MLibraryBanner").append(html);
+                            }
+                            i++
+                        }
+                    }
+                    // var url = "https:\\\\editor.prosourcediesel.com\\wp-content\\uploads/";
+
+                    var image = url + v[i].img;
+                    var html = "<li class='ViewImgBanner'style=' float:left; margin-left:5px; margin-bottom:5px; list-style-type: none'  data-id='" + v[i].ID + "'><div><input type='checkbox' name='check' class='categories' onclick='SingleClick(this);' value=" + v[i].ID + "," + image + " /><img src=" + image + "  height='150' width='150' value='' /></div></li>";
+                    $("#MLibraryBanner").append(html);
+
+                }
+            }
+        });
+        $("#Banner").show();
+        $("#loader").hide();
+    }
+}
+
+
+

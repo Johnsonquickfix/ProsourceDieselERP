@@ -3635,5 +3635,22 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
+        public static DataTable GetcategoriesMedia(JqDataTableModel model )
+        {
+            DataTable dt = new DataTable();
+            string strquery = "select (select count(post_id) Total from cms_postmeta pm where meta_key='_file_name') Total, meta_value file_name,post_id ID from cms_postmeta pm where meta_key='_file_name' ORDER BY meta_id desc OFFSET " + model.iDisplayStart + " ROWS  FETCH NEXT  "+model.iSortCol_0 + " ROWS ONLY  ";
+            dt = SQLHelper.ExecuteDataTable(strquery);
+            return dt;
+        }
+        
+        public static DataTable Searchcategories(JqDataTableModel model )
+        {
+            DataTable dt = new DataTable();
+            string strquery = "select (select count(post_id) Total from cms_postmeta pm where meta_key='_file_name' and (meta_value like '%"+ model.strValue1 + "%' or post_id like '" + model.strValue1 + "%' or meta_value like '" + model.strValue1 + "%')) Total, meta_value img,post_id ID from cms_postmeta pm where meta_key='_file_name' and (meta_value like '%" + model.strValue1 + "%' or post_id like '" + model.strValue1 + "%' or meta_value like '" + model.strValue1 + "%') ORDER BY meta_id desc OFFSET " + model.strValue2+ " ROWS  FETCH NEXT  "+model.strValue3+ " ROWS ONLY  ";
+            dt = SQLHelper.ExecuteDataTable(strquery);
+            return dt;
+        }
+
+
     }
 }

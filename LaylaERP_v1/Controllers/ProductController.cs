@@ -1,4 +1,5 @@
-﻿using LaylaERP.BAL;
+﻿using DocumentFormat.OpenXml.Presentation;
+using LaylaERP.BAL;
 using LaylaERP.DAL;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
@@ -3161,6 +3162,22 @@ namespace LaylaERP.Controllers
                 });
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetcategoriesMedia(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            DataTable dt = ProductRepository.GetcategoriesMedia(model);
+            result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            return Json(new { aaData = result , ToColom = model.iDisplayStart, FromColom= model.iSortCol_0 });
+        }
+        
+        public JsonResult Searchcategories(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            DataTable dt = ProductRepository.Searchcategories(model);
+            result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            return Json(new { aaData = result , ToColom = model.strValue2, FromColom= model.strValue3 });
         }
 
     }

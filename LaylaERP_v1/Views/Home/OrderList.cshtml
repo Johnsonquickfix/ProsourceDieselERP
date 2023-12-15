@@ -15,13 +15,14 @@
                     <th>Order ID</th>
                     <th>Customer Name</th>
                     <th>Status</th>
+                    <th>Website</th>
                     <th>Date Created</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="5" align="center">No Data Found.</td>
+                    <td colspan="6" align="center">No Data Found.</td>
                 </tr>
             </tbody>
         </table>
@@ -34,6 +35,7 @@
                     <th>Order ID</th>
                     <th>Customer Name</th>
                     <th>Status</th>
+                    <th>Website</th>
                     <th>Date Created</th>
                     <th>Total</th>
                 </tr>
@@ -41,13 +43,14 @@
             <tbody>
                 @foreach (var record in ViewData.Model)
                 {
-                    <tr>
-                        <td>#@record["order_id"]</td>
-                        <td> @record["FirstName"]</td>
-                        <td> @record["status"]</td>
-                        <td> @record["date_created"]</td>
-                        <td>$@record["total_sales"]</td>
-                    </tr>
+                <tr>
+                    <td>#@record["order_id"]</td>
+                    <td> @record["FirstName"]</td>
+                    <td> @record["status"]</td>
+                    <td> @record["website"]</td>
+                    <td> @record["date_created"]</td>
+                    <td>$@record["total_sales"]</td>
+                </tr>
                 }
             </tbody>
         </table>

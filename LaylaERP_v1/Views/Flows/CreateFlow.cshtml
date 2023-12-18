@@ -1,23 +1,20 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Create Flow";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
 <link href="~/Content/qfk/css/flow-layout.css" rel="stylesheet" />
 <!--<link href="~/js/qfk/flows/flowy.min.css" rel="stylesheet" />
 <link href="~/js/qfk/flows/styles.css" rel="stylesheet" />-->
-<div id="root">
+<div id="root" data-id="@ViewBag.id">
     <div class="flows-body">
         <!-- start page title -->
         <div class="row border-bottom">
             <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between m-2">
                     <div>
                         <ol class="breadcrumb m-0 font-size-18">
                             <li class="breadcrumb-item"><a href="/flows/index">Flows</a></li>
-                            <li class="breadcrumb-item">
-                                ABC
-                            </li>
+                            <li name="flow-title" class="breadcrumb-item"></li>
                         </ol>
                     </div>
                     <div class="page-title-right">
@@ -27,160 +24,6 @@
         </div>
         <!-- end page title -->
         <div class="flows-main">
-            @*<div id="leftcard">
-                    <div id="blocklist">
-                        <p id="header">Actions</p>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_message">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Email</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_sms">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-sms"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">SMS</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="update_customer">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Update Profile Property</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="send_notification_message">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-bell"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Notification</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="webhook">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-link"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Webhook</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p id="header">Timing</p>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="time_delay">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Time Delay</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p id="header">Logic</p>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="conditional_split">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Conditional Split</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blockelem create-flowy noselect">
-                            <input type="hidden" name='blockelemtype' class="blockelemtype" value="trigger_split">
-                            <div class="grabme">
-                                <i class="fas fa-grip-vertical"></i>
-                            </div>
-                            <div class="blockin">
-                                <div class="blockico">
-                                    <span></span>
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="blocktext">
-                                    <p class="blocktitle">Trigger Split</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="propwrap">
-                    <div id="properties">
-                        <div id="close">
-                            <i class="fa fa-times"></i>
-                        </div>
-                        <p id="header2">Properties</p>
-                        <div id="propswitch">
-                            <div id="dataprop">Data</div>
-                            <div id="alertprop">Alerts</div>
-                            <div id="logsprop">Logs</div>
-                        </div>
-                        <div id="proplist">
-                            <p class="inputlabel">Select database</p>
-                            <div class="dropme">Database 1 <img src="assets/dropdown.svg"></div>
-                            <p class="inputlabel">Check properties</p>
-                            <div class="dropme">All<img src="assets/dropdown.svg"></div>
-                            <div class="checkus"><img src="assets/checkon.svg"><p>Log on successful performance</p></div>
-                            <div class="checkus"><img src="assets/checkoff.svg"><p>Give priority to this block</p></div>
-                        </div>
-                        <div id="divisionthing"></div>
-                        <div id="removeblock">Delete blocks</div>
-                    </div>
-                </div>
-                <div id="canvas" class="flow-canvas">
-                </div>*@
-
-
             <aside id="leftcard" class="configuration-panel">
                 <div class="configuration-panel-header">
                     <div class="configuration-panel-title">
@@ -309,7 +152,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </div><div class="kl-zoom-controls" style="position: fixed; width: 32px; left: calc(100% - 56px); bottom: 24px;"><div>100%</div><div><a class="btn btn-default"><i class="fa fa-plus"></i></a><a class="btn btn-default"><i class="fa fa-minus"></i></a></div></div>
+                        </div>
+                        <!--<div class="kl-zoom-controls" style="position: fixed; width: 32px; left: calc(100% - 56px); bottom: 24px;">
+                            <div>100%</div>
+                            <div>
+                                <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+                                <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
@@ -319,4 +169,8 @@
 <script src="~/js/qfk/common.js"></script>
 <!--<script src="~/js/qfk/flows/flowy.min.js"></script>
 <script type="module" src="~/js/qfk/flows/main.js"></script>-->
-<script type="module" src="~/js/qfk/flows/createflow.js"></script>
+<script type="module" src="@Url.Content("~/js/qfk/flows/createflow.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+
+<script type="module">
+
+</script>

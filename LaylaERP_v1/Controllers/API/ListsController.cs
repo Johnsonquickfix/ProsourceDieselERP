@@ -202,14 +202,14 @@
             }
         }
         [HttpGet, Route("static-group")]
-        public IHttpActionResult StaticGroupList()
+        public IHttpActionResult StaticGroupList(int type = 1)
         {
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, "Request had invalid authentication credentials.");
                 //return Ok(ProfilesRepository.GroupList(om.company_id, 1));
-                return Ok(ProfilesRepository.GroupList(1, 1));
+                return Ok(ProfilesRepository.GroupList(om.login_company_id, type));
             }
             catch (Exception ex)
             {

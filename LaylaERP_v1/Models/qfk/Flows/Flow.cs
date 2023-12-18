@@ -28,6 +28,12 @@
 
         [JsonProperty("paths", NullValueHandling = NullValueHandling.Ignore)]
         public FlowPaths paths { get; set; }
+
+        [JsonProperty("created", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? created { get; set; }
+
+        [JsonProperty("updated", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? updated { get; set; }
     }
 
     public class FlowPaths
@@ -41,8 +47,47 @@
         [JsonProperty("parent_path", NullValueHandling = NullValueHandling.Include)]
         public long parent_path_id { get; set; }
 
+        [JsonProperty("actions", NullValueHandling = NullValueHandling.Ignore)]
+        public FlowPathAction actions { get; set; }
+
         [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
         public int status { get; set; }
+
+        [JsonProperty("created", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? created { get; set; }
+
+        [JsonProperty("updated", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? updated { get; set; }
+    }
+
+    public class FlowPathAction
+    {
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Include)]
+        public long id { get; set; }
+
+        [JsonProperty("path", NullValueHandling = NullValueHandling.Include)]
+        public long path_id { get; set; }
+
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
+        public int type { get; set; }
+
+        [JsonProperty("rank", NullValueHandling = NullValueHandling.Include)]
+        public int rank { get; set; }
+
+        [JsonProperty("after_seconds", NullValueHandling = NullValueHandling.Include)]
+        public int after_seconds { get; set; }
+
+        //[JsonProperty("settings", NullValueHandling = NullValueHandling.Include)]
+        //public string settings { get; set; }
+
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
+        public int status { get; set; }
+
+        [JsonProperty("created", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? created { get; set; }
+
+        [JsonProperty("updated", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? updated { get; set; }
     }
 
     //public class ListResponse : Lists

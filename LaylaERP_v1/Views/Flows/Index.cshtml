@@ -20,6 +20,7 @@
                 </div>
                 <div class="page-title-right">
                     <a data-add="true" data-url='@Url.Action("create","flows", new {  } )' href="@Url.Action("create","flows", new {  } )" class="btn black_btn">Create flow</a>
+                    <button name="add-flow" class="btn btn-outline-dark">Create flow</button>
                 </div>
 
             </div>
@@ -37,6 +38,53 @@
         </div>
     </div>
 </div>
+<div id="modalAdd" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Create flow</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
 <script src="~/js/qfk/common.js"></script>
+<script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
 
+    document.querySelector('[name="add-flow"]')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        let _m = document.querySelector('#modalAdd'), myModal = new bootstrap.Modal(_m);
+        _m.querySelector('.modal-title').innerHTML = 'Create Flow';
+        // Add body
+        let l = document.createElement('label', { class: "form-label" }, 'Name'),
+            t = document.createElement('input', { class: "form-control", type: "text", placeholder: "e.g. Welcome series, Post purchase" });
+        _m.querySelector('.modal-body').replaceChildren(l,t);
+        // Add footer
+        let c = document.createElement('button', { type: "button", class: "btn btn-secondary waves-effect", 'data-bs-dismiss': "modal" }, 'Close'),
+            a = document.createElement('button', { type: "button", class: "btn btn-primary" }, 'Create flow');
+        _m.querySelector('.modal-footer').replaceChildren(c, a);
+        myModal.show(); t.focus();
+
+        a.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            if (t.value === '') { t.focus(); return false; };
+            evt.target.disabled = true;
+            Http.post(`/api/flow/create`, { params: {}, body: { name: t.value, trigger_type: 2 } }).then(response => response.json()).
+                then(response => {
+                    window.location = `${window.location.origin}/flows/${response.id}/edit`;
+                    //myModal.hide();
+                }).catch(error => {
+                    console.log('error', error);
+                    evt.target.disabled = false;
+                    swal('Error!', error, 'error');
+                });
+        });
+    });
+
+</script>
 

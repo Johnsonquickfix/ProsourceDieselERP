@@ -266,6 +266,7 @@
     <Compile Include="BAL\qfk\CampaignRepository.cs" />
     <Compile Include="BAL\qfk\CatalogRepository.cs" />
     <Compile Include="BAL\qfk\EmailTemplatesRepository.cs" />
+    <Compile Include="BAL\qfk\FlowsRepository.cs" />
     <Compile Include="BAL\qfk\ImportData.cs" />
     <Compile Include="BAL\qfk\ProfilesRepository.cs" />
     <Compile Include="BAL\qfk\TrackAndIdentifyRepository.cs" />
@@ -291,6 +292,7 @@
     <Compile Include="Controllers\API\EditorController.cs" />
     <Compile Include="Controllers\API\EmailTemplatesController.cs" />
     <Compile Include="Controllers\API\EventsController.cs" />
+    <Compile Include="Controllers\API\FlowsController.cs" />
     <Compile Include="Controllers\API\IdentifyController.cs" />
     <Compile Include="Controllers\API\ListsController.cs" />
     <Compile Include="Controllers\API\ProfilesController.cs" />
@@ -420,6 +422,7 @@
     <Compile Include="Models\qfk\Content\Template.cs" />
     <Compile Include="Models\qfk\Editor\CommonModel.cs" />
     <Compile Include="Models\qfk\Enums\Criteria.cs" />
+    <Compile Include="Models\qfk\Flows\Flow.cs" />
     <Compile Include="Models\qfk\JqDataTableModel.cs" />
     <Compile Include="Models\qfk\MailTracking\TrackingRequest.cs" />
     <Compile Include="Models\qfk\SearchModel.cs" />

@@ -64,18 +64,12 @@ doc.addEventListener("DOMContentLoaded", function () {
     document.getElementById("removeblock").addEventListener("click", function () {
         flowy.deleteBlocks();
     });
-    var aclick = false;
-    var noinfo = false;
+    var aclick = false, noinfo = false;
     var beginTouch = function (event) {
-        aclick = true;
-        noinfo = false;
-        if (event.target.closest(".create-flowy")) {
-            noinfo = true;
-        }
+        aclick = true, noinfo = false;
+        if (event.target.closest(".create-flowy")) { noinfo = true; }
     }
-    var checkTouch = function (event) {
-        aclick = false;
-    }
+    var checkTouch = function (event) { aclick = false; }
     var doneTouch = function (event) {
         if (event.type === "mouseup" && aclick && !noinfo) {
             if (!rightcard && event.target.closest(".block") && !event.target.closest(".block").classList.contains("dragging")) {
@@ -87,6 +81,7 @@ doc.addEventListener("DOMContentLoaded", function () {
             }
         }
     }
+
     addEventListener("mousedown", beginTouch, false);
     addEventListener("mousemove", checkTouch, false);
     addEventListener("mouseup", doneTouch, false);

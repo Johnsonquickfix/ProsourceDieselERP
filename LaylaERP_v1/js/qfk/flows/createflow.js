@@ -1,9 +1,7 @@
 ﻿import Http from '../../http/index.js';
-var doc = doc || document, dragged = null, lt = { id: 1000, loaded: !1 };
+import flowConfig, { loader } from '../../qfk/flows/flowconfig.js';
 
-function getLists(type) { return Http.get(`/api/lists/static-group?type=${type}`).then(response => response.json()); }
-function getStatistic() { return Http.get('/api/lists/metrics').then(response => response.json()); }
-function getProperties() { return Http.get('/api/lists/people/property').then(response => response.json()); }
+var doc = doc || document, dragged = null, lt = {};
 
 doc.addEventListener("DOMContentLoaded", function () {
     load();
@@ -47,91 +45,7 @@ export const addEventListenerMulti = function (type, listener, capture, selector
         event.target.classList.remove("dragging");
     };
 
-function config_panel(e) {
-    let { actionType: a, title: t, displayFooter: f } = e;
-    let _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body, _footer;
-    _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t));
-    _body = doc.createElement('div', { class: `${_class}-body ${!f ? 'no-footer' : ''} `.trim() });
-    _footer = doc.createElement('div', { class: `${_class}-footer`.trim() });
-    if (lt.panel.TRIGGER_AND_FILTERS_INITIAL === a) {
-        let _p = doc.createElement("div", { class: "trigger-select-panel" }, doc.createElement("p", null, "What will trigger this flow?"), triggerInitial({ triggers: lt.triggers }));
-        _body.replaceChildren(_p);
-    }
-    else if (lt.panel.FLOWS_COMPONENTS_PANEL === a) {
-        _body.replaceChildren(flowComponentsInitial({ flowAction: lt.flowAction }));
-    }
-    f && _body.appendChild(_footer);
-    _config.replaceChildren(_header, _body);
-}
-function triggerInitial(e) {
-    let { triggers: t = [] } = e, $ul = doc.createElement("ul", { class: "trigger-type-buttons" });
-    t.map(e => {
-        let _b = doc.createElement("button", { class: "trigger-type-button", 'data-type': e.triggerType },
-            doc.createElement("div", { class: "icon-container" }, doc.createElement("i", { class: e.icon })),
-            doc.createElement("div", null, doc.createElement("span", null, doc.createElement("h2", null, e.text)), doc.createElement("p", null, e.description))
-        );
-        _b.addEventListener('click', (event) => { event.preventDefault(), triggerConfiguration(e); });
-        $ul.appendChild(doc.createElement("li", null, _b));
-    });
-    return $ul;
-}
-function triggerConfiguration(e) {
-    console.log(e)
-    let p = 'configuration-panel', _config = doc.querySelector(`.${p}`), _h;
-    _h = doc.createElement('div', { class: `${p}-header`.trim() }, doc.createElement('div', { class: `${p}-title`.trim() }, `Trigger Setup`));
 
-    let _back = doc.createElement("button", { type: "button", class: 'btn btn-alt' }, '<i class="fa fa-arrow-left me-2"></i>Back'),
-        _done = doc.createElement("input", { type: "button", class: 'btn btn-primary', value: "Done" }),
-        _cancel = doc.createElement("input", { type: "button", class: 'btn btn-alt', value: "Cancel" });
-    let a, h, ul, li, f;
-    h = doc.createElement("div", null, _back);
-    ul = doc.createElement("ul", { class: 'configuration-commands' });
-    f = doc.createElement("div", { class: 'configuration-panel-footer' }, doc.createElement("span", { class: 'button-set' }, _done, _cancel));
-    li = doc.createElement("li", null, doc.createElement("div", null,
-        doc.createElement("h2", null, `Flow Trigger <span class="weak">${e.text}</span>`),
-        doc.createElement("p", null, `Which ${e.triggerName} will trigger this flow?`),
-        createGroup(e)
-    ));
-    ul.replaceChildren(li);
-    a = doc.createElement("div", { class: `${p}-body`.trim() }, doc.createElement("div", { class: "trigger-select-panel" }, h, ul, f));
-    _config.replaceChildren(_h, a);
-    _back.addEventListener('click', (event) => { event.preventDefault(), initTrigger({ trigger_id: 0 }); });
-    _cancel.addEventListener('click', (event) => { event.preventDefault(), initTrigger({ trigger_id: 0 }); });
-}
-function createGroup(e) {
-    let { triggerName: n, triggerType: t } = e; 
-    let $s = doc.createElement('select', { name: "group" }), $d = doc.createElement('div', { class: "InputContainer cw-300" }, $s);
-    let dd = new Choices($s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: `Select a ${n}…`, itemSelectText: '', shouldSort: false });
-    dd.setChoices(async () => {
-        try {
-            if (t === 0) return await getStatistic().then(function (data) { return data ? data.map(function (row) { return { value: row.metric_id, label: row.metric_name } }) : []; });
-            else if (t === 1) return await getLists(n === 'list' ? 1 : 2).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name } }) : []; });
-            else if (t === 3) return await getProperties();
-        } catch (err) { console.error(err); }
-    });
-    return $d;
-}
-function flowComponentsInitial(e) {
-    let { flowAction: t = [] } = e;
-    let $ul = doc.createElement("ul", { class: "flow-action-panel" });
-    t.map(e => {
-        let $li = doc.createElement("li", { class: `component-section ${e.type}` }, doc.createElement("div", { class: `component-section-title` }, e.text));
-        e.group.map(g => {
-            let $ch = doc.createElement("div", { class: "draggable-flow-action-component", draggable: true },
-                doc.createElement("div", { class: "flow-action-component", 'data-type': g.type },
-                    doc.createElement("div", { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${g.icon}"></i></div>`),
-                    doc.createElement("div", { class: 'flow-action-component-title' }, g.text)
-                )
-            );
-            $ch.addEventListener('drag', onDrag);
-            $ch.addEventListener('dragstart', onDragStart);
-            $ch.addEventListener('dragend', onDragEnd);
-            $li.appendChild($ch);
-        });
-        $ul.appendChild($li);
-    });
-    return $ul;
-}
 
 const draggableDiv = (actionType) => {
     let d = doc.createElement('div', { class: lt.draggable[actionType], draggable: !0 });
@@ -209,13 +123,112 @@ const draggableDiv = (actionType) => {
         }
     };
 
+function config_panel(e) {
+    let { actionType: a, title: t, displayFooter: f } = e;
+    let _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body, _footer;
+    _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t));
+    _body = doc.createElement('div', { class: `${_class}-body ${!f ? 'no-footer' : ''} `.trim() });
+    _footer = doc.createElement('div', { class: `${_class}-footer`.trim() });
+    if (lt.panel.TRIGGER_AND_FILTERS_INITIAL === a) {
+        let _p = doc.createElement("div", { class: "trigger-select-panel" }, doc.createElement("p", null, "What will trigger this flow?"), triggerInitial({ triggers: lt.triggers }));
+        _body.replaceChildren(_p);
+    }
+    else if (lt.panel.FLOWS_COMPONENTS_PANEL === a) {
+        _body.replaceChildren(flowComponentsInitial({ flowAction: lt.flowAction }));
+    }
+    f && _body.appendChild(_footer);
+    _config.replaceChildren(_header, _body);
+}
+function triggerInitial(e) {
+    let { triggers: t = [] } = e, $ul = doc.createElement("ul", { class: "trigger-type-buttons" });
+    t.map(e => {
+        let _b = doc.createElement("button", { class: "trigger-type-button", 'data-type': e.triggerType },
+            doc.createElement("div", { class: "icon-container" }, doc.createElement("i", { class: e.icon })),
+            doc.createElement("div", null, doc.createElement("span", null, doc.createElement("h2", null, e.text)), doc.createElement("p", null, e.description))
+        );
+        _b.addEventListener('click', (event) => { event.preventDefault(), triggerConfiguration(e); });
+        $ul.appendChild(doc.createElement("li", null, _b));
+    });
+    return $ul;
+}
+function triggerConfiguration(e) {
+    let p = 'configuration-panel', _config = doc.querySelector(`.${p}`), _h;
+    _h = doc.createElement('div', { class: `${p}-header`.trim() }, doc.createElement('div', { class: `${p}-title`.trim() }, `Trigger Setup`));
+
+    let _back = doc.createElement("button", { type: "button", class: 'btn btn-alt' }, '<i class="fa fa-arrow-left me-2"></i>Back'),
+        _done = doc.createElement("input", { type: "button", class: 'btn btn-primary', value: "Done" }),
+        _cancel = doc.createElement("input", { type: "button", class: 'btn btn-alt', value: "Cancel" });
+    let a, h, ul, li, f;
+    h = doc.createElement("div", null, _back);
+    ul = doc.createElement("ul", { class: 'configuration-commands' });
+    f = doc.createElement("div", { class: 'configuration-panel-footer' }, doc.createElement("span", { class: 'button-set' }, _done, _cancel));
+    //group 
+    let $s = doc.createElement('select', { name: "group" });
+    li = doc.createElement("li", null, doc.createElement("div", null,
+        doc.createElement("h2", null, `Flow Trigger <span class="weak">${e.text}</span>`),
+        doc.createElement("p", null, `Which ${e.triggerName} will trigger this flow?`),
+        doc.createElement('div', { class: "InputContainer cw-300" }, $s)
+    ));
+    ul.replaceChildren(li);
+    a = doc.createElement("div", { class: `${p}-body`.trim() }, doc.createElement("div", { class: "trigger-select-panel" }, h, ul, f));
+    _config.replaceChildren(_h, a);
+    [_back, _cancel].forEach(function (ele) { ele.addEventListener("click", (event) => { event.preventDefault(), initTrigger({ trigger_id: 0 }); }); });
+
+    (() => {
+        let { triggerName: n, triggerType: t } = e, dd = new Choices($s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: `Select a ${e.triggerName}…`, itemSelectText: '', shouldSort: false });
+        dd.setChoices(async () => {
+            try {
+                switch (t) {
+                    case 0: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.metric_id, label: row.metric_name } }) : []; });
+                    case 1: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name } }) : []; });
+                    case 3: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json());
+                }
+            } catch (err) { console.error(err); }
+        });
+    })();
+    const onSave = () => {
+        let j = {
+            id: parseInt(lt.flow()) || 0, trigger_type: e.triggerType, trigger_id: parseInt($s.value) || 0,
+            //triggerFilter: null != e.triggerFilterStanzas ? { stanzas: e.triggerFilterStanzas } : null,
+            //customerFilter: null != e.customerFilterStanzas ? { tanzas: e.customerFilterStanzas } : null,
+        }
+        Http.post(lt.urls.configureFlowTrigger(j.id), { body: j }).then(response => response.json()).
+            then(response => { response.status === 200 && load(); });
+    }
+    _done.addEventListener('click', (event) => { event.preventDefault(), onSave(); });
+}
+function flowComponentsInitial(e) {
+    let { flowAction: t = [] } = e;
+    let $ul = doc.createElement("ul", { class: "flow-action-panel" });
+    t.map(e => {
+        let $li = doc.createElement("li", { class: `component-section ${e.type}` }, doc.createElement("div", { class: `component-section-title` }, e.text));
+        e.group.map(g => {
+            let $ch = doc.createElement("div", { class: "draggable-flow-action-component", draggable: true },
+                doc.createElement("div", { class: "flow-action-component", 'data-type': g.type },
+                    doc.createElement("div", { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${g.icon}"></i></div>`),
+                    doc.createElement("div", { class: 'flow-action-component-title' }, g.text)
+                )
+            );
+            $ch.addEventListener('drag', onDrag);
+            $ch.addEventListener('dragstart', onDragStart);
+            $ch.addEventListener('dragend', onDragEnd);
+            $li.appendChild($ch);
+        });
+        $ul.appendChild($li);
+    });
+    return $ul;
+}
+
+
+
 const showLoader = () => {
     let x = doc.getElementById("loader");
     x.style.display = (x.style.display === "none" ? "block" : "none");
 };
 function load() {
-    let r = doc.querySelector('#root'), o = parseInt(r.getAttribute('data-id')) || 0;
-    enums(lt), showLoader(); //console.log('ENUM => ', lt)
+    lt = flowConfig(1000);
+    showLoader();
+    let o = parseInt(lt.flow()) || 0;
     Http.get(`/api/flows/${o}`).then(response => response.json())
         .then((response) => {
             if (response.status === 200) {
@@ -231,184 +244,6 @@ function load() {
             doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
         });
 };
-
-export const checkArray = (e, a) => Object.prototype.hasOwnProperty.call(e, a),
-    getArray = (e, a) => {
-        for (var c in a) checkArray(a, c) && !checkArray(e, c) && Object.defineProperty(e, c, { enumerable: !0, get: a[c] })
-    };
-export const enums = function (t) {
-    getArray(t, {
-        controls: () => _controls,
-        events: () => _events,
-        events_action: () => _action,
-        panel: () => _panel,
-        triggers: () => _triggers,
-        flowAction: () => _flowAction,
-        draggable: () => _draggable
-    });
-    const _controls = { ROOT: 'root-branch', PLACED_COMPONENT: 'placed-component' },
-        _events = {
-            EMAIL: "send_message",
-            SEND_PUSH_NOTIFICATION: "send_push_notification",
-            SEND_SMS_MESSAGE: "send_sms",
-            BRANCH: "branch_boolean",
-            TIME_DELTA: "time_delay",
-            BACK_IN_STOCK_DELAY: "back_in_stock_delay",
-            SUPPRESS_CUSTOMER: "suppress_customer",
-            UPDATE_CUSTOMER: "update_customer",
-            COUNTDOWN_DELAY: "countdown_delay",
-            DATE_TRIGGER: "date_trigger",
-            NOTIFICATION: "send_notification_message",
-            WEBHOOK: "webhook",
-            INTERNAL_SERVICE: "internal_service",
-            AB_TEST: "ab_test",
-            TRIGGER_SPLIT: "trigger_split",
-            CONDITIONAL_SPLIT: "conditional_split",
-            SPLIT: "branch_boolean",
-            TRIGGER: "trigger",
-            EXIT_NODE: "exit_node",
-            REJOIN: "rejoin_node"
-        },
-        P = {
-            ACTION: "action",
-            TIMING: {
-                get COLLAPSED() { return `${this.base} collapsed` },
-                get EXPANDED() { return `${this.base} expanded` },
-                base: "timing"
-            },
-            LOGIC: "logic"
-        },
-        _action = {
-            [_events.TRIGGER]: `trigger ${P.LOGIC}`,
-            [_events.SEND_PUSH_NOTIFICATION]: `push-notification ${P.ACTION}`,
-            [_events.EMAIL]: `send-email ${P.ACTION}`,
-            [_events.SEND_SMS_MESSAGE]: `send-sms ${P.ACTION}`,
-            [_events.TIME_DELTA]: `time-delta ${P.TIMING.COLLAPSED}`,
-            [_events.BACK_IN_STOCK_DELAY]: `back-in-stock ${P.TIMING.EXPANDED}`,
-            [_events.COUNTDOWN_DELAY]: `countdown-delay ${P.TIMING.COLLAPSED}`,
-            [_events.DATE_TRIGGER]: `countdown-delay ${P.TIMING.COLLAPSED}`,
-            [_events.SUPPRESS_CUSTOMER]: `suppress-customer ${P.ACTION}`,
-            [_events.BRANCH]: `branch ${P.LOGIC}`,
-            [_events.TRIGGER_SPLIT]: `branch ${P.LOGIC}`,
-            [_events.CONDITIONAL_SPLIT]: `branch ${P.LOGIC}`,
-            [_events.UPDATE_CUSTOMER]: `update-customer ${P.ACTION}`,
-            [_events.REJOIN]: "rejoin-node exit-node",
-            [_events.NOTIFICATION]: `send-notification ${P.ACTION}`,
-            [_events.WEBHOOK]: `webhook ${P.ACTION}`,
-            [_events.INTERNAL_SERVICE]: `internal-service ${P.ACTION}`,
-            [_events.AB_TEST]: `ab-test ${P.ACTION}`
-        },
-        _panel = {
-            FLOWS_COMPONENTS_PANEL: "FLOWS_COMPONENTS_PANEL",
-            TRIGGER_AND_FILTERS_INITIAL: "TRIGGER_AND_FILTERS_INITIAL",
-            TRIGGER_LIST_PANEL: "TRIGGER_LIST_PANEL",
-            TRIGGER_SEGMENT_PANEL: "TRIGGER_SEGMENT_PANEL",
-            TRIGGER_ACTION_PANEL: "TRIGGER_ACTION_PANEL",
-            TRIGGER_DATE_PANEL: "TRIGGER_DATE_PANEL",
-            TRIGGER_PRICE_DROP_PANEL: "TRIGGER_PRICE_DROP_PANEL",
-            TRIGGER_SETUP_PANEL: "TRIGGER_SETUP_PANEL",
-            FILTER_BUILDER: "FILTER_BUILDER",
-            REQUEST_TRIGGER_OPTIONS: "REQUEST_TRIGGER_OPTIONS",
-            RECEIVE_TRIGGER_OPTIONS: "RECEIVE_TRIGGER_OPTIONS",
-            UPDATE_CONFIGURATION_PANEL: "UPDATE_CONFIGURATION_PANEL",
-            PREVIOUS_CONFIGURATION_PANEL: "PREVIOUS_CONFIGURATION_PANEL",
-            HIDE_CONFIGURATION_PANEL: "HIDE_CONFIGURATION_PANEL",
-            SHOW_CONFIGURATION_PANEL: "SHOW_CONFIGURATION_PANEL",
-            SEND_EMAIL_PANEL: "SEND_EMAIL_PANEL",
-            SEND_PUSH_PANEL: "SEND_PUSH_PANEL",
-            SEND_SMS_PANEL: "SEND_SMS_PANEL",
-            BRANCH_PANEL: "BRANCH_PANEL",
-            CONDITIONAL_SPLIT_PANEL: "CONDITIONAL_SPLIT_PANEL",
-            TRIGGER_SPLIT_PANEL: "TRIGGER_SPLIT_PANEL",
-            SCHEDULE_PANEL: "SCHEDULE_PANEL",
-            COUNTDOWN_DELAY_PANEL: "COUNTDOWN_DELAY_PANEL",
-            DATE_TRIGGER_PANEL: "DATE_TRIGGER_PANEL",
-            BACK_IN_STOCK_PANEL: "BACK_IN_STOCK_PANEL",
-            SUPPRESS_CUSTOMER_PANEL: "SUPPRESS_CUSTOMER_PANEL",
-            UPDATE_CUSTOMER_PANEL: "UPDATE_CUSTOMER_PANEL",
-            NOTIFICATION_PANEL: "NOTIFICATION_PANEL",
-            PRICE_DROP_TRIGGER_PANEL: "PRICE_DROP_TRIGGER_PANEL",
-            WEBHOOK_PANEL: "WEBHOOK_PANEL",
-            INTERNAL_SERVICE_PANEL: "INTERNAL_SERVICE_PANEL",
-            AB_TEST_PANEL: "AB_TEST_PANEL"
-        },
-        _triggerType = { EVENT: 0, ADDED_TO_LIST: 1, UNCONFIGURED: 2, DATE_BASED: 3, PRICE_DROP: 4 },
-        _triggerName = { Actions: 'action', Date: 'date', Lists: 'list', PriceDrop: 'priceDrop', Segments: 'segment' },
-        _triggers = [{
-            triggerName: _triggerName.Lists,
-            triggerType: _triggerType.ADDED_TO_LIST,
-            icon: "fas fa-list",
-            text: "List",
-            description: "People will enter when they are added to a specific list.",
-            state: _panel.TRIGGER_LIST_PANEL,
-        }, {
-            triggerName: _triggerName.Segments,
-            triggerType: _triggerType.ADDED_TO_LIST,
-            icon: "fas fa-list",
-            text: "Segment",
-            description: "People will enter when they join a specific dynamic segment.",
-            state: _panel.TRIGGER_SEGMENT_PANEL,
-        }, {
-            triggerName: _triggerName.Actions,
-            triggerType: _triggerType.EVENT,
-            icon: "fas fa-list",
-            text: "Metric",
-            description: "People will enter when they take a specific action (e.g. Placed Order).",
-            state: _panel.TRIGGER_ACTION_PANEL,
-        },
-        //{
-        //triggerName: _triggerName.PriceDrop,
-        //triggerType: _triggerType.PRICE_DROP,
-        //icon: "fas fa-list",
-        //text: "Price Drop",
-        //description: "People will enter when the price drops on any item they engaged with.",
-        //state: _panel.TRIGGER_PRICE_DROP_PANEL,
-        //},
-        {
-            triggerName: _triggerName.Date,
-            triggerType: _triggerType.DATE_BASED,
-            icon: "fas fa-list",
-            isNewIcon: !0,
-            text: "Date Property",
-            description: "People will enter if they have a specific date property set (e.g. Birthday).",
-            state: _panel.TRIGGER_DATE_PANEL,
-        }],
-        _flowAction = [{
-            type: P.ACTION, text: 'Actions',
-            group: [
-                { type: _events.EMAIL, text: "Email", icon: "fas fa-list" },
-                { type: _events.SEND_SMS_MESSAGE, text: "SMS", icon: "fas fa-list" },
-                { type: _events.UPDATE_CUSTOMER, text: "Update Profile Property", icon: "fas fa-list" },
-                { type: _events.NOTIFICATION, text: "Notification", icon: "fas fa-list" },
-                { type: _events.WEBHOOK, text: "Webhook", icon: "fas fa-list" }
-            ]
-        }, {
-            type: P.TIMING.base, text: 'Timing',
-            group: [{ type: _events.TIME_DELTA, text: "Time Delay", icon: "fas fa-list" },]
-        }, {
-            type: P.LOGIC, text: 'Logic',
-            group: [
-                { type: _events.CONDITIONAL_SPLIT, text: "Conditional Split", icon: "fas fa-list" },
-                { type: _events.TRIGGER_SPLIT, text: "Trigger Split", icon: "fas fa-list" },
-            ]
-        }],
-        _draggable = {
-            [_events.SEND_PUSH_NOTIFICATION]: "draggable-push-notification-component",
-            [_events.EMAIL]: "draggable-email-placed-component",
-            [_events.SEND_SMS_MESSAGE]: "draggable-sms-placed-component",
-            [_events.TIME_DELTA]: "draggable-time-delta-component",
-            [_events.COUNTDOWN_DELAY]: "draggable-countdown-delay-component",
-            [_events.BACK_IN_STOCK_DELAY]: "draggable-back-in-stock-component",
-            [_events.SUPPRESS_CUSTOMER]: "draggable-suppress-customer-component",
-            [_events.UPDATE_CUSTOMER]: "draggable-update-customer-component",
-            [_events.REJOIN]: "",
-            [_events.NOTIFICATION]: "draggable-notification-placed-component",
-            [_events.WEBHOOK]: "draggable-webhook-placed-component",
-            [_events.INTERNAL_SERVICE]: "draggable-internal-service-placed-component",
-            [_events.AB_TEST]: "draggable-ab-test-placed-component"
-        };
-
-}
 
 export const fnENUM = function (t, n) {
     //t = {};

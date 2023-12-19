@@ -1138,6 +1138,7 @@
     <Content Include="js\qfk\catalog\sources.js" />
     <Content Include="js\qfk\common.js" />
     <Content Include="js\qfk\EmailTemplates\templates.js" />
+    <Content Include="js\qfk\flows\flowconfig.js" />
     <Content Include="js\qfk\flows\createflow.js" />
     <Content Include="js\qfk\flows\flowy.min.css" />
     <Content Include="js\qfk\flows\flowy.min.js" />

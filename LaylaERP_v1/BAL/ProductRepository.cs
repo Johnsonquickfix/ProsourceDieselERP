@@ -3651,6 +3651,25 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable ImportAttributesProduct(string postsJSON, string flag = "PRODUCT")
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@json", postsJSON),
+                    new SqlParameter("@flag", flag)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_productAttributes_import", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
 
     }
 }

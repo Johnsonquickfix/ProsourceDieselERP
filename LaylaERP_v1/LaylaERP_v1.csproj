@@ -1981,6 +1981,7 @@
     <Content Include="Views\ProductCostPrice\Index.cshtml" />
     <Content Include="Views\Setup\MerchantFee.cshtml" />
     <Content Include="Views\Flows\CreateFlow.cshtml" />
+    <Content Include="Views\DataImport\ProductAttributesImport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

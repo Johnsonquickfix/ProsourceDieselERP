@@ -26,33 +26,34 @@ export const addEventListenerMulti = function (type, listener, capture, selector
     let nodes = doc.querySelectorAll(selector);
     for (let i = 0; i < nodes.length; i++) { nodes[i].addEventListener(type, listener, capture); }
 },
-    dropAction = (event, type, action) => {
+    dropAction = (event, type, pathId) => {
         let root = doc.querySelector(`.${lt.controls.ROOT}`), e = { canDrop: true, actionType: type, index: root.children.length };
         //let e = { canDrop: true, actionType: 'send_message' };
-        console.log(dragged); dragged = null;
-        let ele = drawComponent(e);
-        root.insertBefore(ele, event.target.parentElement.parentElement);
+        console.log(dragged, event, type, pathId); dragged = null;
+        let action = { id: 0, path: pathId, type: type };
+        Http.post(lt.urls.addAction(action.path), { body: action }).then(response => response.json()).
+            then(response => {
+                if (response.status === 200) {
+                    let ele = drawComponent(e, { id: pathId });
+                    root.insertBefore(ele, event.target.parentElement.parentElement);
+                }
+            });
         //evt.target.parentElement.parentElement.parentElement.insertBefore(drawComponent(e), evt.target.parentElement.parentElement);
     },
-    onDrag = (event) => { console.log("dragging"); },
+    onDrag = (event) => { },
     onDragStart = (event) => {
-        dragged = event.target; console.log("dragstart");
+        dragged = event.target;
         event.target.classList.add("dragging");
         event.dataTransfer.setData('text/plain', event.target.id);
     },
-    onDragEnd = (event) => {
-        console.log("dragend");
-        event.target.classList.remove("dragging");
-    };
-
-
+    onDragEnd = (event) => { event.target.classList.remove("dragging"); };
 
 const draggableDiv = (actionType) => {
     let d = doc.createElement('div', { class: lt.draggable[actionType], draggable: !0 });
     d.addEventListener('drag', onDrag), d.addEventListener('dragstart', onDragStart), d.addEventListener('dragend', onDragEnd);
     return d;
 },
-    dropTarget = () => {
+    dropTarget = (pathId) => {
         let t = doc.createElement('div', { class: "droppable-target droppable-node" });
         t.replaceChildren(doc.createElement('div', { class: "component-node-container" }, doc.createElement('div', { class: "add-component-node" }, doc.createElement('i', { class: "fas fa-plus" }))));
         t.addEventListener("dragover", (event) => { event.preventDefault(); });
@@ -60,50 +61,112 @@ const draggableDiv = (actionType) => {
             event.preventDefault();
             let source = dragged, _type = '', _action = 'add';
             if (source) _type = source.firstChild.getAttribute('data-type');
-            _type != '' && dropAction(event, _type, _action); dragged = null;
+            _type != '' && dropAction(event, _type, pathId); dragged = null;
         });
         return t;
     },
     componentIcon = (_icon) => {
         return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`);
     },
-    drawComponent = (e) => {
-        let { actionType: t, canDrop: d, index: i } = e; console.log(e, t)
+    drawComponent = (e, n) => {
+        let { actionType: t, canDrop: d, index: i } = e; //console.log(e, n)
         const pc = lt.controls.PLACED_COMPONENT, o = t === lt.events.REJOIN, r = o ? "path-exit" : `${pc}-container`, l = lt.events_action[t];
-        let container = doc.createElement('div', { class: `${r} ${t}` }), $btn = doc.createElement('div', { role: 'button', tabindex: '-1' });
-        i > 0 && container.appendChild(dropTarget());
-        if (lt.events.EXIT_NODE === t) {
-            $btn.appendChild(doc.createElement('div', { class: `path-exit` }, doc.createElement('div', { class: `flow-exit-node exit-node` }, 'Exit')));
-            // container.appendChild(doc.createElement('div', { role: 'button', tabindex: '-1' }, `<div class="path-exit"><div class="flow-exit-node exit-node"><span>Exit</span></div></div>`));
+        let container = doc.createElement('div', { class: `${r} ${t}` }), $btn = doc.createElement('div', { role: 'button', tabindex: '-1' }),
+            _delete = doc.createElement("button", { type: "button", class: 'btn btn-alt' }, '<i class="fa fa-trash"></i>');
+        const onDelete = () => {
+            n && Http.post(lt.urls.deleteAction(n.id), {}).then(response => response.json()).
+                then(response => { response.status === 200 && container.remove(); });
         }
-        else {
-            d === true && $btn.appendChild(draggableDiv(t));
-            let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
-                doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
-                    doc.createElement('div', { class: `${pc}-content` },
-                        doc.createElement('div', { class: `${pc}-header` },
-                            doc.createElement('div', { class: `${pc}-title` }, '-'),
-                            doc.createElement('div', { class: `${pc}-dropdown-container` }, '-')
+        _delete.addEventListener("click", (event) => { event.preventDefault(), onDelete(); });
+        i > 0 && container.appendChild(dropTarget(n && n.id));
+        switch (t) {
+            case lt.events.EXIT_NODE: {
+                $btn.appendChild(doc.createElement('div', { class: `path-exit` }, doc.createElement('div', { class: `flow-exit-node exit-node` }, 'Exit')));
+            }; break;
+            case lt.events.TRIGGER: {
+                d === true && $btn.appendChild(draggableDiv(t));
+                const m = (n) => {
+                    let $div = doc.createElement('p');
+                    n && n.trigger_id > 0 && $div.replaceChildren(doc.createElement('span', null, 'When someone '),
+                        doc.createElement('span', { class: 'highlighted-text' },
+                            (n.trigger_type === 0 ? n.trigger_statistic && n.trigger_statistic.name : (n.trigger_type === 1 ? n.trigger_group && n.trigger_group.name : ''))),
+                        doc.createElement('span', null, '.'));
+                    return $div;
+                }
+                let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
+                    doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
+                        doc.createElement('div', { class: `${pc}-content` },
+                            doc.createElement('div', { class: `${pc}-header` },
+                                doc.createElement('div', { class: `${pc}-title` }, 'Trigger'),
+                                doc.createElement('div', { class: `${pc}-dropdown-container` })
+                            ),
+                            doc.createElement('div', { class: `${pc}-main` }, m(n))
                         ),
-                        doc.createElement('div', { class: `${pc}-main` })
-                    ),
-                    doc.createElement('div', { class: `${pc}-footer` })
-                )
-            );
-            $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+                        doc.createElement('div', { class: `${pc}-footer` })
+                    )
+                );
+                $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+            }; break;
+            case lt.events.EMAIL: {
+                d === true && $btn.appendChild(draggableDiv(t));
+                const m = (n) => {
+                    let $div = doc.createElement('p');
+                    n && n.trigger_id > 0 && $div.replaceChildren(doc.createElement('span', null, 'When someone '),
+                        doc.createElement('span', { class: 'highlighted-text' },
+                            (n.trigger_type === 0 ? n.trigger_statistic && n.trigger_statistic.name : (n.trigger_type === 1 ? n.trigger_group && n.trigger_group.name : ''))),
+                        doc.createElement('span', null, '.'));
+                    return $div;
+                }
+                let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
+                    doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
+                        doc.createElement('div', { class: `${pc}-content` },
+                            doc.createElement('div', { class: `${pc}-header` },
+                                doc.createElement('div', { class: `${pc}-title` }, 'Trigger'),
+                                doc.createElement('div', { class: `${pc}-dropdown-container` }, _delete)
+                            ),
+                            doc.createElement('div', { class: `${pc}-main` }, m(n))
+                        ),
+                        doc.createElement('div', { class: `${pc}-footer` })
+                    )
+                );
+                $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+            }; break;
+            case lt.events.TIME_DELTA: {
+                d === true && $btn.appendChild(draggableDiv(t));
+                let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
+                    doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-clock'),
+                        doc.createElement('div', { class: `${pc}-content` },
+                            doc.createElement('div', { class: `${pc}-header` },
+                                doc.createElement('div', { class: `${pc}-title` }, 'Configure Time Delay…'),
+                                doc.createElement('div', { class: `${pc}-dropdown-container` }, _delete)
+                            )
+                        )
+                    )
+                );
+                $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+            }; break;
         }
         container.appendChild($btn); return container;
     },
     initTrigger = (e) => {
-        let { trigger_type: tt, trigger_id: id, customer_filter: ff, trigger_filter: tf } = e;
+        console.log('start', e)
         let root = doc.querySelector(`.${lt.controls.ROOT}`), j = {}; root.replaceChildren();
-        if (id > 0) {
-            j = { actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: false };
-            config_panel(j);
-            let _ = drawComponent({ actionType: 'trigger', canDrop: !1, index: 0 });
-            root.appendChild(_);
-            _ = drawComponent({ actionType: 'exit_node', canDrop: !1, index: root.children.length });
-            root.appendChild(_);
+        if (e.trigger_id > 0) {
+            j = { actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }; config_panel(j);
+            let n = drawComponent({ actionType: 'trigger', canDrop: !1, index: 0 }, e);
+            root.appendChild(n);
+            e.paths.forEach((v, i) => {
+                console.log('path', v, i)
+                if (v.actions && v.actions.length > 0) {
+                    v.actions.forEach((a, j) => {
+                        console.log('action', a, j)
+                        let c = drawComponent({ actionType: a.type, canDrop: !1, index: root.children.length }, a);
+                        root.appendChild(c);
+                    })
+                }
+                n = drawComponent({ actionType: 'exit_node', canDrop: !1, index: root.children.length }, v);
+                root.appendChild(n);
+            });
         }
         else {
             j = { actionType: lt.panel.TRIGGER_AND_FILTERS_INITIAL, title: 'Trigger Setup', displayFooter: false };
@@ -218,8 +281,6 @@ function flowComponentsInitial(e) {
     });
     return $ul;
 }
-
-
 
 const showLoader = () => {
     let x = doc.getElementById("loader");

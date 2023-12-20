@@ -194,6 +194,8 @@ export const enums = function (e, t, n) {
                 [_triggerName.Actions]: "/api/lists/metrics",
                 [_triggerName.Date]: "/api/lists/people/property"
             },
+            addAction: e => `/api/flow/path/${e}/action/add`,
+            deleteAction: e => `/api/flow/action/${e}/delete`,
         };
     function x() {
         return window.location.pathname.split("/")[2] || "-1"

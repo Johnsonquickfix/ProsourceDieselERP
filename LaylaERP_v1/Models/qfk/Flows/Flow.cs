@@ -75,7 +75,7 @@
         public long path_id { get; set; }
 
         [JsonProperty("type", NullValueHandling = NullValueHandling.Include)]
-        public int type { get; set; }
+        public string type { get; set; }
 
         [JsonProperty("rank", NullValueHandling = NullValueHandling.Include)]
         public int rank { get; set; }

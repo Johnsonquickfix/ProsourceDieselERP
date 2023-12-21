@@ -92,7 +92,7 @@
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }
-        
+
         [HttpPost, Route("path/{id}/action/add")]
         public IHttpActionResult PathActionAdd(long id, FlowPathAction request)
         {
@@ -101,7 +101,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
-                
+
                 var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-add", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
 
                 if (json_data["status"] != null)
@@ -128,6 +128,31 @@
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
 
                 var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-delete", om.login_company_id, id, om.UserID, string.Empty));
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost, Route("action/{id}/move")]
+        public IHttpActionResult PathActionMove(long id, FlowPathAction request)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
+
+                var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-move", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
 
                 if (json_data["status"] != null)
                 {

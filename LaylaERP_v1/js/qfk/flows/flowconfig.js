@@ -10,7 +10,7 @@ export const flowConfig = (e) => {
         for (var c in a) checkArray(a, c) && !checkArray(e, c) && Object.defineProperty(e, c, { enumerable: !0, get: a[c] })
     },
     loader = () => {
-        let x = doc.getElementById("loader");
+        let x = document.getElementById("loader");
         x.style.display = (x.style.display === "none" ? "block" : "none");
     };
 export const enums = function (e, t, n) {
@@ -187,6 +187,7 @@ export const enums = function (e, t, n) {
             [_events.AB_TEST]: "draggable-ab-test-placed-component"
         },
         _urls = {
+            getFlow: e => `/api/flows/${e}`,
             configureFlowTrigger: e => `/api/flow/${e}/configure`,
             triggerOptions: {
                 [_triggerName.Lists]: "/api/lists/static-group?type=1",
@@ -196,6 +197,7 @@ export const enums = function (e, t, n) {
             },
             addAction: e => `/api/flow/path/${e}/action/add`,
             deleteAction: e => `/api/flow/action/${e}/delete`,
+            moveAction: e => `/api/flow/action/${e}/move`,
         };
     function x() {
         return window.location.pathname.split("/")[2] || "-1"

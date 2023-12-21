@@ -26,65 +26,69 @@ export const addEventListenerMulti = function (type, listener, capture, selector
     let nodes = doc.querySelectorAll(selector);
     for (let i = 0; i < nodes.length; i++) { nodes[i].addEventListener(type, listener, capture); }
 },
-    dropAction = (event, type, pathId) => {
-        let root = doc.querySelector(`.${lt.controls.ROOT}`), _c = [...root.childNodes],
-            e = { canDrop: !0, actionType: type, index: _c.indexOf(event.target.parentElement.parentElement) },
-            action = { id: 0, path: pathId, type: type, rank: e.index };
-        dragged = null;
-        Http.post(lt.urls.addAction(action.path), { body: action }).then(response => response.json()).
-            then(response => {
-                if (response.status === 200) {
-                    let ele = drawComponent(e, response.data);
-                    root.insertBefore(ele, event.target.parentElement.parentElement);
-                }
-            });
-        //evt.target.parentElement.parentElement.parentElement.insertBefore(drawComponent(e), evt.target.parentElement.parentElement);
+    draggableDiv = (actionType, actionID) => {
+        let d = doc.createElement('div', { class: lt.draggable[actionType], draggable: !0 });
+        d.addEventListener('drag', () => { }), d.addEventListener('dragend', () => { }),
+            d.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/json', JSON.stringify({ action: 'move', actionType: actionType, id: actionID })); });
+        return d;
     },
-    onDrag = (event) => { },
-    onDragStart = (event) => {
-        dragged = event.target;
-        event.target.classList.add("dragging");
-        event.dataTransfer.setData('text/plain', event.target.id);
-    },
-    onDragEnd = (event) => { event.target.classList.remove("dragging"); };
-
-const draggableDiv = (actionType) => {
-    let d = doc.createElement('div', { class: lt.draggable[actionType], draggable: !0 });
-    d.addEventListener('drag', onDrag), d.addEventListener('dragstart', onDragStart), d.addEventListener('dragend', onDragEnd);
-    return d;
-},
     dropTarget = (pathId) => {
         let t = doc.createElement('div', { class: "droppable-target droppable-node" });
         t.replaceChildren(doc.createElement('div', { class: "component-node-container" }, doc.createElement('div', { class: "add-component-node" }, doc.createElement('i', { class: "fas fa-plus" }))));
         t.addEventListener("dragover", (event) => { event.preventDefault(); });
-        t.addEventListener("drop", (event) => {
-            event.preventDefault();
-            let source = dragged, _type = '', _action = 'add';
-            if (source) _type = source.firstChild.getAttribute('data-type');
-            _type != '' && dropAction(event, _type, pathId); dragged = null;
+        t.addEventListener("drop", (e) => {
+            e.preventDefault(); debugger
+            let j = e.dataTransfer.getData("text/json"), { action: a, actionType: t, id: i } = JSON.parse(j);
+            //let s = dragged, t, a = 'add';
+            //s && (t = s.firstChild.getAttribute('data-type')) && (dropAction(e, a, t, pathId), dragged = null);
+            a && dropAction(e, a, t, pathId, i);
         });
         return t;
     },
-    componentIcon = (_icon) => {
-        return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`);
+    dropAction = (ctr, mode, type, pathId, actionId) => {
+        let root = doc.querySelector(`.${lt.controls.ROOT}`), _c = [...root.childNodes],
+            e = { canDrop: !0, actionType: type, index: _c.indexOf(ctr.target.parentElement.parentElement) },
+            action = { id: actionId || 0, path: pathId, type: type, rank: e.index };
+        const onAdd = () => {
+            Http.post(mode === 'add' ? lt.urls.addAction(action.path) : lt.urls.moveAction(action.id), { body: action }).then(res => res.json()).
+                then(res => {
+                    if (res.status === 200 && mode === 'add') {
+                        let ele = drawComponent(e, res.data);
+                        ele && root.insertBefore(ele, ctr.target.parentElement.parentElement);
+                    }
+                    else if (res.status === 200 && mode === 'move') { load(); }
+                });
+        }
+        e.actionType && onAdd();
     },
+    onDrag = (event) => { },
+    onDragStart = (event) => {
+        let a = { action: 'add', actionType: '' };
+        a.actionType = event.target.firstChild.getAttribute('data-type');
+        event.target.classList.add("dragging");
+        event.dataTransfer.setData('text/json', JSON.stringify(a));
+    },
+    onDragEnd = (event) => { event.target.classList.remove("dragging"); };
+
+const componentIcon = (_icon) => {
+    return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`);
+},
     drawComponent = (e, n) => {
-        let { actionType: t, canDrop: d, index: i } = e; //console.log( n)
-        const pc = lt.controls.PLACED_COMPONENT, o = t === lt.events.REJOIN, r = o ? "path-exit" : `${pc}-container`, l = lt.events_action[t];
-        let container = doc.createElement('div', { class: `${r} ${t}` }), $btn = doc.createElement('div', { role: 'button', tabindex: '-1' }),
+        let { actionType: t, canDrop: d, index: i } = e,
+            pc = lt.controls.PLACED_COMPONENT, o = t === lt.events.REJOIN, r = o ? "path-exit" : `${pc}-container`, l = lt.events_action[t],
+            container = doc.createElement('div', { class: `${r} ${t}` }), $btn = doc.createElement('div', { role: 'button', tabindex: '-1' }),
             _delete = doc.createElement("button", { type: "button", class: 'btn btn-alt' }, '<i class="fa fa-trash"></i>');
         const onDelete = () => {
-            n && Http.post(lt.urls.deleteAction(n.id), {}).then(response => response.json()).
-                then(response => { response.status === 200 && container.remove(); });
+            n && Http.post(lt.urls.deleteAction(n.id)).then(res => res.json()).then(res => { res.status === 200 && container.remove(); });
         }
         _delete.addEventListener("click", (event) => { event.preventDefault(), onDelete(); });
-        i > 0 && container.appendChild(dropTarget(n && n.path));
+        i > 0 && container.appendChild(dropTarget(n.path));
         switch (t) {
             case lt.events.EXIT_NODE: {
                 $btn.appendChild(doc.createElement('div', { class: `path-exit` }, doc.createElement('div', { class: `flow-exit-node exit-node` }, 'Exit')));
             }; break;
             case lt.events.TRIGGER: {
-                d === true && $btn.appendChild(draggableDiv(t));
+                //d === true && $btn.appendChild(draggableDiv(t, n.id));
                 const m = (n) => {
                     let $div = doc.createElement('p');
                     n && n.trigger_id > 0 && $div.replaceChildren(doc.createElement('span', null, 'When someone '),
@@ -108,7 +112,7 @@ const draggableDiv = (actionType) => {
                 $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
             }; break;
             case lt.events.EMAIL: {
-                d === true && $btn.appendChild(draggableDiv(t));
+                d === true && $btn.appendChild(draggableDiv(t, n.id));
                 const m = (n) => {
                     let $div = doc.createElement('p');
                     n && n.trigger_id > 0 && $div.replaceChildren(doc.createElement('span', null, 'When someone '),
@@ -132,7 +136,7 @@ const draggableDiv = (actionType) => {
                 $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
             }; break;
             case lt.events.TIME_DELTA: {
-                d === true && $btn.appendChild(draggableDiv(t));
+                d === true && $btn.appendChild(draggableDiv(t, n.id));
                 let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
                     doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-clock'),
                         doc.createElement('div', { class: `${pc}-content` },
@@ -160,7 +164,7 @@ const draggableDiv = (actionType) => {
                 if (v.actions && v.actions.length > 0) {
                     v.actions.forEach((a, j) => {
                         //console.log('action', a, j)
-                        let c = drawComponent({ actionType: a.type, canDrop: !1, index: root.children.length }, a);
+                        let c = drawComponent({ actionType: a.type, canDrop: !0, index: root.children.length }, a);
                         root.appendChild(c);
                     })
                 }
@@ -287,18 +291,14 @@ const showLoader = () => {
     x.style.display = (x.style.display === "none" ? "block" : "none");
 };
 function load() {
-    lt = flowConfig(1000);
-    showLoader();
-    let o = parseInt(lt.flow()) || 0;
-    Http.get(`/api/flows/${o}`).then(response => response.json())
+    lt = flowConfig(1000), loader();
+    Http.get(lt.urls.getFlow(parseInt(lt.flow()) || 0)).then(response => response.json())
         .then((response) => {
             if (response.status === 200) {
-                showLoader();
-                doc.querySelector('[name="flow-title"]').innerHTML = response.data.name;
-                initTrigger(response.data);
+                loader(), doc.querySelector('[name="flow-title"]').innerHTML = response.data.name, initTrigger(response.data);
             }
             else {
-                showLoader(); doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
+                loader() && doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
             }
         }).catch(error => {
             console.log('error', error); showLoader();

@@ -27,14 +27,14 @@ export const addEventListenerMulti = function (type, listener, capture, selector
     for (let i = 0; i < nodes.length; i++) { nodes[i].addEventListener(type, listener, capture); }
 },
     dropAction = (event, type, pathId) => {
-        let root = doc.querySelector(`.${lt.controls.ROOT}`), e = { canDrop: true, actionType: type, index: root.children.length };
-        //let e = { canDrop: true, actionType: 'send_message' };
-        console.log(dragged, event, type, pathId); dragged = null;
-        let action = { id: 0, path: pathId, type: type };
+        let root = doc.querySelector(`.${lt.controls.ROOT}`), _c = [...root.childNodes],
+            e = { canDrop: !0, actionType: type, index: _c.indexOf(event.target.parentElement.parentElement) },
+            action = { id: 0, path: pathId, type: type, rank: e.index };
+        dragged = null;
         Http.post(lt.urls.addAction(action.path), { body: action }).then(response => response.json()).
             then(response => {
                 if (response.status === 200) {
-                    let ele = drawComponent(e, { id: pathId });
+                    let ele = drawComponent(e, response.data);
                     root.insertBefore(ele, event.target.parentElement.parentElement);
                 }
             });
@@ -69,7 +69,7 @@ const draggableDiv = (actionType) => {
         return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`);
     },
     drawComponent = (e, n) => {
-        let { actionType: t, canDrop: d, index: i } = e; //console.log(e, n)
+        let { actionType: t, canDrop: d, index: i } = e; //console.log( n)
         const pc = lt.controls.PLACED_COMPONENT, o = t === lt.events.REJOIN, r = o ? "path-exit" : `${pc}-container`, l = lt.events_action[t];
         let container = doc.createElement('div', { class: `${r} ${t}` }), $btn = doc.createElement('div', { role: 'button', tabindex: '-1' }),
             _delete = doc.createElement("button", { type: "button", class: 'btn btn-alt' }, '<i class="fa fa-trash"></i>');
@@ -78,7 +78,7 @@ const draggableDiv = (actionType) => {
                 then(response => { response.status === 200 && container.remove(); });
         }
         _delete.addEventListener("click", (event) => { event.preventDefault(), onDelete(); });
-        i > 0 && container.appendChild(dropTarget(n && n.id));
+        i > 0 && container.appendChild(dropTarget(n && n.path));
         switch (t) {
             case lt.events.EXIT_NODE: {
                 $btn.appendChild(doc.createElement('div', { class: `path-exit` }, doc.createElement('div', { class: `flow-exit-node exit-node` }, 'Exit')));
@@ -156,15 +156,15 @@ const draggableDiv = (actionType) => {
             let n = drawComponent({ actionType: 'trigger', canDrop: !1, index: 0 }, e);
             root.appendChild(n);
             e.paths.forEach((v, i) => {
-                console.log('path', v, i)
+                //console.log('path', v, i)
                 if (v.actions && v.actions.length > 0) {
                     v.actions.forEach((a, j) => {
-                        console.log('action', a, j)
+                        //console.log('action', a, j)
                         let c = drawComponent({ actionType: a.type, canDrop: !1, index: root.children.length }, a);
                         root.appendChild(c);
                     })
                 }
-                n = drawComponent({ actionType: 'exit_node', canDrop: !1, index: root.children.length }, v);
+                n = drawComponent({ actionType: 'exit_node', canDrop: !1, index: root.children.length }, { path: v.id });
                 root.appendChild(n);
             });
         }

@@ -423,6 +423,7 @@
     <Compile Include="Models\qfk\Editor\CommonModel.cs" />
     <Compile Include="Models\qfk\Enums\Criteria.cs" />
     <Compile Include="Models\qfk\Flows\Flow.cs" />
+    <Compile Include="Models\qfk\Flows\FlowFilter.cs" />
     <Compile Include="Models\qfk\JqDataTableModel.cs" />
     <Compile Include="Models\qfk\MailTracking\TrackingRequest.cs" />
     <Compile Include="Models\qfk\SearchModel.cs" />

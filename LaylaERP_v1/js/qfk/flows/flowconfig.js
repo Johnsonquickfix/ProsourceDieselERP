@@ -187,7 +187,8 @@ export const enums = function (e, t, n) {
             [_events.AB_TEST]: "draggable-ab-test-placed-component"
         },
         _urls = {
-            getFlow: e => `/api/flows/${e}`,
+            getFlow: e => `/api/flow/${e}`,
+            getFlowsList: "/api/flow/list/",
             configureFlowTrigger: e => `/api/flow/${e}/configure`,
             triggerOptions: {
                 [_triggerName.Lists]: "/api/lists/static-group?type=1",

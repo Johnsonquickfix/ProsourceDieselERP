@@ -3,6 +3,7 @@
     using LaylaERP.DAL;
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
     using System.Web;
@@ -27,6 +28,27 @@
             catch { throw; }
             return str;
         }
+        public static DataTable FlowList(long company_id, string search, int pageno, int pagesize, string sortcol = "updated", string sortdir = "desc", string flag = "list")
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag",flag),
+                    new SqlParameter("@company_id", company_id),
+                    !string.IsNullOrEmpty(search) ? new SqlParameter("@search", search) : new SqlParameter("@search", DBNull.Value),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", sortcol),
+                    new SqlParameter("@sortdir", sortdir)
+                };
+                dt = SQLHelper.ExecuteDataTable("qfk_flows_search", parameters);
+            }
+            catch { throw; }
+            return dt;
+        }
+
 
     }
 }

@@ -7,6 +7,7 @@
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -15,8 +16,29 @@
     [RoutePrefix("api/flow")]
     public class FlowsController : ApiController
     {
-        // Get: api/lists/5
-        public IHttpActionResult Get(long id)
+        [HttpGet, Route("list")]
+        public IHttpActionResult GetFlowList([FromUri] FlowFilter filter)
+        {
+            try
+            {
+                int total_items = 0;
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                //if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
+                DataTable dt = FlowsRepository.FlowList(om.login_company_id, string.Empty, filter.page, filter.size, filter.order_by, (filter.order_asc ? "asc" : "desc"));
+                if (dt.Rows.Count > 0) { 
+                    total_items = dt.Rows[0]["total_items"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["total_items"].ToString()) : 0; 
+                }
+                dt.Columns.Remove("total_items");
+                return Content(HttpStatusCode.OK, new { total_items = total_items, flows = dt });
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message, total_items = 0, flows = new List<object>() });
+            }
+        }
+        [Route("{id}")]
+        public IHttpActionResult Get(long id = 0)
         {
             try
             {

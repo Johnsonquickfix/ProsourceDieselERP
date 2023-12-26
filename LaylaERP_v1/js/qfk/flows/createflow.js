@@ -70,49 +70,49 @@ export const addEventListenerMulti = function (type, listener, capture, selector
     },
     onDragEnd = (event) => { event.target.classList.remove("dragging"); };
 
-const componentIcon = (_icon) => {
-    return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`);
-},
+const componentIcon = (_icon) => { return doc.createElement('div', { class: "placed-component-icon-container" }, `<div class="placed-component-icon-background"><i class="${_icon}"></i></div>`); },
     drawComponent = (e, n) => {
-        let { actionType: t, canDrop: d, index: i } = e,
+        let nb, { actionType: t, canDrop: d, index: i } = e,
             pc = lt.controls.PLACED_COMPONENT, o = t === lt.events.REJOIN, r = o ? "path-exit" : `${pc}-container`, l = lt.events_action[t],
             container = doc.createElement('div', { class: `${r} ${t}` }), $btn = doc.createElement('div', { role: 'button', tabindex: '-1' }),
             _delete = doc.createElement("button", { type: "button", class: 'btn btn-alt' }, '<i class="fa fa-trash"></i>');
         const onDelete = () => {
             n && Http.post(lt.urls.deleteAction(n.id)).then(res => res.json()).then(res => { res.status === 200 && container.remove(); });
-        }
-        _delete.addEventListener("click", (event) => { event.preventDefault(), onDelete(); });
+        },
+            addNodeButton = (object) => {
+                let _d = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() });
+                _d.addEventListener("click", (event) => {
+                    event.preventDefault(); console.log(event, event.target.classList)
+                    doc.querySelectorAll('.root-branch [role="button"].selected').forEach((el) => { el.classList.remove("selected"); });
+                    _d.classList.add("selected"), panel_setup(object);
+                });
+                return _d;
+            };
+        _delete.addEventListener("click", (el) => { el.preventDefault(), onDelete(); });
         i > 0 && container.appendChild(dropTarget(n.path));
         switch (t) {
             case lt.events.EXIT_NODE: {
                 $btn.appendChild(doc.createElement('div', { class: `path-exit` }, doc.createElement('div', { class: `flow-exit-node exit-node` }, 'Exit')));
             }; break;
             case lt.events.TRIGGER: {
-                //d === true && $btn.appendChild(draggableDiv(t, n.id));
+                nb = addNodeButton(n);
                 const m = (n) => {
-                    let $div = doc.createElement('p');
-                    n && n.trigger_id > 0 && $div.replaceChildren(doc.createElement('span', null, 'When someone '),
-                        doc.createElement('span', { class: 'highlighted-text' },
-                            (n.trigger_type === 0 ? n.trigger_statistic && n.trigger_statistic.name : (n.trigger_type === 1 ? n.trigger_group && n.trigger_group.name : ''))),
-                        doc.createElement('span', null, '.'));
-                    return $div;
-                }
-                let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
-                    doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
-                        doc.createElement('div', { class: `${pc}-content` },
-                            doc.createElement('div', { class: `${pc}-header` },
-                                doc.createElement('div', { class: `${pc}-title` }, 'Trigger'),
-                                doc.createElement('div', { class: `${pc}-dropdown-container` })
-                            ),
-                            doc.createElement('div', { class: `${pc}-main` }, m(n))
+                    let _t = (n.trigger_type === 0 ? n.trigger_statistic && n.trigger_statistic.name : (n.trigger_type === 1 ? n.trigger_group && n.trigger_group.name : ''));
+                    return (n && n.trigger_id > 0) && doc.createElement('p', null, `<span>When someone </span><span class="highlighted-text">${_t}</span><span>.</span>`);
+                };
+                nb.replaceChildren(doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
+                    doc.createElement('div', { class: `${pc}-content` },
+                        doc.createElement('div', { class: `${pc}-header` },
+                            doc.createElement('div', { class: `${pc}-title` }, 'Trigger'),
+                            doc.createElement('div', { class: `${pc}-dropdown-container` })
                         ),
-                        doc.createElement('div', { class: `${pc}-footer` })
-                    )
-                );
-                $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+                        doc.createElement('div', { class: `${pc}-main` }, m(n))
+                    ),
+                    doc.createElement('div', { class: `${pc}-footer` })
+                )), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
             }; break;
             case lt.events.EMAIL: {
-                d === true && $btn.appendChild(draggableDiv(t, n.id));
+                nb = addNodeButton(n), (d === true && $btn.appendChild(draggableDiv(t, n.id)));
                 const m = (n) => {
                     let $div = doc.createElement('p');
                     n && n.trigger_id > 0 && $div.replaceChildren(doc.createElement('span', null, 'When someone '),
@@ -121,33 +121,34 @@ const componentIcon = (_icon) => {
                         doc.createElement('span', null, '.'));
                     return $div;
                 }
-                let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
-                    doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
-                        doc.createElement('div', { class: `${pc}-content` },
-                            doc.createElement('div', { class: `${pc}-header` },
-                                doc.createElement('div', { class: `${pc}-title` }, 'Trigger'),
-                                doc.createElement('div', { class: `${pc}-dropdown-container` }, _delete)
-                            ),
-                            doc.createElement('div', { class: `${pc}-main` }, m(n))
+                nb.replaceChildren(doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-bolt'),
+                    doc.createElement('div', { class: `${pc}-content` },
+                        doc.createElement('div', { class: `${pc}-header` },
+                            doc.createElement('div', { class: `${pc}-title` }, 'Trigger'),
+                            doc.createElement('div', { class: `${pc}-dropdown-container` }, _delete)
                         ),
-                        doc.createElement('div', { class: `${pc}-footer` })
-                    )
-                );
-                $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+                        doc.createElement('div', { class: `${pc}-main` }, m(n))
+                    ),
+                    doc.createElement('div', { class: `${pc}-footer` })
+                )), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
             }; break;
             case lt.events.TIME_DELTA: {
-                d === true && $btn.appendChild(draggableDiv(t, n.id));
-                let b = doc.createElement('div', { role: 'button', tabindex: '-1', class: `${pc} ${l}`.trim() },
-                    doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-clock'),
-                        doc.createElement('div', { class: `${pc}-content` },
-                            doc.createElement('div', { class: `${pc}-header` },
-                                doc.createElement('div', { class: `${pc}-title` }, 'Configure Time Delay…'),
-                                doc.createElement('div', { class: `${pc}-dropdown-container` }, _delete)
-                            )
+                nb = addNodeButton(n), (d === true && $btn.appendChild(draggableDiv(t, n.id)));
+                let _t = 'Configure Time Delay…';
+                if (n.after_seconds_unit === 'day') _t = `Wait ${n.after_seconds / 86400} ${n.after_seconds_unit}s`;
+                else if (n.after_seconds_unit === 'hour') {
+                    let hours = (n.after_seconds / 3600), rhours = Math.floor(hours), minutes = (hours - rhours) * 60, rminutes = Math.round(minutes);
+                    _t = minutes > 0 ? `Wait ${rhours}h ${rminutes}m` : `Wait ${rhours} hours`
+                }
+                else if (n.after_seconds_unit === 'minute') _t = `Wait ${n.after_seconds / 60} ${n.after_seconds_unit}s`;
+                nb.replaceChildren(doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-clock'),
+                    doc.createElement('div', { class: `${pc}-content` },
+                        doc.createElement('div', { class: `${pc}-header` },
+                            doc.createElement('div', { class: `${pc}-title` }, _t),
+                            doc.createElement('div', { class: `${pc}-dropdown-container` }, _delete)
                         )
                     )
-                );
-                $btn.children.length > 0 ? $btn.children[0].appendChild(b) : $btn.appendChild(b);
+                )), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
             }; break;
         }
         container.appendChild($btn); return container;
@@ -286,10 +287,123 @@ function flowComponentsInitial(e) {
     return $ul;
 }
 
-const showLoader = () => {
-    let x = doc.getElementById("loader");
-    x.style.display = (x.style.display === "none" ? "block" : "none");
-};
+function panel_setup(e) {
+    console.log(e)
+    let { type: t = 'trigger' } = e, _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body,
+        buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
+        buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
+    _body = doc.createElement('div', { class: `${_class}-body`.trim() });
+    buttonCancel.addEventListener('click', (event) => { event.preventDefault(), config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
+    switch (t) {
+        case lt.events.TRIGGER: {
+            buttonOk.value = "Done", _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">Trigger Setup</div>`);
+            buttonOk.addEventListener('click', (event) => { event.preventDefault(), config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
+            _body.appendChild(
+                doc.createElement("div", { class: "trigger-setup-panel" },
+                    doc.createElement("ul", { class: "configuration-commands" },
+                        doc.createElement("li", null,
+                            doc.createElement("div", null, `<h2>Flow Trigger<br><span class="weak">Metric</span></h2>`),
+                            doc.createElement("div", { class: "flow-trigger-description" }, `<div class="flow-text-description"><p><a href="#" target="_blank" rel="noopener noreferrer">Started Checkout </a></p></div>`)
+                        ),
+                        //doc.createElement("li", null,
+                        //    doc.createElement("a", { href: "#", class: "panel-nav-link" },
+                        //        doc.createElement("div", null, `<span><h2>Trigger Filters</h2></span><p class="nav-link-desc">Filter on properties of the trigger.</p>`),
+                        //        doc.createElement("div", null, `<i class="fa fa-angle-right pull-right"></i>`)
+                        //    )
+                        //),
+                        doc.createElement("li", null,
+                            doc.createElement("a", { href: "#", class: "panel-nav-link" },
+                                doc.createElement("div", null, `<span><h2>Flow Filters</h2></span><p class="nav-link-desc">Restrict the flow to only certain people.</p>`),
+                                doc.createElement("div", null, `<i class="fa fa-angle-right pull-right"></i>`)
+                            )
+                        )
+                    ),
+                    doc.createElement("div", { class: "configuration-panel-footer" }, doc.createElement("span", { class: "button-set" }, buttonOk))
+                )
+            );
+        }; break;
+        case lt.events.EMAIL: {
+            _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">Trigger Setup</div>`);
+            //$btn.appendChild(doc.createElement('div', { class: `path-exit` }, doc.createElement('div', { class: `flow-exit-node exit-node` }, 'Exit')));
+        }; break;
+        case lt.events.TIME_DELTA: {
+            _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">Time Delay</div>`);
+            _body.appendChild(panel_setup_time(e));
+        }; break;
+    }
+    _config.replaceChildren(_header, _body);
+
+
+    //_header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t));
+    //_body = doc.createElement('div', { class: `${_class}-body ${!f ? 'no-footer' : ''} `.trim() });
+    //_footer = doc.createElement('div', { class: `${_class}-footer`.trim() });
+    //if (lt.panel.TRIGGER_SETUP_PANEL === a) {
+    //    let _p = doc.createElement("div", { class: "trigger-select-panel" }, doc.createElement("p", null, "What will trigger this flow?"), triggerInitial({ triggers: lt.triggers }));
+    //    _body.replaceChildren(_p);
+    //}
+    //else if (lt.panel.FLOWS_COMPONENTS_PANEL === a) {
+    //    _body.replaceChildren(flowComponentsInitial({ flowAction: lt.flowAction }));
+    //}
+    //f && _body.appendChild(_footer);
+    //_config.replaceChildren(_header, _body);
+}
+function panel_setup_time(e) {
+    let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
+        buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
+    buttonCancel.addEventListener('click', (event) => { event.preventDefault(), config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
+
+    const Re = (ele, selected_value) => {
+        let i = [{ value: 'day', label: "day(s)" }, { value: 'hour', label: "hour(s)" }, { value: 'minute', label: "minute(s)" }];
+        let unit = new Choices(ele, { allowHTML: false, searchEnabled: false, placeholder: false, itemSelectText: '', shouldSort: false });
+        unit.setChoices(i.map(function (row) { return { value: row.value, label: row.label, selected: (row.value === selected_value) } }));
+        return select;
+    };
+
+    let select = doc.createElement('select', { name: "time-delay-unit" }),
+        $body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
+            doc.createElement("div", { class: "schedule-panel" },
+                doc.createElement("ul", { class: "configuration-sections" },
+                    doc.createElement("li", null, doc.createElement("p", null, "Set this delay for"),
+                        doc.createElement("div", { class: "control-group" }, doc.createElement("div", { class: "controls" }, doc.createElement("input", { type: "number", name: "delay-unit-value", value: e.after_seconds }), select)),
+                        doc.createElement("div", { class: "timing-hint" },
+                            doc.createElement("div", { class: "timing-hint" }),
+                            doc.createElement("div", { class: "hint-text" }, `<span>Steps following this Time Delay occur on </span><strong>Day 0</strong><span> after the trigger</span><strong></strong><span></span>`)
+                        )
+                    )
+                ),
+                doc.createElement("div", { class: "configuration-panel-footer" }, doc.createElement("span", { class: "button-set" }, buttonOk, buttonCancel))
+            )
+        );
+    Re(select, 'hour');
+
+    select.addEventListener('change', (event) => {
+        event.preventDefault();
+        let p = select.closest('.control-group'), sibling = p.nextSibling;
+        sibling && sibling.matches('.control-group') && sibling.remove();
+        if (select.value === 'hour') {
+            p.parentNode.insertBefore(
+                doc.createElement("div", { class: "control-group" },
+                    doc.createElement("p", null, 'and'),
+                    doc.createElement("div", { class: "controls timing-minutes" },
+                        doc.createElement("input", { type: "number", name: "secondary-value", value: 0 }),
+                        doc.createElement("span", null, 'minute(s)')
+                    ),
+                    doc.createElement("p", null, 'after the trigger')
+                ),
+                p.nextSibling
+            )
+        }
+    });
+    let changeEvent = new Event('change'); select.dispatchEvent(changeEvent);
+    buttonOk.addEventListener('click', (event) => {
+        event.preventDefault();
+        let JsonVar = { id: e.id, delay_units: select.value };
+        $body.querySelectorAll('input[type="number"]').forEach(r => { stringToObj(r.name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "_"), parseInt(r.value) || 0, JsonVar); });
+        Http.post(lt.urls.updateTiming(JsonVar.id), { body: JsonVar }).then(res => res.json()).then(res => { res.status === 200 && load(); });
+    });
+    return $body;
+}
+
 function load() {
     lt = flowConfig(1000), loader();
     Http.get(lt.urls.getFlow(parseInt(lt.flow()) || 0)).then(response => response.json())
@@ -301,7 +415,7 @@ function load() {
                 loader() && doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
             }
         }).catch(error => {
-            console.log('error', error); showLoader();
+            console.log('error', error); loader();
             doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
         });
 };

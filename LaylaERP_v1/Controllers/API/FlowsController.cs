@@ -26,8 +26,9 @@
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
                 //if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { message = "The API key specified is invalid." });
                 DataTable dt = FlowsRepository.FlowList(om.login_company_id, string.Empty, filter.page, filter.size, filter.order_by, (filter.order_asc ? "asc" : "desc"));
-                if (dt.Rows.Count > 0) { 
-                    total_items = dt.Rows[0]["total_items"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["total_items"].ToString()) : 0; 
+                if (dt.Rows.Count > 0)
+                {
+                    total_items = dt.Rows[0]["total_items"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["total_items"].ToString()) : 0;
                 }
                 dt.Columns.Remove("total_items");
                 return Content(HttpStatusCode.OK, new { total_items = total_items, flows = dt });
@@ -141,7 +142,7 @@
         }
 
         [HttpPost, Route("action/{id}/delete")]
-        public IHttpActionResult PathActionDelete(long id)
+        public IHttpActionResult DeleteAction(long id)
         {
             try
             {
@@ -166,7 +167,7 @@
         }
 
         [HttpPost, Route("action/{id}/move")]
-        public IHttpActionResult PathActionMove(long id, FlowPathAction request)
+        public IHttpActionResult MoveAction(long id, FlowPathAction request)
         {
             try
             {
@@ -175,6 +176,37 @@
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
 
                 var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-move", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost, Route("action/{id}/timing")]
+        public IHttpActionResult UpdateTiming(long id, FlowPathAction request)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
+
+                request.id = id;
+                request.after_seconds_unit = request.delay_units;
+                if (request.after_seconds_unit == "day") request.after_seconds = request.delay_unit_value * 86400;
+                else if (request.after_seconds_unit == "hour") request.after_seconds = (request.delay_unit_value * 3600) + (request.secondary_value * 60);
+                else if (request.after_seconds_unit == "minute") request.after_seconds = request.delay_unit_value * 60;
+
+                var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-timing", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
 
                 if (json_data["status"] != null)
                 {

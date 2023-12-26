@@ -12,6 +12,10 @@ export const flowConfig = (e) => {
     loader = () => {
         let x = document.getElementById("loader");
         x.style.display = (x.style.display === "none" ? "block" : "none");
+    },
+    createSelect = () => {
+        //let x = document.getElementById("loader");
+        //x.style.display = (x.style.display === "none" ? "block" : "none");
     };
 export const enums = function (e, t, n) {
     getArray(t, {
@@ -188,7 +192,7 @@ export const enums = function (e, t, n) {
         },
         _urls = {
             getFlow: e => `/api/flow/${e}`,
-            getFlowsList: "/api/flow/list/",
+            getFlowsList: "/api/flow/list",
             configureFlowTrigger: e => `/api/flow/${e}/configure`,
             triggerOptions: {
                 [_triggerName.Lists]: "/api/lists/static-group?type=1",
@@ -199,6 +203,7 @@ export const enums = function (e, t, n) {
             addAction: e => `/api/flow/path/${e}/action/add`,
             deleteAction: e => `/api/flow/action/${e}/delete`,
             moveAction: e => `/api/flow/action/${e}/move`,
+            updateTiming: e => `/api/flow/action/${e}/timing`,
         };
     function x() {
         return window.location.pathname.split("/")[2] || "-1"

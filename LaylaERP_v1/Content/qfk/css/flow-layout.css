@@ -3700,7 +3700,7 @@
         min-width: calc(100% - 2px)
     }
 
-input[type=text] {
+input[type=text], input[type=number] {
     height: 32px;
     line-height: 32px;
     box-sizing: border-box
@@ -4164,7 +4164,8 @@ input:checked + .slider:before {
 
     .flows-body ul {
         list-style: none;
-        margin: 0
+        margin: 0;
+        padding-left: 0rem;
     }
 
     .flows-body .button-set {

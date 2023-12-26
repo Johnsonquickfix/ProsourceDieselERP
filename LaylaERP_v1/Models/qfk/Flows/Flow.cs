@@ -83,6 +83,18 @@
         [JsonProperty("after_seconds", NullValueHandling = NullValueHandling.Include)]
         public int after_seconds { get; set; }
 
+        [JsonProperty("after_seconds_unit", NullValueHandling = NullValueHandling.Include)]
+        public string after_seconds_unit { get; set; }
+
+        [JsonProperty("delay_unit_value", NullValueHandling = NullValueHandling.Include)]
+        public int delay_unit_value { get; set; }
+
+        [JsonProperty("secondary_value", NullValueHandling = NullValueHandling.Include)]
+        public int secondary_value { get; set; }
+
+        [JsonProperty("delay_units", NullValueHandling = NullValueHandling.Include)]
+        public string delay_units { get; set; }
+
         //[JsonProperty("settings", NullValueHandling = NullValueHandling.Include)]
         //public string settings { get; set; }
 

@@ -41,28 +41,12 @@
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
-    });
+        });
+      
 
      if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {
 
-        // setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 13000);
-        // setTimeout(function () { bindbuyingprice(); },14000);
-        // //setTimeout(function () { bindChildproductsservices(); }, 12000);
-        // //setTimeout(function () { bindparentproductsservices(); }, 13000);
-        // //setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
-        // //setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
-        //setTimeout(function () { bindwarehouse(); }, 15000);
-
-        // setTimeout(function () { bindfileuploade(); }, 16000);
-        //setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 17000);
-         //GetDataPurchaseByID($("#ddlproductchild").val()); 
-         //bindbuyingprice(); 
-         //bindChildproductsservices();
-         //bindparentproductsservices();
-         //bindwarehouse(); 
-         //getNotesList($("#ddlproductchild").val()); 
-         //bindfileuploade(); 
-
+        
 
          $.get('/Product/GetProductVariantID/' + id, function (data) {
              var items = "";
@@ -83,9 +67,32 @@
              $("#hfbuyingid").val('');
              ClearControl();
          })
+         setTimeout(function () { $('#btndisplaydetails').attr('disabled', false); },1000);
+         
+         $(document).on('click', "#btndisplaydetails", function () {
+            
+            // setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 13000);
+            // setTimeout(function () { bindbuyingprice(); },14000);
+             //setTimeout(function () { bindChildproductsservices(); }, 12000);
+             //setTimeout(function () { bindparentproductsservices(); }, 13000);
+             //setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
+             //setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
+             //setTimeout(function () { bindwarehouse(); }, 15000);
 
+            // setTimeout(function () { bindfileuploade(); }, 16000);
+            // setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 17000);
+
+             GetDataPurchaseByID($("#ddlproductchild").val()); 
+             bindbuyingprice(); 
+            // bindChildproductsservices();
+            // bindparentproductsservices();
+             bindwarehouse(); 
+             getNotesList($("#ddlproductchild").val()); 
+             bindfileuploade(); 
+
+         })
        
-        // getParentCategory();
+        // getParentCategory(); 
          //$.get('/Product/GetProductCategory/' + id, function (data) {
          //    var items = "";
          //    $('#ddlCategoryfilter').empty();
@@ -410,7 +417,7 @@ function GetDataPurchaseByID(order_id) {
         type: 'post',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
-        data: JSON.stringify(obj),
+        data: JSON.stringify(obj),        
         success: function (data) {
             var i = JSON.parse(data);
             console.log(i);
@@ -478,7 +485,7 @@ function GetDataPurchaseByID(order_id) {
             $("#txtPublic").val(i[0].Public_Notes);
          
 
-        },
+        },     
         error: function (msg) { alert(msg); },
         async: false
     });

@@ -1586,7 +1586,9 @@ function GetProductvariationID(ProductID) {
 
                     varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
                    varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
-                    let sel_val = v_data['attribute_' + attribute.display_name.trim().toLowerCase()];
+                    let formattedString = attribute.display_name.trim().replace(/ /g, '-').toLowerCase();
+                    let sel_val = v_data['attribute_' + formattedString];
+                    console.log('displaynm',attribute.display_name);
                     console.log(sel_val);
                     // Check if the options are provided as a string or an array
                     if (typeof attribute.option === 'string') {
@@ -1600,7 +1602,7 @@ function GetProductvariationID(ProductID) {
 
                         // Loop through the options and create option elements
                         optionsArray.forEach(function (option) {
-
+                            console.log('9898', option);
                             //varHTML += '<option value="' + option + '">' + option + '</option>';
                             varHTML += '<option value="' + option + '" ' + (sel_val === option ? 'selected' : '') + '>' + option + '</option>';
 

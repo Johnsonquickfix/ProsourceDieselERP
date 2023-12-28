@@ -1369,8 +1369,10 @@ function formatCurrency(total) {
 function DeleteUser(id) {
     var ids = id;
     var obj = { ID: ids }
-
-    $.ajax({
+    swal({ title: "Are you sure?", text: 'Would you like to remove this?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                $.ajax({
         url: '/Product/DeleteBuyingPrice/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
@@ -1400,7 +1402,8 @@ function DeleteUser(id) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
-  
+            }
+        });
 }
 
  
@@ -1408,8 +1411,10 @@ function DeleteUser(id) {
 function ActiveUser(id) {
     var ids = id;
     var obj = { ID: ids }
-
-    $.ajax({
+    swal({ title: "Are you sure?", text: 'Would you like to active this?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                $.ajax({
         url: '/Product/ActiveuyingPrice/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
@@ -1439,7 +1444,8 @@ function ActiveUser(id) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
-
+            }
+        });
 }
 
 
@@ -1595,45 +1601,50 @@ function bindwarehouseDetails(data) {
 function Deletewarehouser(id) {
     var ids = id;
     var obj = { ID: ids }
+    swal({ title: "Are you sure?", text: 'Would you like to delete this?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: '/Product/DeleteProductwarehouse/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#loader1").show();
+                    },
+                    success: function (data) {
+                        if (data.status == true) {
+                            if (data.url == "Manage") {
+                                bindwarehouse();
+                                swal('Success!', data.message, 'success');
+                            }
+                            else {
+                                swal('Success!', data.message, 'success');
+                            }
 
-    $.ajax({
-        url: '/Product/DeleteProductwarehouse/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () {
-            $("#loader1").show();
-        },
-        success: function (data) {
-            if (data.status == true) {
-                if (data.url == "Manage") {           
-                    bindwarehouse();
-                    swal('Success!', data.message, 'success');
-                }
-                else {
-                    swal('Success!', data.message, 'success');
-                }
-
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error')
+                        }
+                    },
+                    complete: function () {
+                        $("#loader1").hide();
+                    },
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
             }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        complete: function () {
-            $("#loader1").hide();
-        },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
-
+     });
 }
 
 function Activewarehouser(id) {
     var ids = id;
     var obj = { ID: ids }
-
-    $.ajax({
+    swal({ title: "Are you sure?", text: 'Would you like to active this?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                $.ajax({
         url: '/Product/ActiveProductwarehouse/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
@@ -1663,7 +1674,8 @@ function Activewarehouser(id) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
-
+            }
+        });
 }
 
 $(document).on('click', "#btnNotes", function () {
@@ -1915,38 +1927,41 @@ function bindbindfileuploadeDetails(data) {
 function Deletefileupload(id) {
     var ids = id;
     var obj = { ID: ids }
+    swal({ title: "Are you sure?", text: 'Would you like to remove this note?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: '/Product/Deletefileuploade/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#loader1").show();
+                    },
+                    success: function (data) {
+                        if (data.status == true) {
+                            if (data.url == "Manage") {
+                                bindfileuploade();
+                                swal('Success!', data.message, 'success');
+                            }
+                            else {
+                                swal('Success!', data.message, 'success');
+                            }
 
-    $.ajax({
-        url: '/Product/Deletefileuploade/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () {
-            $("#loader1").show();
-        },
-        success: function (data) {
-            if (data.status == true) {
-                if (data.url == "Manage") {
-                    bindfileuploade();
-                    swal('Success!', data.message, 'success');
-                }
-                else {
-                    swal('Success!', data.message, 'success');
-                }
-
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error')
+                        }
+                    },
+                    complete: function () {
+                        $("#loader1").hide();
+                    },
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
             }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        complete: function () {
-            $("#loader1").hide();
-        },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
-
+        });
 }
 
 function viewfileupload(id) {

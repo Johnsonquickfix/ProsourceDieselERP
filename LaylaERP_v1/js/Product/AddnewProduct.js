@@ -1473,9 +1473,9 @@ function GetProductvariationID(ProductID) {
             //    // Append the select element to the product_variations div
             //    $("#product_variations").append(selectHTML);
             //});
-            var variationAttributes = data[0].attributes.filter(function (attribute) {
-                return attribute.is_variation === 1;
-            });
+                var variationAttributes = data[0].attributes.filter(function (attribute) {
+                    return attribute.is_variation === 1;
+                });
 
             // Loop through each variation attribute
             variationAttributes.forEach(function (attribute) {
@@ -1772,6 +1772,13 @@ function chunkArray(arr, n) {
 function bindCategory(product_id) {
     $.ajaxSetup({ async: true, beforeSend: function (xhr) { } });
     $.get('/Product/Categories', { id: parseInt(product_id) || 0 }, function (data) {
-        console.log(data); $('#ul_category').tree({ data: data, idField: 'id', treeField: 'text', height: '100%', cascadeCheck: false });
+         $('#ul_category').tree({ data: data, idField: 'id', treeField: 'text', height: '100%', cascadeCheck: false });
+        setTimeout(function () {
+            //console.log('ddd');
+            var checkedItemContainer = $('.tree-checkbox1').closest('.tree-node');
+            if (checkedItemContainer.length > 0) {
+                checkedItemContainer[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }, 500);
     }).fail(function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }).always(function () { });
 }

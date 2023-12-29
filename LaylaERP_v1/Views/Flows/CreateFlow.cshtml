@@ -3,14 +3,18 @@
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
 <link href="~/Content/qfk/css/flow-layout.css" rel="stylesheet" />
-<!--<link href="~/js/qfk/flows/flowy.min.css" rel="stylesheet" />
-<link href="~/js/qfk/flows/styles.css" rel="stylesheet" />-->
+<link href="~/Content/qfk/Selectr/selectr.min.css" rel="stylesheet" />
+<script src="~/Content/qfk/Selectr/selectr.min.js"></script>
 <style>
     .configuration-panel .form-control {
         height: 34px;
         padding: 5px 8px;
         border: 1px solid rgb(145, 151, 159);
         border-radius: 2px;
+    }
+
+    .fa-envelope-circle-check:before {
+        content: "\e4e8";
     }
 </style>
 <div id="root" data-id="@ViewBag.id">
@@ -183,9 +187,6 @@
     </div>
 </div>
 <script src="~/js/qfk/common.js"></script>
-<!--<script src="~/js/qfk/flows/flowy.min.js"></script>
-<script type="module" src="~/js/qfk/flows/main.js"></script>-->
-@*<script type="module" src="~/js/qfk/flows/mainflow.js"></script>*@
 <script type="module" src="@Url.Content("~/js/qfk/flows/createflow.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 
 <script type="module">

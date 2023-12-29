@@ -204,6 +204,10 @@ export const enums = function (e, t, n) {
             deleteAction: e => `/api/flow/action/${e}/delete`,
             moveAction: e => `/api/flow/action/${e}/move`,
             updateTiming: e => `/api/flow/action/${e}/timing`,
+            flowMessageContentType: e => `/api/flow/message/${e}/content-type`,
+            flowMessageContentText: e => `/flows/rich-text-editor/${e}`,
+            flowMessageContentHtml: e => `/flows/html-editor/${e}`,
+            flowMessageContentEmail: e => `/flows/${e}/content/library`,
         };
     function x() {
         return window.location.pathname.split("/")[2] || "-1"

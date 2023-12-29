@@ -32,6 +32,14 @@
     --head-font-family: ui-monospace,Menlo,Monaco,'Roboto','Oxygen','Ubuntu',Arial,sans-serif;
     --typography-paragraph-font-weight: 400;
     --typography-color-primary-base: #1D1E20;
+    --typography-color-primary-placeholder: #C4C9CF;
+    --color-border-default-focused: #1C65AD;
+    --color-border-default-hovered: #1C65AD;
+    --color-outline-default-focused: #92D2F766;
+    --unit-outline-width-xs: 1px;
+    --unit-outline-width-sm: 2px;
+    --unit-outline-width-md: 3px;
+    --unit-outline-width-lg: 4px;
     /********/
     --header-color: #dfe3e6;
     --font-normal: 400;
@@ -226,15 +234,20 @@ body[data-sidebar=dark] .navbar-brand-box, .navbar-header {
 }
 
 ::-webkit-input-placeholder { /* Edge */
-    color: var(--typography-color-primary-base) !important;
+    color: var(--typography-color-primary-placeholder) !important;
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: var(--typography-color-primary-base) !important;
+    color: var(--typography-color-primary-placeholder) !important;
 }
 
 ::placeholder {
-    color: var(--typography-color-primary-base) !important;
+    color: var(--typography-color-primary-placeholder) !important;
+}
+.form-control:focus {
+    background-color: var(--bs-custom-white);
+    border-color: var(--color-border-default-focused) !important;
+    box-shadow: 0 0 0 var(--unit-outline-width-lg) var(--color-outline-default-focused);
 }
 
 .header_search .fa-search {

@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "Rich Text Editor";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
+}
+
+<div id="root">
+    <div class="row border-bottom">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <ol class="breadcrumb m-0 font-size-18">
+                    <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
+                    <li class="breadcrumb-item">Edit @o.campaign_name</li>
+                </ol>
+            </div>
+            <div class="page-title-right">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 justify-content-md-center">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <a href="~/campaigns/@ViewBag.id/content"><i class="fas fa-arrow-left me-2"></i>Back to content overview</a>
+                </div>
+                <div class="page-title-right">
+                    <button id="save-content" class="btn btn-primary float-end">Save content</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            @if (!string.IsNullOrEmpty(o.contentdata.data_html))
+            {
+                <textarea id="editorcontent">@o.contentdata.data_html</textarea>
+            }
+            else
+            {
+                <textarea id="editorcontent"><p>Hi {{ first_name }},</p><p>This is an email just for you. We hope you like it.</p><p>The Team</p></textarea>
+            }
+        </div>
+    </div>
+</div>
+<script src="~/js/qfk/HtmlEditor/1.5.5/tinymce/tinymce.min.js"></script>
+<script>
+    tinyMCE.init({
+        selector: '#editorcontent', menubar: false, height: 400,
+        toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist ',
+    });
+    document.querySelector("#save-content").addEventListener("click", (evt) => {
+        evt.preventDefault(), evt.stopPropagation(), updateContent();
+    });
+    function updateContent() {
+        let j = { campaign_id: @ViewBag.id, action: 'template', content: { content_type: 'text' } };
+        j.contentdata = { data_html: tinyMCE.get("editorcontent").getContent() };
+        //console.log(j); return;
+        if (j.campaign_id === 0) { swal('Error!', 'Invalid campaign.', 'error').then(function () { swal.close(); }); return false; }
+        else {
+            $.ajax({
+                type: 'PUT', url: '/api/campaigns',
+                contentType: "application/json",
+                data: JSON.stringify(j),
+                success: function (result) {
+                    if (result.status > 0) {
+                        window.location = window.location.origin + `/campaigns/${result.id}/content`;
+                    }
+                    else { swal('Info!', result.response, 'info'); }
+                },
+                error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "TextEditor";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
+}
+
+<div id="root">
+    <div class="row border-bottom">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <ol class="breadcrumb m-0 font-size-18">
+                    <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
+                    <li class="breadcrumb-item">Edit @o.campaign_name</li>
+                </ol>
+            </div>
+            <div class="page-title-right">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 justify-content-md-center">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <a href="~/campaigns/@ViewBag.id/content"><i class="fas fa-arrow-left me-2"></i>Back to content overview</a>
+                </div>
+                <div class="page-title-right">
+                    <button id="save-content" class="btn btn-primary float-end">Save content</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-transparent border-bottom">
+                <div class="d-flex flex-wrap align-items-start">
+                    <ul class="nav nav-tabs nav-tabs-custom card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab-editor" role="tab" aria-selected="true">
+                                Editor
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a id="preview-html" class="nav-link" data-bs-toggle="tab" href="#tab-preview" role="tab" aria-selected="false" tabindex="-1">
+                                Preview
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-editor" role="tabpanel">
+                        @if (!string.IsNullOrEmpty(o.contentdata.data_html))
+                        {
+                            <textarea id="templateHtml" style="display: none">@o.contentdata.data_html</textarea>
+                        }
+                        else
+                        {
+                    <textarea id="templateHtml" style="display: none" >
+                    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+                    <html>  
+                                        <head>    
+                                        <title></title>
+                                        <style type="text/css">
+                                            body {background: #eee;font-family: 'Helvetica Neue', Helvetica, Arial, san-serif;}
+                                            #outer {width: 95%;min-width: 320px;max-width: 600px;margin: 20px auto;background: #f9f9f9;position: relative;}
+                                            #inner {padding: 20px;font-size: 14px;line-height: 19px;}
+                                            p {margin: 0 0 9px;}
+                    </style>
+                      </head>
+                                        <body>    
+                                        <div id="outer"><div id="inner"><p>Are you sure you want to code your own HTML? If you haven't checked out our drag and drop editor, take a look. It's very powerful and you can use it with your custom templates.</p><p>&mdash; Quickfix Team</p></div></div>
+                      </body>
+                    </html>
+                            </textarea>
+                        }
+
+                        <pre id="json-display-format" class="json-display" style=" height: 350px;"></pre>
+                    </div>
+                    <div class="tab-pane" id="tab-preview" role="tabpanel">
+                        <iframe id="preview" srcdoc="" frameborder="0" style="width: 100%; min-height:350px" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/qfk/ace-editor/ace.js"></script>
+<script>
+    !(function () {
+        const _e = ace.edit("json-display-format", {
+            mode: "ace/mode/html", theme: "ace/theme/xcode", selectionStyle: "text", autoScrollEditorIntoView: true, copyWithEmptySelection: true, readOnly: false,
+        });
+        _e.getSession().setValue(document.getElementById("templateHtml").value);
+
+        document.querySelector("#preview-html")?.addEventListener("click", (evt) => {
+            evt.preventDefault(), evt.stopPropagation();
+            const iframe = document.getElementById("preview");
+            iframe.srcdoc = _e.getValue();
+        });
+        document.querySelector("#save-content")?.addEventListener("click", (evt) => {
+            evt.preventDefault(), evt.stopPropagation(), updateContent();
+        });
+        function updateContent() {
+            let j = { campaign_id: @ViewBag.id, action: 'template', content: { content_type: 'html' } };
+            j.contentdata = { data_html: _e.getValue() };
+            if (j.campaign_id === 0) { swal('Error!', 'Invalid campaign.', 'error').then(function () { swal.close(); }); return false; }
+            else {
+                $.ajax({
+                    type: 'PUT', url: '/api/campaigns',
+                    contentType: "application/json",
+                    data: JSON.stringify(j),
+                    success: function (result) {
+                        if (result.status > 0) { window.location = window.location.origin + `/campaigns/${result.id}/content`; }
+                        else { swal('Info!', result.response, 'info'); }
+                    },
+                    error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
+                });
+            }
+        }
+    })();
+</script>

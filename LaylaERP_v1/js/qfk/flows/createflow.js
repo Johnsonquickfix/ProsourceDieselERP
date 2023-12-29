@@ -114,7 +114,6 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
                     n && Http.post(lt.urls.deleteAction(n.id)).then(res => res.json()).then(res => { loader(); res.status === 200 && container.remove(); });
                 }); return remove;
             };
-
         i > 0 && container.appendChild(dropTarget(n.path));
         switch (t) {
             case lt.events.EXIT_NODE: {
@@ -139,7 +138,7 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
             }; break;
             case lt.events.EMAIL: {
                 nb = addNode(), (d === true && $btn.appendChild(draggableDiv(t, n.id)));
-
+                console.log(n.message)
                 nb.replaceChildren(doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-envelope'),
                     doc.createElement('div', { class: `${pc}-content` },
                         doc.createElement('div', { class: `${pc}-header` },
@@ -148,8 +147,12 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
                         ),
                         doc.createElement('div', { class: `${pc}-main` }, (n.message && n.message.subject))
                     ),
-                    //doc.createElement('div', { class: `${pc}-footer` })
-                )), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
+                ),
+                    doc.createElement('div', { class: `${pc}-footer` },
+                        doc.createElement('div', { class: `card-status-switcher-wrapper` }, doc.createElement('div', { class: `card-status-switcher no-drop ${config.c[n.status]}` }, config.l[n.status])),
+                        doc.createElement('div', { class: `action-settings` }, `<i class="fa fa-envelope ${n.message.is_ignoring_throttling ? 'draft' : 'live'}"></i><i class="fa fa-map-signs ${n.message.is_add_utm ? 'live' : 'draft'}"></i><i class="fa fa-filter"></i>`)
+                    )
+                ), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
             }; break;
             case lt.events.TIME_DELTA: {
                 nb = addNode(), (d === true && $btn.appendChild(draggableDiv(t, n.id)));
@@ -306,7 +309,6 @@ function flowComponentsInitial(e) {
 
 class Panel {
     panel_setup(e) {
-        console.log(e)
         let { type: t = 'trigger' } = e, _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body,
             buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
             buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
@@ -356,9 +358,8 @@ class Panel {
             buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
         addEvent(buttonCancel, 'click', (event) => { event.preventDefault(); event.stopPropagation(); config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
         const Re = (ele, selected_value) => {
-            let i = [{ value: 'day', label: "day(s)" }, { value: 'hour', label: "hour(s)" }, { value: 'minute', label: "minute(s)" }];
-            let unit = new Choices(ele, { allowHTML: false, searchEnabled: false, placeholder: false, itemSelectText: '', shouldSort: false });
-            unit.setChoices(i.map(function (row) { return { value: row.value, label: row.label, selected: (row.value === selected_value) } }));
+            let i = [{ value: 'day', text: "day(s)" }, { value: 'hour', text: "hour(s)" }, { value: 'minute', text: "minute(s)" }];
+            let unit = new Selectr(ele, { data: i, searchable: !1, width: '50%', selectedValue: selected_value });
         };
         let hours = 0, rhours = 0, minutes = 0, rminutes = 0;
         if (e.after_seconds_unit === 'day') rhours = e.after_seconds / 86400;
@@ -377,7 +378,6 @@ class Panel {
                     doc.createElement("div", { class: "configuration-panel-footer" }, doc.createElement("span", { class: "button-set" }, buttonOk, buttonCancel))
                 )
             );
-        Re(select, 'hour');
 
         addEvent(select, 'change', (event) => {
             event.preventDefault();
@@ -393,8 +393,7 @@ class Panel {
                     p.nextSibling
                 )
             }
-        });
-        let changeEvent = new Event('change'); select.dispatchEvent(changeEvent);
+        }), Re(select, 'hour');
         addEvent(buttonOk, 'click', (event) => {
             event.preventDefault(); event.stopPropagation();
             let JsonVar = { id: e.id, delay_units: select.value };
@@ -404,36 +403,51 @@ class Panel {
         return $body;
     }
     panel_setup_mail(e) {
-        let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
-            buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
-        addEvent(buttonCancel, 'click', (event) => { event.preventDefault(); event.stopPropagation(); config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
+        let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Done" }),
+            buttonEdit = doc.createElement("button", { type: "button", class: "btn btn-alt", title: "Configure Content" },"Configure Content");
+        addEvent(buttonOk, 'click', (event) => { event.preventDefault(); event.stopPropagation(); config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
+        addEvent(buttonEdit, 'click', (event) => {
+            event.preventDefault(); event.stopPropagation(); window.location = `${window.location.origin}/flows/${e.message.content_id}/content`;
+        });
 
-        let $body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
-            doc.createElement("div", { class: "send-email-panel" },
-                doc.createElement("ul", { class: "configuration-sections" },
-                    doc.createElement("li", null,
-                        doc.createElement("div", { class: "configuration-subtitle" }, doc.createElement("h2", null, 'Content')),
-                        doc.createElement("div", { class: "message-content" },
-                            doc.createElement("ul", { class: 'message-detail' },
-                                doc.createElement("li", { class: 'message-detail' }, `<span class="descriptor">Subject:</span><span class="from-label">${e.message && e.message.subject}</span>`),
-                                doc.createElement("li", { class: 'message-detail' }, `<span class="descriptor">From:</span><span class="from-label">${e.message && e.message.from_label} &lt;${e.message && e.message.from_email}&gt;</span>`)
-                            ),
-                            doc.createElement("div", { class: 'message-actions' }, doc.createElement("button", { class: 'btn btn-alt', type: "button", title: "Configure Content" }, 'Configure Content'))
+        const us = (ele, selected_value) => {
+            let i = [{ value: 0, text: "Draft" }, { value: 1, text: "Manual" }, { value: 3, text: "Live" }];
+            let dd = new Selectr(ele, { data: i, searchable: !1, selectedValue: selected_value });
+        };
+        let select = doc.createElement('select', { name: "status", width: '120px' }),
+            $body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
+                doc.createElement("div", { class: "send-email-panel" },
+                    doc.createElement("ul", { class: "configuration-sections" },
+                        doc.createElement("li", null,
+                            doc.createElement("div", { class: "configuration-subtitle" }, doc.createElement("h2", null, 'Content')),
+                            doc.createElement("div", { class: "message-content" },
+                                doc.createElement("ul", { class: 'message-detail' },
+                                    doc.createElement("li", { class: 'message-detail' }, `<span class="descriptor">Subject:</span><span class="from-label">${e.message && e.message.subject}</span>`),
+                                    doc.createElement("li", { class: 'message-detail' }, `<span class="descriptor">From:</span><span class="from-label">${e.message && e.message.from_label} &lt;${e.message && e.message.from_email}&gt;</span>`)
+                                ),
+                                doc.createElement("div", { class: 'message-actions' }, buttonEdit)
+                            )
+                        ),
+                        doc.createElement("li", null,
+                            doc.createElement("div", { class: 'configuration-subtitle' }, `<span><h2>Settings</h2></span><i class="fa fa-cog"></i>`),
+                            doc.createElement("ul", { class: 'settings-list' },
+                                doc.createElement("li", { class: 'message-detail' }, `<span role="button" tabindex="-1"><span class="underline">Smart Sending</span><span data-testid="configuration-panel-settings-list-item-0" class="setting-${e.message && e.message.is_ignoring_throttling ? 'off' : 'on'}"></span></span>`),
+                                doc.createElement("li", { class: 'message-detail' }, `<span role="button" tabindex="-1"><span class="underline">UTM Tracking</span><span data-testid="configuration-panel-settings-list-item-0" class="setting-${e.message && e.message.is_add_utm ? 'on' : 'off'}"></span></span>`),
+                                doc.createElement("li", { class: 'message-detail' }, `<span role="button" tabindex="-1"><span class="underline">Additional Filters</span><span data-testid="configuration-panel-settings-list-item-0" class="setting-off"></span></span>`)
+                            )
                         )
                     ),
-                    doc.createElement("li", null,
-                        doc.createElement("div", { class: 'configuration-subtitle' }, `<span><h2>Settings</h2></span><i class="fa fa-cog"></i>`),
-                        doc.createElement("ul", { class: 'settings-list' },
-                            doc.createElement("li", { class: 'message-detail' }, `<span role="button" tabindex="-1"><span class="underline">Smart Sending</span><span data-testid="configuration-panel-settings-list-item-0" class="setting-${e.message && e.message.is_ignoring_throttling ? 'off' : 'on'}"></span></span>`),
-                            doc.createElement("li", { class: 'message-detail' }, `<span role="button" tabindex="-1"><span class="underline">UTM Tracking</span><span data-testid="configuration-panel-settings-list-item-0" class="setting-${e.message && e.message.is_add_utm ? 'on' : 'off'}"></span></span>`),
-                            doc.createElement("li", { class: 'message-detail' }, `<span role="button" tabindex="-1"><span class="underline">Additional Filters</span><span data-testid="configuration-panel-settings-list-item-0" class="setting-off"></span></span>`)
+                    doc.createElement("div", { class: "configuration-panel-footer flow-action-footer" },
+                        doc.createElement("span", { class: "button-set" }, buttonOk),
+                        doc.createElement("div", { class: "flow-action-status" },
+                            doc.createElement("span", null, doc.createElement("h2", null, 'Send Status')), select
                         )
                     )
-                ),
-                doc.createElement("div", { class: "configuration-panel-footer" }, doc.createElement("span", { class: "button-set" }, buttonOk, buttonCancel))
-            )
-        );
-        //Re(select, 'hour');
+                )
+            );
+        us(select, e.status);
+
+        //var selectorDefault = new Selectr('#default', configs.default);
 
         //addEvent(select, 'change', (event) => {
         //    event.preventDefault();
@@ -459,6 +473,9 @@ class Panel {
         //});
         return $body;
     }
+    s = { DRAFT: 0, MANUAL_MODE: 1, LIVE: 2 }
+    l = { [this.s.DRAFT]: "Draft", [this.s.MANUAL_MODE]: "Manual", [this.s.LIVE]: "Live", }
+    c = { [this.s.DRAFT]: "draft", [this.s.MANUAL_MODE]: "manual", [this.s.LIVE]: "live" }
 }
 
 function load() {

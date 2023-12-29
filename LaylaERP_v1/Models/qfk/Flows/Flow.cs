@@ -98,6 +98,9 @@
         //[JsonProperty("settings", NullValueHandling = NullValueHandling.Include)]
         //public string settings { get; set; }
 
+        [JsonProperty("message", NullValueHandling = NullValueHandling.Include)]
+        public ActionMessage message { get; set; }
+
         [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
         public int status { get; set; }
 
@@ -108,10 +111,88 @@
         public DateTime? updated { get; set; }
     }
 
-    //public class ListResponse : Lists
-    //{
-    //    public long member_count { get; set; }
-    //    public string group_type_name { get; set; }
-    //}
+    public class ActionMessage
+    {
+        [JsonProperty("content_id", NullValueHandling = NullValueHandling.Include)]
+        public long content_id { get; set; }
+
+        [JsonProperty("action_id", NullValueHandling = NullValueHandling.Include)]
+        public long action_id { get; set; }
+
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
+        public string name { get; set; }
+
+        [JsonProperty("reply_to_email", NullValueHandling = NullValueHandling.Include)]
+        public string reply_to_email { get; set; }
+
+        [JsonProperty("bcc_email", NullValueHandling = NullValueHandling.Include)]
+        public string bcc_email { get; set; }
+
+        [JsonProperty("cc_email", NullValueHandling = NullValueHandling.Include)]
+        public string cc_email { get; set; }
+
+        [JsonProperty("from_label", NullValueHandling = NullValueHandling.Include)]
+        public string from_label { get; set; }
+
+        [JsonProperty("from_email", NullValueHandling = NullValueHandling.Include)]
+        public string from_email { get; set; }
+
+        [JsonProperty("subject", NullValueHandling = NullValueHandling.Include)]
+        public string subject { get; set; }
+
+        [JsonProperty("preview_text", NullValueHandling = NullValueHandling.Include)]
+        public string preview_text { get; set; }
+
+        [JsonProperty("is_add_utm", NullValueHandling = NullValueHandling.Include)]
+        public bool is_add_utm { get; set; }
+
+        [JsonProperty("is_tracking_opens", NullValueHandling = NullValueHandling.Include)]
+        public bool is_tracking_opens { get; set; }
+
+        [JsonProperty("is_tracking_clicks", NullValueHandling = NullValueHandling.Include)]
+        public bool is_tracking_clicks { get; set; }
+
+        [JsonProperty("is_ignoring_throttling", NullValueHandling = NullValueHandling.Include)]
+        public bool is_ignoring_throttling { get; set; }
+
+        [JsonProperty("is_ignoring_unsubscribes", NullValueHandling = NullValueHandling.Include)]
+        public bool is_ignoring_unsubscribes { get; set; }
+
+        [JsonProperty("content_type", NullValueHandling = NullValueHandling.Include)]
+        public string content_type { get; set; }
+
+        [JsonProperty("template_id", NullValueHandling = NullValueHandling.Include)]
+        public long template_id { get; set; }
+
+        [JsonProperty("data_html", NullValueHandling = NullValueHandling.Include)]
+        public string data_html { get; set; }
+
+        [JsonProperty("data_json", NullValueHandling = NullValueHandling.Include)]
+        public string data_json { get; set; }
+
+        [JsonProperty("send_time", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? send_time { get; set; }
+
+        [JsonProperty("status", NullValueHandling = NullValueHandling.Include)]
+        public int status { get; set; }
+
+        [JsonProperty("created", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? created { get; set; }
+
+        [JsonProperty("updated", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? updated { get; set; }
+
+        [JsonProperty("metadata", NullValueHandling = NullValueHandling.Include)]
+        public MessageMeta metadata { get; set; }
+
+        public class MessageMeta
+        {
+            [JsonProperty("flow_id", NullValueHandling = NullValueHandling.Include)]
+            public long flow_id { get; set; }
+
+            [JsonProperty("flow_name", NullValueHandling = NullValueHandling.Include)]
+            public string flow_name { get; set; }
+        }
+    }
 
 }

@@ -24,5 +24,47 @@ namespace LaylaERP.Controllers.qfk
             else if (Request.Url.PathAndQuery.ToLower().Contains("/clone/")) ViewBag.mode = "Clone";
             return View();
         }
+
+        [Route("{id}/content")]
+        public ActionResult Content(long id = 0)
+        {
+            try
+            {
+                ViewBag.id = id;
+            }
+            catch { }
+            return View();
+        }
+
+        [Route("rich-text-editor/{id}")]
+        public ActionResult RichTextEditor(long id = 0)
+        {
+            try
+            {
+                ViewBag.id = id;
+            }
+            catch { }
+            return View();
+        }
+        [Route("html-editor/{id}")]
+        public ActionResult HtmlEditor(long id = 0)
+        {
+            try
+            {
+                ViewBag.id = id;
+            }
+            catch { }
+            return View();
+        }
+        [Route("{id}/content/library")]
+        public ActionResult library(long id = 0)
+        {
+            try
+            {
+                ViewBag.id = id;
+            }
+            catch { }
+            return View();
+        }
     }
 }

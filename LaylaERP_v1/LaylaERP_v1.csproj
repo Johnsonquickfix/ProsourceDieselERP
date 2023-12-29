@@ -896,6 +896,8 @@
     <Content Include="Content\qfk\fonts\stylesheet.css" />
     <Content Include="Content\qfk\js\app.js" />
     <Content Include="Content\qfk\js\bootstrap.bundle.min.js" />
+    <Content Include="Content\qfk\Selectr\selectr.min.css" />
+    <Content Include="Content\qfk\Selectr\selectr.min.js" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\VendorLinkedFiles\default.png" />
@@ -1139,12 +1141,9 @@
     <Content Include="js\qfk\catalog\sources.js" />
     <Content Include="js\qfk\common.js" />
     <Content Include="js\qfk\EmailTemplates\templates.js" />
+    <Content Include="js\qfk\flows\content.js" />
     <Content Include="js\qfk\flows\flowconfig.js" />
     <Content Include="js\qfk\flows\createflow.js" />
-    <Content Include="js\qfk\flows\flowy.min.css" />
-    <Content Include="js\qfk\flows\flowy.min.js" />
-    <Content Include="js\qfk\flows\main.js" />
-    <Content Include="js\qfk\flows\styles.css" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\contentEditor.chunk.js" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\editor.html" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\editor.js" />
@@ -1987,6 +1986,10 @@
     <Content Include="Views\Setup\MerchantFee.cshtml" />
     <Content Include="Views\Flows\CreateFlow.cshtml" />
     <Content Include="Views\DataImport\ProductAttributesImport.cshtml" />
+    <Content Include="Views\Flows\Content.cshtml" />
+    <Content Include="Views\Flows\RichTextEditor.cshtml" />
+    <Content Include="Views\Flows\HtmlEditor.cshtml" />
+    <Content Include="Views\Flows\library.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

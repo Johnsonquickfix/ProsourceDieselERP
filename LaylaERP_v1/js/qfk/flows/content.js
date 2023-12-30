@@ -9,20 +9,20 @@ e.addEventListener("DOMContentLoaded", function () {
         let p = e.getElementById("template_type"); e.getElementById("btn-action").replaceChildren();
         p.replaceChildren(e.createElement('div', { class: 'alert alert-warning' }, '<i class="fas fa-exclamation-triangle me-2"></i>Selecting a new template will permanently delete existing content for your campaign. To avoid losing any work, <a href="">return to your current template</a>'));
         p.append(e.createElement('div', { class: 'row' }, e.createElement('div', { class: 'col-sm-12 d-grid gap-2 mb-2' },
-            e.createElement('a', { id: 'email-editor', class: 'btn p-0', href: 'javascript:void(0);' },
+            e.createElement('a', { id: 'email-editor', class: 'btn p-0', href: 'javascript:void(0);', style: "width: -webkit-fill-available;"},
                 e.createElement('div', { class: 'card-radio text-center' },
                     e.createElement('i', { class: 'fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2' }),
                     e.createElement('h5', { class: 'font-size-14 mb-0' }, 'Drag and Drop'),
                     e.createElement('p', { class: 'text-muted my-3 text-wrap' }, 'Create an email using our drag-and-drop editor.')
                 )))));
         p.append(e.createElement('div', { class: 'row' }, e.createElement('div', { class: 'col-sm-6' },
-            e.createElement('a', { id: "text-editor", class: 'btn p-0', href: 'javascript:void(0);' },
+            e.createElement('a', { id: "text-editor", class: 'btn p-0', href: 'javascript:void(0);', style: "width: -webkit-fill-available;" },
                 e.createElement('div', { class: 'card-radio text-center' },
                     e.createElement('i', { class: 'fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2' }),
                     e.createElement('h5', { class: 'font-size-14 mb-0' }, 'Text Only'),
                     e.createElement('p', { class: 'text-muted my-3 text-wrap' }, 'Send a plain text email for a more personal feel.')
                 ))),
-            e.createElement('div', { class: 'col-sm-6' }, e.createElement('a', { id: "html-editor", class: 'btn p-0', href: 'javascript:void(0);' },
+            e.createElement('div', { class: 'col-sm-6' }, e.createElement('a', { id: "html-editor", class: 'btn p-0', href: 'javascript:void(0);', style: "width: -webkit-fill-available;" },
                 e.createElement('div', { class: 'card-radio text-center' },
                     e.createElement('i', { class: 'fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2' }),
                     e.createElement('h5', { class: 'font-size-14 mb-0' }, 'HTML'),

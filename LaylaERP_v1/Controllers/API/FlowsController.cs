@@ -248,5 +248,32 @@
                 return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }
+
+        [HttpPost, Route("message/{id}/content-data")]
+        public IHttpActionResult MessageContentData(long id, ActionMessage request)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
+                if (string.IsNullOrEmpty(request.content_type)) return Content(HttpStatusCode.BadRequest, new { message = "content_type is required." });
+
+                request.content_id = id;
+                var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("set-content-type", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
     }
 }

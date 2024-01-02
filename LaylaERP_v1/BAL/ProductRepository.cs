@@ -3670,6 +3670,29 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static void UpdateattributMetaData(ProductModel model, long id, string varFieldsName, string varFieldsValue,string term_taxonomy,string term_taxonomy_id)
+        {
+            try
+            {
+                string strsql = "erp_productattributes_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "UM"),
+                    new SqlParameter("@post_id", id),
+                    new SqlParameter("@meta_key", varFieldsName),
+                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@term_taxonomy", term_taxonomy),
+                    new SqlParameter("@term_taxonomy_id", term_taxonomy_id),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateProduct/" + id + "", "Product Update Meta Data Details");
+                throw Ex;
+            }
+        }
+
 
     }
 }

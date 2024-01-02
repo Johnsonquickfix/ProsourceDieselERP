@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 //using System.Web.Script.Serialization;
 
 namespace LaylaERP.Controllers
@@ -933,12 +934,12 @@ namespace LaylaERP.Controllers
                             DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
                             if (_att_value["is_taxonomy"].ToString().Equals("0"))
                             {
-                                obj.attributes.Add(new { is_taxonomy = false, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
+                                obj.attributes.Add(new { position = _att_value["position"], is_taxonomy = false, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
                             }
                             else
                             {
-                                if (rows.Length > 0) obj.attributes.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
-                                else obj.attributes.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                if (rows.Length > 0) obj.attributes.Add(new { position = _att_value["position"], is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                else obj.attributes.Add(new { position = _att_value["position"], is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
                             }
                         }
                     }
@@ -1238,9 +1239,9 @@ namespace LaylaERP.Controllers
 
             //return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
 
-        }
+        }        
         public JsonResult saveAttributes(string fields, string IDs, string post_title, string table, string visible, string variation, string producttypeID, ProductModel model)
-        {
+        {        
             model.product_attributes = fields;
             if ((IDs != "NaN"))
             {
@@ -1277,7 +1278,7 @@ namespace LaylaERP.Controllers
                 }
             }
 
-            //return Json(model, JsonRequestBehavior.AllowGet);
+           // return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         //public JsonResult Savevariations(string fields,string UpdateList, string UpdateID, string PID, string post_title,string regularprice, string Salepricevariationval, string Stockquantityvariationval, string allowbackordersvariationval, string weightvariationval, string Lvariationval, string Wvariationval, string Hvariationval, string shipvariationval, string cassvariationval, string descriptionvariationval, string stockchec, string chkvirtual, string sku, string parentid, string attributeheaderval , ProductModel model)
@@ -3180,6 +3181,59 @@ namespace LaylaERP.Controllers
             return Json(new { aaData = result , ToColom = model.strValue2, FromColom= model.strValue3 });
         }
 
+        public JsonResult saveproductAttributes(string fields, string IDs, string post_title, string term_taxonomy,string term_taxonomy_id, string producttypeID, ProductModel model)
+        {
+            model.product_attributes = fields;
+            if ((IDs != "NaN"))
+            {
+
+                // ProductRepository.EditProducts(model, model.ID);
+                Update_AttributeMeta(model, Convert.ToInt64(IDs), term_taxonomy, term_taxonomy_id);
+                //update_term(model, model.ID);
+
+                return Json(new { status = true, message = "Product attributes updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                model.post_status = "draft";
+                if (!string.IsNullOrEmpty(model.post_content))
+                    model.post_content = model.post_content;
+                else
+                    model.post_content = "";
+                model.post_title = post_title;
+                model.post_name = post_title;
+                model.post_type = "product";
+                model.comment_status = "open";
+                int ID = ProductRepository.AddProducts(model);
+                ViewBag.UpdatedID = ID;
+                if (ID > 0)
+                {
+                    Adduser_MetaData(model, ID);
+                    ProductRepository.Add_term(Convert.ToInt32(producttypeID), ID);
+                    //Add_term(model, ID);
+                    ModelState.Clear();
+                    return Json(new { status = true, message = "Product attributes saved successfully!!", ID = ID }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid details", id = ID }, 0);
+                }
+            }
+
+            // return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+
+        private void Update_AttributeMeta(ProductModel model, long id,string term_taxonomy,string term_taxonomy_id)
+        {
+            string[] varQueryArr1 = new string[1];
+            string[] varFieldsName = new string[1] { "_product_attributes" };
+            string[] varFieldsValue = new string[1] { model.product_attributes };
+            for (int n = 0; n < 1; n++)
+            {
+                ProductRepository.UpdateattributMetaData(model, id, varFieldsName[n], varFieldsValue[n], term_taxonomy, term_taxonomy_id);
+            }
+        }
     }
 
 }

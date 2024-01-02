@@ -645,45 +645,125 @@
     });
 
     $("#btnsaveAttributes").click(function (e) {
-        let _list = [];
-        $('#tbhold > tr').each(function (index, tr) {
-            _list.push({ key: $(tr).find('.input').val(), value: $(tr).find('.inputdes').val() });
+        let _list = [];       
+        var _taxonomyValues = [];
+        var concatenatedString = '';
+        // Iterate over all elements with IDs starting with "row_"
+        $('[id^="row_"]').each(function () {
+            // Extract and push the data-taxonomy attribute value
+            var elementId = $(this).attr('id');
+            var dataTaxonomy = $(this).data('taxonomy');
+            var visibilityChecked = $('#attribute_visibility\\[' + elementId.substring(4) + '\\]').prop('checked');
+            var variationChecked = $('#attribute_variation\\[' + elementId.substring(4) + '\\]').prop('checked');
+            var istaxonomy = $(this).data('istaxonomy');
+            var position = $(this).data('position');
+            var value = '';            
+            if (istaxonomy == false) {
+                var textareaName = 'attribute_values\\[' + elementId.substring(4) + '\\]';
+                var textareaValue = $('textarea[name="' + textareaName + '"]').val();
+                //console.log('Textarea Name:', textareaName);
+                //console.log('Textarea Value:', textareaValue);
+                value = textareaValue;
+               // istaxonomy = 0;
+            }
+            else {
+                //istaxonomy = 1;
+            }
+            //var selectedValues = $('select[name="attribute_values\\[' + elementId.substring(4) + '\\]"]').val();
+            //concatenatedString = selectedValues.join(",");
+            //var taxonomyValues = {               
+            //     selectedValues
+            //};
+            _list.push({ name: dataTaxonomy, is_visible: visibilityChecked, is_variation: variationChecked, is_taxonomy: istaxonomy, value: value, position: position });
+            // Push the object into the list
+            //_list.push(elementValues);
+            //_taxonomyValues.push(selectedValues);
+           // taxonomyValues.push($(this).data('taxonomy'));
+        });
+       
+        //console.log(taxonomyValues);
+        //console.log(_list);         
+        var serializedPhpArray = convertArrayToSerializedPHP(_list);       
+        //console.log(serializedPhpArray);
+        //$('.input').each(function () {
+        //    if (this.value != '')
+        //        values.push(this.value);
+        //});
+
+        //$('.input').each(function () {
+        //    if (this.value != '')
+        //        values.push(this.value);
+        //});
+
+        //$('select').on('change', function () {
+        //    // Initialize an empty array to store selected values
+        //    var selectedValues = [];
+
+        //    // Iterate over all selected options within the current select element
+        //    $(this).find('option:selected').each(function () {
+        //        // Push the value of each selected option to the array
+        //        selectedValues.push($(this).val());
+        //    });
+
+        //    // Join the array of selected values with a comma separator
+        //    var result = selectedValues.join(', ');
+
+        //    // Display the result (you can modify this part based on your needs)
+        //    console.log(result);
+        //});
+
+        var selectedValues = [];
+
+        // Iterate over all select elements within the specific div
+        $('#product_attributes select').each(function () {
+            // Iterate over all selected options within the current select element
+            $(this).find('option:selected').each(function () {
+                // Push the value of each selected option to the array
+                selectedValues.push($(this).val());
+            });
         });
 
-        // console.log(_list);
+        // Join the array of selected values with a comma separator
+        var result = selectedValues.join(', ');
 
-        $('.input').each(function () {
-            if (this.value != '')
-                values.push(this.value);
+        // Display the result (you can modify this part based on your needs)
+        
+
+
+        var taxonomyValues = [];
+
+        // Iterate over each div with class "box" inside the "product_attributes" container
+        $("#product_attributes .box").each(function () {
+            // Get the value of the "data-taxonomy" attribute
+            var taxonomyValue = $(this).data("taxonomy");
+
+            // Push the value to the array
+            taxonomyValues.push(taxonomyValue);
         });
+
+        // Convert the array to a comma-separated string
+        var commaSeparatedValues = taxonomyValues.join(', ');
+
+
         let parentID = parseInt($("#hfid").val());
         //  console.log(values.join(','));
-        $("#hfattributeheaderval").val(values.join(','));
-        //$('.inputdes').each(function () {
-        //    if (this.value != '')
-        //        valuesdescription.push(this.value);
+        //$("#hfattributeheaderval").val(values.join(','));     
+        //inputchkvisible.push(true);
+
+        //$('.inputchkvar').each(function () {
+        //    //if (this.value != '')
+        //    inputchkvariation.push(this.checked);
         //});
 
-        //$('.inputchk').each(function () {
-        //    inputchkvisible.push(this.checked);
-        //});
-
-        inputchkvisible.push(true);
-
-        $('.inputchkvar').each(function () {
-            //if (this.value != '')
-            inputchkvariation.push(this.checked);
-        });
-
-        //console.log(values);
-        if (values != '') {
+      // console.log(values);
+       // if (values != '') {
             var checkstr = confirm('are you sure want to save/update Attributes?');
             if (checkstr == true) {
                 //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
                 $.ajax({
                     type: 'POST',
-                    url: '/Product/saveAttributes',
-                    data: "{'fields':'" + JSON.stringify(_list) + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
+                    url: '/Product/saveproductAttributes',
+                    data: "{'fields':'" + serializedPhpArray + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'term_taxonomy': '" + commaSeparatedValues + "','term_taxonomy_id': '" + result + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
                     dataType: 'json',
                     headers: { "Content-Type": "application/json" },
                     beforeSend: function () {
@@ -693,7 +773,7 @@
                         if (data.status == true) {
                             if (data.url == "Manage") {
                                 //alert('d');
-                                GetProductvariationID(id);
+                                //GetProductvariationID(id);
                                 swal('Success!', data.message, 'success');
                                 ActivityLog('save attribute for product id(' + id + ')', '/Product/AddNewProduct/' + id + '');
                             }
@@ -718,10 +798,57 @@
             } else {
                 return false;
             }
-        }
-        else { alert("Fields cannot be empty.") }
+        //}
+        //else { alert("Fields cannot be empty.") }
 
     });
+ 
+    //function convertArrayToSerializedPHP(jsonArray) {
+    //    var phpArray = {};
+    //    for (var i = 0; i < jsonArray.length; i++) {
+    //        var obj = jsonArray[i];
+    //        var nameLength = obj.name.length;
+    //        var innerArray = {};
+
+    //        for (var prop in obj) {
+    //            if (obj.hasOwnProperty(prop) && typeof obj[prop] !== "object") {
+    //                // For non-object properties, add them to the innerArray
+    //                innerArray[prop] = "s:" + prop.length + ":\"" + prop + "\";s:" + obj[prop].toString().length + ":\"" + obj[prop] + "\";";
+    //            }
+    //        }
+    //        phpArray["s:" + nameLength + ":\"" + obj.name + "\";"] = "s:" + nameLength + ":\"" + obj.name + "\";" + "a:" + (Object.keys(innerArray).length + 1) + ":{" + Object.values(innerArray).join("") + "}";
+    //    }
+    //    return "a:" + Object.keys(phpArray).length + ":{" + Object.values(phpArray).join("") + "}";
+    //}
+
+
+    function convertArrayToSerializedPHP(jsonArray) {
+        var phpArray = {};
+        for (var i = 0; i < jsonArray.length; i++) {
+            var obj = jsonArray[i];
+            var nameLength = obj.name.length;
+            var innerArray = {};
+
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop) && typeof obj[prop] !== "object") {
+                    // For non-object properties, convert certain properties to integer
+                    if (prop === "is_visible" || prop === "is_taxonomy" || prop === "is_variation") {
+                         innerArray[prop] = "s:" + prop.length + ":\"" + prop + "\";i:" + ((obj[prop] === true || obj[prop] === 1) ? 1 : 0) + ";";
+                     }
+                    else if (prop === "position") {                       
+                         innerArray[prop] = "s:" + prop.length + ":\"" + prop + "\";i:" + obj[prop]  + ";";
+                     }
+                    else {
+                        innerArray[prop] = "s:" + prop.length + ":\"" + prop + "\";s:" + obj[prop].toString().length + ":\"" + obj[prop] + "\";";
+                    }
+                }
+            }
+
+            phpArray["s:" + nameLength + ":\"" + obj.name + "\";"] = "s:" + nameLength + ":\"" + obj.name + "\";" + "a:" + (Object.keys(innerArray).length + 1) + ":{" + Object.values(innerArray).join("") + "}";
+        }
+
+        return "a:" + Object.keys(phpArray).length + ":{" + Object.values(phpArray).join("") + "}";
+    }
 
 
     //$(document).on('click', "#virtualcheck", function () {
@@ -1186,7 +1313,7 @@ function GetDataByID(order_id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
-            data = JSON.parse(data); console.log(data)
+            data = JSON.parse(data); //console.log(data)
             $("#txtProductName").val(data.post_title);
             $("#hftitle").val(data.post_title);
             $("#formatcustom").val(data.post_content);
@@ -1367,7 +1494,7 @@ function GetExProdctByID(ProdctID) {
 function GetAttributesID(Attributes) {
     //console.log(Attributes);
     $.each(Attributes, function (i, v) {
-        let _tr = `<div id="row_${i}" class="box box-primary" data-taxonomy="${v.taxonomy_name}">`;
+        let _tr = `<div id="row_${i}" class="box box-primary" data-position="${v.position}" data-istaxonomy="${v.is_taxonomy}" data-taxonomy="${v.taxonomy_name}">`;
         _tr += `    <div class="box-header with-border"><h3 class="panel-title" id="heading_${i}" ><a data-toggle="collapse" data-parent="#accordion" href="#collapse_${i}" aria-expanded="false" class="collapsed">${v.display_name}</a></h2><div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="${i}"><i class="fa fa-trash text-red"></i></button></div></div>`;
         _tr += `    <div id="collapse_${i}" class="panel-collapse collapse in" aria-labelledby="heading_${i}" data-bs-parent="#tbhold">`;
         _tr += '        <div class="box-body">';
@@ -1449,147 +1576,42 @@ function GetProductvariationID(ProductID) {
         data: JSON.stringify(obj),
         success: function (data) {
             data = JSON.parse(data);
-            console.log(data);
+            //console.log(data);
 
-            //var variationAttributes = data[0].attributes.filter(function (attribute) {
-            //    return attribute.is_variation === 1;
-            //});
+            if (data.length > 0) {
+                //var variationAttributes = data[0].attributes.filter(function (attribute) {
+                //    return attribute.is_variation === 1;
+                //});
 
-            //// Loop through each variation attribute
-            //variationAttributes.forEach(function (attribute) {
-            //    console.log(attribute);
-                
-            //    var selectHTML = '<select  class="inputddl">';
-            //    selectHTML += '<option value="">' + 'No default ' +attribute.display_name + '</option>';
-            //    // Loop through options for the current attribute
-            //    attribute.option.forEach(function (option) {
-            //        // Create an option element for each option                
-            //        selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-            //    });
+                //// Loop through each variation attribute
+                //variationAttributes.forEach(function (attribute) {
+                //    console.log(attribute);
 
-            //    // Close the select element
-            //    selectHTML += '</select>';
+                //    var selectHTML = '<select  class="inputddl">';
+                //    selectHTML += '<option value="">' + 'No default ' +attribute.display_name + '</option>';
+                //    // Loop through options for the current attribute
+                //    attribute.option.forEach(function (option) {
+                //        // Create an option element for each option                
+                //        selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                //    });
 
-            //    // Append the select element to the product_variations div
-            //    $("#product_variations").append(selectHTML);
-            //});
+                //    // Close the select element
+                //    selectHTML += '</select>';
+
+                //    // Append the select element to the product_variations div
+                //    $("#product_variations").append(selectHTML);
+                //});
                 var variationAttributes = data[0].attributes.filter(function (attribute) {
                     return attribute.is_variation === 1;
                 });
 
-            // Loop through each variation attribute
-            variationAttributes.forEach(function (attribute) {
-                console.log(attribute);
-
-                var selectHTML = '<select class="inputddl">';
-                selectHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
-
-                // Check if the options are provided as a string or an array
-                if (typeof attribute.option === 'string') {
-                    // Split the string into an array using the pipe (|) as the delimiter
-                    var optionsArray = attribute.option.split('|');
-
-                    // Trim each option to remove leading and trailing whitespaces
-                    optionsArray = optionsArray.map(function (option) {
-                        return option.trim();
-                    });
-
-                    // Loop through the options and create option elements
-                    optionsArray.forEach(function (option) {
-                        selectHTML += '<option value="' + option + '">' + option + '</option>';
-                    });
-                } else if (Array.isArray(attribute.option)) {
-                    // Loop through options for the current attribute
-                    attribute.option.forEach(function (option) {
-                        // Create an option element for each option
-                        selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-                    });
-                }
-
-                // Close the select element
-                selectHTML += '</select>';
-
-                // Append the select element to the product_variations div
-                $("#product_variations").append(selectHTML);
-            });
-            let varHTML = '', attHTML = '';
-            for (let i = 0; i < data.length; i++) {
-                let v_data = JSON.parse(data[i].meta_data);
-                console.log('6666',v_data);
-                let allowwebsite = '';
-                if (v_data['_allowwebsite'] != "" && v_data['_allowwebsite'] != undefined)
-                    allowwebsite = v_data['_allowwebsite']; 
-                let sku = '';                
-                if (v_data['_sku'] != undefined)
-                    sku = v_data['_sku'];
-                else
-                    sku = 0;                 
-                let stock = '';
-                if (v_data['_stock'] != undefined)
-                    stock = v_data['_stock'];
-                else
-                    stock = 0;
-                let weight = '';
-                if (v_data['_weight'] != undefined)
-                    weight = v_data['_weight'];
-                else
-                    weight = 0;
-                let sale_price = '';
-                if (v_data['_sale_price'] != undefined)
-                    sale_price = v_data['_sale_price'];
-                else
-                    sale_price = 0;
-
-                let length = '';
-                if (v_data['_length'] != undefined)
-                    length = v_data['_length'];
-                else
-                    length = 0;
-                let width = '';
-                if (v_data['_width'] != undefined)
-                    width = v_data['_width'];
-                else
-                    width = 0;
-
-                let height = '';
-                if (v_data['_height'] != undefined)
-                    height = v_data['_height'];
-                else
-                    height = 0;
-
-                varHTML = '<div class="form-group d-flex" id="tr_' + i + '" data-vid="' + data[i].id + '">';
-                varHTML += '<div class="col-sm-12">';
-                //header
-                varHTML += '<div class="box-header with-border user-top-section top-with-select">';
-                varHTML += '<div class="tablenav top tablenav-top2">';
-                varHTML += '<input type="text" style="background-color: #EBEBE4" readonly class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
-
-                varHTML += '<div class="alignleft actions bulkactions">';
-                varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
-                //console.log(v_data);
-                var vAttributes = data[i].attributes.filter(function (attribute) {
-                    return attribute.is_variation === 1;
-                });
-                //let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
-               
+                // Loop through each variation attribute
                 variationAttributes.forEach(function (attribute) {
-                    //varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
-                    //varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
-                    //// Loop through options for the current attribute
-                    //attribute.option.forEach(function (option) {
-                    //    // Create an option element for each option                
-                    //    varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-                    //});
+                    // console.log(attribute);
 
-                    // Close the select element
-                  
+                    var selectHTML = '<select class="inputddl">';
+                    selectHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
 
-                    varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
-                   varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
-                    let formattedString = attribute.display_name.trim().replace(/ /g, '-').toLowerCase();
-                    let sel_val = v_data['attribute_' + formattedString];
-                    console.log('displaynm',attribute.display_name);
-                    console.log(sel_val);
                     // Check if the options are provided as a string or an array
                     if (typeof attribute.option === 'string') {
                         // Split the string into an array using the pipe (|) as the delimiter
@@ -1602,157 +1624,263 @@ function GetProductvariationID(ProductID) {
 
                         // Loop through the options and create option elements
                         optionsArray.forEach(function (option) {
-                            console.log('9898', option);
-                            //varHTML += '<option value="' + option + '">' + option + '</option>';
-                            varHTML += '<option value="' + option + '" ' + (sel_val === option ? 'selected' : '') + '>' + option + '</option>';
-
+                            selectHTML += '<option value="' + option + '">' + option + '</option>';
                         });
                     } else if (Array.isArray(attribute.option)) {
                         // Loop through options for the current attribute
                         attribute.option.forEach(function (option) {
                             // Create an option element for each option
-                           // varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-                            varHTML += '<option value="' + option.term_id + '" ' + (sel_val === option.term_id ? 'selected' : '') + '>' + option.name + '</option>';
-
+                            selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
                         });
                     }
 
                     // Close the select element
-                    varHTML += '</select></tr>';
- 
+                    selectHTML += '</select>';
+
+                    // Append the select element to the product_variations div
+                    $("#product_variations").append(selectHTML);
                 });
-
-                //$.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
-                //    let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
-                //    varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
-                //    for (let j = 0; j < _values.length; j++) {
-                //        varHTML += '<option value="' + _values[j].trim() + '" ' + (sel_val == _values[j].trim() ? 'selected' : '') + '> ' + _values[j].trim() + '</option>';
-                //    }
-                //    varHTML += '</select></tr>';
-                //});
-                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" style="background-color: #EBEBE4" readonly type="text" class="skucval" value="' + sku + '">'
-                varHTML += '</tbody></table>';
-                varHTML += '</div>';
-                varHTML += '<div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span></div>';
-                varHTML += '</div>';
-                varHTML += '</div >';                
-                varHTML += '<div class="varient-box">';
-                varHTML += '<div class="form-group d-flex">';
-                varHTML += '<div class="col-md-6"></div><div class="col-md-6"></div>';
-                varHTML += '</div>';               
-                varHTML += '<div>';
-                varHTML += '<div class="form-group d-flex">';
-                varHTML += '<div class="col-sm-3">';
-                varHTML += '<label class="control-label">Product Image</label>';
-                varHTML += '</div>';
-                varHTML += '<div class="col-sm-3">';
-                varHTML += '</div>';
-                varHTML += '</div>';
-                varHTML += '<div class="form-group d-flex profile-flex col-12">';
-                varHTML += '<div class="col">';
-                varHTML += '<div class="add-profile">';
-                varHTML += '<span class="edit-pic-profile">';
-                varHTML += '<input type="file" onchange="readURLvarition(this,' + data[i].id + ');" name="ImageFileVariation" id="ImageFileVariation_' + data[i].id + '" class="inputfile" />';
-                varHTML += '<label for="ImageFileVariation_' + data[i].id + '"><i class="fa fa-edit"></i>Edit</label>';
-                varHTML += '</span>';
-                varHTML += '<img runat="server" id="show_pictureVar_' + data[i].id + '" class="profile-user-img img-responsive img-circle" src="../../Content/Product/default.png" alt="Product Thumbnails">';
-                varHTML += '</div>';
-                varHTML += '</div>';
-                varHTML += '<div class="col">';
-                // varHTML += '<button type="button" id="btnproductVariation_' + data[i].id + '" onchange="UpdateImagevarition(this,' + data[i].id +');" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="control-label">Upload</button>';
-                varHTML += '<a href="javascript:void(0);" title="Click here to upload" data-toggle="tooltip" class="editbutton btn btn-danger" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
-                varHTML += '</div>';
-                varHTML += '</div>';
-
-                
-                varHTML += '<div class="form-group d-flex mt-25">';
-                varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control rowCalulate" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
-                varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control rowCalulate" value="' + sale_price + '"></div>';
-                varHTML += '</div>';
-                varHTML += '<div id="divmargin">';
-                varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-4"><label class="control-label">Retail Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].regularMargin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].regularmarginpersantage.toFixed(2) + '"></div><div class="col-md-4"><label class="control-label">Sale Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].Margin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].marginpersantage.toFixed(2) + '"></div>';
-                varHTML += '</div>';
-                varHTML += '<div id="divstock">';
-                varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
-                varHTML += '</div>    <div id="divaria">';
-                varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="Weight (lbs)" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="L" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="W" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="H" value="' + height + '"></div></div></div></div>';
-                varHTML += '</div>';
-                varHTML += '    <div class="form-group d-flex">';
-                 varHTML += '        <div class="col-md-6"><label class="control-label">Shipping Class</label>';
-                varHTML += '<select class="txtshipvariation form-control select2" id="ddlsv_' + data[i].id + '"><option value="-1">Select shipping class</option>';
-                for (var j = 0; j < _shipping_class.length; j++) {
-                    if (data[i].shippingclass == _shipping_class[j].rowid)
-                        varHTML += '<option value="' + _shipping_class[j].rowid + '" selected> ' + _shipping_class[j].name + '</option>';
+                let varHTML = '', attHTML = '';
+                for (let i = 0; i < data.length; i++) {
+                    let v_data = JSON.parse(data[i].meta_data);
+                    //console.log('6666',v_data);
+                    let allowwebsite = '';
+                    if (v_data['_allowwebsite'] != "" && v_data['_allowwebsite'] != undefined)
+                        allowwebsite = v_data['_allowwebsite'];
+                    let sku = '';
+                    if (v_data['_sku'] != undefined)
+                        sku = v_data['_sku'];
                     else
-                        varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
-                };
-                varHTML += '</select></div> ';
-                //varHTML += '        <div class="col-md-6"><label class="control-label">Product Type</label>';
-                //varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Product Type</option>';
-                //for (var j = 0; j < _producttype.length; j++) {
-                //    if (v_data['_product_type_id'] == _producttype[j].rowid)
-                //        varHTML += '<option value="' + _producttype[j].rowid + '" selected> ' + _producttype[j].name + '</option>';
-                //    else
-                //        varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
-                //};
-                //varHTML += '</select></div> ';
-                varHTML += '        <div class="col-md-8"><label class="control-label">Stock status</label>';
-                varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Stock status</option>';
-                //for (var j = 0; j < _producttype.length; j++) {
-                //    if (v_data['_product_type_id'] == _producttype[j].rowid)
-                varHTML += '<option value="instock" selected="selected">In stock</option>';
-                varHTML += '<option value="outofstock">Out of stock</option>';
-                varHTML += '<option value="onbackorder">On backorder</option>';
-                   // else
-                        //varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
-                //};
-                varHTML += '</select></div> ';
-                varHTML += '    </div>';
-                varHTML += '    <div class="form-group d-flex">';
-                varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control" id="ddlcsv_' + data[i].id + '"><option value="standard">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div>';
-                varHTML += '    </div>';
-                varHTML += '    <div class="form-group d-flex">';
-                varHTML += '        <div class="col-md-12">';
-                varHTML += '            <label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label>';
-                varHTML += '        </div>';
-                varHTML += '    </div>';
-                varHTML += '    <div class="form-group d-flex">';
-                varHTML += '        <div class="col-md-12"><label class="control-label">Description</label><textarea  class="txtdescriptionvariation form-control">' + v_data['_variation_description'] + '</textarea></div>';
-                varHTML += '    </div>';
-                varHTML += '<div class="form-group d-flex allow-website">';
-                varHTML += '    <div class="col-md-12">';
-                varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label> &nbsp; Allow on website.</label></div>';
-                varHTML += '    </div>';
-                varHTML += '</div>';
-                varHTML += '    <div class="box-footer text-right"></div>';
-                varHTML += '</div>';
-                //end-body
-                varHTML += '</div>';
-                varHTML += '</div>';
-                $("#product_variations").append(varHTML);
-                $(".select2").select2();
-                $("#ddlcsv_" + data[i].id).val(v_data['_tax_class']).trigger('change');
-                $("#ddlallow_" + data[i].id).val(v_data['_backorders']).trigger('change');
+                        sku = 0;
+                    let stock = '';
+                    if (v_data['_stock'] != undefined)
+                        stock = v_data['_stock'];
+                    else
+                        stock = 0;
+                    let weight = '';
+                    if (v_data['_weight'] != undefined)
+                        weight = v_data['_weight'];
+                    else
+                        weight = 0;
+                    let sale_price = '';
+                    if (v_data['_sale_price'] != undefined)
+                        sale_price = v_data['_sale_price'];
+                    else
+                        sale_price = 0;
 
-                // console.log(allowwebsite);
-                if (allowwebsite == 'True')
-                    $("#allowwebsite_" + data[i].id).prop("checked", true);
-                else
-                    $("#allowwebsite_" + data[i].id).prop("checked", false);  
-                var path = data[i].image;
-                url = "../../Content/Product/" + path + "";
-                if (path != null) {
-                    $('#show_pictureVar_' + data[i].id + '').attr('src', url);
+                    let length = '';
+                    if (v_data['_length'] != undefined)
+                        length = v_data['_length'];
+                    else
+                        length = 0;
+                    let width = '';
+                    if (v_data['_width'] != undefined)
+                        width = v_data['_width'];
+                    else
+                        width = 0;
+
+                    let height = '';
+                    if (v_data['_height'] != undefined)
+                        height = v_data['_height'];
+                    else
+                        height = 0;
+
+                    varHTML = '<div class="form-group d-flex" id="tr_' + i + '" data-vid="' + data[i].id + '">';
+                    varHTML += '<div class="col-sm-12">';
+                    //header
+                    varHTML += '<div class="box-header with-border user-top-section top-with-select">';
+                    varHTML += '<div class="tablenav top tablenav-top2">';
+                    varHTML += '<input type="text" style="background-color: #EBEBE4" readonly class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
+
+                    varHTML += '<div class="alignleft actions bulkactions">';
+                    varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
+                    //console.log(v_data);
+                    var vAttributes = data[i].attributes.filter(function (attribute) {
+                        return attribute.is_variation === 1;
+                    });
+                    //let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
+
+                    variationAttributes.forEach(function (attribute) {
+                        //varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
+                        //varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
+                        //// Loop through options for the current attribute
+                        //attribute.option.forEach(function (option) {
+                        //    // Create an option element for each option                
+                        //    varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                        //});
+
+                        // Close the select element
+
+
+                        varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
+                        varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
+                        let formattedString = attribute.display_name.trim().replace(/ /g, '-').toLowerCase();
+                        let sel_val = v_data['attribute_' + formattedString];
+                       // console.log('displaynm', attribute.display_name);
+                        // console.log(sel_val);
+                        // Check if the options are provided as a string or an array
+                        if (typeof attribute.option === 'string') {
+                            // Split the string into an array using the pipe (|) as the delimiter
+                            var optionsArray = attribute.option.split('|');
+
+                            // Trim each option to remove leading and trailing whitespaces
+                            optionsArray = optionsArray.map(function (option) {
+                                return option.trim();
+                            });
+
+                            // Loop through the options and create option elements
+                            optionsArray.forEach(function (option) {
+                                //console.log('9898', option);
+                                //varHTML += '<option value="' + option + '">' + option + '</option>';
+                                varHTML += '<option value="' + option + '" ' + (sel_val === option ? 'selected' : '') + '>' + option + '</option>';
+
+                            });
+                        } else if (Array.isArray(attribute.option)) {
+                            // Loop through options for the current attribute
+                            attribute.option.forEach(function (option) {
+                                // Create an option element for each option
+                                // varHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                                varHTML += '<option value="' + option.term_id + '" ' + (sel_val === option.term_id ? 'selected' : '') + '>' + option.name + '</option>';
+
+                            });
+                        }
+
+                        // Close the select element
+                        varHTML += '</select></tr>';
+
+                    });
+
+                    //$.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
+                    //    let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
+                    //    varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
+                    //    for (let j = 0; j < _values.length; j++) {
+                    //        varHTML += '<option value="' + _values[j].trim() + '" ' + (sel_val == _values[j].trim() ? 'selected' : '') + '> ' + _values[j].trim() + '</option>';
+                    //    }
+                    //    varHTML += '</select></tr>';
+                    //});
+                    varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" style="background-color: #EBEBE4" readonly type="text" class="skucval" value="' + sku + '">'
+                    varHTML += '</tbody></table>';
+                    varHTML += '</div>';
+                    varHTML += '<div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span></div>';
+                    varHTML += '</div>';
+                    varHTML += '</div >';
+                    varHTML += '<div class="varient-box">';
+                    varHTML += '<div class="form-group d-flex">';
+                    varHTML += '<div class="col-md-6"></div><div class="col-md-6"></div>';
+                    varHTML += '</div>';
+                    varHTML += '<div>';
+                    varHTML += '<div class="form-group d-flex">';
+                    varHTML += '<div class="col-sm-3">';
+                    varHTML += '<label class="control-label">Product Image</label>';
+                    varHTML += '</div>';
+                    varHTML += '<div class="col-sm-3">';
+                    varHTML += '</div>';
+                    varHTML += '</div>';
+                    varHTML += '<div class="form-group d-flex profile-flex col-12">';
+                    varHTML += '<div class="col">';
+                    varHTML += '<div class="add-profile">';
+                    varHTML += '<span class="edit-pic-profile">';
+                    varHTML += '<input type="file" onchange="readURLvarition(this,' + data[i].id + ');" name="ImageFileVariation" id="ImageFileVariation_' + data[i].id + '" class="inputfile" />';
+                    varHTML += '<label for="ImageFileVariation_' + data[i].id + '"><i class="fa fa-edit"></i>Edit</label>';
+                    varHTML += '</span>';
+                    varHTML += '<img runat="server" id="show_pictureVar_' + data[i].id + '" class="profile-user-img img-responsive img-circle" src="../../Content/Product/default.png" alt="Product Thumbnails">';
+                    varHTML += '</div>';
+                    varHTML += '</div>';
+                    varHTML += '<div class="col">';
+                    // varHTML += '<button type="button" id="btnproductVariation_' + data[i].id + '" onchange="UpdateImagevarition(this,' + data[i].id +');" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="control-label">Upload</button>';
+                    varHTML += '<a href="javascript:void(0);" title="Click here to upload" data-toggle="tooltip" class="editbutton btn btn-danger" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
+                    varHTML += '</div>';
+                    varHTML += '</div>';
+
+
+                    varHTML += '<div class="form-group d-flex mt-25">';
+                    varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control rowCalulate" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
+                    varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control rowCalulate" value="' + sale_price + '"></div>';
+                    varHTML += '</div>';
+                    varHTML += '<div id="divmargin">';
+                    varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-4"><label class="control-label">Retail Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].regularMargin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].regularmarginpersantage.toFixed(2) + '"></div><div class="col-md-4"><label class="control-label">Sale Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].Margin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].marginpersantage.toFixed(2) + '"></div>';
+                    varHTML += '</div>';
+                    varHTML += '<div id="divstock">';
+                    varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                    varHTML += '</div>    <div id="divaria">';
+                    varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="Weight (lbs)" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="L" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="W" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="H" value="' + height + '"></div></div></div></div>';
+                    varHTML += '</div>';
+                    varHTML += '    <div class="form-group d-flex">';
+                    varHTML += '        <div class="col-md-6"><label class="control-label">Shipping Class</label>';
+                    varHTML += '<select class="txtshipvariation form-control select2" id="ddlsv_' + data[i].id + '"><option value="-1">Select shipping class</option>';
+                    for (var j = 0; j < _shipping_class.length; j++) {
+                        if (data[i].shippingclass == _shipping_class[j].rowid)
+                            varHTML += '<option value="' + _shipping_class[j].rowid + '" selected> ' + _shipping_class[j].name + '</option>';
+                        else
+                            varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
+                    };
+                    varHTML += '</select></div> ';
+                    //varHTML += '        <div class="col-md-6"><label class="control-label">Product Type</label>';
+                    //varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Product Type</option>';
+                    //for (var j = 0; j < _producttype.length; j++) {
+                    //    if (v_data['_product_type_id'] == _producttype[j].rowid)
+                    //        varHTML += '<option value="' + _producttype[j].rowid + '" selected> ' + _producttype[j].name + '</option>';
+                    //    else
+                    //        varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
+                    //};
+                    //varHTML += '</select></div> ';
+                    varHTML += '        <div class="col-md-8"><label class="control-label">Stock status</label>';
+                    varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Stock status</option>';
+                    //for (var j = 0; j < _producttype.length; j++) {
+                    //    if (v_data['_product_type_id'] == _producttype[j].rowid)
+                    varHTML += '<option value="instock" selected="selected">In stock</option>';
+                    varHTML += '<option value="outofstock">Out of stock</option>';
+                    varHTML += '<option value="onbackorder">On backorder</option>';
+                    // else
+                    //varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
+                    //};
+                    varHTML += '</select></div> ';
+                    varHTML += '    </div>';
+                    varHTML += '    <div class="form-group d-flex">';
+                    varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control" id="ddlcsv_' + data[i].id + '"><option value="standard">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div>';
+                    varHTML += '    </div>';
+                    varHTML += '    <div class="form-group d-flex">';
+                    varHTML += '        <div class="col-md-12">';
+                    varHTML += '            <label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label>';
+                    varHTML += '        </div>';
+                    varHTML += '    </div>';
+                    varHTML += '    <div class="form-group d-flex">';
+                    varHTML += '        <div class="col-md-12"><label class="control-label">Description</label><textarea  class="txtdescriptionvariation form-control">' + v_data['_variation_description'] + '</textarea></div>';
+                    varHTML += '    </div>';
+                    varHTML += '<div class="form-group d-flex allow-website">';
+                    varHTML += '    <div class="col-md-12">';
+                    varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label> &nbsp; Allow on website.</label></div>';
+                    varHTML += '    </div>';
+                    varHTML += '</div>';
+                    varHTML += '    <div class="box-footer text-right"></div>';
+                    varHTML += '</div>';
+                    //end-body
+                    varHTML += '</div>';
+                    varHTML += '</div>';
+                    $("#product_variations").append(varHTML);
+                    $(".select2").select2();
+                    $("#ddlcsv_" + data[i].id).val(v_data['_tax_class']).trigger('change');
+                    $("#ddlallow_" + data[i].id).val(v_data['_backorders']).trigger('change');
+
+                    // console.log(allowwebsite);
+                    if (allowwebsite == 'True')
+                        $("#allowwebsite_" + data[i].id).prop("checked", true);
+                    else
+                        $("#allowwebsite_" + data[i].id).prop("checked", false);
+                    var path = data[i].image;
+                    url = "../../Content/Product/" + path + "";
+                    if (path != null) {
+                        $('#show_pictureVar_' + data[i].id + '').attr('src', url);
+                    }
+                    else if (path == null || path == "") {
+                        $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
+                    }
+                    else {
+                        $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
+                    }
                 }
-                else if (path == null || path == "") {
-                    $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
-                }
-                else {
-                    $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
-                } 
+
             }
-
-
 
         },
         error: function (msg) { alert(msg); },

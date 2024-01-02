@@ -21,7 +21,7 @@
                     company_id > 0 ? new SqlParameter("@company_id",company_id) : new SqlParameter("@company_id",DBNull.Value),
                     id > 0 ? new SqlParameter("@id",id) : new SqlParameter("@id",DBNull.Value),
                     new SqlParameter("@user_id",user_id),
-                    new SqlParameter("@json_data",json_data)
+                    ! string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data",json_data) : new SqlParameter("@json_data",DBNull.Value)
                 };
                 str = SQLHelper.ExecuteReaderReturnJSON("qfk_flows_search", parameters).ToString();
             }

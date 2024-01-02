@@ -33,7 +33,7 @@
                     }
                 },
                 { data: 'metric_key', title: 'Metric Key', sWidth: "30%" },
-                { data: 'integration', title: 'Integration', sWidth: "20%" },
+                { data: 'integration_key', title: 'Integration', sWidth: "20%" },
                 //{ data: 'created', title: 'Metric created', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
                 //{ data: 'updated', title: 'Metric updated', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
                 //{ data: 'location', title: 'Location', sWidth: "20%", orderable: false },

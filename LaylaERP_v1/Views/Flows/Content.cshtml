@@ -1,14 +1,10 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Content";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
-    //LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.user_id, user.company_id, ViewBag.id, string.Empty));
-    //LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
 
     LaylaERP.Models.qfk.Flows.ActionMessage o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Flows.ActionMessage>(LaylaERP.BAL.qfk.FlowsRepository.FlowAdd("get-content", user.login_company_id, ViewBag.id, user.UserID, string.Empty));
 }
-
 <div id="root">
     <!-- start page title -->
     <div class="row border-bottom">
@@ -52,11 +48,15 @@
                             {
                                 if (o.content_type.Equals("text"))
                                 {
-                                    <a class="btn btn-outline-dark" href="@Url.Action("rich-text-editor", "campaigns", new { id = ViewBag.id })">Edit Email</a>
+                                    <a class="btn btn-outline-dark" href="@Url.Action("rich-text-editor", "flows", new { id = o.content_id })">Edit Email</a>
                                 }
                                 else if (o.content_type.Equals("html"))
                                 {
-                                    <a class="btn btn-outline-dark" href="@Url.Action("html-editor", "campaigns", new { id = ViewBag.id })">Edit Email</a>
+                                    <a class="btn btn-outline-dark" href="@Url.Action("html-editor", "flows", new { id =  o.content_id })">Edit Email</a>
+                                }
+                                else if (o.content_type.Equals("email"))
+                                {
+                                    <a class="btn btn-outline-dark" href="@Url.Action("email-template-editor", "flows", new { id =  o.content_id })">Edit Email</a>
                                 }
                                 else
                                 {
@@ -178,12 +178,12 @@
 <footer class="footer" style="position: fixed; padding: 12px calc(24px * .75); ">
     @if (o.content_id > 0)
     {
-        <a class="btn btn-outline-dark" href="~/campaigns/create/o.campaign_id">Back</a>
+        <a class="btn btn-outline-dark" href="~/flows/@o.metadata.flow_id/edit">Back</a>
         <button id="save-content" class="btn btn-primary float-end">Continue to Review</button>
     }
     else
     {
-        <a class="btn btn-outline-dark" href="~/campaigns/create">Back</a>
+        <a class="btn btn-outline-dark" href="~/flows/@o.metadata.flow_id/edit">Back</a>
     }
 </footer>
 <script src="~/js/qfk/common.js"></script>

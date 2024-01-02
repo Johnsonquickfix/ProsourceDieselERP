@@ -48,7 +48,33 @@
             catch { throw; }
             return dt;
         }
+        public static int FlowContentData_Save(long id, long user_id, string html_data, string json_data)
+        {
+            int i = 0;
+            try
+            {
+                //SqlParameter[] parameters =
+                //{
+                //    new SqlParameter("@flag", flag),
+                //    company_id > 0 ? new SqlParameter("@company_id",company_id) : new SqlParameter("@company_id",DBNull.Value),
+                //    id > 0 ? new SqlParameter("@id",id) : new SqlParameter("@id",DBNull.Value),
+                //    new SqlParameter("@user_id",user_id),
+                //    ! string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data",json_data) : new SqlParameter("@json_data",DBNull.Value)
+                //};
+                //str = SQLHelper.ExecuteReaderReturnJSON("qfk_flows_search", parameters).ToString();
 
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id",id),
+                    new SqlParameter("@user_id",user_id),
+                    ! string.IsNullOrEmpty(html_data) ? new SqlParameter("@data_html",html_data) : new SqlParameter("@data_html",DBNull.Value),
+                    ! string.IsNullOrEmpty(json_data) ? new SqlParameter("@data_json",json_data) : new SqlParameter("@data_json",DBNull.Value)
+                };
+                i = SQLHelper.ExecuteNonQuery("Update qfk_flow_path_action_content set data_html = @data_html,data_json = @data_json where content_id = @id", parameters);
+            }
+            catch { throw; }
+            return i;
+        }
 
     }
 }

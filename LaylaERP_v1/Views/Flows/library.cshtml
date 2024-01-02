@@ -1,11 +1,14 @@
-﻿
+﻿@using System.Data;
 @{
     ViewBag.Title = "library";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
-    LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
+    LaylaERP.Models.qfk.Flows.ActionMessage o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Flows.ActionMessage>(LaylaERP.BAL.qfk.FlowsRepository.FlowAdd("get-content", user.login_company_id, ViewBag.id, user.UserID, string.Empty));
+
+    DataTable dt = LaylaERP.BAL.qfk.EmailTemplatesRepository.TemplatesList(0, string.Empty, 0, 100, "name", "asc", "lists");
+    DataTable dt1 = LaylaERP.BAL.qfk.EmailTemplatesRepository.TemplatesList(user.login_company_id, string.Empty, 0, 100, "name", "asc", "lists");
 }
-<link href="~/Content/Site.css" rel="stylesheet" />
+@*<link href="~/Content/Site.css" rel="stylesheet" />*@
 <!-- DataTables -->
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -18,8 +21,9 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <div>
                 <ol class="breadcrumb m-0 font-size-18">
-                    <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
-                    <li class="breadcrumb-item">Edit @o.campaign_name</li>
+                    <li class="breadcrumb-item"><a href="/flows/@o.metadata.flow_id/edit">@o.metadata.flow_name</a></li>
+                    <li class="breadcrumb-item"><a href="/flows/@o.content_id/content">@o.name</a></li>
+                    <li class="breadcrumb-item">Library</li>
                 </ol>
             </div>
             <div class="page-title-right">
@@ -33,15 +37,85 @@
                     <h3>Templates</h3>
                 </div>
                 <div class="page-title-right">
-                    <a href="~/campaigns/@ViewBag.id/content"><i class="fas fa-arrow-left me-2"></i>Back to content overview</a>
+                    <button id="create-content" class="btn btn-outline-dark float-end">Create blank email</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="card">
+    <div class="card mt-4">
+        <div class="card-header bg-transparent border-bottom">
+            <div class="d-flex flex-wrap align-items-start">
+                <ul class="nav nav-tabs nav-tabs-custom card-header-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#template-library" role="tab" aria-selected="true">
+                            Template library
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#template-saved" role="tab" aria-selected="false" tabindex="-1">
+                            Saved templates
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div class="card-body">
-            <table id="datatable" class="table dt-responsive w-100 align-middle">
-            </table>
+            <div class="tab-content">
+                <div class="tab-pane active" id="template-library" role="tabpanel">
+                    <ul class="facets-list d-flex align-content-end flex-wrap">
+                        @foreach (DataRow dr in dt.Rows)
+                        {
+                            <li class="col-xl-3 col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="product-img text-center">
+                                            @if (dr["thumbnail_url"] != DBNull.Value)
+                                            {
+                                                <img src="@dr["thumbnail_url"].ToString()" alt="@dr["name"].ToString()" class="img-fluid mx-auto" style="max-height: 200px;">
+                                            }
+                                            else
+                                            {
+                                                <img src="/content/images/logo.png" alt="@dr["name"].ToString()" class="img-fluid mx-auto" style="max-height: 200px;">
+                                            }
+                                        </div>
+                                        <div class="mt-4 text-center">
+                                            <h5 class="mb-3 text-truncate"><a href="javascript: void(0);" class="text-dark">@dr["name"].ToString()</a></h5>
+                                            <a href="~/flows/@o.content_id/create-template/@dr["template_id"].ToString()" class="btn btn-primary">Use template</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="tab-pane" id="template-saved" role="tabpanel">
+                    <ul class="facets-list d-flex align-content-end flex-wrap">
+                        @foreach (DataRow dr in dt1.Rows)
+                        {
+                            <li class="col-xl-3 col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="product-img text-center">
+                                            @if (dr["thumbnail_url"] != DBNull.Value)
+                                            {
+                                                <img src="@dr["thumbnail_url"].ToString()" alt="@dr["name"].ToString()" class="img-fluid mx-auto" style="max-height: 200px;">
+                                            }
+                                            else
+                                            {
+                                                <img src="/content/images/logo.png" alt="@dr["name"].ToString()" class="img-fluid mx-auto" style="max-height: 200px;">
+                                            }
+                                        </div>
+                                        <div class="mt-4 text-center">
+                                            <h5 class="mb-3 text-truncate"><a href="javascript: void(0);" class="text-dark">@dr["name"].ToString()</a></h5>
+                                            <a href="~/flows/@o.content_id/create-template/@dr["template_id"].ToString()" class="btn btn-primary">Use template</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -64,33 +138,68 @@
     </div><!-- /.modal-dialog -->
 </div>
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
-@*<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>*@
-<script>
-    document.querySelector("#use_template").addEventListener("click", (evt) => {
-        evt.preventDefault(), evt.stopPropagation();
-        let _i = parseInt($('#use_template').data('id')) || 0;
-        updateContent(_i);
-    });
-    function updateContent(temp_id) {
-        let j = { campaign_id: @ViewBag.id, action: 'template', content: { content_type: 'email', template_id: temp_id } };
-        const iframe = document.getElementById("preview");
-        //j.contentdata = { data_html: iframe.srcdoc };
-        //console.log(j); return;
-        if (j.campaign_id === 0) { swal('Error!', 'Invalid campaign.', 'error').then(function () { swal.close(); }); return false; }
-        else {
-            var requestOptions = {
-                method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(j)
-            };
-            fetch('/api/campaigns', requestOptions).then(response => response.json())
-                .then(result => {
-                    if (result.status > 0) window.location = window.location.origin + `/campaigns/${result.id}/content`;
-                    else  swal('Info!', result.response, 'info');
-                }).catch(error => { swal('Error!', error, 'error'); } );
+<script src="~/js/qfk/common.js"></script>
+<script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
+    var e = e || document;
+    e.addEventListener("DOMContentLoaded", function () {
+        e.querySelector("#use_template").addEventListener("click", (evt) => {
+            evt.preventDefault(), evt.stopPropagation();
+            let _i = parseInt(evt.target.getAttribute('data-id')) || 0;
+            updateContent(_i);
+        });
+        e.querySelector("#create-content").addEventListener("click", (evt) => {
+            evt.preventDefault(), evt.stopPropagation(), updateContent(0);
+        });
+        const updateContent = (temp_id) => {
+            let j = { id: @o.content_id, content_type: 'email', template_id: temp_id };
+            if (j.id === 0) { swal('Error!', 'Invalid content.', 'error').then(function () { swal.close(); }); return false; }
+            else {
+                Http.post(`/api/flow/message/${j.id}/create-template`, { body: j }).then(response => response.json())
+                    .then((res) => {
+                        if (res.status === 200) { window.location = window.location.origin + `/flows/email-template-editor/${j.id}`; }
+                        else { swal('Error!', res.message, 'error'); }
+                    }).catch(error => { console.log('error', error); });
+            }
         }
+    });
+
+</script>
+<script type="text/javascript">
+    function binddata() {
+        $('#datatable').DataTable({
+            lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[2, "desc"]],
+            destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+            language: {
+                lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
+                infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            },
+            sAjaxSource: "/api/email-templates/list",
+            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+                oSettings.jqXHR = $.ajax({
+                    url: sSource, data: aoData,// dataType: 'json', type: "get",
+                    success: function (result) {
+                        return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: result.total, recordsFiltered: result.total, aaData: result.data });
+                    }
+                });
+            },
+            columns: [
+                {
+                    data: 'name', title: 'Name', sWidth: "40%", render: function (data, type, row, meta) {
+                        //return `<div class="d-flex"><img src="${row.thumbnail_url != null ? row.thumbnail_url : '/content/images/logo.png'}" alt="" height="40" width="40" class="rounded"><div class="ms-3 align-self-center overflow-hidden me-auto"><a href="/emailtemplates/editor/${row.template_id}">${data}</a></div>`;
+                        return `<div class="d-flex"><img src="${row.thumbnail_url != null ? row.thumbnail_url : '/content/images/logo.png'}" alt="" height="40" width="40" class="rounded"><div class="ms-3 align-self-center overflow-hidden me-auto"><a name="template" href="javascript:void(0);" onclick="GetTemplate(${row.template_id}, '${data}')">${data}</a></div>`;
+                    }
+                },
+                { data: 'created', title: 'Added On', sWidth: "15%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+                { data: 'updated', title: 'Last Update', sWidth: "15%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+            ]
+        });
     }
     function GetTemplate(id, title) {
-        $('#modalView .modal-title').html(title), $('#modalView').modal('show');
-        $('#use_template').data('id', id);
+        document.querySelector("#modalView .modal-title").innerHTML = title;
+        document.querySelector("#use_template").setAttribute('data-id', id);
+        $('#modalView').modal('show');
         $.get(`/api/email-templates/template/${id}`).done(function (data) {
             $.each(data, function (index, value) {
                 const iframe = document.getElementById("preview");
@@ -98,33 +207,4 @@
             });
         }).fail(function (jqxhr, settings, ex) { });
     };
-    $('#datatable').DataTable({
-        lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[2, "desc"]],
-        destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
-        language: {
-            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
-            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
-        },
-        sAjaxSource: "/api/email-templates/list",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-            oSettings.jqXHR = $.ajax({
-                url: sSource, data: aoData,// dataType: 'json', type: "get",
-                success: function (result) {
-                    //let _recordsTotal = data.length > 0 ? data[0].totalcount : 0;
-                    return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: result.total, recordsFiltered: result.total, aaData: result.data });
-                }
-            });
-        },
-        columns: [
-            {
-                data: 'name', title: 'Name', sWidth: "40%", render: function (data, type, row, meta) {
-                    //return `<div class="d-flex"><img src="${row.thumbnail_url != null ? row.thumbnail_url : '/content/images/logo.png'}" alt="" height="40" width="40" class="rounded"><div class="ms-3 align-self-center overflow-hidden me-auto"><a href="/emailtemplates/editor/${row.template_id}">${data}</a></div>`;
-                    return `<div class="d-flex"><img src="${row.thumbnail_url != null ? row.thumbnail_url : '/content/images/logo.png'}" alt="" height="40" width="40" class="rounded"><div class="ms-3 align-self-center overflow-hidden me-auto"><a href="javascript:void(0);" onclick="GetTemplate(${row.template_id}, '${data}')">${data}</a></div>`;
-                }
-            },
-            { data: 'created', title: 'Added On', sWidth: "15%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
-            { data: 'updated', title: 'Last Update', sWidth: "15%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
-        ]
-    });
 </script>

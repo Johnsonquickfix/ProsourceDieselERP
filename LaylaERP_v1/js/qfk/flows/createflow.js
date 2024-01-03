@@ -149,7 +149,7 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
                 ),
                     doc.createElement('div', { class: `${pc}-footer` },
                         doc.createElement('div', { class: `card-status-switcher-wrapper` }, doc.createElement('div', { class: `card-status-switcher no-drop ${config.c[n.status]}` }, config.l[n.status])),
-                        doc.createElement('div', { class: `action-settings` }, `<i class="fa fa-envelope ${n.message.is_ignoring_throttling ? 'draft' : 'live'}"></i><i class="fa fa-map-signs ${n.message.is_add_utm ? 'live' : 'draft'}"></i><i class="fa fa-filter"></i>`)
+                        doc.createElement('div', { class: `action-settings` }, `<i class="fa fa-envelope ${(n.message && n.message.is_ignoring_throttling) ? 'draft' : 'live'}"></i><i class="fa fa-map-signs ${(n.message && n.message.is_add_utm) ? 'live' : 'draft'}"></i><i class="fa fa-filter"></i>`)
                     )
                 ), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
             }; break;

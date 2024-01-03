@@ -9,7 +9,7 @@ e.addEventListener("DOMContentLoaded", function () {
         let p = e.getElementById("template_type"); e.getElementById("btn-action").replaceChildren();
         p.replaceChildren(e.createElement('div', { class: 'alert alert-warning' }, '<i class="fas fa-exclamation-triangle me-2"></i>Selecting a new template will permanently delete existing content for your campaign. To avoid losing any work, <a href="">return to your current template</a>'));
         p.append(e.createElement('div', { class: 'row' }, e.createElement('div', { class: 'col-sm-12 d-grid gap-2 mb-2' },
-            e.createElement('a', { id: 'email-editor', class: 'btn p-0', href: 'javascript:void(0);', style: "width: -webkit-fill-available;"},
+            e.createElement('a', { id: 'email-editor', class: 'btn p-0', href: 'javascript:void(0);', style: "width: -webkit-fill-available;" },
                 e.createElement('div', { class: 'card-radio text-center' },
                     e.createElement('i', { class: 'fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2' }),
                     e.createElement('h5', { class: 'font-size-14 mb-0' }, 'Drag and Drop'),
@@ -73,31 +73,14 @@ function setContent(_type) {
     }
 }
 function Post() {
-    let j = { campaign_id: parseInt(e.getElementById('subject').getAttribute('data-id')) | 0, action: 'content' };
-    j.content = {
-        subject: e.getElementById('subject').value, preview_text: e.getElementById('preview_text').value, from_label: e.getElementById('from_label').value, from_email: e.getElementById('from_email').value, reply_to_email: e.getElementById('reply_to_email').value,
-        content_type: e.getElementById('subject').getAttribute('data-content-type'), template_id: 0
-    };
-    if (j.campaign_id === 0) { swal('Error!', 'Invalid campaign.', 'error').then(function () { swal.close(); }); return false; }
-    else if (j.content.subject === '') { swal('Error!', 'Please enter subject line.', 'error').then(function () { swal.close(); e.getElementById('subject').focus(); }); return false; }
-    else if (j.content.from_label === '') { swal('Error!', 'Please enter sender name.', 'error').then(function () { swal.close(); e.getElementById('from_label').focus(); }); return false; }
-    else if (j.content.from_email === '') { swal('Error!', 'Please enter sender email address.', 'error').then(function () { swal.close(); e.getElementById('from_email').focus(); }); return false; }
-    else if (!ValidateEmail(j.content.from_email)) { swal('Error!', 'Please enter valid sender email address.', 'error').then(function () { swal.close(); e.getElementById('from_email').focus(); }); return false; }
-    else if (!ValidateEmail(j.content.reply_to_email) && j.content.reply_to_email !== '') { swal('Error!', 'Please enter valid reply-to email address.', 'error').then(function () { swal.close(); e.getElementById('from_email').focus(); }); return false; }
-    //else if (j.content.template_id === 0) { swal('Error!', 'Your changes have been saved. Select a template to continue.', 'error').then(function () { swal.close(); e.getElementById('from_email').focus(); }); return false; }
-    else {
-        $.ajax({
-            type: 'PATCH', url: '/api/campaigns',
-            contentType: "application/json",
-            data: JSON.stringify(j),
-            success: function (result) {
-                if (result.status > 0 && j.content.content_type) {
-                    window.location = window.location.origin + `/campaigns/${result.id}/schedule`;
-                }
-                else if (result.status > 0 && !j.content.content_type) { swal('Info!', 'Your changes have been saved. Select a template to continue.', 'info'); }
-                else { swal('Info!', result.response, 'info'); }
-            },
-            error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
+    let s = !0, para = { id: parseInt(lt.flow()) || 0 }, flow = parseInt(e.querySelector('#root').getAttribute('data-flow')) || 0;
+    e.querySelector('#root').querySelectorAll('input[type="text"]').forEach(el => {
+        if (el.required && !isValidElement(el)) { s = !1; el.focus(); return false; }
+        el.classList.remove('parsley-error'), stringToObj(el.name, el.value, para);
+    });
+    if (s) {
+        Http.post(lt.urls.flowMessageContent(para.id), { body: para }).then(res => res.json()).then(res => {
+            res.status === 200 && (window.location = window.location.origin + `/flows/${flow}/edit`);
         });
     }
 }

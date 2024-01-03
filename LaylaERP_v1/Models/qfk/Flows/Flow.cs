@@ -95,8 +95,8 @@
         [JsonProperty("delay_units", NullValueHandling = NullValueHandling.Include)]
         public string delay_units { get; set; }
 
-        //[JsonProperty("settings", NullValueHandling = NullValueHandling.Include)]
-        //public string settings { get; set; }
+        [JsonProperty("settings", NullValueHandling = NullValueHandling.Include)]
+        public string settings { get; set; }
 
         [JsonProperty("message", NullValueHandling = NullValueHandling.Include)]
         public ActionMessage message { get; set; }

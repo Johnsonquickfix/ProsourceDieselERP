@@ -5,7 +5,8 @@
 
     LaylaERP.Models.qfk.Flows.ActionMessage o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Flows.ActionMessage>(LaylaERP.BAL.qfk.FlowsRepository.FlowAdd("get-content", user.login_company_id, ViewBag.id, user.UserID, string.Empty));
 }
-<div id="root">
+<link href="~/Content/qfk/css/flow-layout.css" rel="stylesheet" />
+<div id="root" data-flow="@o.metadata.flow_id">
     <!-- start page title -->
     <div class="row border-bottom">
         <div class="col-12">
@@ -81,15 +82,15 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Name<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="name" placeholder="Flow name" value="@o.name">
+                                <input type="text" class="form-control" name="name" placeholder="Flow name" value="@o.name" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Subject line<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="subject" placeholder="Subject line" data-id="@ViewBag.id" data-content-type="@o.content_type" value="@o.subject">
+                                <input type="text" class="form-control" name="subject" placeholder="Subject line" data-id="@ViewBag.id" data-content-type="@o.content_type" value="@o.subject" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Preview Text</label>
-                                <input type="text" class="form-control" name="preview_text" placeholder="Preview Text" value="@o.preview_text">
+                                <input type="text" class="form-control" name="preview_text" placeholder="Preview Text" value="@o.preview_text" >
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Sender name<span class="text-danger">*</span></label>
@@ -99,7 +100,7 @@
                                 }
                                 else
                                 {
-                                    <input type="text" class="form-control" name="from_label" placeholder="Sender name" value="@o.from_email">
+                                    <input type="text" class="form-control" name="from_label" placeholder="Sender name" value="@o.from_email" required>
                                 }
                             </div>
                             <div class="mb-3">
@@ -179,7 +180,7 @@
     @if (o.content_id > 0)
     {
         <a class="btn btn-outline-dark" href="~/flows/@o.metadata.flow_id/edit">Back</a>
-        <button id="save-content" class="btn btn-primary float-end">Continue to Review</button>
+        <button id="save-content" class="btn btn-primary float-end">Done</button>
     }
     else
     {

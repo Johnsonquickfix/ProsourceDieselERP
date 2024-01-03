@@ -471,9 +471,9 @@ class Panel {
         _cancel.onclick = () => { config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); }
         let select = doc.createElement('select', { name: "status", width: '120px' }),
             filter = doc.createElement("div", null,);//
-        if (e.settings) {
-            e.settings.forEach((r, i) => { filter.appendChild(this.addCustomerFilters(r)) })
-        }
+
+        if (e.settings) e.settings.forEach((r, i) => { filter.appendChild(this.addCustomerFilters(r)) });
+        else filter.appendChild(this.addCustomerFilters({}));
         let body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
             doc.createElement("div", { class: "send-email-panel" },
                 doc.createElement("ul", { class: "configuration-sections" },

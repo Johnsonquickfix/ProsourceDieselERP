@@ -18,8 +18,8 @@
     $('#txtPublishDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
     let today = new Date();
     $('#txtPublishDate').val(today.toLocaleDateString("en-US"));
-
-    $.get('/Product/GetShipping/' + 1, { async: false }, function (data) {
+      // Old method GetShipping
+    $.get('/Product/GetTermShipping/' + 1, { async: false }, function (data) {
         var items = "";
         // $('#ddlShipping').empty();
         // items += "<option value=''>Please select</option>";  
@@ -516,6 +516,12 @@
             $(div).find(".txtdescriptionvariation").each(function () {
                 _attxml.push(
                     { post_id: $(div).find('.nmvariationid').val(), meta_key: '_variation_description', meta_value: this.value }
+                );
+            });
+
+            $(div).find("input[name = txtcorepricevariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_core_product_price_meta', meta_value: this.value }
                 );
             });
 
@@ -1557,7 +1563,8 @@ function GetAttributesID(Attributes) {
 function GetShippingClass() {
     let _shipping_class = [];
     $.ajax({
-        type: "get", url: '/Product/GetShippingddl', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+        // Old method GetShippingddl
+        type: "get", url: '/Product/GetTermShippingddl', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
         success: function (data) {
             data = JSON.parse(data); _shipping_class = data;
             //console.log(data, _shipping_class);
@@ -1667,6 +1674,12 @@ function GetProductvariationID(ProductID) {
                         sale_price = v_data['_sale_price'];
                     else
                         sale_price = 0;
+
+                    let core_price = '';
+                    if (v_data['_core_product_price_meta'] != undefined)
+                        core_price = v_data['_core_product_price_meta'];
+                    else
+                        core_price = 0;
 
                     let length = '';
                     if (v_data['_length'] != undefined)
@@ -1797,12 +1810,22 @@ function GetProductvariationID(ProductID) {
                     varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control rowCalulate" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
                     varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control rowCalulate" value="' + sale_price + '"></div>';
                     varHTML += '</div>';
+
+                    varHTML += '<div id="divcoreprice">';
+                    varHTML += '<div class="form-group d-flex mt-25"><div  class="col-md-6"><label class="control-label">Core Price</label><input type="text" name="txtcorepricevariation" value="' + core_price + '" class="form-control"></div></div>';
+                    varHTML += '</div> ';
+
                     varHTML += '<div id="divmargin">';
                     varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-4"><label class="control-label">Retail Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].regularMargin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].regularmarginpersantage.toFixed(2) + '"></div><div class="col-md-4"><label class="control-label">Sale Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].Margin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].marginpersantage.toFixed(2) + '"></div>';
                     varHTML += '</div>';
                     varHTML += '<div id="divstock">';
-                    varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                    varHTML += '<div class="form-group d-flex mt-25"><div  class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                    varHTML += '</div>';
+
+                    varHTML += '<div id="divparentproduct">';
+                    varHTML += '<div class="form-group d-flex mt-25"><div  class="col-md-6"><label class="control-label">Parent products threshold</label><input type="text" name="txtparentproductvariation" placeholder="Parent products threshold(0)" class="form-control" value="' + stock + '"></div></div>';
                     varHTML += '</div>    <div id="divaria">';
+
                     varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="Weight (lbs)" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="L" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="W" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="H" value="' + height + '"></div></div></div></div>';
                     varHTML += '</div>';
                     varHTML += '    <div class="form-group d-flex">';
@@ -1837,7 +1860,7 @@ function GetProductvariationID(ProductID) {
                     varHTML += '</select></div> ';
                     varHTML += '    </div>';
                     varHTML += '    <div class="form-group d-flex">';
-                    varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control" id="ddlcsv_' + data[i].id + '"><option value="standard">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div>';
+                    varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control" id="ddlcsv_' + data[i].id + '"><option value="standard">Standard</option> <option value="parent">Same as parent</option></select></div>';
                     varHTML += '    </div>';
                     varHTML += '    <div class="form-group d-flex">';
                     varHTML += '        <div class="col-md-12">';

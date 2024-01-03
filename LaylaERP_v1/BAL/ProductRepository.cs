@@ -1788,7 +1788,11 @@ namespace LaylaERP.BAL
                 foreach (ProductModelItemModel obj in model)
                 {
                     strSql.Append("delete from wp_term_relationships where object_id=" + obj.object_id + ";");
-                    strSql.Append("Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(" + obj.object_id + "," + obj.term_taxonomy_id + ",0);SELECT LAST_INSERT_ID();");
+                    if (obj.term_taxonomy_id > 0)
+                    {
+                        
+                        strSql.Append("Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(" + obj.object_id + "," + obj.term_taxonomy_id + ",0);");
+                    }
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
@@ -3691,6 +3695,19 @@ namespace LaylaERP.BAL
                 UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateProduct/" + id + "", "Product Update Meta Data Details");
                 throw Ex;
             }
+        }
+
+        public static DataTable GetTermShipping()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "select term_taxonomy_id rowid,name   from wp_term_taxonomy  wtt inner join wp_terms wt on wt.term_id = wtt.term_id where  taxonomy  = 'product_shipping_class'";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
         }
 
 

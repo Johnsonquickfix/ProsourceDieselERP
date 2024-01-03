@@ -1297,9 +1297,9 @@ namespace LaylaERP.Controllers
                     status = true;
                 }
 
-                //  int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
+              int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
 
-                int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
+               // int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
 
                 int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
 
@@ -3233,6 +3233,31 @@ namespace LaylaERP.Controllers
             {
                 ProductRepository.UpdateattributMetaData(model, id, varFieldsName[n], varFieldsValue[n], term_taxonomy, term_taxonomy_id);
             }
+        }
+
+        public JsonResult GetTermShipping(int ID)
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetTermShipping();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["rowid"].ToString(),
+                    Text = dt.Rows[i]["name"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetTermShippingddl()
+        {
+            string JSONString = string.Empty;
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetTermShipping();
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Json(JSONString, JsonRequestBehavior.AllowGet);
         }
     }
 

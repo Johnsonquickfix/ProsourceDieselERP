@@ -1,9 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "TextEditor";
+    ViewBag.Title = "Text Editor";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
-    //LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
     LaylaERP.Models.qfk.Flows.ActionMessage o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Flows.ActionMessage>(LaylaERP.BAL.qfk.FlowsRepository.FlowAdd("get-content", user.login_company_id, ViewBag.id, user.UserID, string.Empty));
 }
 
@@ -13,21 +12,8 @@
             <div>
                 <ol class="breadcrumb m-0 font-size-18">
                     <li class="breadcrumb-item"><a href="/flows/@o.metadata.flow_id/edit">@o.metadata.flow_name</a></li>
-                    <li class="breadcrumb-item">
-                        Edit @o.name
-                        @if (o.status == 0)
-                        {
-                            <span class="badge badge-soft-dark p-1 font-size-12"> Draft</span>
-                        }
-                        else if (o.status == 1)
-                        {
-                            <span class="badge badge-soft-warning p-1 font-size-12"> Manual</span>
-                        }
-                        else if (o.status == 2)
-                        {
-                            <span class="badge badge-soft-success p-1 font-size-12"> Live</span>
-                        }
-                    </li>
+                    <li class="breadcrumb-item"><a href="/flows/@o.content_id/content">@o.name</a></li>
+                    <li class="breadcrumb-item">Message Content</li>
                 </ol>
             </div>
             <div class="page-title-right">
@@ -131,32 +117,33 @@
     </div>
 </div>
 <script src="~/js/qfk/ace-editor/ace.js"></script>
-<script>
-    !(function () {
-        const _e = ace.edit("json-display-format", {
-            mode: "ace/mode/html", theme: "ace/theme/xcode", selectionStyle: "text", autoScrollEditorIntoView: true, copyWithEmptySelection: true, readOnly: false,
-        });
-        _e.getSession().setValue(document.getElementById("templateHtml").value);
-
-        document.querySelector("#preview-html")?.addEventListener("click", (evt) => {
+<script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
+    var e = e || document;
+    const editor = ace.edit("json-display-format", {
+        mode: "ace/mode/html", theme: "ace/theme/xcode", selectionStyle: "text", autoScrollEditorIntoView: true, copyWithEmptySelection: true, readOnly: false,
+    });
+    editor.getSession().setValue(e.getElementById("templateHtml").value);
+    e.addEventListener("DOMContentLoaded", function () {
+        e.querySelector("#preview-html")?.addEventListener("click", (evt) => {
             evt.preventDefault(), evt.stopPropagation();
-            const iframe = document.getElementById("preview");
-            iframe.srcdoc = _e.getValue();
+            let iframe = document.getElementById("preview");
+            iframe.srcdoc = editor.getValue();
         });
-        document.querySelector("#save-content")?.addEventListener("click", (evt) => {
+        e.querySelector("#save-content")?.addEventListener("click", (evt) => {
             evt.preventDefault(), evt.stopPropagation(), updateContent();
         });
         function updateContent() {
-            let j = { id: @o.content_id, content_type: 'html', data_html: _e.getValue()};
+            let j = { id: @o.content_id, content_type: 'html', data_html: editor.getValue()};
 
             if (j.id === 0) { swal('Error!', 'Invalid content.', 'error').then(function () { swal.close(); }); return false; }
             else {
-                Http.post(`/flows/message/${j.id}/content-data`, { body: j }).then(response => response.json())
+                Http.post(`/api/flow/message/${j.id}/content-data`, { body: j }).then(response => response.json())
                     .then((response) => {
                         if (response.status === 200) { window.location = window.location.origin + `/flows/${j.id}/content`; }
                         else { swal('Error!', response.message, 'error'); }
                     }).catch(error => { console.log('error', error); });
             }
         }
-    })();
+    });
 </script>

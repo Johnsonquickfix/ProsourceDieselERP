@@ -70,22 +70,6 @@ function setContent(_type) {
                 }
                 else { swal('Error!', response.message, 'error'); }
             }).catch(error => { console.log('error', error); });
-
-
-        //$.ajax({
-        //    type: 'PATCH', url: '/api/campaigns',
-        //    contentType: "application/json",
-        //    data: JSON.stringify(j),
-        //    success: function (result) {
-        //        if (result.status > 0 && _type) {
-        //            if (_type === 'text') window.location = window.location.origin + `/campaigns/rich-text-editor/${result.id}`;
-        //            else if (_type === 'html') window.location = window.location.origin + `/campaigns/html-editor/${result.id}`;
-        //            else if (_type === 'email') window.location = window.location.origin + `/campaigns/${result.id}/content/library`;
-        //        }
-        //        else { swal('Info!', result.response, 'info'); }
-        //    },
-        //    error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
-        //});
     }
 }
 function Post() {
@@ -115,48 +99,8 @@ function Post() {
             },
             error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
         });
-
-
-        //$.post(`/api/campaigns`, j).done(function (result) {
-
-        //    //console.log(result);
-        //    //if (data.id > 0) { window.location = window.location.origin + '/emailtemplates/list'; }
-        //}).fail(function (xhr, status, error) { swal('Error!', xhr.responseJSON.message, 'error'); });
     }
 }
-function getdata(e) {
-    let i = parseInt(e.getElementById('subject').getAttribute('data-id')) | 0;
-    if (i <= 0) { fr(e); return; }
-    else {
-        $.ajaxSetup({ async: true });
-        $.get(`/api/campaigns/${i}`, {}).done(function (result) {
-            e.getElementById('subject').value = result.content.subject;
-            e.getElementById('preview_text').value = result.content.preview_text;
-            if (result.content.from_label) e.getElementById('from_label').value = result.content.from_label;
-            if (result.content.from_email) e.getElementById('from_email').value = result.content.from_email;
-            e.getElementById('reply_to_email').value = result.content.reply_to_email;
-
-            //e.getElementById('campaign_name').value = result.campaign_name;
-            //e.getElementById('campaign_date').value = moment(result.campaign_date).format('MM/DD/YYYY');
-            //e.getElementById('is_smart_sending').checked = result.is_smart_sending;
-            //$('#send_to').val(result.audiences.group_ids).trigger('change');
-            //e.getElementById('is_smart_sending').checked = result.is_add_utm;
-            //if (!result.is_add_utm) e.getElementById("utm_para").replaceChildren();
-            //else {
-            //    utmPara(e);
-            //    e.getElementById('utm_source_value').value = result.utm_source, e.getElementById('utm_medium_value').value = result.utm_medium;
-            //    if (result.utm_campaign) e.getElementById('utm_campaign').checked = true, e.getElementById('utm_campaign_value').value = result.utm_campaign;
-            //    if (result.utm_id) e.getElementById('utm_id').checked = true, e.getElementById('utm_id_value').value = result.utm_id;
-            //    if (result.utm_term) e.getElementById('utm_term').checked = true, e.getElementById('utm_term_value').value = result.utm_term;
-            //}
-
-
-            //(parseInt(result.content.template_id) | 0) > 0 ? st(result.content.template_id) : tp(e);
-        }).fail(function (xhr, status, error) { swal('Error!', xhr.responseJSON.message, 'error'); }).always(function () { fr(e); });
-    }
-}
-
-
 const st = function (i) {
     e = document; let p = e.getElementById("template"), $a = e.createElement('button', { class: 'btn btn-light btn-sm' }, 'Change Template');
     e.getElementById("btn-action").replaceChildren($a), $a.onclick = function () { tp(e); };

@@ -3,7 +3,7 @@
     ViewBag.Title = "Rich Text Editor";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
-    LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
+    LaylaERP.Models.qfk.Flows.ActionMessage o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Flows.ActionMessage>(LaylaERP.BAL.qfk.FlowsRepository.FlowAdd("get-content", user.login_company_id, ViewBag.id, user.UserID, string.Empty));
 }
 
 <div id="root">
@@ -11,8 +11,9 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <div>
                 <ol class="breadcrumb m-0 font-size-18">
-                    <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
-                    <li class="breadcrumb-item">Edit @o.campaign_name</li>
+                    <li class="breadcrumb-item"><a href="/flows/@o.metadata.flow_id/edit">@o.metadata.flow_name</a></li>
+                    <li class="breadcrumb-item"><a href="/flows/@o.content_id/content">@o.name</a></li>
+                    <li class="breadcrumb-item">Message Content</li>
                 </ol>
             </div>
             <div class="page-title-right">
@@ -23,17 +24,17 @@
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <div>
-                    <a href="~/campaigns/@ViewBag.id/content"><i class="fas fa-arrow-left me-2"></i>Back to content overview</a>
+                    <a href="~/flows/@o.content_id/content" class="btn btn-outline-dark"><i class="fas fa-arrow-left me-2"></i>Back to Content</a>
                 </div>
                 <div class="page-title-right">
-                    <button id="save-content" class="btn btn-primary float-end">Save content</button>
+                    <button id="save-content" class="btn btn-outline-dark float-end">Save content</button>
                 </div>
             </div>
         </div>
         <div class="col-12">
-            @if (!string.IsNullOrEmpty(o.contentdata.data_html))
+            @if (!string.IsNullOrEmpty(o.data_html))
             {
-                <textarea id="editorcontent">@o.contentdata.data_html</textarea>
+                <textarea id="editorcontent">@o.data_html</textarea>
             }
             else
             {
@@ -43,32 +44,26 @@
     </div>
 </div>
 <script src="~/js/qfk/HtmlEditor/1.5.5/tinymce/tinymce.min.js"></script>
-<script>
+<script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
+    var e = e || document;
     tinyMCE.init({
         selector: '#editorcontent', menubar: false, height: 400,
         toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist ',
     });
-    document.querySelector("#save-content").addEventListener("click", (evt) => {
-        evt.preventDefault(), evt.stopPropagation(), updateContent();
-    });
-    function updateContent() {
-        let j = { campaign_id: @ViewBag.id, action: 'template', content: { content_type: 'text' } };
-        j.contentdata = { data_html: tinyMCE.get("editorcontent").getContent() };
-        //console.log(j); return;
-        if (j.campaign_id === 0) { swal('Error!', 'Invalid campaign.', 'error').then(function () { swal.close(); }); return false; }
-        else {
-            $.ajax({
-                type: 'PUT', url: '/api/campaigns',
-                contentType: "application/json",
-                data: JSON.stringify(j),
-                success: function (result) {
-                    if (result.status > 0) {
-                        window.location = window.location.origin + `/campaigns/${result.id}/content`;
-                    }
-                    else { swal('Info!', result.response, 'info'); }
-                },
-                error: function (jqXHR, exception) { swal('Error!', jqXHR.responseJSON.message, 'error'); }
-            });
+    e.addEventListener("DOMContentLoaded", function () {
+        e.querySelector("#save-content").addEventListener("click", (evt) => { evt.preventDefault(), evt.stopPropagation(), updateContent(); });
+        function updateContent() {
+            let j = { id: @o.content_id, content_type: 'text', data_html: tinyMCE.get("editorcontent").getContent()};
+
+            if (j.id === 0) { swal('Error!', 'Invalid content.', 'error').then(function () { swal.close(); }); return false; }
+            else {
+                Http.post(`/api/flow/message/${j.id}/content-data`, { body: j }).then(response => response.json())
+                    .then((response) => {
+                        if (response.status === 200) { window.location = window.location.origin + `/flows/${j.id}/content`; }
+                        else { swal('Error!', response.message, 'error'); }
+                    }).catch(error => { console.log('error', error); });
+            }
         }
-    }
+    });
 </script>

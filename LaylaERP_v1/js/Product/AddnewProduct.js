@@ -1126,20 +1126,30 @@ function AddProduct() {
     var Crosssells = $('#ddlCrosssells option:selected')
         .toArray().map(item => item.value).join();
 
-    var v = '';
-    $('input:checkbox:checked').each(function () {
-        v = v + $(this).attr('value') + ",";
-    });
-    let dfa = v.replace('undefined,undefined,', '');
-    let dfad = dfa.replace('undefined,', '');
-    var n = dfad.lastIndexOf(",");
-    var categorydata = dfad.substring(0, n)
+    //var v = '';
+    //$('input:checkbox:checked').each(function () {
+    //    v = v + $(this).attr('value') + ",";
+    //});
+    //let dfa = v.replace('undefined,undefined,', '');
+    //let dfad = dfa.replace('undefined,', '');
+    //var n = dfad.lastIndexOf(",");
+    //var categorydata = dfad.substring(0, n)
     //console.log(categorydata);
     let date_publish = $("#txtPublishDate").val().split('/');
     //if ($("#enableStock").prop('checked') == true)
     enableStock = "yes";
     //else
     //enableStock = "no";
+
+    var checkedNodes = $('#ul_category').tree('getChecked');
+    var selectedValues = [];
+
+    for (var i = 0; i < checkedNodes.length; i++) {
+        selectedValues.push(checkedNodes[i].id); // Assuming 'id' is the property containing the value you want
+    }
+    var categorydata = selectedValues.join(', ');
+    // Do something with the selected values
+   
 
     if ($("#chkgiftcard").prop('checked') == true)
         giftcard = "yes";
@@ -1154,6 +1164,12 @@ function AddProduct() {
         solidIndividually = "no";
 
     ProductTypeval = $("#ddlProductType").val();
+    if (ProductTypeval == 'simple') {
+        ProductTypeval = 9;
+    }
+    else {
+        ProductTypeval = 11;
+    }
     productname = $("#txtProductName").val();
     formetcustom = $("#formatcustom").val();
     regularprice = $("#txtregularprice").val();
@@ -1918,7 +1934,8 @@ function chunkArray(arr, n) {
         if (chunkLength * (i + 1) <= arr.length) chunks.push(arr.slice(chunkLength * i, chunkLength * (i + 1)));
     }
     return chunks;
-}
+} 
+ 
 
 function bindCategory(product_id) {
     $.ajaxSetup({ async: true, beforeSend: function (xhr) { } });

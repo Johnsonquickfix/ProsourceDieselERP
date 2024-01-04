@@ -3710,6 +3710,29 @@ namespace LaylaERP.BAL
             return DT;
         }
 
+        public static void Add_termproducttype(int TermID, int ID)
+        {
+            try
+            {
+                string strsql = "erp_product_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "IPT"),
+                    new SqlParameter("@object_id", ID),
+                    new SqlParameter("@term_taxonomy_id", TermID),
+                    new SqlParameter("@term_order", "0")
+
+                };
+                SQLHelper.ExecuteScalar(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/update_term/" + ID + "", "Add Term Product");
+                throw Ex;
+            }
+        }
+
+
 
     }
 }

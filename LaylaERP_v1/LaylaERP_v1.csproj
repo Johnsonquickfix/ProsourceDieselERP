@@ -1990,6 +1990,7 @@
     <Content Include="Views\Flows\RichTextEditor.cshtml" />
     <Content Include="Views\Flows\HtmlEditor.cshtml" />
     <Content Include="Views\Flows\library.cshtml" />
+    <Content Include="Views\Flows\TemplateEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

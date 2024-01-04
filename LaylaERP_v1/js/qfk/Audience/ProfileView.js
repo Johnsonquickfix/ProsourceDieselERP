@@ -1,6 +1,7 @@
 ﻿!(function () {
     $(document).ready(function () {
-        $('.select2').select2();
+        //$('.select2').select2();
+        new Choices(document.querySelector('#metrics'), { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: `Select a metric…`, itemSelectText: '', shouldSort: false });
         loadActivities();
         $(document).on('change', '#metrics', function () { loadActivities(); });
         $(document).on('click', 'a[data-toggle="collapse"]', function () {
@@ -50,16 +51,16 @@
         json_template = function (data) {
             let _h = '';
             $.each(data, function (key, value) {
-
-                if (value.constructor === Object) _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
+                let _k = key.replace(/([a-z$])([A-Z$])/g, '$1 $2').replace('$', '').replace(new RegExp(/(^\w|\s\w)/g), (m) => m.toUpperCase());
+                if (value.constructor === Object) _h += `<div class="event_property"><strong>${_k}</strong>: <span title="${JSON.stringify(value)}">${JSON.stringify(value, null, 2)}</span></div>`;
                 else if (value.constructor === Array) {
-                    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${JSON.stringify(value)}">${value.toString()}</span></div>`;
+                    _h += `<div class="event_property"><strong>${_k}</strong>: <span title="${JSON.stringify(value)}">${value.toString()}</span></div>`;
                 }
                 else if (isURL(value)) {
-                    _h += `<div class="event_property"><strong>${key}</strong>: <a target="_blank" href="${value}">${value.toString()}</a></div>`;
+                    _h += `<div class="event_property"><strong>${_k}</strong>: <a target="_blank" href="${value}">${value.toString()}</a></div>`;
                 }
                 else {
-                    _h += `<div class="event_property"><strong>${key}</strong>: <span title="${value}">${value}</span></div>`;
+                    _h += `<div class="event_property"><strong>${_k}</strong>: <span title="${value}">${value}</span></div>`;
                 }
                 //if (value instanceof String) _h += `<div class="event_property"><strong>${key}</strong>: <span title="${value}">${value}</span></div>`;
                 //else if (value instanceof Number) _h += `<div class="event_property"><strong>${key}</strong>: <span title="${value}">${value}</span></div>`;

@@ -222,6 +222,84 @@
             }
         }
 
+        [HttpPost, Route("action/{id}/update")]
+        public IHttpActionResult UpdateAction(long id, FlowPathAction request)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
+
+                request.id = id;
+                var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-update", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost, Route("action/{id}/status")]
+        public IHttpActionResult UpdateActionStatus(long id, FlowPathAction request)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
+                request.id = id;
+                var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("action-status", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost, Route("message/{id}/content")]
+        public IHttpActionResult MessageContentUpdate(long id, ActionMessage request)
+        {
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
+                if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
+                if (string.IsNullOrEmpty(request.name)) return Content(HttpStatusCode.BadRequest, new { message = "name is required." });
+
+                request.content_id = id;
+                var json_data = JsonConvert.DeserializeObject<JObject>(FlowsRepository.FlowAdd("content-update", om.login_company_id, id, om.UserID, JsonConvert.SerializeObject(request)).ToString());
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { message = ex.Message });
+            }
+        }
+
         [HttpPost, Route("message/{id}/content-type")]
         public IHttpActionResult MessageContentType(long id, ActionMessage request)
         {

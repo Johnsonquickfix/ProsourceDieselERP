@@ -138,7 +138,6 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
             }; break;
             case lt.events.EMAIL: {
                 nb = addNode(), (d === true && $btn.appendChild(draggableDiv(t, n.id)));
-                console.log(n.message)
                 nb.replaceChildren(doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-envelope'),
                     doc.createElement('div', { class: `${pc}-content` },
                         doc.createElement('div', { class: `${pc}-header` },
@@ -150,8 +149,30 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
                 ),
                     doc.createElement('div', { class: `${pc}-footer` },
                         doc.createElement('div', { class: `card-status-switcher-wrapper` }, doc.createElement('div', { class: `card-status-switcher no-drop ${config.c[n.status]}` }, config.l[n.status])),
-                        doc.createElement('div', { class: `action-settings` }, `<i class="fa fa-envelope ${n.message.is_ignoring_throttling ? 'draft' : 'live'}"></i><i class="fa fa-map-signs ${n.message.is_add_utm ? 'live' : 'draft'}"></i><i class="fa fa-filter"></i>`)
+                        doc.createElement('div', { class: `action-settings` }, `<i class="fa fa-envelope ${(n.message && n.message.is_ignoring_throttling) ? 'draft' : 'live'}"></i><i class="fa fa-map-signs ${(n.message && n.message.is_add_utm) ? 'live' : 'draft'}"></i><i class="fa fa-filter"></i>`)
                     )
+                ), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
+            }; break;
+            case lt.events.UPDATE_CUSTOMER: {
+                nb = addNode(), (d === true && $btn.appendChild(draggableDiv(t, n.id)));
+                let b = doc.createElement('div', { class: `${pc}-main` }, 'Configure Update...');
+                if (n.settings) {
+                    let i = n.settings.length - 1;
+                    b.replaceChildren(doc.createElement('p', { class: `summary-text` },
+                        (n.settings[0].operator ? doc.createElement('span', null, `${lt.propercase(n.settings[0].operator)} `) : null),
+                        (n.settings[0].property_key ? doc.createElement('span', { class: "highlighted-text" }, `${lt.propercase(n.settings[0].property_key)} `) : null),
+                        (n.settings[0].property_value ? doc.createElement('span', { class: "highlighted-text" }, `to ${lt.propercase(n.settings[0].property_value)}`) : null)
+                    ));
+                    (i > 0) && (_t.appendChild(doc.createElement('span', { class: 'additional-actions' }, `+${i} step${i > 1 ? 's' : ''}`)));
+                }
+                nb.replaceChildren(doc.createElement('div', { class: `${pc}-body` }, componentIcon('fa fa-user'),
+                    doc.createElement('div', { class: `${pc}-content` },
+                        doc.createElement('div', { class: `${pc}-header` },
+                            doc.createElement('div', { class: `${pc}-title` }, 'Update Profile Property'),
+                            doc.createElement('div', { class: `${pc}-dropdown-container` }, removeNode())
+                        ), b),
+                ),
+                    doc.createElement('div', { class: `${pc}-footer` }, doc.createElement('div', { class: `card-status-switcher-wrapper` }, doc.createElement('div', { class: `card-status-switcher no-drop ${config.c[n.status]}` }, config.l[n.status])))
                 ), (nb && $btn.children.length > 0 ? $btn.children[0].appendChild(nb) : $btn.appendChild(nb));
             }; break;
             case lt.events.TIME_DELTA: {
@@ -176,7 +197,6 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
         container.appendChild($btn); return container;
     },
     initTrigger = (e) => {
-        console.log('start', e)
         let root = doc.querySelector(`.${lt.controls.ROOT}`), j = {}; root.replaceChildren();
         if (e.trigger_id > 0) {
             j = { actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }; config_panel(j);
@@ -346,6 +366,10 @@ class Panel {
                 _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">${e.message && e.message.name}</div>`);
                 _body.appendChild(this.panel_setup_mail(e));
             }; break;
+            case lt.events.UPDATE_CUSTOMER: {
+                _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, 'Update Profile Property'));
+                _body.appendChild(this.panel_setup_update_customer(e));
+            }; break;
             case lt.events.TIME_DELTA: {
                 _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">Time Delay</div>`);
                 _body.appendChild(this.panel_setup_time(e));
@@ -404,16 +428,11 @@ class Panel {
     }
     panel_setup_mail(e) {
         let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Done" }),
-            buttonEdit = doc.createElement("button", { type: "button", class: "btn btn-alt", title: "Configure Content" },"Configure Content");
+            buttonEdit = doc.createElement("button", { type: "button", class: "btn btn-alt", title: "Configure Content" }, "Configure Content");
         addEvent(buttonOk, 'click', (event) => { event.preventDefault(); event.stopPropagation(); config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
         addEvent(buttonEdit, 'click', (event) => {
             event.preventDefault(); event.stopPropagation(); window.location = `${window.location.origin}/flows/${e.message.content_id}/content`;
         });
-
-        const us = (ele, selected_value) => {
-            let i = [{ value: 0, text: "Draft" }, { value: 1, text: "Manual" }, { value: 3, text: "Live" }];
-            let dd = new Selectr(ele, { data: i, searchable: !1, selectedValue: selected_value });
-        };
         let select = doc.createElement('select', { name: "status", width: '120px' }),
             $body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
                 doc.createElement("div", { class: "send-email-panel" },
@@ -439,39 +458,132 @@ class Panel {
                     ),
                     doc.createElement("div", { class: "configuration-panel-footer flow-action-footer" },
                         doc.createElement("span", { class: "button-set" }, buttonOk),
-                        doc.createElement("div", { class: "flow-action-status" },
-                            doc.createElement("span", null, doc.createElement("h2", null, 'Send Status')), select
-                        )
+                        doc.createElement("div", { class: "flow-action-status" }, doc.createElement("span", null, doc.createElement("h2", null, 'Send Status')), select)
                     )
                 )
             );
-        us(select, e.status);
-
-        //var selectorDefault = new Selectr('#default', configs.default);
-
-        //addEvent(select, 'change', (event) => {
-        //    event.preventDefault();
-        //    let p = select.closest('.control-group'), sibling = p.nextSibling;
-        //    sibling && sibling.matches('.control-group') && sibling.remove();
-        //    if (select.value === 'hour') {
-        //        p.parentNode.insertBefore(
-        //            doc.createElement("div", { class: "control-group" },
-        //                doc.createElement("p", null, 'and'),
-        //                doc.createElement("div", { class: "controls timing-minutes" }, doc.createElement("input", { type: "number", name: "secondary-value", value: rminutes }), doc.createElement("span", null, 'minute(s)')),
-        //                doc.createElement("p", null, 'after the trigger')
-        //            ),
-        //            p.nextSibling
-        //        )
-        //    }
-        //});
-        //let changeEvent = new Event('change'); select.dispatchEvent(changeEvent);
-        //addEvent(buttonOk, 'click', (event) => {
-        //    event.preventDefault(); event.stopPropagation();
-        //    let JsonVar = { id: e.id, delay_units: select.value };
-        //    $body.querySelectorAll('input[type="number"]').forEach(r => { stringToObj(r.name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "_"), parseInt(r.value) || 0, JsonVar); });
-        //    Http.post(lt.urls.updateTiming(JsonVar.id), { body: JsonVar }).then(res => res.json()).then(res => { res.status === 200 && load(); });
-        //});
+        this.bindStatus(select, e.id, e.status);
         return $body;
+    }
+    panel_setup_update_customer(e) {
+        let _ok = doc.createElement("input", { type: "button", class: "btn btn-primary", value: 'Save' }),
+            _cancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: 'Cancel' });
+        _cancel.onclick = () => { config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); }
+        let select = doc.createElement('select', { name: "status", width: '120px' }),
+            filter = doc.createElement("div", null,);//
+
+        if (e.settings) e.settings.forEach((r, i) => { filter.appendChild(this.addCustomerFilters(r)) });
+        else filter.appendChild(this.addCustomerFilters({}));
+        let body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
+            doc.createElement("div", { class: "send-email-panel" },
+                doc.createElement("ul", { class: "configuration-sections" },
+                    doc.createElement("li", null,
+                        doc.createElement("div", { class: "configuration-subtitle" }, doc.createElement("h2", null, 'Activity (Last 30 Days)')),
+                        doc.createElement("ul", { class: 'settings-list' },
+                            doc.createElement("li", { class: '' }, `<span>Waiting</span><span class="setting-status">0</span>`),
+                            doc.createElement("li", { class: '' }, `<span>Profiles Updated</span><span class="setting-status">0</span>`),
+                        ),
+                    ),
+                    doc.createElement("li", null, doc.createElement("h2", { class: '' }, `Configuration`), filter)
+                ),
+                doc.createElement("div", { class: "configuration-panel-footer flow-action-footer" },
+                    doc.createElement("span", { class: "button-set" }, _ok, _cancel),
+                    doc.createElement("div", { class: "flow-action-status" }, doc.createElement("span", null, doc.createElement("h2", null, 'Send Status')), select)
+                )
+            )
+        );
+        this.bindStatus(select, e.id, e.status);
+        _ok.onclick = (evt) => {
+            event.preventDefault(); event.stopPropagation();
+            let s = !0, v = [];
+            [...filter.children].forEach((r, i) => {
+                let para = {};
+                r.querySelectorAll('input[type="text"],select').forEach(el => {
+                    if (isSelect(el)) {
+                        if (!isValidElement(el)) { s = !1; return this.addError(el) };
+                        this.removeError(el), stringToObj(el.name, el.value, para);
+                    }
+                    else {
+                        if (!isValidElement(el)) { s = !1; el.classList.add('parsley-error'); }
+                        el.classList.remove('parsley-error'), stringToObj(el.name, el.value, para);
+                    }
+                }), v.push(para);
+            })
+            let option = { id: e.id, type: e.type, settings: JSON.stringify(v) };
+            s && Http.post(lt.urls.updateAction(option.id), { body: option }).then(res => res.json()).then(res => { res.status === 200 && load(); });
+            //console.log(option)
+            //let JsonVar = { id: e.id, delay_units: select.value };
+            //$body.querySelectorAll('input[type="number"]').forEach(r => { stringToObj(r.name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "_"), parseInt(r.value) || 0, JsonVar); });
+            //Http.post(lt.urls.updateTiming(JsonVar.id), { body: JsonVar }).then(res => res.json()).then(res => { res.status === 200 && load(); });
+            //config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 });
+        }
+
+        return body;
+    }
+    addCustomerFilters(e) {
+        let operator = doc.createElement('select', { name: "operator" }), property_key = doc.createElement('select', { name: "property_key" }),
+            u = [{ value: 'update', text: "Update Existing Property" }, { value: 'delete', text: "Remove Existing Property" }, { value: 'create', text: "Create New Property" }];
+        let $d = doc.createElement('div', { class: "draggable-operation-builder", draggable: "true" },
+            doc.createElement('div', { class: "update-profile-operation" },
+                doc.createElement('div', { class: "update-profile-operation-drag" }, doc.createElement('i', { class: "fa fa-user" })),
+                doc.createElement('div', { class: "update-profile-operation-content" }, doc.createElement('div', { class: "update-profile-operation-header" }, operator))
+            ));
+        operator.onchange = (evt) => {
+            let p = evt.target.closest('.update-profile-operation-content');
+            p.querySelector('.property-operation')?.remove();
+            switch (evt.target.value) {
+                case 'update':
+                    {
+                        p.appendChild(doc.createElement('div', { class: "property-operation" },
+                            doc.createElement('div', { class: "property-operation-row" }, property_key),
+                            doc.createElement('div', { class: "property-operation-row" }, doc.createElement('input', { type: "text", name: 'property_value', class: "property-key-field", placeholder: "Property Value", value: (e && e.property_value) }))
+                        ));
+                        this.getProperties(property_key, (e && e.property_key));
+                    }
+                    break;
+                case 'delete':
+                    {
+                        p.appendChild(doc.createElement('div', { class: "property-operation" }, doc.createElement('div', { class: "property-operation-row" }, property_key)));
+                        this.getProperties(property_key, (e && e.property_key));
+                    }
+                    break;
+                case 'create':
+                    {
+                        p.appendChild(doc.createElement('div', { class: "property-operation" },
+                            doc.createElement('div', { class: "property-operation-row" }, doc.createElement('input', { type: "text", name: 'property_key', class: "property-key-field", placeholder: "Property Label", value: (e && e.property_key) })),
+                            doc.createElement('div', { class: "property-operation-row" }, doc.createElement('input', { type: "text", name: 'property_value', class: "property-key-field", placeholder: "Property Value", value: (e && e.property_value) }))
+                        ));
+                    }
+                    break;
+            }
+        }
+        new Selectr(operator, { data: u, searchable: !1, defaultSelected: !1, placeholder: 'Choose property action...', selectedValue: (e && e.operator) });
+        return $d;
+    }
+    getProperties(ele, value) {
+        let s = new Selectr(ele, { searchable: !1, defaultSelected: !1, placeholder: 'Choose a property...' });
+        Http.get('/api/lists/people/property').then(res => res.json()).then(function (data) {
+            let j = data.map(function (r) { return { value: r.value, text: r.label } });
+            s.add(j, !0), s.setValue(value);
+        });
+    }
+    addError(e) {
+        let classesToAdd = ['parsley-error'], t = e.closest('div.selectr-container');
+        t.querySelector('div.selectr-selected').classList.add(...classesToAdd);
+        return false;
+    }
+    removeError(e) {
+        let classesToAdd = ['parsley-error'], t = e.closest('div.selectr-container');
+        t.querySelector('div.selectr-selected').classList.remove(...classesToAdd);
+    }
+    bindStatus(ele, id, value) {
+        let i = [{ value: 0, text: "Draft" }, { value: 1, text: "Manual" }, { value: 2, text: "Live" }];
+        new Selectr(ele, { data: i, searchable: !1, selectedValue: value });
+        ele.onchange = (evt) => {
+            event.preventDefault(); event.stopPropagation();
+            let option = { id: parseInt(id) || 0, status: ele.value };
+            Http.post(lt.urls.updateActionStatus(option.id), { body: option }).then(res => res.json()).then(res => { res.status === 200 && load(); });
+        }
     }
     s = { DRAFT: 0, MANUAL_MODE: 1, LIVE: 2 }
     l = { [this.s.DRAFT]: "Draft", [this.s.MANUAL_MODE]: "Manual", [this.s.LIVE]: "Live", }

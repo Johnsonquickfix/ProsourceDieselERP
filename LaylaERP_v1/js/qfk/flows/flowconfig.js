@@ -27,7 +27,8 @@ export const enums = function (e, t, n) {
         triggers: () => _triggers,
         flowAction: () => _flowAction,
         draggable: () => _draggable,
-        urls: () => _urls
+        urls: () => _urls,
+        propercase: () => z,
     });
     const _controls = { ROOT: 'root-branch', PLACED_COMPONENT: 'placed-component' },
         _events = {
@@ -160,21 +161,20 @@ export const enums = function (e, t, n) {
             type: P.ACTION, text: 'Actions',
             group: [
                 { type: _events.EMAIL, text: "Email", icon: "fas fa-list" },
-                { type: _events.SEND_SMS_MESSAGE, text: "SMS", icon: "fas fa-list" },
+                //{ type: _events.SEND_SMS_MESSAGE, text: "SMS", icon: "fas fa-list" },
                 { type: _events.UPDATE_CUSTOMER, text: "Update Profile Property", icon: "fas fa-list" },
-                { type: _events.NOTIFICATION, text: "Notification", icon: "fas fa-list" },
-                { type: _events.WEBHOOK, text: "Webhook", icon: "fas fa-list" }
+                //{ type: _events.NOTIFICATION, text: "Notification", icon: "fas fa-list" },
+                //{ type: _events.WEBHOOK, text: "Webhook", icon: "fas fa-list" }
             ]
         }, {
             type: P.TIMING.base, text: 'Timing',
             group: [{ type: _events.TIME_DELTA, text: "Time Delay", icon: "fas fa-list" },]
-        }, {
-            type: P.LOGIC, text: 'Logic',
-            group: [
-                { type: _events.CONDITIONAL_SPLIT, text: "Conditional Split", icon: "fas fa-list" },
-                { type: _events.TRIGGER_SPLIT, text: "Trigger Split", icon: "fas fa-list" },
-            ]
-        }],
+            },
+            //{   type: P.LOGIC, text: 'Logic',
+            //    group: [{ type: _events.CONDITIONAL_SPLIT, text: "Conditional Split", icon: "fas fa-list" },
+            //        { type: _events.TRIGGER_SPLIT, text: "Trigger Split", icon: "fas fa-list" }]
+            //}
+        ],
         _draggable = {
             [_events.SEND_PUSH_NOTIFICATION]: "draggable-push-notification-component",
             [_events.EMAIL]: "draggable-email-placed-component",
@@ -204,6 +204,9 @@ export const enums = function (e, t, n) {
             deleteAction: e => `/api/flow/action/${e}/delete`,
             moveAction: e => `/api/flow/action/${e}/move`,
             updateTiming: e => `/api/flow/action/${e}/timing`,
+            updateAction: e => `/api/flow/action/${e}/update`,
+            updateActionStatus: e => `/api/flow/action/${e}/status`,
+            flowMessageContent: e => `/api/flow/message/${e}/content`,
             flowMessageContentType: e => `/api/flow/message/${e}/content-type`,
             flowMessageContentText: e => `/flows/rich-text-editor/${e}`,
             flowMessageContentHtml: e => `/flows/html-editor/${e}`,
@@ -211,6 +214,9 @@ export const enums = function (e, t, n) {
         };
     function x() {
         return window.location.pathname.split("/")[2] || "-1"
+    }
+    function z(e) {
+        return e.replace(/([a-z$])([A-Z$])/g, '$1 $2').replace('$', '').replace(new RegExp(/(^\w|\s\w)/g), (m) => m.toUpperCase());
     }
 }
 

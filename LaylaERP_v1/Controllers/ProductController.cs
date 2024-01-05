@@ -679,8 +679,8 @@ namespace LaylaERP.Controllers
                 else
                     model.post_content = "";
                 ProductRepository.EditProducts(model, model.ID);
-                UpdateVariation_MetaData(model, model.ID);
-                update_term(model, model.ID);
+               UpdateVariation_MetaData(model, model.ID);
+                 update_term(model, model.ID);
                 if (model.updatedID > 0)
                     return Json(new { status = true, message = "Product record updated successfully!!", url = "" }, 0);
                 else
@@ -763,7 +763,7 @@ namespace LaylaERP.Controllers
         {
             update_countdes(model, ID);
             delete_term(model, ID);
-            ProductRepository.Add_term(model.ProductTypeID, Convert.ToInt32(ID));
+            ProductRepository.Add_termproducttype(model.ProductTypeID, Convert.ToInt32(ID));
             ProductRepository.Add_Shipping(model.ShippingclassID, Convert.ToInt32(ID));
             string CommaStr = model.CategoryID;
 
@@ -777,9 +777,11 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-
-                    ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
-                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                    if (Convert.ToInt32(myarray[i]) > 0)
+                    {
+                        ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                        ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                    }
                 }
             }
         }
@@ -867,7 +869,7 @@ namespace LaylaERP.Controllers
                     obj.guid = dr["guid"];
                     obj.post_status = dr["post_status"];
                     obj.publish_date = dr["publish_date"];
-                    //
+                    obj.shippingclassID = dr["shippingclassID"];
                     obj.product_type = dr["product_type"];
                     //Postmeta
                     obj.sku = dr["sku"];

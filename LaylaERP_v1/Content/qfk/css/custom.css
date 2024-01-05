@@ -33,6 +33,8 @@
     --typography-paragraph-font-weight: 400;
     --typography-color-primary-base: #1D1E20;
     --typography-color-primary-placeholder: #C4C9CF;
+    --typography-UI2-emphasis-font-weight: 550;
+    --typography-UI2-font-weight: 400;
     --color-border-default-focused: #1C65AD;
     --color-border-default-hovered: #1C65AD;
     --color-outline-default-focused: #92D2F766;
@@ -163,6 +165,39 @@ body[data-sidebar=dark] .navbar-brand-box, .navbar-header {
     transition: .2s all;
 }
 
+body[data-layout=horizontal] .page-content {
+    margin-top: 70px;
+    padding: calc(55px + 24px) calc(4px * .5) 60px calc(4px * .5);
+}
+
+.page-header {
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    padding: 4px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgb(180, 187, 195);
+}
+
+.breadcrumb-bar {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+    .breadcrumb-bar .crumb {
+        font-size: 24px;
+        color: rgb(55, 63, 71);
+    }
+
+    .breadcrumb-bar .icon-wrapper {
+        color: #1D1E20;
+        margin: 0.5rem;
+    }
+
 #page-topbar .btn {
     display: flex;
     align-items: center;
@@ -244,6 +279,7 @@ body[data-sidebar=dark] .navbar-brand-box, .navbar-header {
 ::placeholder {
     color: var(--typography-color-primary-placeholder) !important;
 }
+
 .form-control:focus {
     background-color: var(--bs-custom-white);
     border-color: var(--color-border-default-focused) !important;
@@ -687,6 +723,22 @@ button.empty_btn, .black_btn {
         color: #fff;
     }
 
+.white_btn {
+    padding: 0.5rem 16px;
+    border: 1px solid #5D5E60;
+    background: #fff;
+    border-radius: 4px;
+    color: #1d1e20;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+    .white_btn:hover, .white_btn:active {
+        border-color: #4B4D4E;
+        background-color: #C4C9CF;
+        color: #1d1e20;
+    }
+
 .select-control, .form-control {
     padding: 0.5rem 16px;
     border: 1px solid #5d5e60;
@@ -861,6 +913,7 @@ textarea {
     margin-right: 0.5rem !important;
     height: 32px;
 }
+
 .cw-125 {
     flex-basis: 125px;
     max-width: 125px;
@@ -870,14 +923,17 @@ textarea {
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
+
 .cw-175 {
-    flex-basis: 175px;max-width:175px;
+    flex-basis: 175px;
+    max-width: 175px;
     -webkit-box-flex: 0;
     flex-grow: 0;
     display: flow;
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
+
 .cw-225 {
     flex-basis: 225px;
     max-width: 225px;
@@ -887,6 +943,7 @@ textarea {
     align-items: flex-start;
     margin-right: 0.5rem !important;
 }
+
 .cw-400 {
     flex-basis: 400px;
     max-width: 400px;
@@ -918,7 +975,8 @@ textarea {
 }
 
 .cw-80 {
-    flex-basis: 80px;max-width:80px;
+    flex-basis: 80px;
+    max-width: 80px;
     -webkit-box-flex: 0;
     flex-grow: 0;
     display: flow;
@@ -953,12 +1011,37 @@ textarea {
         .CriterionDivider__LineContainer > div:first-child {
             border-bottom: 1px dashed rgb(223, 227, 230);
         }
+
 .InputContainer .form-control {
     height: 34px;
     padding: 5px 8px;
     border: 1px solid rgb(145, 151, 159);
     border-radius: 2px;
 }
+
+.InputContainer .form-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-bottom: 0rem;
+    color: var(--typography-color-primary-base);
+    font-weight: var(--typography-UI2-emphasis-font-weight);
+    --emphasis-weight: var(--typography-UI2-emphasis-font-weight, --typography-UI2-font-weight );
+}
+
 .parsley-error {
-    border-color: #f46a6a!important;
+    border-color: #f46a6a !important;
+}
+
+.card-box {
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    height: 100%;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-top: 1rem;
+    border: 1px solid #959697;
+    border-radius: 6px;
+    background: #FFFFFF;
+    list-style: none;
 }

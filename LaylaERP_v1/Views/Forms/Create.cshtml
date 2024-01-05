@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<link href="~/Content/qfk/Selectr/selectr.min.css" rel="stylesheet" />
+<script src="~/Content/qfk/Selectr/selectr.min.js"></script>
+<div id="root">
+</div>
+<script src="~/js/qfk/common.js"></script>
+<script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
+    var e = e || document;
+    e.addEventListener("DOMContentLoaded", function () {
+        inti();
+    });
+    function inti() {
+        let r = e.querySelector('#root');
+        r.replaceChildren(
+            e.createElement('div', { class: "page-header" },
+                e.createElement('div', { class: "breadcrumb-bar" },
+                    e.createElement('a', { href: "index", class: "crumb" }, 'Sign-up forms'),
+                    e.createElement('span', { class: "icon-wrapper" }, e.createElement('i', { class: "fa fa-angle-right fa-lg" })),
+                    e.createElement('a', { class: "crumb" }, 'Create Form')
+                ),
+                e.createElement('div', { class: "" },
+                    e.createElement('input', { class: "white_btn", type: "button", value: "Create new sign-up form", click: (event) => { createForm(event); } }),
+                )
+            ),
+            e.createElement('div', { class: "row" },
+                e.createElement('div', { class: "col-12" },
+                    e.createElement('div', { id: "form-table", class: "box" })
+                )
+            )
+        )
+    }
+    function createForm(event) {
+        event.preventDefault();
+        let _m = (new ModalPopup()).inti('Create sign-up form'), myModal = new bootstrap.Modal(_m),
+            s = e.createElement('select', { name: "list" });
+        // Add body
+        let l = document.createElement('label', { class: "form-label" }, 'Name'),
+            t = document.createElement('input', { class: "form-control", type: "text", placeholder: "e.g. Welcome series, Post purchase" });
+        _m.querySelector('.modal-body').replaceChildren(
+            e.createElement('div', { class: "InputContainer mb-2" },
+                e.createElement('label', { class: "form-label" }, 'Form name'),
+                e.createElement('input', { class: "form-control", type: "text", name: "name", placeholder: "e.g. Newsletter sign-up", autocomplete: "off", value: "" })
+            ),
+            e.createElement('div', { class: "InputContainer mb-2" },
+                e.createElement('label', { class: "form-label" }, 'Which list should subscribers be added to?'),
+                e.createElement('div', {}, s)
+            ),
+            e.createElement('div', { class: "InputContainer mb-2" },
+                e.createElement('label', { class: "form-label" }, 'Choose a form type'),
+                e.createElement('div', { class: "card-box mb-2" },
+                    e.createElement('label', { class: "d-flex w-100" },
+                        e.createElement('input', { class: "mx-4", type: "radio", id: "0277bac8-8d5b-4d03-be09-a177e4a8b116", name: "formType", value: "POPUP", checked: "" }),
+                        e.createElement('div', { class: "align-self-center overflow-hidden me-auto" },
+                            e.createElement('div', { class: "ActionTileBase-container" }),
+                            e.createElement('div', { class: "ActionTileBase-content" },
+                                e.createElement('h5', { class: "font-size-14 text-truncate" }, 'Popup'),
+                                e.createElement('p', { class: "text-muted mb-0" }, 'Pops up in the middle of the screen')
+                            )
+                        )
+                    )
+                ),
+                e.createElement('div', { class: "card-box mb-2" },
+                    e.createElement('label', { class: "d-flex w-100" },
+                        e.createElement('input', { class: "mx-4", type: "radio", id: "0277bac8-8d5b-4d03-be09-a177e4a8b116", name: "formType", value: "EMBED" }),
+                        e.createElement('div', { class: "align-self-center overflow-hidden me-auto" },
+                            e.createElement('div', { class: "ActionTileBase-container" }),
+                            e.createElement('div', { class: "ActionTileBase-content" },
+                                e.createElement('h5', { class: "font-size-14 text-truncate" }, 'Embed'),
+                                e.createElement('p', { class: "text-muted mb-0" }, 'Embedded in your site. This requires adding a small snippet of code to your site where you want the form to appear')
+                            )
+                        )
+                    )
+                )
+            )
+        );
+        let list = new Selectr(s, { data: [], searchable: !1, defaultSelected: !1, placeholder: 'Choose a list...' });
+        Http.get('/api/lists/static-group?type=1').then(response => response.json()).then(function (data) { list.add(data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []); });
+        //list.data = (async () => { return await Http.get('/api/lists/static-group?type=1').then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []; }); });
+        //list.add(async () => { return await Http.get('/api/lists/static-group?type=1').then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []; }); });
+
+        _m.querySelector('.modal-footer').replaceChildren(
+            e.createElement('button', { class: "white_btn", type: "button", title: "Cancel" }, 'Cancel'),
+            e.createElement('button', { class: "black_btn", type: "button", title: "Save and continue to design" }, 'Save and continue to design'),
+        );
+        // Add footer
+        let c = document.createElement('button', { type: "button", class: "btn btn-secondary waves-effect", 'data-bs-dismiss': "modal" }, 'Close'),
+            a = document.createElement('button', { type: "button", class: "btn btn-primary" }, 'Create flow');
+        myModal.show();
+    }
+    class ModalPopup {
+        constructor(title) {
+            this.inti(title);
+        }
+        inti(title) {
+            return e.createElement('div', { class: "modal fade", tabindex: "-1" },
+                e.createElement('div', { class: "modal-dialog" },
+                    e.createElement('div', { class: "modal-content" },
+                        e.createElement('div', { class: "modal-header" },
+                            e.createElement('h5', { class: "modal-title" }, title),
+                            e.createElement('button', { type: "button", class: "btn-close", "data-bs-dismiss": "modal", "aria-label": "Close" },)
+                        ),
+                        e.createElement('div', { class: "modal-body" }),
+                        e.createElement('div', { class: "modal-footer" })
+                    )
+                )
+            )
+        }
+    }
+</script>

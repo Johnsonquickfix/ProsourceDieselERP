@@ -29,7 +29,10 @@ Document.prototype.createElement = function (type, props, ...children) {
             element.classList.add(str.slice(1));
         }
     }
-    for (var prop in props) { element.setAttribute(prop, props[prop]); }
+    for (var prop in props) {
+        if (props[prop] != null && Object.prototype.toString.call(props[prop]) === "[object Function]") element.addEventListener(prop, props[prop]);
+        else element.setAttribute(prop, props[prop]);
+    }
     children.forEach((child, index) => {
         typeof (child) === 'string' ? element.innerHTML = child : element.append(child)
     });
@@ -65,7 +68,7 @@ const isValidElement = (element) => {
  * @return {Boolean}          true if the value should be added, false if not
  */
 const isValidValue = (element) => {
-  return !['checkbox', 'radio'].includes(element.type) || element.checked;
+    return !['checkbox', 'radio'].includes(element.type) || element.checked;
 };
 
 /**
@@ -95,13 +98,13 @@ const isSelect = (element) => element.options && !element.multiple;;
  * @return {Array}                          an array of selected option values
  */
 const getSelectValues = (options) =>
-  [].reduce.call(
-    options,
-    (values, option) => {
-      return option.selected ? values.concat(option.value) : values;
-    },
-    []
-  );
+    [].reduce.call(
+        options,
+        (values, option) => {
+            return option.selected ? values.concat(option.value) : values;
+        },
+        []
+    );
 
 /**
  * Convert string with dot notation to JSON and returns it as a JSON object.
@@ -110,7 +113,7 @@ const getSelectValues = (options) =>
  * @param  {object} obj             the form obj
  * @return {Object}                 form data as an object literal
  */
-const stringToObj = (path, value, obj) =>{
+const stringToObj = (path, value, obj) => {
     let parts = path.split("."), part;
     let last = parts.pop();
     while (part = parts.shift()) {

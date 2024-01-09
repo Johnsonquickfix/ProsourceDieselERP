@@ -216,8 +216,10 @@
         $("#product_attributes").append('<div id="row_' + i + '" class="box box-primary" data-position= "' + i + '" data-istaxonomy="false" data-taxonomy="">    <div class="box-header with-border"><h3 class="panel-title" id="heading_' + i + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + i + '" aria-expanded="false" class="collapsed">New attribute </a></h3><div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="' + i + '"><i class="fa fa-trash text-red"></i></button></div></div>    <div id="collapse_' + i + '" class="panel-collapse collapse in" aria-labelledby="heading_' + i + '" data-bs-parent="#tbhold">        <div class="box-body">            <div class="row">            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" name="attribute_names[' + i + ']" value=""><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[' + i + ']" checked="1"><label for="attribute_visibility[' + i + ']">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[' + i + ']" checked=""><label for="attribute_variation[' + i + ']">Used for variations</label></div></div></div>            <div class="col-md-6"><grammarly-extension data-grammarly-shadow-root="true" class="dnXmp" style="position: absolute; top: 0px; left: 0px; pointer-events: none;"></grammarly-extension><grammarly-extension data-grammarly-shadow-root="true" class="dnXmp" style="position: absolute; top: 0px; left: 0px; pointer-events: none;"></grammarly-extension><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" name="attribute_values[' + i + ']" spellcheck="true"></textarea></div></div>            </div>        </div>    </div></div>');
     });
     $("#addnewatt").click(function (e) {
-        i++;
-        itxtCnt = itxtCnt + 1;
+        var rowCount = $("#product_attributes [id^='row_']").length;
+        var newID = rowCount > 0 ? rowCount : i;
+        //i++;
+        //itxtCnt = itxtCnt + 1;
         e.preventDefault();
         var selectedValue = $("#ddcustomeproduct").val();
         var selectedText = $("#ddcustomeproduct").find("option:selected").text();
@@ -227,26 +229,26 @@
         // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
         //$("#product_attributes").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + '></textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
         //$("#product_attributes").append('<div id="row_' + i + '" class="box box-primary" data-position="' + i + '" data-istaxonomy="true" data-taxonomy="' + selectedValue + '">    <div class="box-header with-border"><h3 class="panel-title" id="heading_' + i + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + i + '" aria-expanded="false" class="collapsed">' + selectedText + '</a></h3><div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="0"><i class="fa fa-trash text-red"></i></button></div></div>    <div id="collapse_' + i + '" class="panel-collapse collapse in" aria-labelledby="heading_' + i + '" data-bs-parent="#tbhold">        <div class="box-body">            <div class="row">            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">' + selectedText + '</strong><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility' + i + '" checked="1"><label for="attribute_visibility' + i + '">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation' + i + '"><label for="attribute_variation' + i + '">Used for variations</label></div></div></div>            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values['+i+']" class="form-control" data-taxonomy="'+ selectedValue +'" style="width:100%;" multiple></select></div></div>            </div>        </div>    </div></div>');
-        var newRow = '<div id="row_' + i + '" class="box box-primary" data-position="' + i + '" data-istaxonomy="true" data-taxonomy="' + selectedValue + '"> \
-        <div class="box-header with-border"><h3 class="panel-title" id="heading_' + i + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + i + '" aria-expanded="false" class="collapsed">' + selectedText + '</a></h3> \
-        <div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="'+i+'"><i class="fa fa-trash text-red"></i></button></div></div> \
-        <div id="collapse_' + i + '" class="panel-collapse collapse in" aria-labelledby="heading_' + i + '" data-bs-parent="#tbhold"> \
+        var newRow = '<div id="row_' + newID + '" class="box box-primary" data-position="' + newID + '" data-istaxonomy="true" data-taxonomy="' + selectedValue + '"> \
+        <div class="box-header with-border"><h3 class="panel-title" id="heading_' + newID + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + newID + '" aria-expanded="false" class="collapsed">' + selectedText + '</a></h3> \
+        <div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="'+ newID+'"><i class="fa fa-trash text-red"></i></button></div></div> \
+        <div id="collapse_' + newID + '" class="panel-collapse collapse in" aria-labelledby="heading_' + newID + '" data-bs-parent="#tbhold"> \
             <div class="box-body"> \
                 <div class="row"> \
                     <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">' + selectedText + '</strong> \
-                        <div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility' + i + '" checked="1"><label for="attribute_visibility' + i + '">Visible on the product page</label></div> \
-                        <div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation' + i + '"><label for="attribute_variation' + i + '">Used for variations</label></div></div></div> \
-                    <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values[' + i + ']" class="form-control select2" data-taxonomy="' + selectedValue + '" style="width:100%;" multiple></select></div></div> \
+                        <div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility' + newID + '" checked="1"><label for="attribute_visibility' + newID + '">Visible on the product page</label></div> \
+                        <div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation' + newID + '"><label for="attribute_variation' + newID + '">Used for variations</label></div></div></div> \
+                    <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values[' + newID + ']" class="form-control select2" data-taxonomy="' + selectedValue + '" style="width:100%;" multiple></select></div></div> \
                 </div> \
             </div> \
         </div></div>';
 
         // Append the new row to the container
         $("#product_attributes").append(newRow);
-
+        i = newID + 1;
 
         // Initialize Select2 for the newly added dropdown
-        $(".select2").select2();
+        //$(".select2").select2();
 
 
         $('select[name^="attribute_values"]').last().select2({
@@ -629,7 +631,7 @@
                         varHTML += '</div>';
                         varHTML += '</div>';
                         $("#product_variations").append(varHTML);
-                         $(".select2").select2();
+                        // $(".select2").select2();
                         //let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="text" class="nmvariationid" id="hfvariationid" value="' + IDPost + '" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div>    <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" /></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" class="chkproducttypevir" id="virtualcheck" value=""><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox" class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation"> <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea class="txtdescriptionvariation"></textarea></div></div><div class="box-footer text-right"></div></div> </div></div>';
                         //$("#product_variations").append(varHTML);
                     }
@@ -642,7 +644,7 @@
         }
         else
             swal('Alert!', " Before you can add a variation you need to add some variation attributes on the Attributes tab.", 'error');
-    });
+     });
 
     //Remove input field  
     $(document).on('click', '.btn_remove', function () {
@@ -668,9 +670,9 @@
         $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
         $('#btnbackcategory').attr("disabled", false);
 
-        $('#add').attr("disabled", true);
-        $('#addnewatt').attr("disabled", true);
-        $('#ddcustomeproduct').attr("disabled", true);
+        //$('#add').attr("disabled", true);
+        //$('#addnewatt').attr("disabled", true);
+        //$('#ddcustomeproduct').attr("disabled", true);
         isEdit(true);
 
     });
@@ -706,7 +708,7 @@
     })
 
     $("#btnSavevariations").click(function (e) {
-        debugger
+        //debugger
         let _attxml = [];
         let parentID = parseInt($("#hfUpdatedID").val()) || parseInt($("#hfid").val());
         // console.log(parentID);
@@ -721,6 +723,7 @@
                     { post_id: $(div).find('.nmvariationid').val(), meta_key: 'attribute_' + $(this).data('key'), meta_value: $(this).val() }
                 );
             });
+            //console.log(_attxml);
 
             $(div).find(".skucval").each(function () {
                 _attxml.push(
@@ -989,7 +992,7 @@
         //console.log(taxonomyValues);
         //console.log(_list);         
         var serializedPhpArray = convertArrayToSerializedPHP(_list);       
-       //console.log(serializedPhpArray);
+        //console.log(serializedPhpArray);
         //$('.input').each(function () {
         //    if (this.value != '')
         //        values.push(this.value);

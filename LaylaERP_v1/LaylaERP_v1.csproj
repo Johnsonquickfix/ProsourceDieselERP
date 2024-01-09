@@ -1991,6 +1991,7 @@
     <Content Include="Views\Flows\HtmlEditor.cshtml" />
     <Content Include="Views\Flows\library.cshtml" />
     <Content Include="Views\Flows\TemplateEditor.cshtml" />
+    <Content Include="Views\Forms\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

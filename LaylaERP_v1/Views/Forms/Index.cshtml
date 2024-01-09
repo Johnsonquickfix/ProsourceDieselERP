@@ -3,6 +3,49 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
-
-<h2>Sign-up forms</h2>
-
+<style>
+</style>
+<div id="root">
+    <!--<div class="page-header">
+        <div class="breadcrumb-bar">
+            <a href="~/forms/index" class="crumb">Sign-up forms</a>
+            <a class="crumb">Create Form</a>
+        </div>
+        <div>
+            <input class="white_btn" type="button" value="Add forms to website" />
+            <input class="black_btn" type="button" value="Create Sign-up Form" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table id="form-table" class="table dt-responsive w-100 align-middle">
+            </table>
+        </div>
+    </div>-->
+</div>
+<script src="~/js/qfk/common.js"></script>
+<script type="module">
+    var e = e || document;
+    e.addEventListener("DOMContentLoaded", function () {
+        inti();
+    });
+    function inti() {
+        let r = e.querySelector('#root');
+        r.replaceChildren(
+            e.createElement('div', { class: "page-header" },
+                e.createElement('div', { class: "breadcrumb-bar" },
+                    e.createElement('a', { class: "crumb" }, 'Sign-up forms'),
+                ),
+                e.createElement('div', { class: "" },
+                    e.createElement('input', { class: "white_btn me-2", type: "button", value: "Add forms to website" }),
+                    e.createElement('input', { class: "black_btn", type: "button", value: "Create Sign-up Form", click: () => { window.location = `${window.origin}/forms/create` } })
+                )
+            ),
+            e.createElement('div', { class: "row" },
+                e.createElement('div', { class: "col-12" },
+                    e.createElement('table', { id: "form-table", class: "table dt-responsive w-100 align-middle" })
+                )
+            )
+        )
+    }
+</script>

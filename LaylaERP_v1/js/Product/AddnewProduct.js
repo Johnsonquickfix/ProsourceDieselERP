@@ -288,7 +288,7 @@
                     variationAttributes.forEach(function (attribute) {
                         // console.log(attribute);
 
-                        var selectHTML = '<select class="inputddl">';
+                        var selectHTML = '<select class="inputddl form-control select2">';
                         selectHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
 
                         // Check if the options are provided as a string or an array
@@ -1932,7 +1932,7 @@ function GetProductvariationID(ProductID) {
                 variationAttributes.forEach(function (attribute) {
                     // console.log(attribute);
 
-                    var selectHTML = '<select class="inputddl">';
+                    var selectHTML = '<select class="inputddl form-control select2">';
                     selectHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
 
                     // Check if the options are provided as a string or an array

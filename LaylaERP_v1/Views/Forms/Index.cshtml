@@ -3,8 +3,12 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
 }
-<style>
-</style>
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 <div id="root">
     <!--<div class="page-header">
         <div class="breadcrumb-bar">
@@ -25,9 +29,10 @@
 </div>
 <script src="~/js/qfk/common.js"></script>
 <script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
     var e = e || document;
     e.addEventListener("DOMContentLoaded", function () {
-        inti();
+        inti(); loaddata();
     });
     function inti() {
         let r = e.querySelector('#root');
@@ -47,5 +52,43 @@
                 )
             )
         )
+    }
+    function loaddata() {
+        let option = { page: 0, size: 10, order_by: 'name', order_asc: true }
+        $('#form-table').DataTable({
+            lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]], order: [[0, "asc"]],
+            destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+            language: {
+                lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
+                infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            },
+            sAjaxSource: '/api/form/list',
+            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+                option.page = oSettings._iDisplayStart;
+                option.size = oSettings._iDisplayLength;
+                option.order_by = aoData.find(el => el.name === "sSortColName").value;
+                option.order_asc = (aoData.find(el => el.name === "sSortDir_0").value === "asc");
+
+                oSettings.jqXHR = Http.get(sSource, { params: option }).then(response => response.json())
+                    .then(res => {
+                        return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: res.total_items, recordsFiltered: res.total_items, aaData: res.flows });
+                    });
+            },
+            columns: [
+                {
+                    data: 'name', title: 'Form name', sWidth: "20%", orderable: false, render: function (data, type, row, meta) {
+                        return `<div class=""><a data-add="false" href="/forms/${row.id}/edit">${data}</a> </div>${row.trigger_group}`;
+                    }
+                },
+                { data: 'form_type', title: 'Form type', sWidth: "10%", class: '', orderable: false, render: function (data, type, row, meta) { return `<span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas ${row.group_type_id === 1 ? 'fa-list-ul' : 'fa-bolt'}"></i> ${row.form_type}</span>`; } },
+                { data: 'status', title: 'status', sWidth: "10%", class: 'text-end', orderable: false, render: function (data, type, row, meta) { return `<span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-bolt"></i> ${data}</span>`; } },
+                { data: 'updated', title: 'Last updated', sWidth: "15%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+                { data: 'submitted_form', title: 'Submitted form', sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'performance', title: 'Performance', sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'form_submit_rate', title: 'Form submit rate', sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'id', title: '', sWidth: "5%", orderable: false, render: function (data, type, row, meta) { return ''; } }
+            ]
+        });
     }
 </script>

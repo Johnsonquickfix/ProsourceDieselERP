@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewBag.Title = "Edit Form";
+    Layout = "~/Views/Shared/_qfk_React_Layout.cshtml";
+}
+<link href="~/Content/qfk/Selectr/selectr.min.css" rel="stylesheet" />
+<script src="~/Content/qfk/Selectr/selectr.min.js"></script>
+<style>
+    .editorMain {
+        background: #FFFFFF;
+        display: flex;
+        flex-direction: row;
+        justify-content: stretch;
+        flex: 1 1 auto;
+        overflow: hidden;
+    }
+
+        .editorMain #editor-container {
+            width: 100%;
+        }
+
+            .editorMain #editor-container iframe {
+                min-height: calc(100vh - 100px) !important;
+            }
+
+    .izrMui {
+        -webkit-box-pack: center;
+        justify-content: center;
+        margin-top: 16px;
+        margin-left: 24px;
+        margin-right: 24px;
+        background-color: rgb(223, 227, 230);
+        overflow: auto;
+    }
+</style>
+<div id="root">
+</div>
+<!--
+    <script type="text/babel" data-presets="react" data-type="module" src="~/js/qfk/forms/form_view.jsx"></script>
+-->
+
+<script src="~/js/qfk/common.js"></script>
+<script src="~/js/qfk/HtmlEditor/embed.js"></script>
+<script type="module">
+    import Http from '@Url.Content("~/js/http/index.js")';
+    var e = e || document;
+    e.addEventListener("DOMContentLoaded", function () {
+        inti();
+        let editor = new Editor(); editor.inti()
+        unlayer.addEventListener('design:updated', function (updates) {
+            // Design is updated by the user
+            unlayer.exportHtml(function (data) {});
+
+        });
+    });
+    function inti() {
+        let r = e.querySelector('#root');
+        r.replaceChildren(
+            e.createElement('div', { class: "page-header" },
+                e.createElement('div', { class: "breadcrumb-bar" },
+                    e.createElement('a', { href: "index", class: "crumb" }, 'Sign-up forms'),
+                    //e.createElement('span', { class: "icon-wrapper" }, e.createElement('i', { class: "fa fa-angle-right fa-lg" })),
+                    //e.createElement('a', { class: "crumb" }, 'Create Form')
+                ),
+                e.createElement('div', { class: "" },
+                    e.createElement('input', { class: "white_btn me-2", type: "button", value: "Exit", click: (event) => {  } }),
+                    e.createElement('input', { class: "white_btn me-2", type: "button", value: "Publish", click: (event) => {  } }),
+                )
+            ),
+            e.createElement('div', { class: "editorMain" },e.createElement('div', { id: "editor-container" }))
+        )
+    }
+
+    class Editor {
+        baseURL = window.location.origin;
+        inti() {
+            unlayer.init({
+                id: "editor-container", locale: 'en-US', displayMode: "popup", projectId: 167,//projectId: 158371,
+                appearance: { panels: { tools: { dock: 'left' } } },
+                tools: {
+                    'custom#product_tool': {
+                        //data: { products, },
+                        //properties: { productLibrary: { editor: { data: { products, }, }, }, },
+                    },
+                },
+                customCSS: [this.baseURL + "/js/qfk/HtmlEditor/product-library-tool/productTool.css"],
+                customJS: [this.baseURL + "/js/qfk/HtmlEditor/product-library-tool/productTool.js"],
+                mergeTags: {
+                    organization: { name: 'organization.name', value: '{{ organization.name }}' },
+                    organization_address: { name: 'organization.full_address', value: '{{ organization.full_address }}', },
+                    organization_url: { name: 'organization.url', value: '{{ organization.url }}' },
+                    unsubscribe: { name: 'unsubscribe', value: '{% unsubscribe %}' },
+                    person_first_name: { name: 'first_name', value: '{{ first_name }}' },
+                    person_last_name: { name: 'last_name', value: '{{ last_name }}' },
+                    person_phone_number: { name: 'person.phone_number', value: '{{ person.phone_number }}' },
+                    person_organization: { name: 'person.organization', value: '{{ person.organization }}' },
+                    person_title: { name: 'person.title', value: '{{ person.title }}' },
+                },
+                editor: { confirmOnDelete: true }
+            });
+        }
+        create(event, modal) {
+            event.preventDefault(), event.stopPropagation();
+            let j = {
+                name: modal.querySelector('[name="name"]').value,
+                list_id: parseInt(modal.querySelector('[name="list"]').value) || 0,
+                form_type: modal.querySelector('[name="formType"]:checked').value
+            }
+            console.log(j)
+            if (j.name === '') { swal('Error!', "'name' is required.", 'error').then(function () { swal.close(); modal.querySelector('[name="name"]').focus() }); return false; }
+            else if (j.list_id <= 0) { swal('Error!', "'list' is required.", 'error').then(function () { swal.close(); modal.querySelector('[name="list"]').focus() }); return false; }
+            else {
+                Http.post('/api/form/create', { body: j })
+                    .then(response => {
+                        if (!response.ok) { return response.json().then(json => { throw new Error(json.message); }) }
+                        else return response.json();
+                    })
+                    .then(response => {
+                        if (response.status === 200) window.location = window.location.origin + `/form/${response.id}/edit`
+                        console.log('Post =>', response);
+                        //list.add(data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []);
+                    }).catch(error => { alert(error); });
+                // ;swal('Error!', error, 'error')
+            }
+        }
+    }
+</script>

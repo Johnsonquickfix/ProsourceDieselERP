@@ -1,18 +1,27 @@
 ﻿
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    //Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    Layout = "~/Views/Shared/_qfk_React_Layout.cshtml";
 }
 <link href="~/Content/qfk/Selectr/selectr.min.css" rel="stylesheet" />
 <script src="~/Content/qfk/Selectr/selectr.min.js"></script>
+<style>
+</style>
 <div id="root">
 </div>
+
 <script src="~/js/qfk/common.js"></script>
+
+@*<script type="text/babel" data-presets="react" data-type="module" data-plugins="transform-modules-umd" src="~/js/qfk/forms/form.jsx"></script>*@
+<script type="text/babel" data-presets="react" data-type="module" src="~/js/qfk/forms/form.jsx"></script>
+
+
 <script type="module">
     import Http from '@Url.Content("~/js/http/index.js")';
     var e = e || document;
     e.addEventListener("DOMContentLoaded", function () {
-        inti();
+        //inti();
     });
     function inti() {
         let r = e.querySelector('#root');
@@ -36,12 +45,9 @@
     }
     function createForm(event) {
         event.preventDefault();
-        let _m = (new ModalPopup()).inti('Create sign-up form'), myModal = new bootstrap.Modal(_m),
+        let mp = new ModalPopup(), _m = mp.inti('Create sign-up form'), myModal = new bootstrap.Modal(_m),
             s = e.createElement('select', { name: "list" });
-        // Add body
-        let l = document.createElement('label', { class: "form-label" }, 'Name'),
-            t = document.createElement('input', { class: "form-control", type: "text", placeholder: "e.g. Welcome series, Post purchase" });
-        _m.querySelector('.modal-body').replaceChildren(
+       _m.querySelector('.modal-body').replaceChildren(
             e.createElement('div', { class: "InputContainer mb-2" },
                 e.createElement('label', { class: "form-label" }, 'Form name'),
                 e.createElement('input', { class: "form-control", type: "text", name: "name", placeholder: "e.g. Newsletter sign-up", autocomplete: "off", value: "" })
@@ -56,8 +62,8 @@
                     e.createElement('label', { class: "d-flex w-100" },
                         e.createElement('input', { class: "mx-4", type: "radio", id: "0277bac8-8d5b-4d03-be09-a177e4a8b116", name: "formType", value: "POPUP", checked: "" }),
                         e.createElement('div', { class: "align-self-center overflow-hidden me-auto" },
-                            e.createElement('div', { class: "ActionTileBase-container" }),
-                            e.createElement('div', { class: "ActionTileBase-content" },
+                            e.createElement('div', { class: "flex-shrink-0 align-self-center me-3" }),
+                            e.createElement('div', { class: "flex-grow-1 overflow-hidden" },
                                 e.createElement('h5', { class: "font-size-14 text-truncate" }, 'Popup'),
                                 e.createElement('p', { class: "text-muted mb-0" }, 'Pops up in the middle of the screen')
                             )
@@ -68,8 +74,8 @@
                     e.createElement('label', { class: "d-flex w-100" },
                         e.createElement('input', { class: "mx-4", type: "radio", id: "0277bac8-8d5b-4d03-be09-a177e4a8b116", name: "formType", value: "EMBED" }),
                         e.createElement('div', { class: "align-self-center overflow-hidden me-auto" },
-                            e.createElement('div', { class: "ActionTileBase-container" }),
-                            e.createElement('div', { class: "ActionTileBase-content" },
+                            e.createElement('div', { class: "flex-shrink-0 align-self-center me-3" }),
+                            e.createElement('div', { class: "flex-grow-1 overflow-hidden" },
                                 e.createElement('h5', { class: "font-size-14 text-truncate" }, 'Embed'),
                                 e.createElement('p', { class: "text-muted mb-0" }, 'Embedded in your site. This requires adding a small snippet of code to your site where you want the form to appear')
                             )
@@ -80,16 +86,10 @@
         );
         let list = new Selectr(s, { data: [], searchable: !1, defaultSelected: !1, placeholder: 'Choose a list...' });
         Http.get('/api/lists/static-group?type=1').then(response => response.json()).then(function (data) { list.add(data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []); });
-        //list.data = (async () => { return await Http.get('/api/lists/static-group?type=1').then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []; }); });
-        //list.add(async () => { return await Http.get('/api/lists/static-group?type=1').then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []; }); });
-
         _m.querySelector('.modal-footer').replaceChildren(
             e.createElement('button', { class: "white_btn", type: "button", title: "Cancel" }, 'Cancel'),
-            e.createElement('button', { class: "black_btn", type: "button", title: "Save and continue to design" }, 'Save and continue to design'),
+            e.createElement('button', { class: "black_btn", type: "button", title: "Save and continue to design", click: (e) => { mp.create(e, _m) } }, 'Save and continue to design'),
         );
-        // Add footer
-        let c = document.createElement('button', { type: "button", class: "btn btn-secondary waves-effect", 'data-bs-dismiss': "modal" }, 'Close'),
-            a = document.createElement('button', { type: "button", class: "btn btn-primary" }, 'Create flow');
         myModal.show();
     }
     class ModalPopup {
@@ -109,6 +109,27 @@
                     )
                 )
             )
+        }
+        create(event, modal) {
+            event.preventDefault(), event.stopPropagation();
+            let j = {
+                name: modal.querySelector('[name="name"]').value,
+                list_id: parseInt(modal.querySelector('[name="list"]').value) || 0,
+                form_type: modal.querySelector('[name="formType"]:checked').value
+            }
+            if (j.name === '') { swal('Error!', "'name' is required.", 'error').then(function () { swal.close(); modal.querySelector('[name="name"]').focus() }); return false; }
+            else if (j.list_id <= 0) { swal('Error!', "'list' is required.", 'error').then(function () { swal.close(); modal.querySelector('[name="list"]').focus() }); return false; }
+            else {
+                Http.post('/api/form/create', { body: j })
+                    .then(response => {
+                        if (!response.ok) { return response.json().then(json => { throw new Error(json.message); }) }
+                        else return response.json();
+                    })
+                    .then(response => {
+                        if (response.status === 200) window.location = window.location.origin + `/forms/${response.id}/edit`
+                    }).catch(error => { alert(error); });
+                // ;swal('Error!', error, 'error')
+            }
         }
     }
 </script>

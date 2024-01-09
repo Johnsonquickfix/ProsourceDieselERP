@@ -20,5 +20,11 @@ namespace LaylaERP.Controllers.qfk
         {
             return View();
         }
+
+        [Route("{id}/edit")]
+        public ActionResult Edit()
+        {
+            return View();
+        }
     }
 }

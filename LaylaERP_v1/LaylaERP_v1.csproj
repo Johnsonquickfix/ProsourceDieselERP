@@ -266,6 +266,7 @@
     <Compile Include="BAL\qfk\CampaignRepository.cs" />
     <Compile Include="BAL\qfk\CatalogRepository.cs" />
     <Compile Include="BAL\qfk\EmailTemplatesRepository.cs" />
+    <Compile Include="BAL\qfk\FormsRepository.cs" />
     <Compile Include="BAL\qfk\FlowsRepository.cs" />
     <Compile Include="BAL\qfk\ImportData.cs" />
     <Compile Include="BAL\qfk\ProfilesRepository.cs" />
@@ -292,6 +293,7 @@
     <Compile Include="Controllers\API\EditorController.cs" />
     <Compile Include="Controllers\API\EmailTemplatesController.cs" />
     <Compile Include="Controllers\API\EventsController.cs" />
+    <Compile Include="Controllers\API\FormsController.cs" />
     <Compile Include="Controllers\API\FlowsController.cs" />
     <Compile Include="Controllers\API\IdentifyController.cs" />
     <Compile Include="Controllers\API\ListsController.cs" />
@@ -424,6 +426,7 @@
     <Compile Include="Models\qfk\Enums\Criteria.cs" />
     <Compile Include="Models\qfk\Flows\Flow.cs" />
     <Compile Include="Models\qfk\Flows\FlowFilter.cs" />
+    <Compile Include="Models\qfk\Forms\Form.cs" />
     <Compile Include="Models\qfk\JqDataTableModel.cs" />
     <Compile Include="Models\qfk\MailTracking\TrackingRequest.cs" />
     <Compile Include="Models\qfk\SearchModel.cs" />
@@ -1140,10 +1143,14 @@
     <Content Include="js\qfk\catalog\items.js" />
     <Content Include="js\qfk\catalog\sources.js" />
     <Content Include="js\qfk\common.js" />
+    <Content Include="js\qfk\components\Modal.jsx" />
     <Content Include="js\qfk\EmailTemplates\templates.js" />
     <Content Include="js\qfk\flows\content.js" />
     <Content Include="js\qfk\flows\flowconfig.js" />
     <Content Include="js\qfk\flows\createflow.js" />
+    <Content Include="js\qfk\forms\form_view.jsx" />
+    <Content Include="js\qfk\forms\form.jsx" />
+    <Content Include="js\qfk\forms\index.jsx" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\contentEditor.chunk.js" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\editor.html" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\editor.js" />
@@ -1266,6 +1273,12 @@
     <Content Include="js\qfk\HtmlEditor\social\icons\default.png" />
     <Content Include="js\qfk\Lists\groups.js" />
     <Content Include="js\qfk\Lists\segment.js" />
+    <Content Include="js\qfk\react\babel.min.js" />
+    <Content Include="js\qfk\react\emotion-react.umd.min.js" />
+    <Content Include="js\qfk\react\prop-types.min.js" />
+    <Content Include="js\qfk\react\react-bootstrap.min.js" />
+    <Content Include="js\qfk\react\react-dom.development.js" />
+    <Content Include="js\qfk\react\react.development.js" />
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\POInventorySheet.js" />
     <Content Include="js\Reception\POInventoryValuation.js" />
@@ -1992,6 +2005,8 @@
     <Content Include="Views\Flows\library.cshtml" />
     <Content Include="Views\Flows\TemplateEditor.cshtml" />
     <Content Include="Views\Forms\Create.cshtml" />
+    <Content Include="Views\Forms\Edit.cshtml" />
+    <Content Include="Views\Shared\_qfk_React_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -9,7 +9,7 @@
     CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
     CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
     CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);
-
+     
     $('li:contains(Variations)').hide();
 
     $("#btnbacklist").prop("href", "ListProduct")
@@ -27,7 +27,7 @@
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlShipping");
         })
     });
-
+  
     $('#chkgiftcard').change();
     Getsimpalproducttype(),
         bindCategory(id);
@@ -204,26 +204,130 @@
     var inputchkvisible = new Array();
     var inputchkvariation = new Array();
     var itxtCnt = 0;
-    var i = 1;
+    var i = 0;
     $("#add").click(function (e) {
         i++;
         itxtCnt = itxtCnt + 1;
         e.preventDefault();
         /*$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');*/
         // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-        $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + '></textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        //$("#product_attributes").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + '></textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
 
+        $("#product_attributes").append('<div id="row_' + i + '" class="box box-primary" data-position= "' + i + '" data-istaxonomy="false" data-taxonomy="">    <div class="box-header with-border"><h3 class="panel-title" id="heading_' + i + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + i + '" aria-expanded="false" class="collapsed">New attribute </a></h3><div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="' + i + '"><i class="fa fa-trash text-red"></i></button></div></div>    <div id="collapse_' + i + '" class="panel-collapse collapse in" aria-labelledby="heading_' + i + '" data-bs-parent="#tbhold">        <div class="box-body">            <div class="row">            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" name="attribute_names[' + i + ']" value=""><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[' + i + ']" checked="1"><label for="attribute_visibility[' + i + ']">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[' + i + ']" checked=""><label for="attribute_variation[' + i + ']">Used for variations</label></div></div></div>            <div class="col-md-6"><grammarly-extension data-grammarly-shadow-root="true" class="dnXmp" style="position: absolute; top: 0px; left: 0px; pointer-events: none;"></grammarly-extension><grammarly-extension data-grammarly-shadow-root="true" class="dnXmp" style="position: absolute; top: 0px; left: 0px; pointer-events: none;"></grammarly-extension><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" name="attribute_values[' + i + ']" spellcheck="true"></textarea></div></div>            </div>        </div>    </div></div>');
+    });
+    $("#addnewatt").click(function (e) {
+        i++;
+        itxtCnt = itxtCnt + 1;
+        e.preventDefault();
+        var selectedValue = $("#ddcustomeproduct").val();
+        var selectedText = $("#ddcustomeproduct").find("option:selected").text();
+
+
+        /*$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');*/
+        // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        //$("#product_attributes").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + '></textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        //$("#product_attributes").append('<div id="row_' + i + '" class="box box-primary" data-position="' + i + '" data-istaxonomy="true" data-taxonomy="' + selectedValue + '">    <div class="box-header with-border"><h3 class="panel-title" id="heading_' + i + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + i + '" aria-expanded="false" class="collapsed">' + selectedText + '</a></h3><div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="0"><i class="fa fa-trash text-red"></i></button></div></div>    <div id="collapse_' + i + '" class="panel-collapse collapse in" aria-labelledby="heading_' + i + '" data-bs-parent="#tbhold">        <div class="box-body">            <div class="row">            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">' + selectedText + '</strong><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility' + i + '" checked="1"><label for="attribute_visibility' + i + '">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation' + i + '"><label for="attribute_variation' + i + '">Used for variations</label></div></div></div>            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values['+i+']" class="form-control" data-taxonomy="'+ selectedValue +'" style="width:100%;" multiple></select></div></div>            </div>        </div>    </div></div>');
+        var newRow = '<div id="row_' + i + '" class="box box-primary" data-position="' + i + '" data-istaxonomy="true" data-taxonomy="' + selectedValue + '"> \
+        <div class="box-header with-border"><h3 class="panel-title" id="heading_' + i + '"><a data-toggle="collapse" data-parent="#accordion" href="#collapse_' + i + '" aria-expanded="false" class="collapsed">' + selectedText + '</a></h3> \
+        <div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove" id="'+i+'"><i class="fa fa-trash text-red"></i></button></div></div> \
+        <div id="collapse_' + i + '" class="panel-collapse collapse in" aria-labelledby="heading_' + i + '" data-bs-parent="#tbhold"> \
+            <div class="box-body"> \
+                <div class="row"> \
+                    <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">' + selectedText + '</strong> \
+                        <div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility' + i + '" checked="1"><label for="attribute_visibility' + i + '">Visible on the product page</label></div> \
+                        <div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation' + i + '"><label for="attribute_variation' + i + '">Used for variations</label></div></div></div> \
+                    <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values[' + i + ']" class="form-control select2" data-taxonomy="' + selectedValue + '" style="width:100%;" multiple></select></div></div> \
+                </div> \
+            </div> \
+        </div></div>';
+
+        // Append the new row to the container
+        $("#product_attributes").append(newRow);
+
+
+        // Initialize Select2 for the newly added dropdown
+        $(".select2").select2();
+
+
+        $('select[name^="attribute_values"]').last().select2({
+            allowClear: true,
+            minimumInputLength: 0,
+            multiple: true,
+            ajax: {
+                url: '/Product/GetTaxonomyTerms', type: "get", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { taxonomy: $(this).data('taxonomy') || '-', query: params.term || '' }; return obj;
+                },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.name, name: item.name, id: item.term_taxonomy_id } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
     });
     $(document).on('click', '.a-float-right', function () {
         $(this).toggleClass('angle-change');
         $(this).parents('.box-header').next('.varient-box').slideToggle(100).parents('.form-group.d-flex').siblings().find('.varient-box').slideUp(100).siblings('.box-header').find('#angle-box').removeClass('angle-change');
     });
 
+    $("#btnattributerefresh").click(function (e) {
+        $("#product_attributesvariations").empty();
+        let _shipping_class = GetShippingClass();
+        let _producttype = Getproducttype();
+        var obj = { strVal: parseInt($("#hfUpdatedID").val()) || 0 }
+        $.ajax({
+            url: '/Product/Getvariationdetailsbyid', type: 'post', contentType: "application/json; charset=utf-8", dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.length > 0) {
+                    var variationAttributes = data[0].attributes.filter(function (attribute) {
+                        return attribute.is_variation === 1;
+                    });
+                    // Loop through each variation attribute
+                    variationAttributes.forEach(function (attribute) {
+                        // console.log(attribute);
+
+                        var selectHTML = '<select class="inputddl">';
+                        selectHTML += '<option value="">' + 'No default ' + attribute.display_name + '</option>';
+
+                        // Check if the options are provided as a string or an array
+                        if (typeof attribute.option === 'string') {
+                            // Split the string into an array using the pipe (|) as the delimiter
+                            var optionsArray = attribute.option.split('|');
+
+                            // Trim each option to remove leading and trailing whitespaces
+                            optionsArray = optionsArray.map(function (option) {
+                                return option.trim();
+                            });
+
+                            // Loop through the options and create option elements
+                            optionsArray.forEach(function (option) {
+                                selectHTML += '<option value="' + option + '">' + option + '</option>';
+                            });
+                        } else if (Array.isArray(attribute.option)) {
+                            // Loop through options for the current attribute
+                            attribute.option.forEach(function (option) {
+                                // Create an option element for each option
+                                selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
+                            });
+                        }
+
+                        // Close the select element
+                        selectHTML += '</select>';
+                        // Append the select element to the product_variations div
+                        $("#product_attributesvariations").append(selectHTML);
+                    });
+                }
+            }
+        })
+    });
+      
+
+
     $("#addvariation").click(function (e) {
-        let _Attlist = [];
-        $('#tbhold > tr').each(function (index, tr) {
-            _Attlist.push({ key: $(tr).find('.input').val(), value: $(tr).find('.inputdes').val() });
-        });
+        //let _Attlist = [];
+        //$('#tbhold > tr').each(function (index, tr) {
+        //    _Attlist.push({ key: $(tr).find('.input').val(), value: $(tr).find('.inputdes').val() });
+        //});
 
         $('.input').each(function () {
             if (this.value != '')
@@ -271,12 +375,196 @@
 
                         varHTML += '<div class="alignleft actions bulkactions">';
                         varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
-                        $.each(_Attlist, function (key, value) {
-                            let _values = value.value.split('|');
-                            varHTML += '<tr><select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
-                            for (let j = 0; j < _values.length; j++) { varHTML += '<option value="' + _values[j].trim() + '"> ' + _values[j].trim() + '</option>'; }
-                            varHTML += '</select></tr>';
-                        });
+
+            var _Attlist = [];
+            $("#product_attributesvariations select.inputddl").each(function () {
+                var key = $(this).find("option:selected").text();
+
+                // Skip "No default" and avoid duplicate "Any"
+                if (key !== "No default" && !_Attlist.some(item => item.key === key)) {
+                    var value = $(this).find("option").map(function () {
+                        return $(this).text();
+                    }).get().join('|');
+                    _Attlist.push({ key: key, value: value });
+                }
+            });
+            //console.log(_Attlist);
+            // Loop through _Attlist and fill dropdowns
+             
+            //$.each(_Attlist, function (key, value) {
+            //    // Check if the value object has 'key' and 'value' properties
+            //    if (value && value.key && value.value) {
+            //        let _values = value.value.split('|');
+
+            //        // Start building the dropdown HTML
+            //        varHTML += '<tr>';
+            //        varHTML += '<select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '">';
+
+            //        // Add 'Any' option if not added before
+            //        varHTML += '<option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
+
+            //        // Keep track of added values to avoid duplicates
+            //        let addedValues = [];
+
+            //        // Loop through individual options for the attribute
+            //        for (let j = 0; j < _values.length; j++) {
+            //            let optionValue = _values[j].trim();
+            //            let optionDisplay = optionValue;
+
+            //            // Remove "No default" from the option display
+            //            optionDisplay = optionDisplay.replace("No default ", "");
+
+            //            // Check if the value is not added before
+            //            if (!addedValues.includes(optionValue)) {
+            //                // Build option HTML only for options other than 'Any'
+            //                if (optionValue !== value.key.trim()) {
+            //                    varHTML += '<option value="' + optionValue + '">' + optionDisplay + '</option>';
+            //                }
+            //                addedValues.push(optionValue);
+            //            }
+            //        }
+
+            //        // Close the select and tr tags
+            //        varHTML += '</select>';
+            //        varHTML += '</tr>';
+            //    }
+            //});
+
+            //$.each(_Attlist, function (key, value) {
+            //    // Check if the value object has 'key' and 'value' properties
+            //    if (value && value.key && value.value) {
+            //        let _values = value.value.split('|');
+
+            //        // Start building the dropdown HTML
+            //        varHTML += '<tr>';
+            //        varHTML += '<select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '">';
+
+            //        // Add 'Any' option
+            //        varHTML += '<option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
+
+            //        // Keep track of added values to avoid duplicates
+            //        let addedValues = [];
+
+            //        // Loop through individual options for the attribute
+            //        for (let j = 0; j < _values.length; j++) {
+            //            let optionValue = _values[j].trim();
+            //            let optionDisplay = optionValue;
+
+            //            // Remove "No default" from the option display
+            //            optionDisplay = optionDisplay.replace("No default ", "");
+
+            //            // Check if the value is not added before
+            //            if (!addedValues.includes(optionValue)) {
+            //                // Build option HTML only for options other than 'Any'
+            //                if (optionValue !== value.key.trim()) {
+            //                    varHTML += '<option value="' + optionValue + '">' + optionDisplay + '</option>';
+            //                }
+            //                addedValues.push(optionValue);
+            //            }
+            //        }
+
+            //        // Close the select and tr tags
+            //        varHTML += '</select>';
+            //        varHTML += '</tr>';
+            //    }
+            //});
+            //let addedOptions = {};
+            //$.each(_Attlist, function (key, value) {
+            //    // Check if the value object has 'key' and 'value' properties
+            //    if (value && value.key && value.value) {
+            //        let _values = value.value.split('|');
+
+            //        // Start building the dropdown HTML
+            //        varHTML += '<tr>';
+            //        varHTML += '<select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '">';
+
+            //        // Replace "No default" with an empty option value
+            //        let cleanedKey = value.key.trim().replace("No default ", "");
+            //        varHTML += '<option value="" selected="">' + (cleanedKey ? 'Any ' + cleanedKey : 'Any') + '</option>';
+
+            //        // Keep track of whether the key is found in the values
+            //        let keyFound = false;
+
+            //        // Loop through individual options for the attribute
+            //        for (let j = 0; j < _values.length; j++) {
+            //            let optionValue = _values[j].trim();
+            //            let optionDisplay = optionValue;
+
+            //            // Replace "No default" from the option display
+            //            optionDisplay = optionDisplay.replace("No default ", "");
+
+            //            // Check if the key is found in the values
+            //            if (value.key.trim() === optionValue) {
+            //                keyFound = true;
+            //            }
+
+            //            // Build option HTML only for options other than 'Any' and not already added
+            //            if (optionValue !== value.key.trim() && !addedOptions[optionValue] && optionValue !== "None") {
+            //                varHTML += '<option value="' + optionValue + '">' + optionDisplay + '</option>';
+            //                addedOptions[optionValue] = true; // Mark the option as added
+            //            }
+            //        }
+
+            //        // Close the select and tr tags
+            //        varHTML += '</select>';
+            //        varHTML += '</tr>';
+            //    }
+            //});
+
+                        //$.each(_Attlist, function (key, value) {
+                        //    let _values = value.value.split('|');
+                        //    varHTML += '<tr><select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
+                        //    for (let j = 0; j < _values.length; j++) { varHTML += '<option value="' + _values[j].trim() + '"> ' + _values[j].trim() + '</option>'; }
+                        //    varHTML += '</select></tr>';
+                        //});
+
+            $.each(_Attlist, function (key, value) {
+                // Check if the value object has 'key' and 'value' properties
+                if (value && value.key && value.value) {
+                    let _values = value.value.split('|');
+
+                    // Start building the dropdown HTML
+                    varHTML += '<tr>';
+                    varHTML += '<select class="inputddl" id="ddl_attribute_' + ID + '" data-key="' + value.key.trim().replace("No default ", "") + '">';
+
+                    // Replace "No default" with an empty option value
+                    let cleanedKey = value.key.trim().replace("No default ", "");
+                    varHTML += '<option value="">' + (cleanedKey ? 'Any ' + cleanedKey : 'Any') + '</option>';
+
+                    // Keep track of whether the key is found in the values
+                    let keyFound = false;
+
+                    // Loop through individual options for the attribute
+                    for (let j = 0; j < _values.length; j++) {
+                        let optionValue = _values[j].trim();
+                        let optionDisplay = optionValue;
+
+                        // Replace "No default" from the option display
+                        optionDisplay = optionDisplay.replace("No default ", "");
+                        //optionValue = optionValue.replace("No default ", "");
+                        // Check if the key is found in the values
+                        if (value.key.trim() === optionValue) {
+                            keyFound = true;
+                        }
+
+                        // Build option HTML only for options other than 'Any'
+                        if (optionValue !== value.key.trim()) {
+                            varHTML += '<option value="' + optionValue + '">' + optionDisplay + '</option>';
+                        }
+                    }
+
+                    // Set the selected attribute if the key is found
+                    if (keyFound) {
+                        varHTML = varHTML.replace('<option value="">' + (cleanedKey ? 'Any ' + cleanedKey : 'Any') + '</option>', '<option value="" selected="">' + (cleanedKey ? 'Any ' + cleanedKey : 'Any') + '</option>');
+                    }
+
+                    // Close the select and tr tags
+                    varHTML += '</select>';
+                    varHTML += '</tr>';
+                }
+            });
+
+
                         varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="">'
                         varHTML += '</tbody></table>';
                         varHTML += '</div>';
@@ -318,7 +606,7 @@
                             varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
                         };
                         varHTML += '</select ></div > ';
-                        varHTML += '    </div>';
+                  /*      varHTML += '    </div>';*/
                         varHTML += '    <div class="form-group d-flex">';
                         varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control"><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div>';
                         varHTML += '    </div>';
@@ -341,7 +629,7 @@
                         varHTML += '</div>';
                         varHTML += '</div>';
                         $("#product_variations").append(varHTML);
-                        $(".select2").select2();
+                         $(".select2").select2();
                         //let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="text" class="nmvariationid" id="hfvariationid" value="' + IDPost + '" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div>    <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" /></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" class="chkproducttypevir" id="virtualcheck" value=""><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox" class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation"> <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea class="txtdescriptionvariation"></textarea></div></div><div class="box-footer text-right"></div></div> </div></div>';
                         //$("#product_variations").append(varHTML);
                     }
@@ -379,6 +667,10 @@
         var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
         $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
         $('#btnbackcategory').attr("disabled", false);
+
+        $('#add').attr("disabled", true);
+        $('#addnewatt').attr("disabled", true);
+        $('#ddcustomeproduct').attr("disabled", true);
         isEdit(true);
 
     });
@@ -651,6 +943,7 @@
     });
 
     $("#btnsaveAttributes").click(function (e) {
+        
         let _list = [];       
         var _taxonomyValues = [];
         var concatenatedString = '';
@@ -659,6 +952,12 @@
             // Extract and push the data-taxonomy attribute value
             var elementId = $(this).attr('id');
             var dataTaxonomy = $(this).data('taxonomy');
+            //if (parentID == 0) {
+            //    dataTaxonomy = $('#attribute_names\\[' + elementId.substring(4) + '\\]').val();
+            //}
+            if (dataTaxonomy === undefined || dataTaxonomy === "") {
+                dataTaxonomy = $('input[name="attribute_names[' + elementId.substring(4) + ']"]').val();
+            }
             var visibilityChecked = $('#attribute_visibility\\[' + elementId.substring(4) + '\\]').prop('checked');
             var variationChecked = $('#attribute_variation\\[' + elementId.substring(4) + '\\]').prop('checked');
             var istaxonomy = $(this).data('istaxonomy');
@@ -690,7 +989,7 @@
         //console.log(taxonomyValues);
         //console.log(_list);         
         var serializedPhpArray = convertArrayToSerializedPHP(_list);       
-        //console.log(serializedPhpArray);
+       //console.log(serializedPhpArray);
         //$('.input').each(function () {
         //    if (this.value != '')
         //        values.push(this.value);
@@ -756,6 +1055,14 @@
         //$("#hfattributeheaderval").val(values.join(','));     
         //inputchkvisible.push(true);
 
+        ProductTypeval = $("#ddlProductType").val();
+        if (ProductTypeval == 'simple') {
+            ProductTypeval = 9;
+        }
+        else {
+            ProductTypeval = 11;
+        }
+
         //$('.inputchkvar').each(function () {
         //    //if (this.value != '')
         //    inputchkvariation.push(this.checked);
@@ -769,7 +1076,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/Product/saveproductAttributes',
-                    data: "{'fields':'" + serializedPhpArray + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'term_taxonomy': '" + commaSeparatedValues + "','term_taxonomy_id': '" + result + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
+                    data: "{'fields':'" + serializedPhpArray + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'term_taxonomy': '" + commaSeparatedValues + "','term_taxonomy_id': '" + result + "', 'producttypeID': '" + ProductTypeval + "'}",
                     dataType: 'json',
                     headers: { "Content-Type": "application/json" },
                     beforeSend: function () {
@@ -901,6 +1208,16 @@
             processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.name, name: item.name, id: item.term_taxonomy_id } }) }; },
             error: function (xhr, status, err) { }, cache: true
         }
+    });   
+  
+    //$(".select2").select2();
+    $.get('/Product/GetTaxonomyTermsexisting/' + 1, { async: false }, function (data) {
+        var items = "";
+        // $('#ddlShipping').empty();
+        // items += "<option value=''>Please select</option>";  
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddcustomeproduct");
+        })
     });
 });
 
@@ -1591,6 +1908,7 @@ function GetShippingClass() {
 }
 function GetProductvariationID(ProductID) {
     $("#product_variations").empty();
+    $("#product_attributesvariations").empty();
     let _shipping_class = GetShippingClass();
     let _producttype = Getproducttype();
     var obj = { strVal: ProductID }
@@ -1602,28 +1920,7 @@ function GetProductvariationID(ProductID) {
             //console.log(data);
 
             if (data.length > 0) {
-                //var variationAttributes = data[0].attributes.filter(function (attribute) {
-                //    return attribute.is_variation === 1;
-                //});
-
-                //// Loop through each variation attribute
-                //variationAttributes.forEach(function (attribute) {
-                //    console.log(attribute);
-
-                //    var selectHTML = '<select  class="inputddl">';
-                //    selectHTML += '<option value="">' + 'No default ' +attribute.display_name + '</option>';
-                //    // Loop through options for the current attribute
-                //    attribute.option.forEach(function (option) {
-                //        // Create an option element for each option                
-                //        selectHTML += '<option value="' + option.term_id + '">' + option.name + '</option>';
-                //    });
-
-                //    // Close the select element
-                //    selectHTML += '</select>';
-
-                //    // Append the select element to the product_variations div
-                //    $("#product_variations").append(selectHTML);
-                //});
+                 
                 var variationAttributes = data[0].attributes.filter(function (attribute) {
                     return attribute.is_variation === 1;
                 });
@@ -1661,7 +1958,7 @@ function GetProductvariationID(ProductID) {
                     selectHTML += '</select>';
 
                     // Append the select element to the product_variations div
-                    $("#product_variations").append(selectHTML);
+                    $("#product_attributesvariations").append(selectHTML);
                 });
                 let varHTML = '', attHTML = '';
                 for (let i = 0; i < data.length; i++) {

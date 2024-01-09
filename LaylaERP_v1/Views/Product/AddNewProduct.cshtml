@@ -8,10 +8,26 @@
     .ml-auto {
         margin-left: auto;
     }
-</style>
-<style>
     .uppercase {
         text-transform: uppercase;
+    }
+    body .tree-node > span.tree-title {
+    padding-left:2px;
+    }
+    body .easyui-tree > li > .tree-node > .tree-checkbox {margin-right:0px !important;
+    }
+    .tree-checkbox0, .tree-checkbox1 {
+        min-width: 16px;
+    }
+    ul#ul_category {
+        overflow:auto;height:200px;
+    }
+    body .easyui-tree > li {
+    border-top:0px !important}
+    table#product_attributesvariations {border:0px;
+        display: flex;
+        gap: 15px;
+        margin-left: 15px;
     }
 </style>
 <link href="~/Content/css/Style.css" rel="stylesheet" />
@@ -341,21 +357,24 @@
                             </div>
                             <div class="tab-pane" id="tab_5">
                                 <div class="d-flex custom-flex-space form-group">
-                                    <div class="col-auto">
-                                        <select id="ddcustomeproduct" class="form-control">
-                                            <option value="">Custom product attribute</option>
+                                    <div class="col-auto ps-1">
+                                        <button title="Click here to add product attribute" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add New(Custom)</button>
+                                    </div>
+                                    <div class="col-auto d-flex" >
+                                        <select id="ddcustomeproduct" width="70%" class="form-control select2">
+                                            <option value="">Add existing</option>
                                             @*<option value="pa_cover">Cover</option>*@
                                         </select>
+                                        <button style="margin-left:15px;" title="Click here to add existing attribute" data-toggle="tooltip" id="addnewatt" type="submit" class="btn btn-danger">Add</button>
+
                                     </div>
 
-                                    @*<div>
+                                          @*<div>
                                             <input type="text" id="tbTableName" placeholder="Enter Table Name" />
                                             <button id="btAdd" type="submit" class="btn btn-danger">Add</button>
                                         </div>
                                         <div id="main"></div>*@
-                                    <div class="col-auto ps-1">
-                                        <button title="Click here to add product attribute" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add</button>
-                                    </div>
+
                                 </div>
                                 @*<form name="addrma" id="addrma" method="post">*@
                                 <div class="d-flex1">
@@ -395,12 +414,17 @@
                             <div class="tab-pane" id="tab_6">
 
                                 <div class="d-flex custom-flex-space form-group">
-                                    <div class="col-auto">
-                                        <select id="ddlattributeadd" class="form-control">
+                                    <div class="col-auto d-flex">
+                                        @*<select id="ddlattributeadd" class="form-control">
                                             <option value="">Add variation</option>
-                                        </select>
+                                        </select>*@
+                                        <button id="btnattributerefresh" title="Click here to add latest attribute" data-toggle="tooltip" type="submit" class="btn btn-danger">Refresh</button>
+
+                                        <table id="product_attributesvariations" class="simple-table">
+                                        </table>
                                     </div>
                                     <div class="col-auto ps-1">
+
                                         <button id="addvariation" title="Click here to add product variation" data-toggle="tooltip" type="submit" class="btn btn-danger">Add</button>
                                     </div>
                                 </div>

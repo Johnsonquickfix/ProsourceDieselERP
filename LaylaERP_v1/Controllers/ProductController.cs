@@ -1299,9 +1299,9 @@ namespace LaylaERP.Controllers
                     status = true;
                 }
 
-              int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
+                int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
 
-               // int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
+                // int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
 
                 int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
 
@@ -3213,6 +3213,8 @@ namespace LaylaERP.Controllers
                     Adduser_MetaData(model, ID);
                     ProductRepository.Add_term(Convert.ToInt32(producttypeID), ID);
                     //Add_term(model, ID);
+                    ProductRepository.UpdateattributMetaData(model, "IM", ID, "", "", term_taxonomy, term_taxonomy_id);
+
                     ModelState.Clear();
                     return Json(new { status = true, message = "Product attributes saved successfully!!", ID = ID }, 0);
                 }
@@ -3233,7 +3235,7 @@ namespace LaylaERP.Controllers
             string[] varFieldsValue = new string[1] { model.product_attributes };
             for (int n = 0; n < 1; n++)
             {
-                ProductRepository.UpdateattributMetaData(model, id, varFieldsName[n], varFieldsValue[n], term_taxonomy, term_taxonomy_id);
+                ProductRepository.UpdateattributMetaData(model, "UM" ,id, varFieldsName[n], varFieldsValue[n], term_taxonomy, term_taxonomy_id);
             }
         }
 
@@ -3260,6 +3262,22 @@ namespace LaylaERP.Controllers
             dt = BAL.ProductRepository.GetTermShipping();
             JSONString = JsonConvert.SerializeObject(dt);
             return Json(JSONString, JsonRequestBehavior.AllowGet);
+        }        
+        public JsonResult GetTaxonomyTermsexisting()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetTaxonomyTermsexisting();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["name"].ToString(),
+                    Text = dt.Rows[i]["label"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
         }
     }
 

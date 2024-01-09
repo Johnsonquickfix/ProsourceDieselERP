@@ -3674,14 +3674,14 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static void UpdateattributMetaData(ProductModel model, long id, string varFieldsName, string varFieldsValue,string term_taxonomy,string term_taxonomy_id)
+        public static void UpdateattributMetaData(ProductModel model, string flag, long id, string varFieldsName, string varFieldsValue,string term_taxonomy,string term_taxonomy_id)
         {
             try
             {
                 string strsql = "erp_productattributes_iud";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@qflag", "UM"),
+                    new SqlParameter("@qflag", flag),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -3730,6 +3730,33 @@ namespace LaylaERP.BAL
                 UserActivityLog.ExpectionErrorLog(Ex, "Product/update_term/" + ID + "", "Add Term Product");
                 throw Ex;
             }
+        }
+
+        public static DataTable GetTaxonomyTermsexisting()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                //SqlParameter[] parameters =
+                //{
+                //    new SqlParameter("@taxonomy", taxonomy),
+                //    new SqlParameter("@query", query),
+                //};
+                string sqlQuery = "select 'pa_'+attribute_name name,attribute_label label" +
+                          " from wp_woocommerce_attribute_taxonomies ";                           
+                //if (!string.IsNullOrEmpty(query))
+                //{
+                //    sqlQuery += " where attribute_name LIKE '%' + @query + '%'";
+                //}
+                 
+                dt = SQLHelper.ExecuteDataTable(sqlQuery);
+                //dt = SQLHelper.ExecuteDataTable("SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id WHERE tt1.taxonomy = @taxonomy and tt2.name like '%@query%' order by name", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
 
 

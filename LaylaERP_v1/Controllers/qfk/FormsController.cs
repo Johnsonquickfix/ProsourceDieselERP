@@ -22,8 +22,13 @@ namespace LaylaERP.Controllers.qfk
         }
 
         [Route("{id}/edit")]
-        public ActionResult Edit()
+        public ActionResult Edit(long id = 0)
         {
+            try
+            {
+                ViewBag.id = id;
+            }
+            catch { }
             return View();
         }
     }

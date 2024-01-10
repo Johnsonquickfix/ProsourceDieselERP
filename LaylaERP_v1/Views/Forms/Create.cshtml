@@ -1,27 +1,31 @@
 ﻿
 @{
     ViewBag.Title = "Create";
-    //Layout = "~/Views/Shared/_qfk_Layout.cshtml";
-    Layout = "~/Views/Shared/_qfk_React_Layout.cshtml";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    //Layout = "~/Views/Shared/_qfk_React_Layout.cshtml";
 }
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 <link href="~/Content/qfk/Selectr/selectr.min.css" rel="stylesheet" />
 <script src="~/Content/qfk/Selectr/selectr.min.js"></script>
-<style>
-</style>
 <div id="root">
 </div>
 
 <script src="~/js/qfk/common.js"></script>
-
 @*<script type="text/babel" data-presets="react" data-type="module" data-plugins="transform-modules-umd" src="~/js/qfk/forms/form.jsx"></script>*@
-<script type="text/babel" data-presets="react" data-type="module" src="~/js/qfk/forms/form.jsx"></script>
-
+<!--
+    <script type="text/babel" data-presets="react" data-type="module" src="~/js/qfk/forms/form.jsx"></script>
+    -->
 
 <script type="module">
     import Http from '@Url.Content("~/js/http/index.js")';
     var e = e || document;
     e.addEventListener("DOMContentLoaded", function () {
-        //inti();
+        inti(), loaddata();
     });
     function inti() {
         let r = e.querySelector('#root');
@@ -36,10 +40,10 @@
                     e.createElement('input', { class: "white_btn", type: "button", value: "Create new sign-up form", click: (event) => { createForm(event); } }),
                 )
             ),
-            e.createElement('div', { class: "row" },
-                e.createElement('div', { class: "col-12" },
-                    e.createElement('div', { id: "form-table", class: "box" })
-                )
+            e.createElement('div', { id: "form-templates", class: "row mx-2" },
+                //e.createElement('div', { class: "col-12" },
+                //    e.createElement('table', { id: "form-table", class: "table dt-responsive w-100 align-middle" })
+                //)
             )
         )
     }
@@ -131,5 +135,30 @@
                 // ;swal('Error!', error, 'error')
             }
         }
+    }
+    function loaddata() {
+        let d = e.querySelector('#form-templates'), option = { page: 0, size: 1000, order_by: 'name', order_asc: true },
+            basePath = window.location.origin;
+        Http.get('/api/form/form-templates', { params: option }).then(response => response.json())
+            .then(res => {
+                console.log(res)
+                res.templates.forEach((v, i) => {
+                    d.appendChild(
+                        e.createElement('div', { class: "col-xl-6 col-sm-6" },
+                            e.createElement('div', { class: "card" },
+                                e.createElement('div', { class: "card-body"},
+                                    e.createElement('img', { src: `..${v.image_url}`, class:"img-thumbnail" })
+                                ),
+                                e.createElement('div', { class: "px-4 py-3 border-top" },
+                                    e.createElement('div', { class: "flex-grow-1 overflow-hidden" },
+                                        e.createElement('h5', { class: "text-truncate font-size-15" }, v.name),
+                                        e.createElement('p', { class: "text-muted mb-4" }, v.description)
+                                    )
+                                )
+                            )
+                        )
+                    );
+                });
+            });
     }
 </script>

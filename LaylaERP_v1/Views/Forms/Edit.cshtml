@@ -1,7 +1,15 @@
 ﻿
 @{
     ViewBag.Title = "Edit Form";
-    Layout = "~/Views/Shared/_qfk_React_Layout.cshtml";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    //var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+
+    //Newtonsoft.Json.Linq.JToken json_data = Newtonsoft.Json.JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(LaylaERP.BAL.qfk.FormsRepository.FormAdd("get", user.login_company_id, ViewBag.id, user.UserID, string.Empty));
+    //LaylaERP.Models.qfk.Forms.Form obj = new LaylaERP.Models.qfk.Forms.Form();
+    //if (json_data["status"].ToString() == "200")
+    //{
+    //    obj = json_data["data"].ToObject<LaylaERP.Models.qfk.Forms.Form>();
+    //}
 }
 <link href="~/Content/qfk/Selectr/selectr.min.css" rel="stylesheet" />
 <script src="~/Content/qfk/Selectr/selectr.min.js"></script>
@@ -44,36 +52,34 @@
 <script type="module">
     import Http from '@Url.Content("~/js/http/index.js")';
     var e = e || document;
-    e.addEventListener("DOMContentLoaded", function () {
-        inti();
-        let editor = new Editor(); editor.inti()
-        unlayer.addEventListener('design:updated', function (updates) {
-            // Design is updated by the user
-            unlayer.exportHtml(function (data) {});
-
-        });
+    e.addEventListener("DOMContentLoaded", async function () {
+        let editor = new Editor();
+        editor.init();
     });
-    function inti() {
-        let r = e.querySelector('#root');
-        r.replaceChildren(
-            e.createElement('div', { class: "page-header" },
-                e.createElement('div', { class: "breadcrumb-bar" },
-                    e.createElement('a', { href: "index", class: "crumb" }, 'Sign-up forms'),
-                    //e.createElement('span', { class: "icon-wrapper" }, e.createElement('i', { class: "fa fa-angle-right fa-lg" })),
-                    //e.createElement('a', { class: "crumb" }, 'Create Form')
-                ),
-                e.createElement('div', { class: "" },
-                    e.createElement('input', { class: "white_btn me-2", type: "button", value: "Exit", click: (event) => {  } }),
-                    e.createElement('input', { class: "white_btn me-2", type: "button", value: "Publish", click: (event) => {  } }),
-                )
-            ),
-            e.createElement('div', { class: "editorMain" },e.createElement('div', { id: "editor-container" }))
-        )
-    }
-
     class Editor {
+        isLoad = !1;
         baseURL = window.location.origin;
-        inti() {
+        getID() { window.location.pathname.split("/")[2] || "-1" }
+        init() {
+            let r = e.querySelector('#root'), id = parseInt(window.location.pathname.split("/")[2] || "-1") || 0;
+            r.replaceChildren(
+                e.createElement('div', { class: "page-header" },
+                    e.createElement('div', { class: "breadcrumb-bar" },
+                        e.createElement('a', { href: "/forms/index", class: "crumb title" }, ''),
+                        //e.createElement('span', { class: "icon-wrapper" }, e.createElement('i', { class: "fa fa-angle-right fa-lg" })),
+                        //e.createElement('a', { class: "crumb" }, 'Create Form')
+                    ),
+                    e.createElement('div', { class: "" },
+                        e.createElement('input', { class: "white_btn me-2", type: "button", value: "Exit", click: (event) => { window.location = `${window.location.origin}/forms/index`; } }),
+                        e.createElement('input', { class: "white_btn me-2", type: "button", value: "Publish", click: (event) => { this.saveTemplate(id, !0); } }),
+                    )
+                ),
+                e.createElement('div', { class: "editorMain" }, e.createElement('div', { id: "editor-container" }))
+            );
+            this.initEditor();
+        }
+        initEditor() {
+            let id = parseInt(window.location.pathname.split("/")[2] || "-1") || 0;
             unlayer.init({
                 id: "editor-container", locale: 'en-US', displayMode: "popup", projectId: 167,//projectId: 158371,
                 appearance: { panels: { tools: { dock: 'left' } } },
@@ -98,30 +104,38 @@
                 },
                 editor: { confirmOnDelete: true }
             });
+            unlayer.addEventListener('design:updated',  (updates) => {
+                // Design is updated by the user
+                if (this.isLoad) { this.saveTemplate(id,!1); }
+            });
+            this.loadTemplate(id);
         }
-        create(event, modal) {
-            event.preventDefault(), event.stopPropagation();
-            let j = {
-                name: modal.querySelector('[name="name"]').value,
-                list_id: parseInt(modal.querySelector('[name="list"]').value) || 0,
-                form_type: modal.querySelector('[name="formType"]:checked').value
-            }
-            console.log(j)
-            if (j.name === '') { swal('Error!', "'name' is required.", 'error').then(function () { swal.close(); modal.querySelector('[name="name"]').focus() }); return false; }
-            else if (j.list_id <= 0) { swal('Error!', "'list' is required.", 'error').then(function () { swal.close(); modal.querySelector('[name="list"]').focus() }); return false; }
-            else {
-                Http.post('/api/form/create', { body: j })
-                    .then(response => {
-                        if (!response.ok) { return response.json().then(json => { throw new Error(json.message); }) }
-                        else return response.json();
-                    })
-                    .then(response => {
-                        if (response.status === 200) window.location = window.location.origin + `/form/${response.id}/edit`
-                        console.log('Post =>', response);
-                        //list.add(data ? data.map(function (row) { return { value: row.group_id, text: row.name } }) : []);
-                    }).catch(error => { alert(error); });
-                // ;swal('Error!', error, 'error')
-            }
+        loadTemplate(id) {
+            let _title = e.querySelector('#root .page-header .title');
+            Http.get(`/api/form/${id}`).then(response => response.json())
+                .then((response) => {
+                    //console.log(response, response.data.content.data_json)
+                    if (response.status === 200) {
+                        _title.innerHTML = response.data.name;
+                        unlayer.loadDesign(response.data.content.data_json); this.isLoad = !0;
+                    }
+                }).catch(error => { console.log('error', error); });
         }
+        saveTemplate(id,is_show) {
+            unlayer.exportHtml( (data) => {
+                let _body = { id: id, content_type: 'email', data_html: data.html, data_json: JSON.stringify(data.design) };
+                Http.post(`/api/form/${id}/content/update`, { body: _body }).then(response => response.json())
+                    .then((response) => {
+                        if (is_show) {
+                            if (response.status === 200) { swal('Success!', response.message, 'success'); }
+                            else { swal('Error!', response.message, 'error'); }
+                        }
+                        else {
+                            if (response.status !== 200) { swal('Error!', response.message, 'error');  }
+                        }
+                    }).catch(error => { console.log('error', error); });
+            })
+        }
+
     }
 </script>

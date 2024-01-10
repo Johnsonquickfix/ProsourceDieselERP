@@ -426,6 +426,7 @@
     <Compile Include="Models\qfk\Enums\Criteria.cs" />
     <Compile Include="Models\qfk\Flows\Flow.cs" />
     <Compile Include="Models\qfk\Flows\FlowFilter.cs" />
+    <Compile Include="Models\qfk\Forms\FormFilter.cs" />
     <Compile Include="Models\qfk\Forms\Form.cs" />
     <Compile Include="Models\qfk\JqDataTableModel.cs" />
     <Compile Include="Models\qfk\MailTracking\TrackingRequest.cs" />
@@ -1581,6 +1582,7 @@
     <Content Include="Templates\Banner.html" />
     <Content Include="Templates\contactus.html" />
     <Content Include="Templates\Prosource.html" />
+    <Content Include="Uploads\form-template\Newsletter_Subscribe.png" />
     <Content Include="Uploads\Template\5214e52c-0c35-40f5-bf3d-5fd5320d7b7f.Png" />
     <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />

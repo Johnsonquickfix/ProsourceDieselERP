@@ -72,7 +72,7 @@
 
                 oSettings.jqXHR = Http.get(sSource, { params: option }).then(response => response.json())
                     .then(res => {
-                        return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: res.total_items, recordsFiltered: res.total_items, aaData: res.flows });
+                        return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: res.total_items, recordsFiltered: res.total_items, aaData: res.forms });
                     });
             },
             columns: [
@@ -83,10 +83,10 @@
                 },
                 { data: 'form_type', title: 'Form type', sWidth: "10%", class: '', orderable: false, render: function (data, type, row, meta) { return `<span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas ${row.group_type_id === 1 ? 'fa-list-ul' : 'fa-bolt'}"></i> ${row.form_type}</span>`; } },
                 { data: 'status', title: 'status', sWidth: "10%", class: 'text-end', orderable: false, render: function (data, type, row, meta) { return `<span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-bolt"></i> ${data}</span>`; } },
-                { data: 'updated', title: 'Last updated', sWidth: "15%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
-                { data: 'submitted_form', title: 'Submitted form', sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
-                { data: 'performance', title: 'Performance', sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
-                { data: 'form_submit_rate', title: 'Form submit rate', sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'updated', title: 'Last updated', sWidth: "15%", orderable: false, render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+                { data: 'submitted_form', title: 'Submitted form', sWidth: "15%", orderable: false, class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'performance', title: 'Performance', sWidth: "15%", orderable: false, class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'form_submit_rate', title: 'Form submit rate', orderable: false, sWidth: "15%", class: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
                 { data: 'id', title: '', sWidth: "5%", orderable: false, render: function (data, type, row, meta) { return ''; } }
             ]
         });

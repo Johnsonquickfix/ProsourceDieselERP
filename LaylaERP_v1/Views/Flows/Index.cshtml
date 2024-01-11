@@ -125,10 +125,23 @@
                 { data: 'updated', title: 'Last updated', sWidth: "15%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
                 { data: 'conversion', title: 'Revenue', sWidth: "15%", class: 'text-end',render: $.fn.dataTable.render.number(',', '.', 2, '$')},
                 { data: 'conversion_per_recipient', title: 'Revenue per recipient', sWidth: "15%", class: 'text-end',render: $.fn.dataTable.render.number(',', '.', 2, '$')},
-                { data: 'id', title: '', sWidth: "5%", orderable: false, render: function (data, type, row, meta) { return ''; } }
+                { data: 'id', title: 'Action', sWidth: "5%", orderable: false, render: function (data, type, row, meta) { return actionColumn(row); } }
             ]
         });
     }
 
+    function actionColumn(d) {
+        return `<div class="dropdown">
+                    <a class="btn btn-outline-dark" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" style="">
+                        <a class="dropdown-item font-size-14" href="/flows/${d.id}/edit">Edit details</a>
+                        <a class="dropdown-item font-size-14" href="#" data-action="edit" data-bs-toggle="modal" data-bs-target="#modalEdit">Clone</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item font-size-14 text-danger" href="#" data-action="delete">Delete</a>
+                    </div>
+                </div>`
+    };
 </script>
 

@@ -232,7 +232,7 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
     };
 
 function config_panel(e) {
-    let { actionType: a, title: t, displayFooter: f } = e; 
+    let { actionType: a, title: t, displayFooter: f } = e;
     let _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body, _footer;
     _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t || ''));
     _body = doc.createElement('div', { class: `${_class}-body ${!f ? 'no-footer' : ''} `.trim() });
@@ -260,6 +260,7 @@ function triggerInitial(e) {
     return $ul;
 }
 function triggerConfiguration(e) {
+    debugger
     let p = 'configuration-panel', _config = doc.querySelector(`.${p}`), _h;
     _h = doc.createElement('div', { class: `${p}-header`.trim() }, doc.createElement('div', { class: `${p}-title`.trim() }, `Trigger Setup`));
 
@@ -267,7 +268,7 @@ function triggerConfiguration(e) {
         _done = doc.createElement("input", { type: "button", class: 'btn btn-primary', value: "Done" }),
         _cancel = doc.createElement("input", { type: "button", class: 'btn btn-alt', value: "Cancel" });
     let a, h, ul, li, f;
-    h = doc.createElement("div", null, _back);
+    h = doc.createElement("div", null, doc.createElement("button", { type: "button", class: 'btn btn-alt', click: (t) => { t.preventDefault(), initTrigger({ trigger_id: 0 }); } }, '<i class="fa fa-arrow-left me-2"></i>Back'));
     ul = doc.createElement("ul", { class: 'configuration-commands' });
     f = doc.createElement("div", { class: 'configuration-panel-footer' }, doc.createElement("span", { class: 'button-set' }, _done, _cancel));
     //group 
@@ -375,6 +376,7 @@ class Panel {
         })();
     }
     panel_setup(e) {
+        debugger
         let { type: t = 'trigger' } = e, _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body,
             buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
             buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
@@ -382,31 +384,8 @@ class Panel {
         buttonCancel.addEventListener('click', (event) => { event.preventDefault(), config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
         switch (t) {
             case lt.events.TRIGGER: {
-                buttonOk.value = "Done", _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">Trigger Setup</div>`);
-                buttonOk.addEventListener('click', (event) => { event.preventDefault(), config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
-                _body.appendChild(
-                    doc.createElement("div", { class: "trigger-setup-panel" },
-                        doc.createElement("ul", { class: "configuration-commands" },
-                            doc.createElement("li", null,
-                                doc.createElement("div", null, `<h2>Flow Trigger<br><span class="weak">Metric</span></h2>`),
-                                doc.createElement("div", { class: "flow-trigger-description" }, `<div class="flow-text-description"><p><a href="#" target="_blank" rel="noopener noreferrer">Started Checkout </a></p></div>`)
-                            ),
-                            //doc.createElement("li", null,
-                            //    doc.createElement("a", { href: "#", class: "panel-nav-link" },
-                            //        doc.createElement("div", null, `<span><h2>Trigger Filters</h2></span><p class="nav-link-desc">Filter on properties of the trigger.</p>`),
-                            //        doc.createElement("div", null, `<i class="fa fa-angle-right pull-right"></i>`)
-                            //    )
-                            //),
-                            doc.createElement("li", null,
-                                doc.createElement("a", { href: "#", class: "panel-nav-link" },
-                                    doc.createElement("div", null, `<span><h2>Flow Filters</h2></span><p class="nav-link-desc">Restrict the flow to only certain people.</p>`),
-                                    doc.createElement("div", null, `<i class="fa fa-angle-right pull-right"></i>`)
-                                )
-                            )
-                        ),
-                        doc.createElement("div", { class: "configuration-panel-footer" }, doc.createElement("span", { class: "button-set" }, buttonOk))
-                    )
-                );
+                _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">Trigger Setup</div>`);
+                _body.appendChild(this.panel_trigger(e));
             }; break;
             case lt.events.EMAIL: {
                 _header = doc.createElement('div', { class: `${_class}-header`.trim() },
@@ -427,6 +406,39 @@ class Panel {
             }; break;
         }
         _config.replaceChildren(_header, _body);
+    }
+    panel_trigger(e) {
+        let t = '', v = '';
+        if (e.trigger_type === 0) t = 'Metric', v = e.trigger_statistic.name;
+        else if (e.trigger_type === 1 && e.trigger_group) t = e.trigger_group.type === 1 ? 'List' : 'Segment', v = e.trigger_group.name;
+        else if (e.trigger_type === 3) t = 'Date Property';
+        return doc.createElement("div", { class: "trigger-setup-panel" },
+            doc.createElement("ul", { class: "configuration-commands" },
+                doc.createElement("li", null,
+                    doc.createElement("div", null, doc.createElement("h2", { class: "mb-0" }, `Flow Trigger<br>`, doc.createElement("span", { class: "weak" }, t))),
+                    doc.createElement("div", { class: "flow-trigger-description" }, `<div class="flow-text-description"><p><a href="#" target="_blank" rel="noopener noreferrer">${v} </a></p></div>`)
+                ),
+                //doc.createElement("li", null,
+                //    doc.createElement("a", { href: "#", class: "panel-nav-link" },
+                //        doc.createElement("div", null, `<span><h2>Trigger Filters</h2></span><p class="nav-link-desc">Filter on properties of the trigger.</p>`),
+                //        doc.createElement("div", null, `<i class="fa fa-angle-right pull-right"></i>`)
+                //    )
+                //),
+                doc.createElement("li", null,
+                    doc.createElement("a", { href: "#", class: "panel-nav-link" },
+                        doc.createElement("div", null, `<span><h2>Flow Filters</h2></span><p class="nav-link-desc">Restrict the flow to only certain people.</p>`),
+                        doc.createElement("div", null, `<i class="fa fa-angle-right pull-right"></i>`)
+                    )
+                )
+            ),
+            doc.createElement("div", { class: "configuration-panel-footer" },
+                doc.createElement("span", { class: "button-set" },
+                    doc.createElement("input", {
+                        type: "button", class: "btn btn-primary", value: "Done", 'click': (t) => { t.preventDefault(), config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); }
+                    })
+                )
+            )
+        )
     }
     panel_setup_time(e) {
         let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" });
@@ -659,12 +671,9 @@ function load() {
     lt = flowConfig(1000), loader();
     Http.get(lt.urls.getFlow(parseInt(lt.flow()) || 0)).then(response => response.json())
         .then((response) => {
-            if (response.status === 200) {
-                loader(), doc.querySelector('[name="flow-title"]').innerHTML = response.data.name, initTrigger(response.data);
-            }
-            else {
-                loader() && doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
-            }
+            loader();
+            if (response.status === 200) doc.querySelector('[name="flow-title"]').innerHTML = response.data.name, initTrigger(response.data);
+            else doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));
         }).catch(error => {
             console.log('error', error); loader();
             doc.querySelector('#root').replaceChildren(doc.createElement('h1', {}, `Sorry, that page isn't actually here.`));

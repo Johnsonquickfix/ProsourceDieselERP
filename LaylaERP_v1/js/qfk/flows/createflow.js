@@ -232,9 +232,9 @@ const componentIcon = (_icon) => { return doc.createElement('div', { class: "pla
     };
 
 function config_panel(e) {
-    let { actionType: a, title: t, displayFooter: f } = e;
+    let { actionType: a, title: t, displayFooter: f } = e; 
     let _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body, _footer;
-    _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t));
+    _header = doc.createElement('div', { class: `${_class}-header`.trim() }, doc.createElement('div', { class: `${_class}-title`.trim() }, t || ''));
     _body = doc.createElement('div', { class: `${_class}-body ${!f ? 'no-footer' : ''} `.trim() });
     _footer = doc.createElement('div', { class: `${_class}-footer`.trim() });
     if (lt.panel.TRIGGER_AND_FILTERS_INITIAL === a) {
@@ -283,16 +283,42 @@ function triggerConfiguration(e) {
     [_back, _cancel].forEach(function (ele) { ele.addEventListener("click", (event) => { event.preventDefault(), initTrigger({ trigger_id: 0 }); }); });
 
     (() => {
-        let { triggerName: n, triggerType: t } = e, dd = new Choices($s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: `Select a ${e.triggerName}…`, itemSelectText: '', shouldSort: false });
-        dd.setChoices(async () => {
-            try {
-                switch (t) {
-                    case 0: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.metric_id, label: row.metric_name } }) : []; });
-                    case 1: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name } }) : []; });
-                    case 3: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json());
-                }
-            } catch (err) { console.error(err); }
-        });
+        let { triggerName: n, triggerType: t } = e;
+        //    dd = new Choices($s, { allowHTML: false, searchEnabled: false, placeholder: true, placeholderValue: `Select a ${e.triggerName}…`, itemSelectText: '', shouldSort: false });
+        //dd.setChoices(async () => {
+        //    try {
+        //        switch (t) {
+        //            case 0: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.metric_id, label: row.metric_name } }) : []; });
+        //            case 1: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json()).then(function (data) { return data ? data.map(function (row) { return { value: row.group_id, label: row.name } }) : []; });
+        //            case 3: return await Http.get(lt.urls.triggerOptions[n]).then(response => response.json());
+        //        }
+        //    } catch (err) { console.error(err); }
+        //});
+        const dd = new Selectr($s, { searchable: !1, defaultSelected: !1 });
+        switch (t) {
+            case 0:
+                {
+                    Http.get(lt.urls.triggerOptions[n]).then(res => res.json()).then(function (res) {
+                        let j = res.map(function (r) { return { value: r.metric_id.toString(), text: r.metric_name } });
+                        dd.add(j, !0);//, s.setValue(value)
+                    });
+                } break;
+            case 1:
+                {
+                    Http.get(lt.urls.triggerOptions[n]).then(res => res.json()).then(function (res) {
+                        let j = res.map(function (r) { return { value: r.group_id.toString(), text: r.name } });
+                        dd.add(j, !0);//, s.setValue(value)
+                    });
+                } break;
+            case 3:
+                {
+                    Http.get(lt.urls.triggerOptions[n]).then(res => res.json()).then(function (res) {
+                        let j = res.map(function (r) { return { value: r.value.toString(), text: r.label } });
+                        dd.add(j, !0);//, s.setValue(value)
+                    });
+                } break;
+        }
+        //dd.data
     })();
     const onSave = () => {
         let j = {
@@ -306,8 +332,7 @@ function triggerConfiguration(e) {
     _done.addEventListener('click', (event) => { event.preventDefault(), onSave(); });
 }
 function flowComponentsInitial(e) {
-    let { flowAction: t = [] } = e;
-    let $ul = doc.createElement("ul", { class: "flow-action-panel" });
+    let { flowAction: t = [] } = e, $ul = doc.createElement("ul", { class: "flow-action-panel" });
     t.map(e => {
         let $li = doc.createElement("li", { class: `component-section ${e.type}` }, doc.createElement("div", { class: `component-section-title` }, e.text));
         e.group.map(g => {
@@ -328,6 +353,27 @@ function flowComponentsInitial(e) {
 }
 
 class Panel {
+    spanSwitch(e, a, v) {
+        let txt = e.target.innerText, element = e.target.parentNode, input = doc.createElement('input', { class: 'form-control', value: txt, blur: (event) => { this.spanReset(event, a, v) } });
+        element.replaceChildren(input), input.focus();
+    }
+    spanReset(e, a, v) {
+        let txt = e.target.value, element = e.target.parentNode,
+            span = doc.createElement('span', { click: (event) => { this.spanSwitch(event, a, v) } }, txt),
+            name = document.querySelector(`[role="button"].send-email.selected .${lt.controls.PLACED_COMPONENT}-title`),
+            subject = document.querySelector(`[role="button"].send-email.selected .${lt.controls.PLACED_COMPONENT}-main`);
+        element.replaceChildren(span, doc.createElement('i', { class: "fa fa-pen ms-2" }));
+        (async () => {
+            switch (a) {
+                case 'name': {
+                    await Http.post(lt.urls.updateFlowMessageName(v), { body: { name: txt } }).then(res => res.json()).then(res => { res.status === 200 && (name.innerText = res.data.name) });
+                } break;
+                case 'subject': {
+                    await Http.post(lt.urls.updateFlowMessageSubject(v), { body: { subject: txt } }).then(res => res.json()).then(res => { res.status === 200 && (subject.innerText = res.data.subject) });
+                } break;
+            }
+        })();
+    }
     panel_setup(e) {
         let { type: t = 'trigger' } = e, _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body,
             buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
@@ -363,7 +409,12 @@ class Panel {
                 );
             }; break;
             case lt.events.EMAIL: {
-                _header = doc.createElement('div', { class: `${_class}-header`.trim() }, `<div class="configuration-panel-title">${e.message && e.message.name}</div>`);
+                _header = doc.createElement('div', { class: `${_class}-header`.trim() },
+                    doc.createElement('div', { class: `${_class}-title w-100`.trim() },
+                        doc.createElement('span', { click: (event) => { this.spanSwitch(event, 'name', e.message.content_id) } }, e.message && e.message.name),
+                        doc.createElement('i', { class: "fa fa-pen ms-2" })
+                    )
+                );
                 _body.appendChild(this.panel_setup_mail(e));
             }; break;
             case lt.events.UPDATE_CUSTOMER: {
@@ -378,9 +429,7 @@ class Panel {
         _config.replaceChildren(_header, _body);
     }
     panel_setup_time(e) {
-        let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
-            buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
-        addEvent(buttonCancel, 'click', (event) => { event.preventDefault(); event.stopPropagation(); config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }); });
+        let buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" });
         const Re = (ele, selected_value) => {
             let i = [{ value: 'day', text: "day(s)" }, { value: 'hour', text: "hour(s)" }, { value: 'minute', text: "minute(s)" }];
             let unit = new Selectr(ele, { data: i, searchable: !1, width: '50%', selectedValue: selected_value });
@@ -388,7 +437,7 @@ class Panel {
         let hours = 0, rhours = 0, minutes = 0, rminutes = 0;
         if (e.after_seconds_unit === 'day') rhours = e.after_seconds / 86400;
         else if (e.after_seconds_unit === 'hour') hours = (e.after_seconds / 3600), rhours = Math.floor(hours), minutes = (hours - rhours) * 60, rminutes = Math.round(minutes);
-        else if (e.after_seconds_unit === 'minute') hours = e.after_seconds / 60;
+        else if (e.after_seconds_unit === 'minute') rhours = e.after_seconds / 60;
 
         let select = doc.createElement('select', { name: "time-delay-unit" }),
             $body = doc.createElement("div", { class: "configuration-panel-body flow-action-panel-body" },
@@ -399,7 +448,12 @@ class Panel {
                             doc.createElement("div", { class: "timing-hint" }, doc.createElement("div", { class: "hint-text" }, `<span>Steps following this Time Delay occur on </span><strong>Day 0</strong><span> after the trigger</span><strong></strong><span></span>`))
                         )
                     ),
-                    doc.createElement("div", { class: "configuration-panel-footer" }, doc.createElement("span", { class: "button-set" }, buttonOk, buttonCancel))
+                    doc.createElement("div", { class: "configuration-panel-footer" },
+                        doc.createElement("span", { class: "button-set" },
+                            buttonOk,
+                            doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel", click: (t) => { t.preventDefault(), t.stopPropagation(); config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 }) } })
+                        )
+                    )
                 )
             );
 
@@ -412,15 +466,21 @@ class Panel {
                     doc.createElement("div", { class: "control-group" },
                         doc.createElement("p", null, 'and'),
                         doc.createElement("div", { class: "controls timing-minutes" }, doc.createElement("input", { type: "number", name: "secondary-value", value: rminutes }), doc.createElement("span", null, 'minute(s)')),
-                        doc.createElement("p", null, 'after the trigger')
+                        doc.createElement("p", null, (e.rank <= 1 ? 'after the trigger' : 'after the previous step'))
                     ),
                     p.nextSibling
                 )
             }
-        }), Re(select, 'hour');
+            else {
+                p.parentNode.insertBefore(
+                    doc.createElement("div", { class: "control-group" }, doc.createElement("p", null, (e.rank <= 1 ? 'after the trigger' : 'after the previous step'))),
+                    p.nextSibling
+                )
+            }
+        }), Re(select, e.after_seconds_unit);
         addEvent(buttonOk, 'click', (event) => {
             event.preventDefault(); event.stopPropagation();
-            let JsonVar = { id: e.id, delay_units: select.value };
+            let JsonVar = { id: e.id, delay_units: select.options[select.selectedIndex].value };
             $body.querySelectorAll('input[type="number"]').forEach(r => { stringToObj(r.name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "_"), parseInt(r.value) || 0, JsonVar); });
             Http.post(lt.urls.updateTiming(JsonVar.id), { body: JsonVar }).then(res => res.json()).then(res => { res.status === 200 && load(); });
         });
@@ -441,8 +501,14 @@ class Panel {
                             doc.createElement("div", { class: "configuration-subtitle" }, doc.createElement("h2", null, 'Content')),
                             doc.createElement("div", { class: "message-content" },
                                 doc.createElement("ul", { class: 'message-detail' },
-                                    doc.createElement("li", { class: 'message-detail' }, `<span class="descriptor">Subject:</span><span class="from-label">${e.message && e.message.subject}</span>`),
-                                    doc.createElement("li", { class: 'message-detail' }, `<span class="descriptor">From:</span><span class="from-label">${e.message && e.message.from_label} &lt;${e.message && e.message.from_email}&gt;</span>`)
+                                    doc.createElement("li", null,
+                                        doc.createElement("span", { class: 'descriptor' }, 'Subject:'),
+                                        doc.createElement("span", { class: 'from-label' },
+                                            doc.createElement("span", { click: (t) => { this.spanSwitch(t, 'subject', e.message.content_id) } }, e.message && e.message.subject),
+                                            doc.createElement('i', { class: "fa fa-pen ms-2" })
+                                        )
+                                    ),
+                                    doc.createElement("li", null, `<span class="descriptor">From:</span><span class="from-label">${e.message && e.message.from_label} &lt;${e.message && e.message.from_email}&gt;</span>`)
                                 ),
                                 doc.createElement("div", { class: 'message-actions' }, buttonEdit)
                             )
@@ -517,7 +583,6 @@ class Panel {
             //Http.post(lt.urls.updateTiming(JsonVar.id), { body: JsonVar }).then(res => res.json()).then(res => { res.status === 200 && load(); });
             //config_panel({ actionType: lt.panel.FLOWS_COMPONENTS_PANEL, displayFooter: !1 });
         }
-
         return body;
     }
     addCustomerFilters(e) {
@@ -579,8 +644,8 @@ class Panel {
     bindStatus(ele, id, value) {
         let i = [{ value: 0, text: "Draft" }, { value: 1, text: "Manual" }, { value: 2, text: "Live" }];
         new Selectr(ele, { data: i, searchable: !1, selectedValue: value });
-        ele.onchange = (evt) => {
-            event.preventDefault(); event.stopPropagation();
+        ele.onchange = (t) => {
+            t.preventDefault(); t.stopPropagation();
             let option = { id: parseInt(id) || 0, status: ele.value };
             Http.post(lt.urls.updateActionStatus(option.id), { body: option }).then(res => res.json()).then(res => { res.status === 200 && load(); });
         }

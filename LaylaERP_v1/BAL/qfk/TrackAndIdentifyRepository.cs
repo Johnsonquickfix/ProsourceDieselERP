@@ -28,6 +28,24 @@
             return i;
         }
 
+        public static string ProfileListSubscribe(string flag, string api_key, long group_id, string json_data)
+        {
+            string str = "{}";
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@public_api_key", api_key),
+                    group_id > 0 ? new SqlParameter("@group_id",group_id) : new SqlParameter("@user_id",DBNull.Value),
+                    new SqlParameter("@json_data",json_data)
+                };
+                str = SQLHelper.ExecuteReaderReturnJSON("qfk_profiles_import", parameters).ToString();
+            }
+            catch { throw; }
+            return str;
+        }
+
         public static int EmailTrackingUpdate(string flag, long company_id, long campaign_id, string profiles_id, string track_event, long user_id)
         {
             int i = 0;

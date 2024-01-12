@@ -122,6 +122,32 @@
             }
         }
 
+        [HttpPost, Route("{id}/subscribe")]
+        public IHttpActionResult ListSubscribe(long id, Profiles request)
+        {
+            try
+            {
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                string api_key = string.Empty;
+                if (headers.Contains("api-key")) api_key = headers.GetValues("api-key").First().Replace("pk_", "");
+                if (string.IsNullOrEmpty(api_key)) return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = "Authentication credentials were not provided.", });
+                if (id <= 0) return Content(HttpStatusCode.NotFound, new { status = 404, code = "not_found", message = "Not found." });
+                var json_data = JsonConvert.DeserializeObject<JObject>(TrackAndIdentifyRepository.ProfileListSubscribe("subscribe-list", api_key, id, JsonConvert.SerializeObject(request)).ToString());
+
+                if (json_data["status"] != null)
+                {
+                    if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = json_data["message"] });
+                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else return Content(HttpStatusCode.BadRequest, new { status = 400, code = "bad_request", message = json_data["message"] });
+                }
+                else return Ok(json_data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { status = 500, code = "InternalServerError", message = ex.Message });
+            }
+        }
+
         [HttpGet, Route("{id}/member_count")]
         public IHttpActionResult MemberCount(long id)
         {

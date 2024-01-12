@@ -295,7 +295,7 @@ function triggerConfiguration(e) {
         //        }
         //    } catch (err) { console.error(err); }
         //});
-        const dd = new Selectr($s, { searchable: !1, defaultSelected: !1 });
+        const dd = new Selectr($s, { searchable: !0, defaultSelected: !1});
         switch (t) {
             case 0:
                 {
@@ -376,7 +376,6 @@ class Panel {
         })();
     }
     panel_setup(e) {
-        debugger
         let { type: t = 'trigger' } = e, _class = 'configuration-panel', _config = doc.querySelector(`.${_class}`), _header, _body,
             buttonOk = doc.createElement("input", { type: "button", class: "btn btn-primary", value: "Save" }),
             buttonCancel = doc.createElement("input", { type: "button", class: "btn btn-alt", value: "Cancel" });
@@ -515,7 +514,7 @@ class Panel {
                                 doc.createElement("ul", { class: 'message-detail' },
                                     doc.createElement("li", null,
                                         doc.createElement("span", { class: 'descriptor' }, 'Subject:'),
-                                        doc.createElement("span", { class: 'from-label' },
+                                        doc.createElement("span", { class: 'from-label d-flex' },
                                             doc.createElement("span", { click: (t) => { this.spanSwitch(t, 'subject', e.message.content_id) } }, e.message && e.message.subject),
                                             doc.createElement('i', { class: "fa fa-pen ms-2" })
                                         )

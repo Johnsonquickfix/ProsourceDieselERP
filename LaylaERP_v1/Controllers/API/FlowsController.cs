@@ -96,7 +96,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 if (om.UserID <= 0) return Content(HttpStatusCode.Unauthorized, new { message = "Request had invalid authentication credentials." });
                 if (id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "id is required." });
-                if (request.trigger_type <= 0) return Content(HttpStatusCode.BadRequest, new { message = "trigger_type is required." });
+                //if (request.trigger_type <= 0) return Content(HttpStatusCode.BadRequest, new { message = "trigger_type is required." });
                 if (request.trigger_id <= 0) return Content(HttpStatusCode.BadRequest, new { message = "trigger_id is required." });
 
                 request.flow_id = id;

@@ -596,7 +596,76 @@ namespace LaylaERP_v1.Controllers
             return Json(JSONresult, 0);
         }
 
+        public JsonResult GetsaleprodectdataData(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = PurchaseProductRepository.GetsaleprodectdataData(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
 
+        public JsonResult Deletsaleprodect(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = PurchaseProductRepository.Deletsaleprodect(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "In-Activated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+            }
+        }
+        public JsonResult Activesaleprodect(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = PurchaseProductRepository.Activesaleprodect(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "Activated successfully !!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult Createsalepurchaseproduct(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            DataTable dt = PurchaseProductRepository.Getproductsaleproduct(model); 
+            if (dt.Rows.Count > 0)
+            {
+                return Json(new { status = false, message = "sale product already allocated for this product", url = "" }, 0);
+            }
+            else
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add product " + model.fk_product + "", "/PurchaseProduct/AddNewProduct/" + ", " + Net.BrowserInfo);
+                resultOne = PurchaseProductRepository.Addproductsale(model);
+                if (resultOne > 0)
+                    return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+
+            }             
+        }
 
     }
 }

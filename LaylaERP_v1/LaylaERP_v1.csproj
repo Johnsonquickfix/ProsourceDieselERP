@@ -267,6 +267,7 @@
     <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\ProposalsRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
+    <Compile Include="BAL\PurchaseProductRepository.cs" />
     <Compile Include="BAL\qfk\CampaignRepository.cs" />
     <Compile Include="BAL\qfk\CatalogRepository.cs" />
     <Compile Include="BAL\qfk\EmailTemplatesRepository.cs" />
@@ -351,6 +352,7 @@
     <Compile Include="Controllers\ProductReviewImportController.cs" />
     <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
+    <Compile Include="Controllers\PurchaseProductController.cs" />
     <Compile Include="Controllers\qfk\AnalyticsController.cs" />
     <Compile Include="Controllers\qfk\AudienceController.cs" />
     <Compile Include="Controllers\qfk\CampaignController.cs" />
@@ -1127,6 +1129,10 @@
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
     <Content Include="js\PurchaseOrder\PurchasePrint.js" />
     <Content Include="js\Proposals\SupplierProposalsList.js" />
+    <Content Include="js\PurchaseProduct\AddnewProduct.js" />
+    <Content Include="js\PurchaseProduct\AddnewPurchase.js" />
+    <Content Include="js\PurchaseProduct\PriceDetails.js" />
+    <Content Include="js\PurchaseProduct\ProductList.js" />
     <Content Include="js\qfk\ace-editor\ace.js" />
     <Content Include="js\qfk\ace-editor\ext-emmet.js" />
     <Content Include="js\qfk\ace-editor\ext-language_tools.js" />
@@ -2013,6 +2019,9 @@
     <Content Include="Views\Forms\Create.cshtml" />
     <Content Include="Views\Forms\Edit.cshtml" />
     <Content Include="Views\Shared\_qfk_React_Layout.cshtml" />
+    <Content Include="Views\PurchaseProduct\ListProduct.cshtml" />
+    <Content Include="Views\PurchaseProduct\AddNewProduct.cshtml" />
+    <Content Include="Views\PurchaseProduct\AddNewPurchase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

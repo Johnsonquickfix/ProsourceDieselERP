@@ -1,0 +1,569 @@
+﻿
+@{
+    ViewBag.Title = "Add New Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<style>
+    .ml-auto {
+        margin-left: auto;
+    }
+
+    .uppercase {
+        text-transform: uppercase;
+    }
+
+    body .tree-node > span.tree-title {
+        padding-left: 2px;
+    }
+
+    body .easyui-tree > li > .tree-node > .tree-checkbox {
+        margin-right: 0px !important;
+    }
+
+    .tree-checkbox0, .tree-checkbox1 {
+        min-width: 16px;
+    }
+
+    ul#ul_category {
+        overflow: auto;
+        height: 200px;
+    }
+
+    body .easyui-tree > li {
+        border-top: 0px !important
+    }
+
+    table#product_attributesvariations {
+        border: 0px;
+        display: flex;
+        gap: 15px;
+        margin-left: 15px;
+    }
+</style>
+<link href="~/Content/css/Style.css" rel="stylesheet" />
+<link href="~/Content/easyui/easyui.css" rel="stylesheet" />
+<div id="loader" class="d-flex align-items-center">
+    <img src="data:image/gif;base64,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" align="">
+    <span>&nbsp;&nbsp;Loading......</span>
+</div>
+<section id="target" class="content section-content new-product-section">
+    <div class="row flex-row_box">
+        <div class="col-md-9">
+            <div class="page-title">
+                <h2 class="page-heading" id="lbltitle">Add New Purchase Product</h2>
+                <a id="btnbacklist" title="Click here to go back" data-toggle="tooltip" data-placement="bottom" class="backtoback btn btn-danger">Back to list</a>
+                <a class="btn btn-danger" style="display:none" id="btnAdd" href="../AddNewProduct">Add New</a>
+                <input type="hidden" id="hfid" />
+                <input type="hidden" id="hfprodcid" />
+                <input type="hidden" id="hfcategid" />
+                <input type="hidden" id="hfprodectcategoryid" />
+                <input type="hidden" id="hfUpdatedID" />
+                <input type="hidden" id="hfproductattributesID" />
+                <input type="hidden" id="hfattributeheaderval" />
+                <input type="hidden" id="hfvproductattributes" />
+                <input type="hidden" id="hfproductvariationID" />
+                <input type="hidden" id="hfvariantprotuctID" />
+                <input type="hidden" id="hftitle" />
+                <input type="hidden" id="hfEdit" value="" />
+
+                @*<a class="btn btn-danger" id="btnPurchase">Purchase Prices </a>*@
+
+                <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Save</button>
+                <button id="btnedit" title="Click here to Edit" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Edit</button>
+                <button id="btncancel" title="" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header">
+                    <label class="control-label " for="City">Product name<span style="color:red;"> *</span></label>
+                    <input type="text" id="txtProductName" class="form-control" placeholder="Product name">
+                </div>
+            </div>
+            <div class="box box-primary" style="display:none">
+                <div class="box-header">
+                    <div class="custom-editor">
+                        <textarea id="formatcustom" class="textarea" placeholder="Description"
+                                  style="width: 100%; height: 40px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px; display:none"></textarea>
+
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div id="divimage" class="box-header">
+                    <div class="form-group d-flex">
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="col-sm-9">
+
+                        </div>
+                    </div>
+                    <div class="form-group d-flex profile-flex">
+                        <div class="col">
+                            <label class="control-label">Product Image</label>
+                            <div class="add-profile">
+                                <span class="edit-pic-profile">
+                                    <input type="file" onchange="readURL(this);" name="ImageFile" id="ImageFile" class="inputfile" />
+                                    <label id="btnfileproduct" for="ImageFile"><i class="fa fa-edit"></i>Edit</label>
+                                </span>
+                                <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="~/Content/ProductCategory/default.png" alt="Product Image">
+                            </div>
+
+                        </div>
+
+                        <div class="col">
+                            <button id="btnproductuploade" title="Click here to upload" data-toggle="tooltip" style="float: left;" class="btn btn-danger">Upload</button>
+                        </div>
+
+
+                        @*<div class="col" style="float:right">
+                                <label class="control-label">Product Image</label>
+                                <div class="add-profile">
+                                    <span class="edit-pic-profile">
+                                        <input type="file" onchange="readURLpopup(this);" name="ImageFilepopup" id="ImageFilepopup" class="inputfile" />
+                                        <label id="btnfileproductpopup" for="ImageFilepopup"><i class="fa fa-edit"></i>Edit</label>
+                                    </span>
+                                    <img runat="server" id="show_picturepopup" class="profile-user-img img-responsive img-circle" src="~/Content/ProductCategory/default.png" alt="Product Image">
+                                </div>
+
+                            </div>
+
+                            <div class="col">
+                                <button id="btnproductuploadepopup" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="btn btn-danger">Upload</button>
+                            </div>*@
+                    </div>
+                </div>
+                <div class="box-header with-border">
+                    <div class="user-top-section top-with-select">
+                        <div class="tablenav top tablenav-top2">
+                            <div class="alignleft actions bulkactions ">
+                                <h3 class="box-title">Product Data</h3>
+                                <select class="form-control select2 billinfo" id="ddlProductType" placeholder="Select Products">
+                                    <optgroup label="Product Type">
+                                        <option value="simple" selected="selected">Simple product</option>
+                                        @*<option value="3">Grouped product</option>
+                                            <option value="5">External/Affiliate product</option>*@
+                                        <option value="variable">Variable product</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-check d-flex">
+                                <input type="checkbox" class="form-check-input" id="chkgiftcard"><label for="chkgiftcard">Gift Card</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body add-new-box">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active" title="Click here to see General" data-toggle="tooltip"><a href="#tab_1" data-toggle="tab">General</a></li>
+                            <li title="Click here to see SKU" data-toggle="tooltip"><a href="#tab_2" data-toggle="tab">SKU</a></li>
+                            <li title="Click here to see shipping" data-toggle="tooltip"><a href="#tab_3" data-toggle="tab">Shipping</a></li>
+                            <li title="Click here to see linked products" data-toggle="tooltip"><a href="#tab_4" data-toggle="tab">Linked Products</a></li>
+                            <li title="Click here to see attributes" data-toggle="tooltip"><a href="#tab_5" data-toggle="tab">Attributes</a></li>
+                            <li title="Click here to see variations" data-toggle="tooltip"><a href="#tab_6" id="ahrfVariation" data-toggle="tab">Variations</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab_1">
+                                <div id="divregular" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Retail price ($)</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtregularprice" class="form-control">
+                                    </div>
+                                </div>
+                                <div id="divsale" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Sale price ($)</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtsaleprice" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Tax status</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddltaxstatus" class="form-control">
+                                            <option value="taxable" selected="selected">Taxable</option>
+                                            <option value="shipping">Shipping only</option>
+                                            <option value="none">None</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Tax class</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlclasstax" class="form-control">
+                                            <option value="standard" selected="selected">Standard</option>
+                                            <option value="reduced-rate">Reduced rate</option>
+                                            <option value="zero-rate">Zero rate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Publish date<span style="color:red;"> *</span></label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtPublishDate" class="form-control billinfo" placeholder="Publish Date (MM/DD/YYYY)" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlstatus" class="form-control">
+                                            <option value="publish">Publish</option>
+                                            <option value="private">Private</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="divdayexpire" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Days to expire</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtdaysexpire" class="form-control" value="0">
+                                    </div>
+                                </div>
+                                <div id="divRecipientemail" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Email image</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlRecipientemail" class="form-control">
+                                            <option value="none">None</option>
+                                            <option value="product" selected="selected">Use product</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="divproducttypesimpal" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Product Type</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlproducttypesimpal" class="form-control">
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" id="tab_2">
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">SKU<span style="color:red;"> *</span></label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtsku" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-check d-flex">
+                                    <label class="col-sm-3 control-label">Manage stock?</label>
+                                    <div class="col-sm-9">
+                                        <input type="checkbox" class="form-check-input" id="enableStock"><label for="enableStock">Enable stock management at product level</label>
+                                    </div>
+                                </div>
+                                <div style="display:none" id="dvsock">
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Stock quantity</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txtStockquantity" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Allow backorders?</label>
+                                        <div class="col-sm-9">
+                                            <select id="txtallowbackorders" class="form-control">
+                                                <option value="no" selected="selected">Do not allow</option>
+                                                <option value="notify">Allow, but notify customer</option>
+                                                <option value="yes">Allow</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Low stock threshold</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txtLowstockthreshold" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="dvstock_status" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Stock status</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlstockstatus" class="form-control">
+                                            <option value="instock" selected="selected">In stock</option>
+                                            <option value="outofstock">Out of stock</option>
+                                            <option value="onbackorder">On backorder</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-check d-flex">
+                                    <label class="col-sm-3 control-label">Sold individually</label>
+                                    <div class="col-sm-9">
+                                        <input type="checkbox" class="form-check-input" id="solidIndividually"><label for="solidIndividually">Enable this to only allow one of this item to be bought in a single order</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_3">
+                                <div class="form-group d-flex">
+                                    <label id="weight_unit" class="col-sm-3 control-label">Weight (lbs)</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtweigh" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label id="dimension_unit" class="col-sm-3 control-label">Dimensions (in)</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <input type="text" id="txtLength" class="form-control" placeholder="Length">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="txtWidth" class="form-control" placeholder="Width">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="txtHeight" class="form-control" placeholder="Height">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Shipping class</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlShipping" class="form-control">
+                                            <option value="-1">No shipping class</option>
+                                            @*<option class="level-0" value="200">Adjustabe Base (Split King)</option>
+                                                <option class="level-0" value="246">Adjustable Base (Full)</option>
+                                                <option class="level-0" value="201">Adjustable Base (King)</option>
+                                                <option class="level-0" value="199">Adjustable Base (Queen)</option>
+                                                <option class="level-0" value="198">Adjustable Base (Twin XL)</option>
+                                                <option class="level-0" value="71">Bed Frame</option>
+                                                <option class="level-0" value="114">Blanket</option>
+                                                <option class="level-0" value="30">Foundation</option>
+                                                <option class="level-0" value="50">Free Shipping</option>
+                                                <option class="level-0" value="263">Hybrid Cal King</option>
+                                                <option class="level-0" value="260">Hybrid Full</option>
+                                                <option class="level-0" value="262">Hybrid King</option>
+                                                <option class="level-0" value="261">Hybrid Queen</option>
+                                                <option class="level-0" value="258">Hybrid Twin</option>
+                                                <option class="level-0" value="259">Hybrid Twin XL</option>
+                                                <option class="level-0" value="257">Mattress Cal King</option>
+                                                <option class="level-0" value="254">Mattress Full</option>
+                                                <option class="level-0" value="256">Mattress King</option>
+                                                <option class="level-0" value="196">Mattress Protector</option>
+                                                <option class="level-0" value="255">Mattress Queen</option>
+                                                <option class="level-0" value="252">Mattress Twin</option>
+                                                <option class="level-0" value="253">Mattress Twin XL</option>
+                                                <option class="level-0" value="195">Memory Foam Pillow</option>
+                                                <option class="level-0" value="52">Pillow</option>
+                                                <option class="level-0" value="202">Platform Bed</option>
+                                                <option class="level-0" value="107">Sheets</option>
+                                                <option class="level-0" value="87">Topper</option>*@
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_4">
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Upsells</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control select2 billinfo" id="ddlUpsells" placeholder="Select Products" multiple style="width: 100%;"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Cross-sells</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control select2 billinfo" id="ddlCrosssells" placeholder="Select Products" multiple style="width: 100%;"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_5">
+                                <div class="d-flex custom-flex-space form-group">
+                                    <div class="col-auto ps-1">
+                                        <button title="Click here to add product attribute" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add New(Custom)</button>
+                                    </div>
+                                    <div class="col-auto d-flex">
+                                        <select id="ddcustomeproduct" width="70%" class="form-control select2">
+                                            <option value="">Add existing</option>
+                                            @*<option value="pa_cover">Cover</option>*@
+                                        </select>
+                                        <button style="margin-left:15px;" title="Click here to add existing attribute" data-toggle="tooltip" id="addnewatt" type="submit" class="btn btn-danger">Add</button>
+
+                                    </div>
+
+                                    @*<div>
+                                            <input type="text" id="tbTableName" placeholder="Enter Table Name" />
+                                            <button id="btAdd" type="submit" class="btn btn-danger">Add</button>
+                                        </div>
+                                        <div id="main"></div>*@
+
+                                </div>
+                                @*<form name="addrma" id="addrma" method="post">*@
+                                <div class="d-flex1">
+                                    <div class="panel-group" id="product_attributes">
+                                    </div>
+                                    <table id="tbhold_old" class="simple-table">
+                                        @*<thead>
+                                                <tr>
+                                                    <th>Varenummer</th>
+                                                    <th>Serienummer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="col-md-8">
+                                                            <input type="text" name="Name[0]" id="Name" class="form-control" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-md-8">
+                                                            <input type="text" name="Value[0]" id="Value" class="form-control" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                            </tbody>*@
+                                    </table>
+                                </div>
+                                @*</form>*@
+
+
+                                <div class="attribute-btn">
+                                    <button id="btnsaveAttributes" title="Click here to add attributes" data-toggle="tooltip" class="btn btn-danger">Save Attributes</button>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_6">
+
+                                <div class="d-flex custom-flex-space form-group">
+                                    <div class="col-auto d-flex">
+                                        @*<select id="ddlattributeadd" class="form-control">
+                                                <option value="">Add variation</option>
+                                            </select>*@
+                                        <button id="btnattributerefresh" title="Click here to add latest attribute" data-toggle="tooltip" type="submit" class="btn btn-danger">Refresh</button>
+
+                                        <table id="product_attributesvariations" class="simple-table">
+                                        </table>
+                                    </div>
+                                    <div class="col-auto ps-1">
+
+                                        <button id="addvariation" title="Click here to add product variation" data-toggle="tooltip" type="submit" class="btn btn-danger">Add</button>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <table id="product_variations" class="simple-table">
+                                    </table>
+                                </div>
+                                <div class="col-sm-12">
+                                    <table id="tbhproductattributes">
+                                    </table>
+                                </div>
+
+                                <button id="btnSavevariations" title="Click here to add variation" data-toggle="tooltip" class="btn btn-danger">Save variation</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btnSaveupdate" title="Click here to Add/Update" data-toggle="tooltip" style="float: right;" class="btn btn-danger">Save</button>
+            @*@Html.Partial("AddNewPurchase", new ViewDataDictionary { { "id", 796210 } });*@
+        </div>
+
+        <div class="col-md-3">
+            <div class="page-title">
+                <h2 class="page-heading">Choose Category <span style="color:red;"> *</span></h2>
+
+            </div>
+            <div class="box box-primary">
+                <div class="box-header">
+
+                    <div class="category-searchbox">
+                        <input id="txtsrc" type="text" value="" />
+                        <input id="btnsrc" type="button" value="Search" />
+                    </div>
+
+                    <div id="tblprodctype" class="form-check tblprodctype">
+                        <ul id="ul_category" class="easyui-tree" data-options="animate:true,checkbox:true"></ul>
+                        @*@{
+                                int i = 0;
+                            }
+                            <ul class="categorychecklist">
+                                @foreach (var item in @ViewBag.product)
+                                {
+                                    <li class="w3-check">
+                                        <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
+                                        <label for="chkproductID@(i++)">@item.Text</label>
+                                    </li>
+                                }
+                            </ul>*@
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        @*var url = window.location.pathname;*@
+        @*<a id="btnbackcategory" title="Click here to go category" href="javascript:;" onclick="addTabs({id:'41',title: 'Categories',close: true,url: '/Product/ProductCategories',urlType: 'none'});App.fixIframeCotent();" data-toggle="tooltip" style="float: right; margin-right:10px;" data-placement="bottom" class="btn btn-primary btn-flat button">Add New Category</a>*@
+        <div class="col-md-3" style="margin-top:5px;border-radius:5px">
+            <a id="btnbackcategory" title="Click here to go category" data-toggle="tooltip" onclick="return ActivityLog('Add new category for product','/Product/AddNewProduct');" data-placement="bottom" class="btn btn-danger">Add New Category</a>
+        </div>
+    </div>
+    <div class="row">
+        <div id="divPurchase" class="col-md-12">
+            @Html.Partial("AddNewPurchase")
+        </div>
+    </div>
+</section>
+
+<script src="~/Content/easyui/jquery.easyui.min.js?v=1"></script>
+@*<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>*@
+<script src="@Url.Content("~/js/PurchaseProduct/AddnewProduct.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script type="text/javascript">
+    //tinymce.init({
+    //    selector: 'textarea#formatcustom',
+    //    height: 200,
+    //    plugins: 'table wordcount'
+    //});
+
+    $(document).ready(function () {
+        $("#txtsrc").keyup(function (event) {
+            if (event.keyCode === 13) {
+                $("input[id*=btnsrc]").click();
+            }
+        });
+        //    var urlperm = "/Product/ListProduct";
+        //    CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
+        //    CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
+        //    CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);
+    });
+    $("input[id*=btnsrc]").click(function () {
+        var searchvalue = $("input[id*=txtsrc]").val();
+        if (searchvalue != "") {
+            $('.tblprodctype .categorychecklist').each(function () {
+                $(this).find('li').each(function () {
+                    var current = $(this);
+                    var s = current.text().trim().toLowerCase();
+                    //console.log(s);
+                    //console.log(searchvalue);
+                    if (s.match(searchvalue.toLowerCase())) {
+                        $(this).show();
+                    }
+                    else {
+                        $(this).hide();
+                        $(this.nextSibling).wrap('<span style="display:none"></style>');
+                    }
+
+                })
+            })
+        }
+        else {
+            $("#cboAll,.w3-check").show();
+        }
+
+    })
+</script>
+
+<script>
+
+    jQuery(function ($) {
+        function func_height() {
+            var hei = $('.flex-row_box .col-md-9').outerHeight();
+            $('.flex-row_box .col-md-3').css('height', hei);
+        }
+        setInterval(func_height, 500);
+
+    });
+</script>

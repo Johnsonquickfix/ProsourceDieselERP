@@ -1730,16 +1730,21 @@ function GetProductvariationID(ProductID) {
                         // Close the select element
                         let sel_val = '';
                         let sel_vals = 0;
-                        varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
-                        varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
                         let formattedString = attribute.display_name.trim().replace(/ /g, '-').toLowerCase();
-                        //console.log(attribute.display_name, formattedString);
                         if (attribute.is_taxonomy === false) {
                             sel_val = v_data['attribute_' + formattedString];
+                            varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + formattedString + '" data-valuedata="' + sel_val + '" >';
+
                         }
                         else {
                             sel_vals = v_data['attribute_' + formattedString];
+                            varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + formattedString + '" data-valuedata="' + sel_vals + '" >';
+
                         }
+                        varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
+                        
+                        //console.log(attribute.display_name, formattedString);
+                        
                         //let sel_val = 'attribute_' + formattedString;
                        // console.log('displaynm', attribute.display_name);
                         //console.log(55, sel_val, sel_vals);

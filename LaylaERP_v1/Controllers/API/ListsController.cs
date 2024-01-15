@@ -15,6 +15,7 @@
     using Newtonsoft.Json.Linq;
     using System.Dynamic;
     using System.Data;
+    using System.Threading.Tasks;
 
     [RoutePrefix("api/lists")]
     public class ListsController : ApiController
@@ -123,7 +124,7 @@
         }
 
         [HttpPost, Route("{id}/subscribe")]
-        public IHttpActionResult ListSubscribe(long id, Profiles request)
+        public async Task<IHttpActionResult> ListSubscribe(long id, Profiles request)
         {
             try
             {
@@ -137,7 +138,14 @@
                 if (json_data["status"] != null)
                 {
                     if (json_data["status"].ToString() == "401") return Content(HttpStatusCode.Unauthorized, new { status = 401, code = "not_authenticated", message = json_data["message"] });
-                    else if (json_data["status"].ToString() == "200") return Ok(json_data);
+                    else if (json_data["status"].ToString() == "200")
+                    {
+                        if (json_data["flow_data"] != null) await FlowsRepository.StartFlow(api_key, JsonConvert.SerializeObject(json_data["flow_data"]));
+                        //await FlowsRepository.StartFlow(api_key, "[{\"id\":\"0622F30FDE5D4BD297677820BE2185B7\",\"profile_id\":\"7EBEDF5458114DB498E827268D72AB84\",\"flow_id\":1,\"flow_action_id\":1}]");
+                        return Content(HttpStatusCode.OK, new { status = 200, code = "success", data = json_data["data"] });
+                        //return Ok(json_data);
+                    }
+
                     else return Content(HttpStatusCode.BadRequest, new { status = 400, code = "bad_request", message = json_data["message"] });
                 }
                 else return Ok(json_data);

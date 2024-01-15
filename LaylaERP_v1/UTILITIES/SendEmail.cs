@@ -9,6 +9,8 @@
     using System.Net.Mail;
     using System.Net;
     using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public class SendEmail
     {
@@ -329,9 +331,9 @@
                 {
                     SMTPServerName = dt.Rows[0]["imap4_server"].ToString(); SenderEmailID = dt.Rows[0]["imapuser_name"].ToString(); SenderEmailPwd = dt.Rows[0]["imapuser_password"].ToString(); SMTPServerPortNo = Convert.ToInt32(dt.Rows[0]["imap_port"].ToString());
                 }
-                
+
                 //string SMTPServerName = ConfigurationManager.AppSettings["Host"];
-                  SMTPServerPortNo = 587;
+                SMTPServerPortNo = 587;
 
                 using (MailMessage mm = new MailMessage(SenderEmailID, strFromMail, strSubject, strBody))
                 {
@@ -344,11 +346,11 @@
                     smtp.Credentials = NetworkCred;
                     smtp.Port = SMTPServerPortNo; //Convert.ToInt32(om.SMTPServerPortNo); 
                     smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                   
+
                     //smtp.Timeout = 10000;
                     smtp.Send(mm);
 
-                     
+
 
                 }
 
@@ -360,6 +362,54 @@
             return result;
         }
 
+        public static string SendEmails(string to_name, string to_email, string from_name, string from_email, string reply_to_email, string bcc_email, string cc_email, string sSubject, string sBody, bool EnableSsl)
+        {
+            //string result = "Your mail has been sent successfuly !";
+            string result = "sent";
+            try
+            {
+                string sender_email = "david.quickfix1@gmail.com", sender_email_Pwd = "beukxoqkukghwzvp";
+                string SMTPServerName = "smtp.gmail.com";
+                int SMTPServerPortNo = 587;
+                //string SMTPServerName = ConfigurationManager.AppSettings["Host"];
+                //int SMTPServerPortNo = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["Port"]) ? Convert.ToInt32(ConfigurationManager.AppSettings["Port"]) : 587;
+                var th = new Thread(() =>
+                {
+                    if (!string.IsNullOrEmpty(sender_email) && !string.IsNullOrEmpty(sender_email_Pwd) && !string.IsNullOrEmpty(SMTPServerName) && SMTPServerPortNo != 0)
+                    {
+                        MailMessage mail = new MailMessage();
+                        SmtpClient SmtpServer = new SmtpClient(host: SMTPServerName);
+                        mail.From = new MailAddress(from_email, from_name);
+                        mail.To.Add(new MailAddress(to_email, to_name));
+                        if (!string.IsNullOrEmpty(reply_to_email)) mail.ReplyToList.Add(new MailAddress(reply_to_email, string.Empty));
+                        if (!string.IsNullOrEmpty(cc_email)) mail.CC.Add(new MailAddress(cc_email, string.Empty));
+                        if (!string.IsNullOrEmpty(bcc_email)) mail.Bcc.Add(new MailAddress(bcc_email, string.Empty));
+                        
+                        mail.Subject = sSubject;
+                        mail.IsBodyHtml = true;
+                        mail.Body = sBody;
+                        
+                        NetworkCredential NetworkCred = new NetworkCredential(sender_email, sender_email_Pwd);
+                        SmtpServer.UseDefaultCredentials = false;//false;
+                        SmtpServer.Credentials = NetworkCred;
+                        SmtpServer.EnableSsl = EnableSsl;
+                        SmtpServer.Port = SMTPServerPortNo;
+                        SmtpServer.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        SmtpServer.Send(mail);
+                    }
+                });
+                th.SetApartmentState(ApartmentState.STA);
+                th.Start();
+                Task.Run(() => th);
+                Task.WaitAll();
+            }
+            catch //(Exception ex)
+            {
+                //result = "Some problems occurred with the OTP email. Please contact your Administrator!!";
+                result = "not sent";
+            }
+            return result;
+        }
 
 
         //public async System.Threading.Tasks.Task SendEmails_outerAsync(string varReceipientEmailId, string strSubject, string strBody, string fileHtml, string filename)

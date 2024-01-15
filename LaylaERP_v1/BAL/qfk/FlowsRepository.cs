@@ -1,11 +1,14 @@
 ﻿namespace LaylaERP.BAL.qfk
 {
     using LaylaERP.DAL;
+    using LaylaERP.Models.qfk.TrackAndIdentify;
+    using LaylaERP.UTILITIES;
     using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web;
 
     public class FlowsRepository
@@ -76,5 +79,104 @@
             return i;
         }
 
+        #region [Flow Mail actions]
+        public static async Task StartFlow(string api_key, string json_data)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    DataTable dt = ProfileFlowMessage("flow-message-action", api_key, json_data);
+                    var utm_para = string.Empty;
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        MailTracking tracking = new MailTracking() { id = row["id"].ToString() };
+                        tracking.type = "flow";
+                        tracking.utm_campaign = row["action_name"].ToString();
+                        tracking.utm_medium = "email";
+                        tracking.utm_source = row["flow_name"].ToString();
+
+                        string _html = row["data_html"].ToString();
+                        Scriban.Template template = Scriban.Template.Parse(_html);
+                        var result = template.Render(new
+                        {
+                            first_name = row["first_name"].ToString(),
+                            last_name = row["last_name"].ToString(),
+                            person = new { phone_number = row["last_name"].ToString(), organization = row["organization"].ToString(), title = row["title"].ToString() },
+                            organization = new { name = row["company_name"].ToString(), full_address = row["full_address"].ToString(), url = row["website_url"].ToString() },
+                            unsubscribe = $"<a href=\"/subscriptions/unsubscribe?m={row["id"].ToString()}\" target=\"_blank\">Unsubscribe</a>",
+                            unsubscribe_link = $"/subscriptions/unsubscribe?m={row["id"].ToString()}"
+                        });
+
+                        string to_name = row["first_name"].ToString(),
+                        to_email = row["email"].ToString(),
+                        from_name = row["from_label"].ToString(),
+                        from_email = row["from_email"].ToString(),
+                        reply_to_email = row["reply_to_email"].ToString(),
+                        bcc_email = row["bcc_email"].ToString(),
+                        cc_email = row["cc_email"].ToString(),
+                        sSubject = row["subject"].ToString();
+                        //Add traking utm tags
+                        if (!string.IsNullOrEmpty(result)) result = MailTrakingRepository.AddMailTrakingURL(result, tracking);
+
+                        string status = SendEmail.SendEmails(to_name, to_email, from_name, from_email, reply_to_email, bcc_email, cc_email, sSubject, result, true);
+
+                        if (status.ToLower().Equals("sent")) { FlowsRepository.FlowMailTracking("sent", row["id"].ToString()); }
+
+                        //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.name\b\s*\}\})", request.organization.name);
+                        //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.full_address\b\s*\}\})", request.organization.full_address);
+                        //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.url\b\s*\}\})", request.organization.url);
+                        //_html = Regex.Replace(_html, @"(\{\%\s*(?i)\bunsubscribe\b\s*\%\})", "<a href=\"" + _base_url + "/subscriptions/unsubscribe?m=" + item.profiles_id + "\" target=\"_blank\">Unsubscribe</a>");
+
+                        //CampaignTrackingRequest trackingRequest = new CampaignTrackingRequest() { id = item.id, utm_param = utm_para };
+                        //_html = SendEmail.AddMailTrakingURL(_html, trackingRequest);
+                        //string status = SendEmail.send(request.content.from_label, request.content.from_email, string.Format("{0} {1}", item.first_name, item.last_name).Trim(), item.email, string.Empty, string.Empty, request.content.subject, _html, true);
+                        //if (status.ToLower().Equals("sent")) { TrackAndIdentifyRepository.CampaignTracking("sent", item.id); }
+                        //else { TrackAndIdentifyRepository.CampaignTracking("bounced", item.id); }
+                    }
+                }
+                catch { }
+            });
+
+        }
+
+        public static DataTable ProfileFlowMessage(string flag, string api_key, string json_data)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@public_api_key", api_key),
+                    ! string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data",json_data) : new SqlParameter("@json_data",DBNull.Value)
+                };
+                dt = SQLHelper.ExecuteDataTable("qfk_flows_actions", parameters);
+            }
+            catch { throw; }
+            return dt;
+        }
+
+        public static int FlowMailTracking(string flag, string id, string json_data = "")
+        {
+            int i = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@id",id),
+                    !string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data",json_data) : new SqlParameter("@json_data",DBNull.Value)
+                };
+                DataTable dt = SQLHelper.ExecuteDataTable("qfk_flows_actions", parameters);
+                if (dt.Rows.Count > 0)
+                {
+                    i = (dt.Rows[0]["status"] != Convert.DBNull) ? Convert.ToInt32(dt.Rows[0]["status"]) : 0;
+                }
+            }
+            catch { i = 0; }
+            return i;
+        }
+        #endregion
     }
 }

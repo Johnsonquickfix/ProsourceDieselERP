@@ -80,6 +80,9 @@
     <Reference Include="Google.Protobuf, Version=3.14.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.14.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.57.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.57\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="K4os.Compression.LZ4, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
       <HintPath>..\packages\K4os.Compression.LZ4.1.2.6\lib\net45\K4os.Compression.LZ4.dll</HintPath>
     </Reference>
@@ -275,6 +278,7 @@
     <Compile Include="BAL\qfk\FlowsRepository.cs" />
     <Compile Include="BAL\qfk\ImportData.cs" />
     <Compile Include="BAL\qfk\ProfilesRepository.cs" />
+    <Compile Include="BAL\qfk\MailTrakingRepository.cs" />
     <Compile Include="BAL\qfk\TrackAndIdentifyRepository.cs" />
     <Compile Include="BAL\QuickorderRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
@@ -361,6 +365,7 @@
     <Compile Include="Controllers\qfk\FlowsController.cs" />
     <Compile Include="Controllers\qfk\FormsController.cs" />
     <Compile Include="Controllers\qfk\ListsController.cs" />
+    <Compile Include="Controllers\qfk\WFController.cs" />
     <Compile Include="Controllers\QuickorderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -437,6 +442,7 @@
     <Compile Include="Models\qfk\JqDataTableModel.cs" />
     <Compile Include="Models\qfk\MailTracking\TrackingRequest.cs" />
     <Compile Include="Models\qfk\SearchModel.cs" />
+    <Compile Include="Models\qfk\TrackAndIdentify\MailTracking.cs" />
     <Compile Include="Models\qfk\TrackAndIdentify\FormDataRequest.cs" />
     <Compile Include="Models\qfk\TrackAndIdentify\Identify.cs" />
     <Compile Include="Models\qfk\TrackAndIdentify\Lists.cs" />
@@ -2022,6 +2028,8 @@
     <Content Include="Views\PurchaseProduct\ListProduct.cshtml" />
     <Content Include="Views\PurchaseProduct\AddNewProduct.cshtml" />
     <Content Include="Views\PurchaseProduct\AddNewPurchase.cshtml" />
+    <Content Include="Views\WF\Click.cshtml" />
+    <Content Include="Views\WF\Open.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

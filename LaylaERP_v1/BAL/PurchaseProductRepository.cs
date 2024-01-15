@@ -189,5 +189,133 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+        public static List<ProductModelservices> GetsaleprodectdataData(string strValue1, string strValue2)
+        {
+            List<ProductModelservices> _list = new List<ProductModelservices>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductModelservices productsModel = new ProductModelservices();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1))
+                        strWhr += " fk_purchaseproduct = " + strValue1;
+                    string strSQl = "SELECT wppp.post_title saleproduct,wpsp.post_title purchaseproduct ,ppp.rowid as ID,fk_saleproduct,fk_purchaseproduct ,case when is_active = 1 then 'Active' else 'InActive' end as Status"
+                                + " from product_purchase_product ppp"
+                                + " Left outer join wp_posts wppp on wppp.ID = ppp.fk_saleproduct"
+                                 + " Left outer join wp_posts wpsp on wpsp.ID = ppp.fk_purchaseproduct"
+                                + " WHERE " + strWhr;
+
+                    strSQl += ";";
+                    SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductModelservices();
+                        if (sdr["ID"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["ID"]);
+                        else
+                            productsModel.ID = 0;
+                        if (sdr["saleproduct"] != DBNull.Value)
+                            productsModel.product_name = sdr["saleproduct"].ToString();
+                        else
+                            productsModel.product_name = string.Empty;
+
+                        if (sdr["purchaseproduct"] != DBNull.Value)
+                            productsModel.product_label = sdr["purchaseproduct"].ToString();
+                        else
+                            productsModel.product_label = string.Empty;
+
+                        productsModel.Stock = sdr["Status"].ToString();
+
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
+        public static int Addproductsale(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into product_purchase_product(fk_purchaseproduct,fk_saleproduct) values ({0},{1}) ", model.fk_product, model.fk_vendor));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "PurchaseProduct/Addproductsale/" + model.ID + "", "Add warehouse to product");
+                throw ex;
+            }
+            return result;
+        }
+
+        public static int Deletsaleprodect(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from product_warehouse where rowid = {0}; ", model.ID));
+                StringBuilder strSql = new StringBuilder(string.Format("update product_purchase_product set is_active = 0 where rowid = {0}; ", model.ID));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "PurchaseProduct/DeleteProductwarehouse/" + model.ID + "", "Delete product warehouse");
+                throw ex;
+            }
+            return result;
+        }
+        public static int Activesaleprodect(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from product_warehouse where rowid = {0}; ", model.ID));
+                StringBuilder strSql = new StringBuilder(string.Format("update product_purchase_product set is_active = 1 where rowid = {0}; ", model.ID));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "PurchaseProduct/ActiveProductwarehouse/" + model.ID + "", "Active product warehouse");
+                throw ex;
+            }
+            return result;
+        }
+
+        public static DataTable Getproductsaleproduct(ProductModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select fk_saleproduct from product_purchase_product"
+                                + " WHERE fk_purchaseproduct = " + model.fk_product + " and fk_saleproduct in (" + model.fk_vendor + ") "
+                                + " ;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

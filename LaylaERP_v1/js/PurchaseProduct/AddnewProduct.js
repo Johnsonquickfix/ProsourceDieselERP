@@ -383,16 +383,16 @@
             var _Attlist = [];
             $("#product_attributesvariations select.inputddl").each(function () {
                 var key = $(this).find("option:selected").text();
-
+                var selectedVal = $(this).val();
                 // Skip "No default" and avoid duplicate "Any"
                 if (key !== "No default" && !_Attlist.some(item => item.key === key)) {
                     var value = $(this).find("option").map(function () {
                         return $(this).text();
                     }).get().join('|');
-                    _Attlist.push({ key: key, value: value });
+                    _Attlist.push({ key: key, value: value, selectedVal: selectedVal  });
                 }
             }); 
-            //console.log(_Attlist);
+            //console.log(_Attlist); $(this).val();
             //$.each(_Attlist, function (key, value) {
             //    // Check if the value object has 'key' and 'value' properties
             //    if (value && value.key && value.value) {
@@ -438,18 +438,18 @@
             //        varHTML += '</tr>';
             //    }
             //}); 
-            $.each(_Attlist, function (key, value) {
+            $.each(_Attlist, function (key, value, selectedVal ) {
                 // Check if the value object has 'key' and 'value' properties
                 if (value && value.key && value.value) {
                     let _values = value.value.split('|');
-                    //console.log(key, value);
+                    //console.log(key, value, selectedVal);
                     // Start building the dropdown HTML
                     //let dataKey = _values[0].trim().replace("No default ", "");
                     //let formattedString = attribute.display_name.trim().replace(/ /g, '-').toLowerCase();
                     let dataKey = _values[0].replace("No default ", "").replace(/ /g, '-').toLowerCase();
-
+                     
                     varHTML += '<tr>';
-                    varHTML += '<select class="inputddl" id="ddl_attribute_' + ID + '" data-key="' + dataKey  + '">';
+                    varHTML += '<select class="inputddl" id="ddl_attribute_' + ID + '" data-key="' + dataKey + '" data-valuedata="' + value.selectedVal + '">';
 
                     // Replace "No default" with an empty option value
                     let cleanedKey = value.key.trim().replace("No default ", "Any ");
@@ -626,10 +626,10 @@
             /*console.log('att', index);*/
             $(div).find(".inputddl").each(function () {
                 _attxml.push(
-                    { post_id: $(div).find('.nmvariationid').val(), meta_key: 'attribute_' + $(this).data('key'), meta_value: $(this).val() }
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: 'attribute_' + $(this).data('key'), meta_value: $(this).data('valuedata') }
                 );
             });
-            //console.log(_attxml,22);
+            //console.log(_attxml, 22); // val
             $(div).find(".skucval").each(function () {
                 _attxml.push(
                     { post_id: $(div).find('.nmvariationid').val(), meta_key: '_sku', meta_value: this.value }
@@ -1730,16 +1730,21 @@ function GetProductvariationID(ProductID) {
                         // Close the select element
                         let sel_val = '';
                         let sel_vals = 0;
-                        varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + attribute.display_name + '">';
-                        varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
                         let formattedString = attribute.display_name.trim().replace(/ /g, '-').toLowerCase();
-                        //console.log(attribute.display_name, formattedString);
                         if (attribute.is_taxonomy === false) {
                             sel_val = v_data['attribute_' + formattedString];
+                            varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + formattedString + '" data-valuedata="' + sel_val + '" >';
+
                         }
                         else {
                             sel_vals = v_data['attribute_' + formattedString];
+                            varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + data[i].id + '" data-key="' + formattedString + '" data-valuedata="' + sel_vals + '" >';
+
                         }
+                        varHTML += '<option value="">' + 'Any ' + attribute.display_name + '</option>';
+                        
+                        //console.log(attribute.display_name, formattedString);
+                        
                         //let sel_val = 'attribute_' + formattedString;
                        // console.log('displaynm', attribute.display_name);
                         //console.log(55, sel_val, sel_vals);

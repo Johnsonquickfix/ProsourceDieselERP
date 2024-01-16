@@ -4,13 +4,14 @@ using System;
 using System.Text;
 using System.Web.Mvc;
 using LaylaERP.BAL.qfk;
+using System.Threading.Tasks;
 
 namespace quickfix_klvanalysis.Controllers
 {
     public class WFController : Controller
     {
         //[Route("wf/open")]
-        public ActionResult Open()
+        public async Task<ActionResult> Open()
         {
             try
             {
@@ -20,7 +21,7 @@ namespace quickfix_klvanalysis.Controllers
                 // Convert the byte array to a string
                 string json = Encoding.UTF8.GetString(bytes);
                 MailTracking obj = JsonConvert.DeserializeObject<MailTracking>(json);
-                if (obj.type == "flow") { FlowsRepository.FlowMailTracking("open", obj.id, string.Empty); }
+                if (obj.type == "flow") { await FlowsRepository.FlowMailTracking("open", obj.id, string.Empty); }
                 else TrackAndIdentifyRepository.CampaignTracking("open", obj.id, json);
             }
             catch { }
@@ -28,7 +29,7 @@ namespace quickfix_klvanalysis.Controllers
         }
 
         //[Route("wf/click")]
-        public ActionResult Click()
+        public async Task<ActionResult> Click()
         {
             try
             {
@@ -38,12 +39,13 @@ namespace quickfix_klvanalysis.Controllers
                 // Convert the byte array to a string
                 string json = Encoding.UTF8.GetString(bytes);
                 MailTracking obj = JsonConvert.DeserializeObject<MailTracking>(json);
+                obj.url = Encoding.UTF8.GetString(Convert.FromBase64String(obj.url));
                 string json_para = JsonConvert.SerializeObject(new
                 {
                     clientName = Request.Browser.Id,
-                    //url = obj.url
+                    url = obj.url
                 });
-                if (obj.type == "flow") { }
+                if (obj.type == "flow") { await FlowsRepository.FlowMailTracking("click", obj.id, json_para); }
                 else TrackAndIdentifyRepository.CampaignTracking("click", obj.id, json_para);
                 return Redirect(obj.url);
             }

@@ -27,19 +27,22 @@
                 if (body != null) body.AppendChild(imgNode);
                 else document.DocumentNode.AppendChild(imgNode); ;
                 HtmlNodeCollection a_node = document.DocumentNode.SelectNodes("//a[@href]");
-                //if (a_node != null)
-                //{
-                //    foreach (HtmlNode link in a_node)
-                //    {
-                //        if (!string.IsNullOrEmpty(link.Attributes["href"].Value) && link.Attributes["href"].Value != "#")
-                //        {
-                //            var parameters = System.Web.HttpUtility.ParseQueryString(new Uri(link.Attributes["href"].Value).Query);
-                //            //request.url = link.Attributes["href"].Value + (!string.IsNullOrEmpty(parameters.ToString()) ? "&" : "?") + "_qkc=" + request.id + (!string.IsNullOrEmpty(request.utm_param) ? "&" : "") + request.utm_param;
-                //            //param = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request)));
-                //            link.Attributes["href"].Value = string.Format("{0}{1}", click_url, param);
-                //        }
-                //    }
-                //}
+                if (a_node != null)
+                {
+                    foreach (HtmlNode link in a_node)
+                    {
+                        if (!string.IsNullOrEmpty(link.Attributes["href"].Value) && link.Attributes["href"].Value != "#")
+                        {
+                            request.url = Convert.ToBase64String(Encoding.UTF8.GetBytes(link.Attributes["href"].Value));
+                            param = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request)));
+                            //var parameters = System.Web.HttpUtility.ParseQueryString(new Uri(link.Attributes["href"].Value).Query);
+                            //parameters.Add("_url","")
+                            //var url = link.Attributes["href"].Value + (!string.IsNullOrEmpty(parameters.ToString()) ? "&" : "?") + "_qkc=" + request.id + (!string.IsNullOrEmpty(request.utm_param) ? "&" : "") + request.utm_param;
+                            //param = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request)));
+                            link.Attributes["href"].Value = string.Format("{0}{1}", click_url, param);
+                        }
+                    }
+                }
                 return document.DocumentNode.OuterHtml;
             }
             catch { }

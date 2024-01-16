@@ -126,7 +126,7 @@
                             //Add traking utm tags
                             if (!string.IsNullOrEmpty(result)) result = MailTrakingRepository.AddMailTrakingURL(result, tracking);
 
-                            int status =await SendEmail.SendEmails(to_name, to_email, from_name, from_email, reply_to_email, bcc_email, cc_email, sSubject, result, true);
+                            int status = await SendEmail.SendEmails(to_name, to_email, from_name, from_email, reply_to_email, bcc_email, cc_email, sSubject, result, true);
 
                             if (status > 0) { await FlowMailTracking("sent", row["id"].ToString()); }
                             else { await FlowMailTracking("skipped", row["id"].ToString()); }
@@ -135,21 +135,10 @@
                         {
                             await FlowMailTracking("skipped", row["id"].ToString());
                         }
-                        //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.name\b\s*\}\})", request.organization.name);
-                        //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.full_address\b\s*\}\})", request.organization.full_address);
-                        //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.url\b\s*\}\})", request.organization.url);
-                        //_html = Regex.Replace(_html, @"(\{\%\s*(?i)\bunsubscribe\b\s*\%\})", "<a href=\"" + _base_url + "/subscriptions/unsubscribe?m=" + item.profiles_id + "\" target=\"_blank\">Unsubscribe</a>");
-
-                        //CampaignTrackingRequest trackingRequest = new CampaignTrackingRequest() { id = item.id, utm_param = utm_para };
-                        //_html = SendEmail.AddMailTrakingURL(_html, trackingRequest);
-                        //string status = SendEmail.send(request.content.from_label, request.content.from_email, string.Format("{0} {1}", item.first_name, item.last_name).Trim(), item.email, string.Empty, string.Empty, request.content.subject, _html, true);
-                        //if (status.ToLower().Equals("sent")) { TrackAndIdentifyRepository.CampaignTracking("sent", item.id); }
-                        //else { TrackAndIdentifyRepository.CampaignTracking("bounced", item.id); }
                     }
                 }
                 catch { }
             });
-
         }
 
         public static DataTable ProfileFlowMessage(string flag, string api_key, string json_data)

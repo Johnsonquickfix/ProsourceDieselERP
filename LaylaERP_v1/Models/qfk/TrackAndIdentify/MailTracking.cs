@@ -31,7 +31,7 @@
         [JsonProperty("utm_source_platform", NullValueHandling = NullValueHandling.Ignore)]
         public string utm_source_platform { get; set; }
 
-        [JsonProperty("url", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("_url", NullValueHandling = NullValueHandling.Ignore)]
         public string url { get; set; }
 
         //public string utm_param { get; set; } = string.Empty;

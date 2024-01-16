@@ -3,6 +3,8 @@
     using LaylaERP.DAL;
     using LaylaERP.Models.qfk.TrackAndIdentify;
     using LaylaERP.UTILITIES;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -82,7 +84,7 @@
         #region [Flow Mail actions]
         public static async Task StartFlow(string api_key, string json_data)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 try
                 {
@@ -90,39 +92,49 @@
                     var utm_para = string.Empty;
                     foreach (DataRow row in dt.Rows)
                     {
-                        MailTracking tracking = new MailTracking() { id = row["id"].ToString() };
-                        tracking.type = "flow";
-                        tracking.utm_campaign = row["action_name"].ToString();
-                        tracking.utm_medium = "email";
-                        tracking.utm_source = row["flow_name"].ToString();
-
-                        string _html = row["data_html"].ToString();
-                        Scriban.Template template = Scriban.Template.Parse(_html);
-                        var result = template.Render(new
+                        if (row["status"].ToString().Equals("2"))
                         {
-                            first_name = row["first_name"].ToString(),
-                            last_name = row["last_name"].ToString(),
-                            person = new { phone_number = row["last_name"].ToString(), organization = row["organization"].ToString(), title = row["title"].ToString() },
-                            organization = new { name = row["company_name"].ToString(), full_address = row["full_address"].ToString(), url = row["website_url"].ToString() },
-                            unsubscribe = $"<a href=\"/subscriptions/unsubscribe?m={row["id"].ToString()}\" target=\"_blank\">Unsubscribe</a>",
-                            unsubscribe_link = $"/subscriptions/unsubscribe?m={row["id"].ToString()}"
-                        });
+                            MailTracking tracking = new MailTracking()
+                            {
+                                id = row["id"].ToString(),
+                                type = "flow",
+                                utm_medium = "email",
+                                utm_campaign = row["action_name"].ToString(),
+                                utm_source = row["flow_name"].ToString()
+                            };
 
-                        string to_name = row["first_name"].ToString(),
-                        to_email = row["email"].ToString(),
-                        from_name = row["from_label"].ToString(),
-                        from_email = row["from_email"].ToString(),
-                        reply_to_email = row["reply_to_email"].ToString(),
-                        bcc_email = row["bcc_email"].ToString(),
-                        cc_email = row["cc_email"].ToString(),
-                        sSubject = row["subject"].ToString();
-                        //Add traking utm tags
-                        if (!string.IsNullOrEmpty(result)) result = MailTrakingRepository.AddMailTrakingURL(result, tracking);
+                            string _html = row["data_html"].ToString();
+                            Scriban.Template template = Scriban.Template.Parse(_html);
+                            var result = template.Render(new
+                            {
+                                first_name = row["first_name"].ToString(),
+                                last_name = row["last_name"].ToString(),
+                                person = new { phone_number = row["last_name"].ToString(), organization = row["organization"].ToString(), title = row["title"].ToString() },
+                                organization = new { name = row["company_name"].ToString(), full_address = row["full_address"].ToString(), url = row["website_url"].ToString() },
+                                unsubscribe = $"<a href=\"/subscriptions/unsubscribe?m={row["id"].ToString()}\" target=\"_blank\">Unsubscribe</a>",
+                                unsubscribe_link = $"/subscriptions/unsubscribe?m={row["id"].ToString()}"
+                            });
 
-                        string status = SendEmail.SendEmails(to_name, to_email, from_name, from_email, reply_to_email, bcc_email, cc_email, sSubject, result, true);
+                            string to_name = row["first_name"].ToString(),
+                            to_email = row["email"].ToString(),
+                            from_name = row["from_label"].ToString(),
+                            from_email = row["from_email"].ToString(),
+                            reply_to_email = row["reply_to_email"].ToString(),
+                            bcc_email = row["bcc_email"].ToString(),
+                            cc_email = row["cc_email"].ToString(),
+                            sSubject = row["subject"].ToString();
+                            //Add traking utm tags
+                            if (!string.IsNullOrEmpty(result)) result = MailTrakingRepository.AddMailTrakingURL(result, tracking);
 
-                        if (status.ToLower().Equals("sent")) { FlowsRepository.FlowMailTracking("sent", row["id"].ToString()); }
+                            int status =await SendEmail.SendEmails(to_name, to_email, from_name, from_email, reply_to_email, bcc_email, cc_email, sSubject, result, true);
 
+                            if (status > 0) { await FlowMailTracking("sent", row["id"].ToString()); }
+                            else { await FlowMailTracking("skipped", row["id"].ToString()); }
+                        }
+                        else
+                        {
+                            await FlowMailTracking("skipped", row["id"].ToString());
+                        }
                         //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.name\b\s*\}\})", request.organization.name);
                         //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.full_address\b\s*\}\})", request.organization.full_address);
                         //_html = Regex.Replace(_html, @"(\{\{\s*(?i)\borganization.url\b\s*\}\})", request.organization.url);
@@ -157,7 +169,7 @@
             return dt;
         }
 
-        public static int FlowMailTracking(string flag, string id, string json_data = "")
+        public static async Task<int> FlowMailTracking(string flag, string id, string json_data = "")
         {
             int i = 0;
             try
@@ -168,10 +180,10 @@
                     new SqlParameter("@id",id),
                     !string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data",json_data) : new SqlParameter("@json_data",DBNull.Value)
                 };
-                DataTable dt = SQLHelper.ExecuteDataTable("qfk_flows_actions", parameters);
-                if (dt.Rows.Count > 0)
+                var data = JsonConvert.DeserializeObject<JObject>(await SQLHelper.ExecuteJsonReaderAsync("qfk_flows_actions", parameters));
+                if (data["status"] != null)
                 {
-                    i = (dt.Rows[0]["status"] != Convert.DBNull) ? Convert.ToInt32(dt.Rows[0]["status"]) : 0;
+                    i = data.Value<bool>("status") ? 1 : 0;
                 }
             }
             catch { i = 0; }

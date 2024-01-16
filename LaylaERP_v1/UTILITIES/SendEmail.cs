@@ -362,10 +362,9 @@
             return result;
         }
 
-        public static string SendEmails(string to_name, string to_email, string from_name, string from_email, string reply_to_email, string bcc_email, string cc_email, string sSubject, string sBody, bool EnableSsl)
+        public static async Task<int> SendEmails(string to_name, string to_email, string from_name, string from_email, string reply_to_email, string bcc_email, string cc_email, string sSubject, string sBody, bool EnableSsl)
         {
-            //string result = "Your mail has been sent successfuly !";
-            string result = "sent";
+            int i = 0;
             try
             {
                 string sender_email = "david.quickfix1@gmail.com", sender_email_Pwd = "beukxoqkukghwzvp";
@@ -373,42 +372,32 @@
                 int SMTPServerPortNo = 587;
                 //string SMTPServerName = ConfigurationManager.AppSettings["Host"];
                 //int SMTPServerPortNo = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["Port"]) ? Convert.ToInt32(ConfigurationManager.AppSettings["Port"]) : 587;
-                var th = new Thread(() =>
+
+                if (!string.IsNullOrEmpty(sender_email) && !string.IsNullOrEmpty(sender_email_Pwd) && !string.IsNullOrEmpty(SMTPServerName) && SMTPServerPortNo != 0)
                 {
-                    if (!string.IsNullOrEmpty(sender_email) && !string.IsNullOrEmpty(sender_email_Pwd) && !string.IsNullOrEmpty(SMTPServerName) && SMTPServerPortNo != 0)
+                    MailMessage mail = new MailMessage() { Subject = sSubject, IsBodyHtml = true, Body = sBody };
+                    mail.From = new MailAddress(from_email, from_name);
+                    mail.To.Add(new MailAddress(to_email, to_name));
+                    if (!string.IsNullOrEmpty(reply_to_email)) mail.ReplyToList.Add(new MailAddress(reply_to_email, string.Empty));
+                    if (!string.IsNullOrEmpty(cc_email)) mail.CC.Add(new MailAddress(cc_email, string.Empty));
+                    if (!string.IsNullOrEmpty(bcc_email)) mail.Bcc.Add(new MailAddress(bcc_email, string.Empty));
+
+                    NetworkCredential NetworkCred = new NetworkCredential(sender_email, sender_email_Pwd);
+                    SmtpClient SmtpServer = new SmtpClient(host: SMTPServerName)
                     {
-                        MailMessage mail = new MailMessage();
-                        SmtpClient SmtpServer = new SmtpClient(host: SMTPServerName);
-                        mail.From = new MailAddress(from_email, from_name);
-                        mail.To.Add(new MailAddress(to_email, to_name));
-                        if (!string.IsNullOrEmpty(reply_to_email)) mail.ReplyToList.Add(new MailAddress(reply_to_email, string.Empty));
-                        if (!string.IsNullOrEmpty(cc_email)) mail.CC.Add(new MailAddress(cc_email, string.Empty));
-                        if (!string.IsNullOrEmpty(bcc_email)) mail.Bcc.Add(new MailAddress(bcc_email, string.Empty));
-                        
-                        mail.Subject = sSubject;
-                        mail.IsBodyHtml = true;
-                        mail.Body = sBody;
-                        
-                        NetworkCredential NetworkCred = new NetworkCredential(sender_email, sender_email_Pwd);
-                        SmtpServer.UseDefaultCredentials = false;//false;
-                        SmtpServer.Credentials = NetworkCred;
-                        SmtpServer.EnableSsl = EnableSsl;
-                        SmtpServer.Port = SMTPServerPortNo;
-                        SmtpServer.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        SmtpServer.Send(mail);
-                    }
-                });
-                th.SetApartmentState(ApartmentState.STA);
-                th.Start();
-                Task.Run(() => th);
-                Task.WaitAll();
+                        UseDefaultCredentials = false,
+                        Credentials = NetworkCred,
+                        EnableSsl = EnableSsl,
+                        Port = SMTPServerPortNo,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                    };
+                    //await Task.Delay(TimeSpan.FromMinutes(5)); // Wait for 3 seconds
+                    await SmtpServer.SendMailAsync(mail);
+                    i = 1;
+                }
             }
-            catch //(Exception ex)
-            {
-                //result = "Some problems occurred with the OTP email. Please contact your Administrator!!";
-                result = "not sent";
-            }
-            return result;
+            catch { i = 0; }
+            return i;
         }
 
 

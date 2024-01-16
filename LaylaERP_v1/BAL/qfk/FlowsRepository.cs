@@ -141,6 +141,65 @@
             });
         }
 
+        public static async Task FlowNextStep()
+        {
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    DataTable dt = ProfileFlowMessage("flow-next-action", string.Empty, string.Empty);
+                    var utm_para = string.Empty;
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row["status"].ToString().Equals("2"))
+                        {
+                            MailTracking tracking = new MailTracking()
+                            {
+                                id = row["id"].ToString(),
+                                type = "flow",
+                                utm_medium = "email",
+                                utm_campaign = row["action_name"].ToString(),
+                                utm_source = row["flow_name"].ToString()
+                            };
+
+                            string _html = row["data_html"].ToString();
+                            Scriban.Template template = Scriban.Template.Parse(_html);
+                            var result = template.Render(new
+                            {
+                                first_name = row["first_name"].ToString(),
+                                last_name = row["last_name"].ToString(),
+                                person = new { phone_number = row["last_name"].ToString(), organization = row["organization"].ToString(), title = row["title"].ToString() },
+                                organization = new { name = row["company_name"].ToString(), full_address = row["full_address"].ToString(), url = row["website_url"].ToString() },
+                                unsubscribe = $"<a href=\"/subscriptions/unsubscribe?m={row["id"].ToString()}\" target=\"_blank\">Unsubscribe</a>",
+                                unsubscribe_link = $"/subscriptions/unsubscribe?m={row["id"].ToString()}"
+                            });
+
+                            string to_name = row["first_name"].ToString(),
+                            to_email = row["email"].ToString(),
+                            from_name = row["from_label"].ToString(),
+                            from_email = row["from_email"].ToString(),
+                            reply_to_email = row["reply_to_email"].ToString(),
+                            bcc_email = row["bcc_email"].ToString(),
+                            cc_email = row["cc_email"].ToString(),
+                            sSubject = row["subject"].ToString();
+                            //Add traking utm tags
+                            if (!string.IsNullOrEmpty(result)) result = MailTrakingRepository.AddMailTrakingURL(result, tracking);
+
+                            int status = await SendEmail.SendEmails(to_name, to_email, from_name, from_email, reply_to_email, bcc_email, cc_email, sSubject, result, true);
+
+                            if (status > 0) { await FlowMailTracking("sent", row["id"].ToString()); }
+                            else { await FlowMailTracking("skipped", row["id"].ToString()); }
+                        }
+                        else
+                        {
+                            await FlowMailTracking("skipped", row["id"].ToString());
+                        }
+                    }
+                }
+                catch { }
+            });
+        }
+
         public static DataTable ProfileFlowMessage(string flag, string api_key, string json_data)
         {
             DataTable dt;

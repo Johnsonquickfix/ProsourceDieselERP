@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -102,6 +103,16 @@ namespace LaylaERP.Controllers.qfk
             try
             {
                 ViewBag.id = id;
+            }
+            catch { }
+            return View();
+        }
+
+        public async Task<ActionResult> FlowNextStep()
+        {
+            try
+            {
+                await FlowsRepository.FlowNextStep();
             }
             catch { }
             return View();

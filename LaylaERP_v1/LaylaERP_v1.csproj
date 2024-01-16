@@ -2030,6 +2030,7 @@
     <Content Include="Views\PurchaseProduct\AddNewPurchase.cshtml" />
     <Content Include="Views\WF\Click.cshtml" />
     <Content Include="Views\WF\Open.cshtml" />
+    <Content Include="Views\Flows\FlowNextStep.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

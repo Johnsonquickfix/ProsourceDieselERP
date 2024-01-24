@@ -1257,7 +1257,7 @@
                             }
                             else
                             {
-                                decimal _price = dr["price"] != DBNull.Value ? Convert.ToDecimal(dr["price"]) : 0;
+                                decimal _price = dr["price"] != DBNull.Value ? (!string.IsNullOrEmpty(dr["price"].ToString()) ? Convert.ToDecimal(dr["price"]) : 0) : 0;
                                 obj.price = _price;
                                 // Get wholesale details by product_id, user_id
                                 decimal _wholesale_discount = dr["wholesale_price"] != DBNull.Value ? Convert.ToDecimal(dr["wholesale_price"]) : 0;
